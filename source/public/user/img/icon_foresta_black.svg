@@ -1,0 +1,13 @@
+<svg id="포레스타_블랙" data-name="포레스타 블랙" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <rect id="사각형_139" data-name="사각형 139" width="50" height="50" fill="#ff5f5f" opacity="0"/>
+  <g id="그룹_269" data-name="그룹 269" transform="translate(11 8)">
+    <path id="패스_156" data-name="패스 156" d="M15.278,24.418l3.156-3.155a6.191,6.191,0,0,0,1.711-.639A5.371,5.371,0,0,0,21.6,19.533c.619-.557,8.565-10.15,9.116-12.279s-.658-6.207-.658-6.207L15.8,18.455l-2.794,3.411" transform="translate(-3.656 -1.047)" fill="none" stroke="#000" stroke-width="1"/>
+    <circle id="타원_44" data-name="타원 44" cx="2.991" cy="2.991" r="2.991" transform="translate(2.993 22.903)" fill="none" stroke="#000" stroke-width="1"/>
+    <circle id="타원_45" data-name="타원 45" cx="5.982" cy="5.982" r="5.982" transform="translate(0.002 19.913)" fill="none" stroke="#000" stroke-width="1"/>
+    <line id="선_25" data-name="선 25" x2="1.191" y2="1.454" transform="translate(16.661 19.366)" fill="none" stroke="#000" stroke-width="1"/>
+    <path id="패스_157" data-name="패스 157" d="M11.219,20.626a5.371,5.371,0,0,1-1.457-1.092C9.143,18.977,1.2,9.388.644,7.255S1.3,1.048,1.3,1.048L14.1,16.68" transform="translate(-0.5 -1.047)" fill="none" stroke="#000" stroke-width="1"/>
+    <line id="선_26" data-name="선 26" x1="2.061" y1="2.059" transform="translate(13.526 21.312)" fill="none" stroke="#000" stroke-width="1"/>
+    <circle id="타원_46" data-name="타원 46" cx="2.991" cy="2.991" r="2.991" transform="translate(18.234 22.903)" fill="none" stroke="#000" stroke-width="1"/>
+    <circle id="타원_47" data-name="타원 47" cx="5.982" cy="5.982" r="5.982" transform="translate(15.243 19.913)" fill="none" stroke="#000" stroke-width="1"/>
+  </g>
+</svg>

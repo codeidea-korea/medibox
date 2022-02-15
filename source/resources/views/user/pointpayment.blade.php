@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medibox</title>
+
+    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
+    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
+    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('user/js/medibox.js') }}"></script>
+</head>
+<body>
+
+        <!-- header -->
+        <header id="header">
+            <!-- 뒤로가기 버튼 -->
+            <button class="back" onclick="history.back()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
+                    <g id="back_arrow" transform="translate(-22.295 -60)">
+                      <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
+                      <g id="그룹_389" data-name="그룹 389" transform="translate(-0.231)">
+                        <g id="그룹_388" data-name="그룹 388">
+                          <line id="선_29" data-name="선 29" x2="22.655" transform="translate(23.845 72)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+                          <path id="패스_174" data-name="패스 174" d="M3382.394,1143.563l-7.163,6.331" transform="translate(-3352 -1077.894)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                          <path id="패스_175" data-name="패스 175" d="M3375.231,1143.563l7.163,6.331" transform="translate(-3352 -1071.563)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                        </g>
+                      </g>
+                    </g>
+                  </svg>
+            </button>
+            <!-- page title -->
+            <div class="title">
+                <span>포인트 결제</span>
+            </div>
+        </header>
+
+        <!-- 포인트 결제 페이지 -->
+        <section id="payment_page">
+
+            <div class="service_select_wrap">
+                <!-- 포인트 사용 매장 -->
+                <div class="point_use_store">
+                    <h2>포인트 사용 매장</h2>
+                    <div class="select_wrap">
+                        <div class="select_box">
+                            <span>매장 선택하기</span>
+                            <img src="/user/img/arrow_bottom.svg" alt="">
+                        </div>
+                        <ul class="option">
+                            <li>발몽스파</li>
+                            <li>바라는 네일</li>
+                            <li>딥포커스</li>
+                            <li>미니쉬 스파</li>
+                            <li>미니쉬 도수</li>
+                            <li>포레스타 블랙</li>
+                        </ul>
+                    </div>
+                </div>
+            
+                <!-- 매장별 서비스  -->
+                <div class="store_service">
+                    <h2>매장별 서비스</h2>
+                    <div class="select_wrap">
+                        <div class="select_box">
+                            <span>서비스 선택하기</span>
+                            <img src="/user/img/arrow_bottom.svg" alt="">
+                        </div>
+                        <ul class="option">
+                            <li>베이직 케어</li>
+                            <li>베이직 케어 + 패디 + 각질</li>
+                            <li>베이직 젤네일 + 패디젤</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <!-- 보유 포인트 -->
+                <div class="holding_point_wrap point_wrap">
+                    <h2>보유 포인트</h2>
+                    <span><em id="holding_point">6,000,000</em>P</span>
+                </div>
+    
+                <!-- 사용 포인트 -->
+                <div class="use_point_wrap point_wrap">
+                    <h2>사용 포인트</h2>
+                    <span><em id="use_point"></em>P</span>
+                </div>
+            </div>
+
+            <div class="service_result_wrap">
+                <!-- 사용 포인트 결과 -->
+                <div class="holding_point_wrap point_wrap">
+                    <h2>사용 포인트</h2>
+                    <span><em id="use_result_point">0</em>P</span>
+                </div>
+    
+                <!-- 결제 후 잔액 포인트 -->
+                <div class="use_point_wrap point_wrap">
+                    <h2>결제 후 잔액 포인트</h2>
+                    <span><em id="use_result_point">0</em>P</span>
+                </div>                
+            </div>
+
+            <button type="submit" id="payment_btn">결제하기</button>
+
+        </section>
+    
+
+</body>
+</html>
