@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Route::get('/', [UserController::class, 'main']);
-Route::get('/', [UserController::class, 'welcome']);
-// welcome.blade
+Route::get('/', [UserController::class, 'main']);
 Route::get('/index', [UserController::class, 'main']);
 Route::get('/user/login', [UserController::class, 'login'])->name('user.login'); // login_main
 Route::get('/user/signup', [UserController::class, 'signup'])->name('user.signup');
@@ -46,6 +44,11 @@ Route::get('/reservation/valmontspa', [UserController::class, 'valmontspa_reserv
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
 Route::get('/terms/policy', [UserController::class, 'policy']) ->name('user.policy');
+
+
+
+Route::post('/user/login/proccess', [UserController::class, 'login_proccess']);
+Route::post('/user/logout/proccess', [UserController::class, 'logout_proccess']);
 
 /*
 Route::get('/admin', [AdminController::class, 'index']);

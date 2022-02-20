@@ -24,18 +24,18 @@
         </div>
     </div>
 
-    <!-- intro -->
+    <!-- intro {{$isLogin}} -->
     <div id="intro">
         <div class="container">
             <h2 class="main_title">MEDI BOX</h2>
             <p class="main_sub_title">
                 특별한 당신을 위한<br>
-                Health Care
+                Health Care 
             </p>
             <nav class="gnb">
                 <ul>
                     <li>
-                    @if ( session('user_seqno') && session('user_id') && session('user_name') )
+                    @if ( session('user_seqno') )
                         <a href="/point">
                     @else
                         <a href="#!">
@@ -46,7 +46,7 @@
                             </div>
                         </a>
                     </li>
-                    @if ( session('user_seqno') && session('user_id') && session('user_name') )
+                    @if ( session('user_seqno') )
                         <li>
                             <a href="/mypage">
                                 <div class="menu_box">

@@ -35,7 +35,8 @@
                 특별한 당신을 위한<br>
                 Health Care
             </p>
-            <form method="post">
+            <form method="post" action="/user/login/proccess" onsubmit="login()">
+                {{ csrf_field() }}
                 <!-- login id -->
                 <p>
                     <label for="id">아이디(휴대폰 번호)</label>
@@ -48,7 +49,7 @@
                 </p>
                 <!-- login button -->
                 <p>
-                    <button type="button" onclick="login()" id="login_btn">로그인</button>
+                    <button type="submit" id="login_btn">로그인</button>
                 </p>
             </form>
         </div>
@@ -85,8 +86,9 @@
         }
         function login(){
             if(!checkValidation()) {
-                return;
+                return false;
             }
+            /*
             var id = document.querySelector('#id').value;
             var pw = document.querySelector('#pw').value;
 
@@ -99,10 +101,13 @@
                     alert(response.ment);
                     return false;
                 }
+                localStorage.setItem('userKey', JSON.parse(request).id);
                 window.location.href = '/index';
             }, function(e){
                 console.log(e);
             });
+            */
+            return true;
         }
     </script>
 

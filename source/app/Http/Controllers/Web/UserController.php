@@ -55,13 +55,14 @@ class UserController extends Controller
     {
         return view('user.login');
     }
-    public function login_main(Request $request)
-    {
-        return view('user.login_main');
-    }
+    
     public function main(Request $request)
     {
-        return view('user.main');
+        $isLogin = false;
+        if ($request->session()->has('user_seqno')) {
+            $isLogin = true;
+        }
+        return view('user.main')->with('isLogin', $isLogin);
     }
     public function medibox_list(Request $request)
     {
@@ -85,7 +86,26 @@ class UserController extends Controller
     }
     public function mypage(Request $request)
     {
-        return view('user.mypage');
+        if (! $request->session()->has('user_seqno')) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $request->session()->put('error', '계정을 확인해주세요.');
+            return back()->withInput();
+        }
+
+        $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
+
+        return view('user.mypage')->with('id', $user->user_phone)
+            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn);
     }
     public function mypage_privacy(Request $request)
     {
@@ -134,5 +154,54 @@ class UserController extends Controller
     public function valmontspa_reservation(Request $request)
     {
         return view('user.valmontspa_reservation');
+    }
+
+
+    
+    public function login_main(Request $request)
+    {
+        $request->session()->put('user_seqno', 1);
+
+        return view('user.login_main');
+    }
+    public function login_proccess(Request $request)
+    {
+        $id = $request->post('id');
+        $pw = $request->post('pw');
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        if (empty($id) || empty($pw)) {
+            $result['ment'] = '계정을 확인해주세요.';
+            $request->session()->put('error', $result['ment']);
+            return back()->withInput();
+        }
+        $user = DB::table("user_info")->where([
+            ['user_phone', '=', $id],
+            ['user_pw', '=', $pw],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if(empty($user)) {
+            $result['ment'] = '없는 계정입니다.';
+            $request->session()->put('error', $result['ment']);
+            return back()->withInput();
+        }
+        if($user->approve_yn == 'N') {
+            $result['ment'] = '아직 승인 대기중입니다. 관리자 승인후 이용이 가능합니다.';
+            $request->session()->put('error', $result['ment']);
+            return back()->withInput();
+        }
+        $request->session()->put('user_seqno', $user->user_seqno);
+
+        return redirect('/index');
+    }
+    public function logout_proccess(Request $request)
+    {
+        $request->session()->forget('user_seqno');
+
+        return redirect('/');
     }
 }
