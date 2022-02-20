@@ -49,3 +49,96 @@ create table user_point_hst
 ) character set utf16;
 create index user_point_hst__index_1
     on user_point_hst (user_seqno);
+
+-- 상품 가격 정보
+create table product
+(
+    product_seqno bigint auto_increment
+        primary key,
+    point_type   varchar(2)      not null, -- P: 포인트, S1-4: 통합/네일/발몽/포레스타 정액권, K: 패키지
+    type_name   varchar(200)      not null, -- 명칭
+    service_name   varchar(200)      not null,
+    service_sub_name   varchar(200)      null,
+    price    int      default 0,
+    return_point    int      default 0,
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+create index product__index_1
+    on product_hst (point_type);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','MINISH SPECIAL', '90분', 300000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','MINISH SPECIAL', '120분', 396000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','하이드레이션', '30분', 136000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','하이드레이션', '60분', 210000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','하이드레이션', '90분', 275000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','하이드레이션', '120분', 440000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','에너지', '30분', 136000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','에너지', '60분', 210000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','에너지', '90분', 275000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','에너지', '120분', 440000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','레디언스', '30분', 150000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','레디언스', '60분', 230000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','레디언스', '90분', 295000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','레디언스', '120분', 460000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','라인&볼륨', '30분', 140000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','라인&볼륨', '60분', 220000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','라인&볼륨', '90분', 285000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','라인&볼륨', '120분', 450000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','마제스티으', '30분', 210000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','마제스티으', '120분', 586000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','소프트&스무드', '30분', 160000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','소프트&스무드', '60분', 240000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','소프트&스무드', '90분', 305000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','소프트&스무드', '120분', 440000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','마더 투 비(임산부)', '60분', 263000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P3', '발몽스파','마더 투 비(임산부)', '90분', 346000, 0);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P2', '바라는네일', '베이직케어', null, 100000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P2', '바라는네일', '베이직케어 네일&패디&각질', null, 250000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P2', '바라는네일', '베이직 젤네일&패디젤', null, 250000, 0);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P4', '포레스타블랙','CUT', null, 181500, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P4', '포레스타블랙','DRY', null, 121000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P4', '포레스타블랙','PERM', null, 363000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P4', '포레스타블랙','컬러', null, 242000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P4', '포레스타블랙','두피케어 + 스피드 모발케어', null, 242000, 0);
+
+-- 딥 포커스
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P5', '딥포커스', 'classic', '40분', 100000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P5', '딥포커스', 'luxury', '60분', 200000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P5', '딥포커스', 'special', '120분', 300000, 0);
+
+-- 미니쉬 스파
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '구강 종합 검진', null, 480000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '치아튼튼 (4회)', null, 800000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '잇몸튼튼 (4회)', null, 600000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '미니쉬플러스 케어 (4회)', null, 600000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '임플란트플러스 케어 (4회)', null, 400000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P6', '미니쉬 스파', '평생구강건강관리 (회당)', null, 150000, 0);
+
+-- 미니쉬 도수
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P7', '미니쉬 도수', 'classic', '40분', 100000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P7', '미니쉬 도수', 'luxury', '90분', 200000, 0);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('P7', '미니쉬 도수', 'special', '120분', 350000, 0);
+
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('K', '미니쉬 패키지','50만원', null, 500000, 500000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('K', '미니쉬 패키지','100만원', null, 1000000, 1000000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('K', '미니쉬 패키지','150만원', null, 1500000, 1500000);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S2', '미니쉬 라운지 정액권','네일 정액권', '100만원', 1000000, 1050000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S2', '미니쉬 라운지 정액권','네일 정액권', '200만원', 2000000, 2200000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S2', '미니쉬 라운지 정액권','네일 정액권', '300만원', 3000000, 3450000);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','발몽스파 정액권', '200만원', 2000000, 2400000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','발몽스파 정액권', '300만원', 3000000, 3750000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','발몽스파 정액권', '500만원', 5000000, 6750000);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','포레스타 정액권', '100만원', 1000000, 1150000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','포레스타 정액권', '200만원', 2000000, 2400000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S3', '미니쉬 라운지 정액권','포레스타 정액권', '300만원', 3000000, 3750000);
+
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S1', '미니쉬 라운지 정액권','통합 정액권', '300만원', 3000000, 3300000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S1', '미니쉬 라운지 정액권','통합 정액권', '500만원', 5000000, 5750000);
+insert into product (point_type, service_name, type_name, service_sub_name, price, return_point) values ('S1', '미니쉬 라운지 정액권','통합 정액권', '1000만원', 10000000, 12000000);

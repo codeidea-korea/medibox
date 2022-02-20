@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -40,8 +41,6 @@ class UserController extends Controller
         }
 
         $request->session()->put('user_seqno', $user->user_seqno);
-        $request->session()->put('user_id', $user->user_phone);
-        $request->session()->put('user_name', $user->user_name);
 
         $result['ment'] = '성공';
         $result['result'] = true;
@@ -90,7 +89,7 @@ class UserController extends Controller
         $user_pw = $request->post('pw', '');
         $user_name = $request->post('name');
         $event_yn = $request->post('event_yn', 'N');
-        $approve_yn = 'N';
+        $approve_yn = 'Y';
         $delete_yn = 'N';
 
         $result = [];
@@ -259,9 +258,94 @@ class UserController extends Controller
         $result['result'] = true;
 
         $request->session()->forget('user_seqno');
-        $request->session()->forget('user_id');
-        $request->session()->forget('user_name');
 
         return $result;
     }
+    // 회원 조회 - 단건/다건 - 전화번호/이름 검색
+    public function list(Request $request)
+    {
+        $search_field = $request->get('search');
+        $start_day = $request->get('start_day');
+        $end_day = $request->get('end_day');
+        
+        $pageNo = $request->get('pageNo', 1);
+        $pageSize = $request->get('pageSize', 10);
+        $delete_yn = 'Y';
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        $where = [];
+        if (!empty($search_field) && $search_field != '') {
+            array_push($where, ['user_phone', 'like', $search_field]);
+        }
+        if (!empty($start_day) && $start_day != '') {
+            array_push($where, ['create_dt', '>=', $start_day]);
+        }
+        if (!empty($end_day) && $end_day != '') {
+            array_push($where, ['create_dt', '<=', $end_day]);
+        }
+
+        $users = DB::table("user_info")->where($where)
+            ->orderBy('create_dt', 'desc')
+            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->get();
+
+        // 매칭되는 정액권, 포인트를 리턴
+        for($inx = 0; $inx < count($users); $inx++){
+            $points = DB::table("user_point")
+                ->where([['user_seqno', '=', $users[$inx]->user_seqno]])->get();
+            $users[$inx]->points = $points;
+        }
+
+        $result['ment'] = '성공';
+        $result['data'] = $users;
+        $result['result'] = true;
+
+        return $result;
+    }
+    public function find(Request $request)
+    {
+        $user_phone = $request->get('user_phone');
+        $delete_yn = 'Y';
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        $user = DB::table("user_info")->where([
+                ['user_phone', '=', $user_phone]
+            ])
+            ->orderBy('create_dt', 'desc')
+            ->first();
+
+        // 매칭되는 정액권, 포인트를 리턴 
+        if(!empty($user)) {
+            $points = DB::table("user_point")
+                ->where([['user_seqno', '=', $user->user_seqno]])->get();
+            $user->points = $points;
+
+            // 사용 내역
+            $pointPaidHistory = DB::table("user_point_hst")
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '!=', 'U']])
+                ->orderBy('create_dt', 'desc')
+                ->offset((10 * (1-1)))->limit(10)
+                ->get();
+            $user->pointPaidHistory = $pointPaidHistory;
+            $pointUseHistory = DB::table("user_point_hst")
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
+                ->orderBy('create_dt', 'desc')
+                ->offset((10 * (1-1)))->limit(10)
+                ->get();
+            $user->pointUseHistory = $pointUseHistory;
+        }
+
+        $result['ment'] = '성공';
+        $result['data'] = $users;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 포인트 사용
 }
