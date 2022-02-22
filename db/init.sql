@@ -40,10 +40,14 @@ create table user_point_hst
 (
     user_point_hst_seqno bigint auto_increment
         primary key,
+    admin_seqno    bigint      not null,
     user_seqno    bigint      not null,
-    point_type   varchar(2)      not null, -- P: 포인트, S1-4: 통합/네일/발몽/포레스타 정액권, K: 패키지
+    product_seqno    bigint      null,
+    point_type   varchar(2)      not null, -- P: 포인트, S1-4: 통합/네일/발몽/포레스타 정액권, K: 패키지, N: 직접 입력
     hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    refund_point_hst_seqno bigint null, -- 환불 seqno
     point    int      default 0,
+    memo   varchar(300)      null, -- 사유
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
