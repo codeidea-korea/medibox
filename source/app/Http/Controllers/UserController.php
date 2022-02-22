@@ -127,12 +127,28 @@ class UserController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        // 포인트 기본 세팅
+        $arrayPoint = ['P', 'S1', 'S2', 'S3', 'S4', 'K'];
+
+        for($inx=0; $inx < count($arrayPoint); $inx++){
+            $seq = DB::table('user_point')->insertGetId(
+                [
+                    'user_seqno' => $user_seqno
+                    , 'point_type' => $arrayPoint[$inx]
+                    , 'point' => 0
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+
         $result['ment'] = '성공';
         $result['data'] = $user_name;
         $result['result'] = true;
 
         return $result;
     }
+    // 관리자 또는 본인
     // 회원 수정
     public function modify(Request $request)
     {
@@ -181,6 +197,7 @@ class UserController extends Controller
 
         return $result;
     }
+    // 관리자
     // 승인 
     public function approve(Request $request)
     {
@@ -220,6 +237,7 @@ class UserController extends Controller
 
         return $result;
     }
+    // 관리자 또는 본인
     // 회원 탈퇴 <- 소프트
     public function delete(Request $request)
     {
@@ -261,6 +279,7 @@ class UserController extends Controller
 
         return $result;
     }
+    // 관리자만
     // 회원 조회 - 단건/다건 - 전화번호/이름 검색
     public function list(Request $request)
     {
@@ -305,6 +324,7 @@ class UserController extends Controller
 
         return $result;
     }
+    // 관리자만
     public function find(Request $request)
     {
         $user_phone = $request->get('user_phone');
@@ -347,5 +367,4 @@ class UserController extends Controller
 
         return $result;
     }
-    // 포인트 사용
 }
