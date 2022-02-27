@@ -16,7 +16,7 @@
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
-            <button class="back" onclick="history.back()">
+            <button class="back" onclick="location.href='/';">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                     <g id="back_arrow" transform="translate(-22.295 -60)">
                       <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -157,12 +157,17 @@
             }
             var id = document.querySelector('#id').value;
             var pw = document.querySelector('#pw_1').value;
+            var pw2 = document.querySelector('#pw_2').value;
+            if (!pw2 || pw2 == '') {
+                pw2 = pw;
+            }
             var name = document.querySelector('#user_name').value;
             var isAllow04 = $('#receive_check').is(":checked");
 
             medibox.methods.user.modify({
                 id: id
                 , pw: pw
+                , pw2: pw2
                 , name: name
                 , event_yn: isAllow04 ? 'Y' : 'N'
             }, function(request, response){

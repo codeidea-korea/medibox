@@ -3,29 +3,50 @@ $(document).ready(function(){
 	
 	//checkbox
 	$('input[type="checkbox"]').each(function() {
+		var wrap = $(this).parent('label'),
+			span = $(this).next('span');
+
 		if($(this).hasClass('toggle-light')) {
 			var label_on = $(this).attr('data-on'),
 				label_off = $(this).attr('data-off');
 			$(this).removeClass('toggle-light');
-			$(this).wrap('<label class="toggle-light"></label>');
-			$(this).after('<span></span><span class="labelOn">' + label_on + '</span><span class="labelOff">' + label_off + '</span>');
+			if(wrap.length == 0) {
+				$(this).wrap('<label class="toggle-light"></label>');
+			}
+			if(span.length == 0) {
+				$(this).after('<span></span><span class="labelOn">' + label_on + '</span><span class="labelOff">' + label_off + '</span>');
+			}
 		} else {
 			var label = typeof $(this).attr('data-label') !== typeof undefined && $(this).attr('data-label') !== '' ? $(this).attr('data-label') : '';
-			$(this).wrap('<label class="checkbox-wrap"></label>');
-			$(this).after('<span></span>' + label);
+			if(wrap.length == 0) {
+				$(this).wrap('<label class="checkbox-wrap"></label>');
+			}
+			if(span.length == 0) {
+				$(this).after('<span></span>' + label);
+			}
 		}
 	});
 
 	//radio
 	$('input[type="radio"]').each(function() {
+		var wrap = $(this).parent('label'),
+			span = $(this).next('span');
 		var label = typeof $(this).attr('data-label') !== typeof undefined && $(this).attr('data-label') !== '' ? $(this).attr('data-label') : '';
 		if($(this).hasClass('radio-btn')) {
-			$(this).wrap('<label class="radio-btn"></label>');
-			$(this).removeClass('radio-btn');		
-			$(this).after('<span>' + label + '</span>');			
-		} else {			
-			$(this).wrap('<label class="radio-wrap"></label>');
-			$(this).after('<span></span>' + label);
+			if(wrap.length == 0) {
+				$(this).wrap('<label class="radio-btn"></label>');	
+			}
+			if(span.length == 0) {
+				$(this).after('<span>' + label + '</span>');
+			}
+			$(this).removeClass('radio-btn');	
+		} else {
+			if(wrap.length == 0) {
+				$(this).wrap('<label class="radio-wrap"></label>');
+			}
+			if(span.length == 0) {
+				$(this).after('<span></span>' + label);
+			}
 		}		
 	});
 
@@ -51,7 +72,6 @@ $(document).ready(function(){
 				$(this).css({"padding-right":labelWidth});
 			}
 		}
-
 	});
 
 	/*$('select').each(function() {
@@ -240,7 +260,7 @@ $(document).ready(function(){
 		var className = $(this).attr('class') ? $(this).attr('class') : '';
 		var btnName = $(this).attr('data-btn-name') ? $(this).attr('data-btn-name') : '파일찾기';
 		$(this).wrap('<div class="filebox ' + className + '"></div>');
-		$(this).parent().siblings('.upImg').insertAfter($(this));
+		//$(this).parent().siblings('.upImg').insertAfter($(this));
 		$(this).before('<input type="text" value="선택된 파일이 없습니다." class="upload-name" disabled="disabled"><label for="upload_' + index + '" class="upload-btn">' + btnName + '</label>');
 		$(this).attr('id', 'upload_' + index);
 		$(this).addClass('upload-hidden');
@@ -255,12 +275,12 @@ $(document).ready(function(){
 	});
 
 	// 업로드 이미지 미리보기
-	$('input[type="file"]:not(.default)').each(function(index) {
+	$('input[type="file"].img').each(function(index) {
+		var inp = $(this);
 		var upload = $(this)[0];
-		$(this).next('.upImg').attr('id', 'holder_' + index);
+		$(this).parent().find('.upImg').attr('id', 'holder_' + index);
 		var holder = document.getElementById('holder_' + index);
 		//var btn = $(this).parent().find('[class*=btn]');
-			/*
 		upload.onchange = function (e) {
 			e.preventDefault();
 			var file = upload.files[0],
@@ -270,14 +290,15 @@ $(document).ready(function(){
 				img.src = event.target.result;
 				//btn.hide();
 				//holder.children('img').remove();
-				holder.innerHTML = '';
+				if(inp.hasClass('multiple')) {
+				} else {
+					holder.innerHTML = '';					
+				}
 				holder.appendChild(img);
-				$("html").getNiceScroll().resize();
-			};
-			reader.readAsDataURL(file);
+			};			
+			reader.readAsDataURL(file);			
 			return false;
 		};
-			*/
 	});
 	
 

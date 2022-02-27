@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\UserController;
-// use App\Http\Controllers\Web\AdminController;
+use App\Http\Controllers\Web\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +20,9 @@ Route::get('/user/login', [UserController::class, 'login'])->name('user.login');
 Route::get('/user/signup', [UserController::class, 'signup'])->name('user.signup');
 
 Route::get('/point', [UserController::class, 'pointhome']) ->name('user.pointhome');
-Route::get('/point/payment', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
+Route::get('/point/payment/{type}', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
 Route::get('/point/history', [UserController::class, 'payhistory']) ->name('user.payhistory');
-Route::get('/point/approval', [UserController::class, 'approval']) ->name('user.approval');
+Route::get('/point/approval/{result_code}', [UserController::class, 'approval']) ->name('user.approval');
 
 Route::get('/brand', [UserController::class, 'brand']) ->name('user.brand');
 Route::get('/brand/minishspa', [UserController::class, 'minishspa']) ->name('user.minishspa');
@@ -50,10 +50,16 @@ Route::get('/terms/policy', [UserController::class, 'policy']) ->name('user.poli
 Route::post('/user/login/proccess', [UserController::class, 'login_proccess']);
 Route::post('/user/logout/proccess', [UserController::class, 'logout_proccess']);
 
-/*
+
 Route::get('/admin', [AdminController::class, 'index']);
 Route::get('/admin/index', [AdminController::class, 'index']);
+
 Route::prefix('admin')->group(function () {
-    //
+    Route::get('/members', [AdminController::class, 'medibox_member']);
+    Route::get('/members/{id}/infos', [AdminController::class, 'medibox_member_view'])->name('admin.medibox_member_view');
+    Route::get('/members/{id}', [AdminController::class, 'medibox_member_detail'])->name('admin.medibox_member_detail');
+    Route::get('/login', [AdminController::class, 'login_medibox'])->name('admin.login_medibox');
+
+    Route::post('/login/proccess', [AdminController::class, 'login_proccess']);
+    Route::get('/logout/proccess', [AdminController::class, 'logout_proccess']);
 });
-*/

@@ -19,8 +19,11 @@
 
 .inp-wrap.focus span{background:rgba(53,57,69,0.4);color:#fff;}
 .inp-wrap.mini span, .inp-wrap .label.mini{height:24px;line-height:25px;padding:0 4px;}
+.inp-wrap.mini input{height:24px;}
 .inp-wrap.small span, .inp-wrap .label.small{height:28px;line-height:28px;padding:0 5px;}
+.inp-wrap.small input{height:28px;}
 .inp-wrap.large span, .inp-wrap .label.large{height:42px;line-height:42px;padding:0 10px;font-size:14px;font-weight:600;}
+.inp-wrap.large input{height:42px;}
 
 .inp-wrap span.label-inline{position:absolute;top:0;right:0;z-index:3;height:100%;padding:0 5px;font-size:11px;border:0;color:rgba(0,0,0,0.3);background:transparent;display:flex;align-items:center;justify-content:center;}
 .inp-wrap.focus span.label-inline{color:rgba(0,0,0,0.6);background:transparent;}
@@ -121,8 +124,17 @@ input[type="radio"] {margin-right:10px;display:none;}
 	cursor:pointer;
 	}
 
-.filebox .upImg{clear:both;display:block;max-width:260px;position:relative;overflow:none;}
-.filebox .upImg img{max-width:260px;margin-top:5px;}
+.upImg{clear:both;display:block;position:relative;overflow:none;width:100%;display:flex;}
+.upImg img{max-width:100px;margin-top:5px;}
+
+.upImg li{position:relative}
+.upImg li img{margin:0;}
+.upImg li{margin-top:5px;margin-right:10px;}
+.upImg .del{position:absolute;top:0;right:0px;}
+.upImg .del:before{content:'\e2ba';font-family:'intaeFont';font-size:10px;font-weight:normal;color:#fff;width:18px;height:18px;background:#ff4343;cursor:pointer;opacity:0.6;
+	display:inline-flex;align-items:center;justify-content:center;}
+.upImg .del:hover:before{opacity:1;}
+
 
 .filebox .upImg .file-info{position:absolute;bottom:0px;left:265px;font-size:11px;font-weight:200;color:#fff;display:inline-block;height:21px;line-height:22px;padding:0 8px;
 	background:rgba(71,78,103,0.3);border-radius:2px;/*opacity:0;visibility:hidden;*/transition:all .2s ease-in-out;word-break:keep-all;}
@@ -130,6 +142,8 @@ input[type="radio"] {margin-right:10px;display:none;}
 	position:absolute;top:50%;right:100%;margin-top:-5px;z-index:2;transition:all .2s ease-in-out;}
 .filebox .upImg .file-info:hover{background:rgba(71,78,103,0.6);}
 .filebox .upImg .file-info:hover:after{border-right-color:rgba(71,78,103,0.6);}
+
+
 
 .filebox .upImg .label-del{position:absolute;top:5px;right:0px;}
 .filebox .upImg .label-del input[type="checkbox"] + span{width:30px;height:30px;line-height:31px;margin:0;background:rgba(186,186,186,0.6);border-radius:2px;color:rgba(255,255,255,0.7);}

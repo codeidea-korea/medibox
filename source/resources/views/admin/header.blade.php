@@ -4,7 +4,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<title>GREENPASS 관리자</title>
+<title>메디박스</title>
 <meta http-equiv="imagetoolbar" content="no">
 <meta http-equiv="X-UA-Compatible" content="IE=10,chrome=1">
 <link rel="shortcut icon" href="{{ asset('adm/img/favorite/favorite.ico') }}">
@@ -25,53 +25,41 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/greenpass-apis.js?v=202202031025') }}"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202202031025"></script>
 </head>
 <body>
 
 <header id="header">
 	<div class="header_container">
-		<div class="logo"><a href="/admin/"><img src="{{ asset('adm/img/common/logo.png') }}"><br><small>관리자</small></a></div>
+		<!--<div class="logo bg"><a href="./index.php">마이 <span>관리자</span></a></div> (텍스트만..)-->
+		<div class="logo"><a href="/admin/members"><img src="{{ asset('adm/img/medibox/logo.png') }}"><br/><small>관리자 페이지</small></a></div>
 		<nav id="nav">
 			<ul id="nav_ul">
-				<li class=""><a href="/admin/" class="mont">대시보드</a></li>
-				<li class="opener admmenu">
-					<a href="/admin/auths/branch-name">인증 데이터 검색</a>
-					<ul style="display: none;">
-						<li class=""><a href="/admin/auths/branch-name">상호 검색</a></li>
-						<li class=""><a href="/admin/auths/visitors">방문자 검색</a></li>
+				<li class=""><a href="/admin/members" class="mont">홈</a></li>
+				<li class="active">
+					<a href="/admin/members" class="mont">회원관리</a>
+					<ul>
+						<li class="active"><a href="/admin/members">회원관리</a></li>
+						<li class=""><a href="/admin/members/0">회원등록</a></li>
 					</ul>
 				</li>
-				<li class="admmenu2"><a href="/admin/branch/visitors" class="mont">인증 데이터 검색</a></li>
-				<li class="admmenu"><a href="{{ route('admin.auth_graph.index') }}" class="mont">그린패스 인증통계</a></li>
-				
-				<li class="opener admmenu">
-					<a href="/admin/auths/branch-name">가맹점 관리</a>
-					<ul style="display: none;">
-						<li class=""><a href="/admin/branchs">가맹점 등록/조회</a></li>
-						<li class=""><a href="/admin/branchs/accepts">가맹점 가입 승인</a></li>
-					</ul>
-				</li>
-
-				<li class="admmenu"><a href="/admin/buyer-add" class="mont">발주처 관리자 등록</a></li>
-				<li class="admmenu"><a href="{{ route('admin.buyer.list') }}" class="mont">발주처 관리자 리스트</a></li>
-
-				<li class="admmenu2"><a href="/admin/branch/modify" class="mont">스토어 정보 관리</a></li>
 			</ul>
 		</nav>
 	</div>
 </header>
 
 <script>
-var adminType = localStorage.getItem('partner_type');
-if(adminType == 'BR') {
-	$('.admmenu').remove();
-} else {
-	$('.admmenu2').remove();
-}
-if(!adminType) {
-	alert('로그인 해주세요.');
+function logout(){
 	localStorage.clear();
-	location.href = '/admin/login';
+	location.href = '/admin/logout/proccess';
 }
 </script>
+
+<div id="wrapper">
+	
+	<div id="topContainer">
+		<div class="loaction"></div>
+		<ul class="gbMenu">
+			<li><a href="#" onclick="logout()">로그아웃</a></li>
+		</ul>
+	</div>

@@ -127,14 +127,22 @@ class UserController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
-        // 포인트 기본 세팅
-        $arrayPoint = ['P', 'S1', 'S2', 'S3', 'S4', 'K'];
+
+        $user = DB::table("user_info")->where([
+            ['user_phone', '=', $user_phone],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        // 포인트 기본 세팅 point_info
+        $pointTypes = DB::table("point_info")->where([
+            ['delete_yn', '=', 'N']
+        ])->select('point_type')->get();
+        $arrayPoint = $pointTypes;
 
         for($inx=0; $inx < count($arrayPoint); $inx++){
             $seq = DB::table('user_point')->insertGetId(
                 [
-                    'user_seqno' => $user_seqno
-                    , 'point_type' => $arrayPoint[$inx]
+                    'user_seqno' => $user->user_seqno
+                    , 'point_type' => $arrayPoint[$inx]->point_type
                     , 'point' => 0
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
@@ -154,6 +162,7 @@ class UserController extends Controller
     {
         $user_phone = $request->post('id');
         $user_pw = $request->post('pw', '');
+        $user_pw2 = $request->post('pw2', '');
         $user_name = $request->post('name');
         $event_yn = $request->post('event_yn', 'N');
         $approve_yn = 'N';
@@ -182,9 +191,15 @@ class UserController extends Controller
             return $result;
         }
 
+        if ($user->user_pw != $user_pw) {
+            $result['ment'] = '기존 비밀번호가 일치하지 않습니다.';
+            return $result;
+        }
+        // NOTE: 포인트 데이터가 추가될 경우 세팅 필요
+
         DB::table('user_info')->where('user_seqno', '=', $user->user_seqno)->update(
             [
-                'user_pw' => $user_pw
+                'user_pw' => $user_pw2
                 , 'user_name' => $user_name
                 , 'event_yn' => $event_yn
                 , 'update_dt' => date('Y-m-d H:i:s') 
@@ -265,17 +280,14 @@ class UserController extends Controller
 
         DB::table('user_info')->where('user_seqno', '=', $user->user_seqno)->update(
             [
-                'user_pw' => $user_pw
-                , 'delete_yn' => $delete_yn
+                'delete_yn' => $delete_yn
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
 
         $result['ment'] = '성공';
-        $result['data'] = $user_name;
+        $result['data'] = $user;
         $result['result'] = true;
-
-        $request->session()->forget('user_seqno');
 
         return $result;
     }
@@ -296,9 +308,6 @@ class UserController extends Controller
         $result['result'] = false;
 
         $where = [];
-        if (!empty($search_field) && $search_field != '') {
-            array_push($where, ['user_phone', 'like', $search_field]);
-        }
         if (!empty($start_day) && $start_day != '') {
             array_push($where, ['create_dt', '>=', $start_day]);
         }
@@ -306,10 +315,31 @@ class UserController extends Controller
             array_push($where, ['create_dt', '<=', $end_day]);
         }
 
-        $users = DB::table("user_info")->where($where)
-            ->orderBy('create_dt', 'desc')
-            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
-            ->get();
+        $users;
+        $userCount;
+        if (!empty($search_field) && $search_field != '') {
+            $users = DB::table("user_info")->where($where)
+                ->where(function($query) use ($search_field){
+                    $query->orWhere('user_phone', 'like', '%'.$search_field.'%')
+                        ->orWhere('user_name', 'like', '%'.$search_field.'%');
+                })
+                ->orderBy('create_dt', 'desc')
+                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+                ->get();
+            $userCount = DB::table("user_info")->where($where)
+                ->where(function($query) use ($search_field){
+                    $query->orWhere('user_phone', 'like', '%'.$search_field.'%')
+                        ->orWhere('user_name', 'like', '%'.$search_field.'%');
+                })
+                ->count();
+        } else {
+            $users = DB::table("user_info")->where($where)
+                ->orderBy('create_dt', 'desc')
+                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+                ->get();
+            $userCount = DB::table("user_info")->where($where)
+                ->count();
+        }
 
         // 매칭되는 정액권, 포인트를 리턴
         for($inx = 0; $inx < count($users); $inx++){
@@ -320,6 +350,7 @@ class UserController extends Controller
 
         $result['ment'] = '성공';
         $result['data'] = $users;
+        $result['count'] = $userCount;
         $result['result'] = true;
 
         return $result;
@@ -327,7 +358,13 @@ class UserController extends Controller
     // 관리자만
     public function find(Request $request)
     {
-        $user_phone = $request->get('user_phone');
+        $user_seqno = $request->get('user_seqno');
+        
+        $rpageNo = $request->get('rpageNo', 1);
+        $rpageSize = $request->get('rpageSize', 10);
+        
+        $upageNo = $request->get('upageNo', 1);
+        $upageSize = $request->get('upageSize', 10);
         $delete_yn = 'Y';
 
         $result = [];
@@ -335,7 +372,7 @@ class UserController extends Controller
         $result['result'] = false;
 
         $user = DB::table("user_info")->where([
-                ['user_phone', '=', $user_phone]
+                ['user_seqno', '=', $user_seqno]
             ])
             ->orderBy('create_dt', 'desc')
             ->first();
@@ -348,21 +385,43 @@ class UserController extends Controller
 
             // 사용 내역
             $pointPaidHistory = DB::table("user_point_hst")
+                ->leftJoin('product', 'product.product_seqno', '=', 'user_point_hst.product_seqno')
+                ->select('user_point_hst.*'
+                    , 'product.type_name'
+                    , 'product.service_name'
+                    , 'product.service_sub_name'
+                    , 'product.price'
+                    , 'product.return_point')
                 ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '!=', 'U']])
                 ->orderBy('create_dt', 'desc')
-                ->offset((10 * (1-1)))->limit(10)
+                ->offset(($rpageSize * ($rpageNo-1)))->limit($rpageSize)
                 ->get();
+            $pointPaidHistoryCount = DB::table("user_point_hst")
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '!=', 'U']])
+                ->count();
             $user->pointPaidHistory = $pointPaidHistory;
+            $user->pointPaidHistoryCount = $pointPaidHistoryCount;
             $pointUseHistory = DB::table("user_point_hst")
+                ->leftJoin('product', 'product.product_seqno', '=', 'user_point_hst.product_seqno')
+                ->select('user_point_hst.*'
+                    , 'product.type_name'
+                    , 'product.service_name'
+                    , 'product.service_sub_name'
+                    , 'product.price'
+                    , 'product.return_point')
                 ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
                 ->orderBy('create_dt', 'desc')
-                ->offset((10 * (1-1)))->limit(10)
+                ->offset(($upageSize * ($upageNo-1)))->limit($upageSize)
                 ->get();
+            $pointUseHistoryCount = DB::table("user_point_hst")
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
+                ->count();
             $user->pointUseHistory = $pointUseHistory;
+            $user->pointUseHistoryCount = $pointUseHistoryCount;
         }
 
         $result['ment'] = '성공';
-        $result['data'] = $users;
+        $result['data'] = $user;
         $result['result'] = true;
 
         return $result;

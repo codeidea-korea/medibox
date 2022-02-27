@@ -14,7 +14,7 @@
     <!-- 로그인 화면 -->
     <div id="login">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="history.back()">
+        <button class="back" onclick="location.href='/';">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                   <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -40,7 +40,7 @@
                 <!-- login id -->
                 <p>
                     <label for="id">아이디(휴대폰 번호)</label>
-                    <input type="tel" name="id" pattern="[0-9]{3}[0-9]{4}[0-9]{4}" id="id" placeholder="휴대폰 번호를 입력해주세요." required>
+                    <input type="tel" name="id" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" id="id" placeholder="휴대폰 번호를 입력해주세요." required>
                 </p>
                 <!-- login password -->
                 <p>
@@ -61,6 +61,15 @@
             </span>
         </div>
     </div>
+
+	@if(Session::has('error'))
+	<script type="text/javascript" >
+		localStorage.clear();
+		alert('{{ session()->get('error') }}');
+		{{ session()->forget('error') }}
+	</script>
+	Session::forget('error');
+	@endif
 
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>

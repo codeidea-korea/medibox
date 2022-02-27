@@ -10,9 +10,9 @@ function get_url( $url ) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>INTAE Fonts</title>
-    <link rel="stylesheet" href="styles.css') }}">
+    <link rel="stylesheet" href="styles.css">
 	<link rel="stylesheet" href="<?=get_url('./styles.css')?>">
-	<link rel="stylesheet" href="<?=get_url('{{ asset('user/css/bootstrap-select.css')?>">
+	<link rel="stylesheet" href="<?=get_url('./css/bootstrap-select.css')?>">
 	<link rel="stylesheet" href="<?=get_url('./index.css')?>">
     
     
@@ -22,7 +22,7 @@ function get_url( $url ) {
   </head>
   <body>
 
-<script src="js/clipboard/clipboard.min.js') }}"></script>
+<script src="js/clipboard/clipboard.min.js"></script>
 <script>
 var clipboard = new ClipboardJS('.all-icons span',{
 	text: function(trigger) {
@@ -6548,9 +6548,9 @@ clipboard.on('error', function(e) { console.log(e); });
 
 
 <!-- Scripts -->
-<script type="text/javascript" src="js/lib/jquery-1.11.1.min.js') }}"></script>
-<script type="text/javascript" src="js/lib/bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="js/lib/bootstrap-select.min.js') }}"></script>
+<script type="text/javascript" src="js/lib/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/lib/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="<?=get_url('js/lib/main.js')?>"></script>
 
 </body>

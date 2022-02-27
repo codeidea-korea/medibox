@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PointController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,19 +23,33 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 //Route::group(['middleware' => 'auth:api'], function () {
 //    ->middleware('guest')
-    Route::group(['middleware' => ['web']], function () {
-        // your routes here
-        Route::post('user/login', [UserController::class, 'login']);
+    Route::post('user/login', [UserController::class, 'login']);
 
-        Route::get('user/logout', [UserController::class, 'logout']);
-        Route::get('user/check-dupplicate-id', [UserController::class, 'isDupplicated']);
-    
-        Route::post('user/add', [UserController::class, 'add']);
-        Route::post('user/modify', [UserController::class, 'modify']);
-        Route::post('user/approve', [UserController::class, 'approve']);
-        Route::post('user/delete', [UserController::class, 'delete']);
-    });
+    Route::get('user/logout', [UserController::class, 'logout']);
 
+    Route::get('user/check-dupplicate-id', [UserController::class, 'isDupplicated']);
+
+    Route::post('user/add', [UserController::class, 'add']);
+    Route::post('user/modify', [UserController::class, 'modify']);
+
+    Route::post('user/approve', [UserController::class, 'approve']);
+    Route::post('user/delete', [UserController::class, 'delete']);
+
+
+    Route::post('user/points', [PointController::class, 'myPoint']);
+    Route::post('user/payments', [PointController::class, 'myPayments']);
+
+    Route::post('user/point-collect', [PointController::class, 'collect']);
+    Route::post('user/point-refund', [PointController::class, 'refund']);
+    Route::post('user/point-use', [PointController::class, 'use']);
+
+    Route::get('point-types', [PointController::class, 'getTypes']);
+    Route::get('point-types/shops', [PointController::class, 'getShops']);
+    Route::get('point-types/shops/services', [PointController::class, 'getServices']);
+    Route::get('point-types/collects', [PointController::class, 'getCollects']);
     
+    
+    Route::get('users', [UserController::class, 'list']);
+    Route::get('user', [UserController::class, 'find']);
 //});
 

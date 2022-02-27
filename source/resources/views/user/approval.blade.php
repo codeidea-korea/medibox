@@ -16,7 +16,7 @@
     <!-- header -->
     <header id="header">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="history.back()">
+        <button class="back" onclick="gotoMain()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                     <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -61,7 +61,7 @@
             </div>
             <div class="bottom">
                 <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
-                <a href="#!">확인</a>
+                <a href="#!" onclick="closePop()">확인</a>
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
             </div>
             <div class="bottom">
                 <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
-                <a href="#!">확인</a>
+                <a href="#!" onclick="gotoMain()">확인</a>
             </div>
         </div>
     </div>
@@ -89,10 +89,80 @@
             </div>
             <div class="bottom">
                 <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
-                <a href="#!">확인</a>
+                <a href="#!" onclick="gotoMain()">확인</a>
             </div>
         </div>
     </div>
 
+    <div id="popup06" class="popup">
+        <div class="container">
+            <div class="top">
+                <strong class="popup_icon">empty</strong>
+                <span>세션이 만료되었습니다.<br>로그인을 다시 하신 뒤 결제 하여 주세요.</span>
+            </div>
+            <div class="bottom">
+                <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
+                <a href="#!" onclick="gotoMain()">확인</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup07" class="popup">
+        <div class="container">
+            <div class="top">
+                <strong class="popup_icon">empty</strong>
+                <span>존재하지 않는 회원입니다.<br>로그인 후 다시 접근하여 주세요.</span>
+            </div>
+            <div class="bottom">
+                <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
+                <a href="#!" onclick="gotoMain()">확인</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="popup08" class="popup">
+        <div class="container">
+            <div class="top">
+                <strong class="popup_icon">empty</strong>
+                <span>더 이상 판매하지 않는 상품입니다.<br>관리자에게 문의하여 주세요.</span>
+            </div>
+            <div class="bottom">
+                <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
+                <a href="#!" onclick="gotoMain()">확인</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>
+    <script>
+    var code = '{{ $code }}';
+    if(code == 'S') {
+        $('#popup03').addClass('on');
+    } else if(code == 'USER-INPUT') {
+        $('#popup06').addClass('on');
+    } else if(code == 'USER-NULL') {
+        $('#popup07').addClass('on');
+    } else if(code == 'SERVICE-NULL') {
+        $('#popup08').addClass('on');
+    } else if(code == 'POINT-LESS') {
+        $('#popup05').addClass('on');
+    }
+    function closePop(){
+        $('#popup03').removeClass('on');
+        $('#popup04').removeClass('on');
+        $('#popup05').removeClass('on');
+        $('#popup06').removeClass('on');
+        $('#popup07').removeClass('on');
+        $('#popup08').removeClass('on');
+
+        setTimeout(function(){
+            gotoMain();
+        }, 3500);
+    }
+    function gotoMain(){
+        location.href = '/';
+    }
+    </script>
 </body>
 </html>

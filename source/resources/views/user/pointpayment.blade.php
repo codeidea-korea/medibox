@@ -16,7 +16,7 @@
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
-            <button class="back" onclick="history.back()">
+            <button class="back" onclick="location.href='/point';">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                     <g id="back_arrow" transform="translate(-22.295 -60)">
                       <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -45,10 +45,10 @@
                     <h2>포인트 사용 매장</h2>
                     <div class="select_wrap">
                         <div class="select_box">
-                            <span>매장 선택하기</span>
+                            <span class="_choosedShop">매장 선택하기</span>
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
-                        <ul class="option">
+                        <ul class="option _shops">
                             <li>발몽스파</li>
                             <li>바라는 네일</li>
                             <li>딥포커스</li>
@@ -64,10 +64,10 @@
                     <h2>매장별 서비스</h2>
                     <div class="select_wrap">
                         <div class="select_box">
-                            <span>서비스 선택하기</span>
+                            <span class="_choosedService">서비스 선택하기</span>
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
-                        <ul class="option">
+                        <ul class="option _services">
                             <li>베이직 케어</li>
                             <li>베이직 케어 + 패디 + 각질</li>
                             <li>베이직 젤네일 + 패디젤</li>
@@ -98,14 +98,114 @@
                 <!-- 결제 후 잔액 포인트 -->
                 <div class="use_point_wrap point_wrap">
                     <h2>결제 후 잔액 포인트</h2>
-                    <span><em id="use_result_point">0</em>P</span>
+                    <span><em id="use_result_point2">0</em>P</span>
                 </div>                
             </div>
 
-            <button type="submit" id="payment_btn">결제하기</button>
+            <button type="button" onclick="usePoint()" id="payment_btn">결제하기</button>
 
         </section>
     
+    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>
+    <script>
+    var point_type = '{{ $type }}';
+	function getShops(){
+		medibox.methods.point.shops({ point_type: point_type }, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			var tmpShops = '';
+			for(var inx = 0; inx < response.data.length; inx++){
+                tmpShops = tmpShops + '<li onclick="getServices(point_type, \''+response.data[inx].service_name+'\')">'+response.data[inx].service_name+'</li>';
+			}
+            $('._shops').html(tmpShops);
+            $('._choosedShop').text(response.data[0].service_name);
+			getServices(point_type, response.data[0].service_name);
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+	var service_name;
+    var product_seqno;
+    var currect_point = 0;
+	function getServices(pointType, shopName){
+        service_name = shopName;
+        $('._choosedShop').text(shopName);
+        $('._shops').slideUp();
 
+		medibox.methods.point.services({ point_type: pointType, service_name: shopName }, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			var tmpServices = '';
+			for(var inx = 0; inx < response.data.length; inx++){
+                tmpServices = tmpServices + '<li onclick="chooseProduct('+response.data[inx].product_seqno+', \''+(response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : ''))+'\', '+response.data[inx].price+')" value="'+response.data[inx].product_seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : '')+'</li>';
+			}
+			$('._services').html(tmpServices);
+            $('._choosedService').text(response.data[0].type_name+(response.data[0].service_sub_name ? '-'+response.data[0].service_sub_name : ''));
+			product_seqno = response.data[0].product_seqno;
+			$('#use_point').html(medibox.methods.toNumber(response.data[0].price));
+			$('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
+			$('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+    }
+    function chooseProduct(seqno, name, price) {
+        product_seqno = seqno;
+        $('._choosedService').text(name);
+        $('._services').slideUp();
+        $('#use_point').html(medibox.methods.toNumber(price));
+        $('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(price)));
+        $('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(price)));
+    }
+	function usePoint(){
+        if(! confirm('포인트 결제 하시겠습니까?')) {
+            return false;
+        }
+		var point_type = '{{ $type }}';
+		var memo = '사용자 구매 신청';
+		
+		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: product_seqno,
+			point_type:point_type, memo:memo };
+
+		medibox.methods.point.use(data, function(request, response){
+			console.log('output : ' + response);
+            location.href = '/point/approval/' + response.code;
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+    }
+    
+	function getInfo(){		
+		var data = { user_seqno:{{ $seqno }}, point_type: '{{ $type }}',
+			rpageNo:1, rpageSize:5, upageNo:1, upageSize:5 };
+
+		medibox.methods.point.mine(data, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+            }
+            currect_point = Number(response.data.filter(a => a.point_type == '{{ $type }}')[0].point);
+            $('#holding_point').text( medibox.methods.toNumber(currect_point));
+            getShops();
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+    }
+	$(document).ready(function(){
+        getInfo();
+	});
+    </script>
 </body>
 </html>

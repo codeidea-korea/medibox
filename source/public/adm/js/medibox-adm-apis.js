@@ -100,20 +100,20 @@ var bfCall = (function(){
                 /* file, sub_path  */
                 userUpload: function (params, successThenFn, errorThenFn){ ajaxCallMulti('/file/ajaxupload', 'POST', 'multipart/form-data', params, successThenFn, errorThenFn, true); }, 
             }, user:{
+                members: function (params, successThenFn, errorThenFn){ ajaxCall('users', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                member: function (params, successThenFn, errorThenFn){ ajaxCall('user', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
 
-                login: function (params, successThenFn, errorThenFn){ ajaxCall('user/login', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                logout: function (params, successThenFn, errorThenFn){ ajaxCall('user/logout', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 isDupplicated: function (params, successThenFn, errorThenFn){ ajaxCall('user/check-dupplicate-id', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
 
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('user/add', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                                 
             }, point:{
-                // 나의 포인트
-                mine: function (params, successThenFn, errorThenFn){ ajaxCall('user/points', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                history: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                collect: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-collect', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 use: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
 
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
@@ -121,7 +121,6 @@ var bfCall = (function(){
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                 services: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops/services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
