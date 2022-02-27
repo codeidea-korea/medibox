@@ -27,9 +27,9 @@ class UserController extends Controller
     
         return view('user.agreement');
     }
-    public function approval(Request $request)
+    public function approval(Request $request, $result_code)
     {
-        return view('user.approval');
+        return view('user.approval')->with('code', $result_code);
     }
     public function brand(Request $request)
     {
@@ -86,7 +86,7 @@ class UserController extends Controller
     }
     public function mypage(Request $request)
     {
-        if (! $request->session()->has('user_seqno')) {
+        if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/index');
         }
@@ -119,17 +119,39 @@ class UserController extends Controller
     {
         return view('user.nail_reservation');
     }
+
+    private function checkInvalidSession(Request $request) {
+        if (! $request->session()->has('user_seqno')) {
+            return true;
+        }
+        return false;
+    }
     public function payhistory(Request $request)
     {
-        return view('user.payhistory');
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+        return view('user.payhistory')->with('seqno', $userSeqno);
     }
     public function pointhome(Request $request)
     {
-        return view('user.pointhome');
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+        return view('user.pointhome')->with('seqno', $userSeqno);
     }
-    public function pointpayment(Request $request)
+    public function pointpayment(Request $request, $type)
     {
-        return view('user.pointpayment');
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+        return view('user.pointpayment')->with('seqno', $userSeqno)->with('type', $type);
     }
     public function policy(Request $request)
     {
@@ -180,12 +202,16 @@ class UserController extends Controller
         }
         $user = DB::table("user_info")->where([
             ['user_phone', '=', $id],
-            ['user_pw', '=', $pw],
             ['delete_yn', '=', 'N']
         ])->first();
 
         if(empty($user)) {
             $result['ment'] = '없는 계정입니다.';
+            $request->session()->put('error', $result['ment']);
+            return back()->withInput();
+        }
+        if($user->user_pw != $pw) {
+            $result['ment'] = '비밀번호가 다릅니다.';
             $request->session()->put('error', $result['ment']);
             return back()->withInput();
         }

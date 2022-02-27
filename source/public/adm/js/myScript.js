@@ -85,56 +85,6 @@ function slide_toggle(elm, target, start) {
 }
 
 
-//팝업
-function get_magnificPopup(name) {
-	$(name).magnificPopup({
-		type: 'ajax',
-		closeOnContentClick: false, 
-		closeOnBgClick: false,
-		overflowY: 'auto',
-		closeBtnInside: false,
-		fixedContentPos: true,
-		fixedBgPos: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-slide-bottom'
-	});
-}
-function get_magnificPopup_view(name) {
-	$(name).magnificPopup({
-		type: 'ajax',
-		closeOnContentClick: false, 
-		closeOnBgClick: false,
-		overflowY: 'auto',
-		closeBtnInside: false,
-		fixedContentPos: true,
-		fixedBgPos: true,
-		gallery: {
-			enabled: true,
-			navigateByImgClick: true,
-			preload: [0,1]
-		},
-		removalDelay: 300,
-		mainClass: 'my-mfp-zoom-in'
-	});
-}
-function get_magnificPopup_inline(name) {
-	$(name).magnificPopup({
-		type: 'inline',
-		fixedContentPos: false,
-		fixedBgPos: true,
-		closeOnContentClick: false, 
-        closeOnBgClick: false,
-		overflowY: 'auto',
-		closeBtnInside: false,
-		preloader: false,
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-slide-bottom'
-	});
-}
-
-
-
 //document ready - start
 $(document).ready(function(){
 	
@@ -204,14 +154,22 @@ $(document).ready(function(){
 		window.open(href,board,'width='+winWidth+',height='+winHeight+',top='+top+',left='+left+',scrollbars=yes, toolbar=no, menubar=no, location=no, statusbar=no, status=no, resizable=yes');
 		event.preventDefault();
 	});
-	
-	//레이어 팝업
-	$(function(){		
-		get_magnificPopup('.popup-ajax');
-		get_magnificPopup_view('.popup-view');
-		get_magnificPopup_inline('.popup-inline');	
+
+
+	$('.popup-inline:not(.inside)').magnificPopup({
+		type: 'inline',
+		fixedContentPos: false,
+		fixedBgPos: true,
+		closeOnContentClick: false, 
+        closeOnBgClick: true,
+		overflowY: 'auto',
+		closeBtnInside: false,
+		preloader: false,
+		midClick: true,
+		removalDelay: 300,
+		mainClass: 'my-mfp-zoom-in'
 	});
-	$(document).on('click', '.popClose, .layerPopup .btnCancel', function (e) {
+	$(document).on('click', '.popClose', function (e) {
 		e.preventDefault();
 		$.magnificPopup.close();
 	});

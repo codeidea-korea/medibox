@@ -16,6 +16,7 @@ class PointController extends Controller
     public function myPoint(Request $request)
     {
         $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $point_type = $request->post('point_type', ''); // 
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -33,9 +34,12 @@ class PointController extends Controller
             return $result;
         }
 
-        $point = DB::table('user_point')->where([
-            ['user_seqno', '=', $user_seqno]
-        ])->get();
+        $where = [];
+        array_push($where, ['user_seqno', '=', $user_seqno]);
+        if(! empty($point_type) && $point_type != ''){
+            array_push($where, ['point_type', '=', $point_type]);
+        }
+        $point = DB::table('user_point')->where($where)->get();
 
         $result['ment'] = '성공';
         $result['data'] = $point;
@@ -45,11 +49,13 @@ class PointController extends Controller
     }
     // 나의 결제 내역 (포인트/정액권/ 전체)
     public function myPayments(Request $request)
-    {
+    { 
         $user_seqno = $request->post('user_seqno'); // 대상 고객
 
         $hst_type = $request->post('hst_type', ''); // U: 사용, R: 환불, S: 충전, !U: 사용이 아닌것
-        $point_type = $request->post('point_type', '');
+        $point_type = $request->post('point_type', ''); // 
+        $startDay = $request->post('startDay', '');
+        $endDay = $request->post('endDay', '');
         $pageSize = $request->post('pageSize', 20);
         $pageNo = $request->post('pageNo', 1);
 
@@ -75,16 +81,24 @@ class PointController extends Controller
         } else if(! empty($hst_type) && $hst_type != ''){
             array_push($where, ['hst_type', '=', $hst_type]);
         }
-        if(! empty($point_type) && $point_type != ''){
+        if(! empty($point_type) && $point_type == '!P'){
+            array_push($where, ['point_type', '!=', 'P']);
+        } else if(! empty($point_type) && $point_type != ''){
             array_push($where, ['point_type', '=', $point_type]);
+        }
+        if(! empty($startDay) && $startDay != ''){
+            array_push($where, ['create_dt', '>', $startDay]);
+        }
+        if(! empty($endDay) && $endDay != ''){
+            array_push($where, ['create_dt', '<', $endDay]);
         }
 
         $points;
         if(! empty($hst_type) && $hst_type == '!U'){
             $points = DB::table('user_point_hst')->where($where)
-                ->orWhere(function($query) {
-                    $query->where('hst_type', 'R')
-                        ->where('hst_type', 'S');
+                ->where(function($query) {
+                    $query->orWhere('hst_type', 'R')
+                        ->orWhere('hst_type', 'S');
                 })
                 ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)->orderByDesc('user_point_hst_seqno')->get();
         } else {
@@ -186,7 +200,7 @@ class PointController extends Controller
         );
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 적립되었습니다.';
-        $result['data'] = $users;
+        $result['data'] = $user;
         $result['result'] = true;
 
         return $result;
@@ -216,7 +230,8 @@ class PointController extends Controller
         if(empty($user)) {
             return $result;
         }
-
+        // TODO: 현재 구매 상품을 기준으로 환불이 이루어지지 않으므로, 정확한 의미의 환불은 아니고, 환불 처리를 정확하게 돌리려면 구매키를 받아서 검증을 해야함!
+/*
         if($product_seqno != 0 && $point_type != 'P') {
             $product = DB::table("product")->where([
                 ['product_seqno', '=', $product_seqno],
@@ -247,11 +262,17 @@ class PointController extends Controller
             }
             $product_seqno = 0;
         }
-        // 내 포인트에 증가 처리
+        */
+        // 내 포인트에 차감 처리
         $point = DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
             ['point_type', '=', $point_type]
         ])->first();
+        // 차감 가능 여부 확인
+        if(empty($point) || $point->point < $amount) {
+            $result['ment'] = $result['ment'] . ' - 사용 포인트 부족';
+            return $result;
+        }
 
         // 히스토리에 포인트 이력 추가
         $refund_point_hst_seqno = DB::table('user_point_hst')->insertGetId(
@@ -282,13 +303,13 @@ class PointController extends Controller
             ['point_type', '=', $point_type]
         ])->update(
             [
-                'point' => $point->point + $amount
+                'point' => $point->point - $amount
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 환불되었습니다.';
-        $result['data'] = $users;
+        $result['data'] = $user;
         $result['result'] = true;
 
         return $result;
@@ -304,6 +325,7 @@ class PointController extends Controller
 
         $result = [];
         $result['ment'] = '포인트가 사용되지 않았습니다.\n정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
         $result['result'] = false;
 
         if(empty($admin_seqno) || empty($user_seqno) || empty($point_type)) {
@@ -315,12 +337,14 @@ class PointController extends Controller
             ['delete_yn', '=', 'N']
         ])->first();
         if(empty($user)) {
+            $result['code'] = 'USER-NULL';
             return $result;
         }
         $product = DB::table("product")->where([
             ['product_seqno', '=', $product_seqno]
         ])->first();
         if(empty($product)) {
+            $result['code'] = 'SERVICE-NULL';
             return $result;
         }
         $amount = $product->price;
@@ -332,6 +356,7 @@ class PointController extends Controller
         // 차감 가능 여부 확인
         if(empty($point) || $point->point < $amount) {
             $result['ment'] = $result['ment'] . ' - 사용 포인트 부족';
+            $result['code'] = 'POINT-LESS';
             return $result;
         }
 
@@ -361,7 +386,116 @@ class PointController extends Controller
         );
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 사용되었습니다.';
-        $result['data'] = $users;
+        $result['data'] = $user;
+        $result['code'] = 'S';
+        $result['result'] = true;
+
+        return $result;
+    }
+
+    // 포인트 타입 조회 (전체)
+    public function getTypes(Request $request)
+    {
+        $result = [];
+        $result['ment'] = '조회에 실패하였습니다.';
+        $result['result'] = false;
+
+        $pointTypes = DB::table("point_info")
+            ->orderBy('create_dt', 'desc')
+            ->get();
+
+        $result['ment'] = '정상 조회 되었습니다.';
+        $result['data'] = $pointTypes;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 해당 포인트로 구매 가능한 샵 조회 (포인트 종류) -> (샵)
+    public function getShops(Request $request)
+    {
+        $point_type = $request->get('point_type', 'P'); // 포인트 타입
+
+        $result = [];
+        $result['ment'] = '조회에 실패하였습니다.';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['offline_type', '=', 'Y']);
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+            array_push($where, ['point_type', '=', $point_type]);
+        }
+
+        $shops = DB::table("product")
+            ->where($where)
+            ->select('service_name')
+            ->distinct()
+            ->orderBy('service_name', 'asc')
+            ->get();
+
+        $result['ment'] = '정상 조회 되었습니다.';
+        $result['data'] = $shops;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 타입에 해당하는 포인트 리턴 리스트
+    public function getCollects(Request $request)
+    {
+        $point_type = $request->get('point_type', 'P'); // 포인트 타입
+
+        $result = [];
+        $result['ment'] = '조회에 실패하였습니다.';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['offline_type', '=', 'N']);
+        array_push($where, ['return_point', '>', 0]);
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+            array_push($where, ['point_type', '=', $point_type]);
+        }
+
+        $shops = DB::table("product")
+            ->where($where)
+            ->select('product_seqno', 'point_type', 'type_name', 'service_sub_name', 'price', 'return_point')
+            ->distinct()
+            ->orderBy('service_name', 'asc')
+            ->get();
+
+        $result['ment'] = '정상 조회 되었습니다.';
+        $result['data'] = $shops;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 해당 샵의 서비스 조회 (포인트, 샵) -> (서비스)
+    public function getServices(Request $request)
+    {
+        $point_type = $request->get('point_type', 'P'); // 포인트 타입
+        $service_name = $request->get('service_name', '발몽스파'); // 샵이름
+
+        $result = [];
+        $result['ment'] = '조회에 실패하였습니다.';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['offline_type', '=', 'Y']);
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+            array_push($where, ['point_type', '=', $point_type]);
+        }
+        if (!empty($service_name) && $service_name != '') {
+            array_push($where, ['service_name', '=', $service_name]);
+        }
+
+        $services = DB::table("product")
+            ->where($where)
+            ->select('product_seqno', 'type_name', 'service_sub_name', 'price')
+            ->distinct()
+            ->orderBy('type_name', 'asc')
+            ->orderBy('service_sub_name', 'asc')
+            ->get();
+
+        $result['ment'] = '정상 조회 되었습니다.';
+        $result['data'] = $services;
         $result['result'] = true;
 
         return $result;
