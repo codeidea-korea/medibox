@@ -200,8 +200,8 @@ class UserController extends Controller
             $request->session()->put('error', $result['ment']);
             return back()->withInput();
         }
-        $user = DB::table("user_info")->where([
-            ['user_phone', '=', $id],
+        $user = DB::table("user_info")->whereRaw('replace(user_phone, \'-\', \'\') = replace(?, \'-\', \'\')', [$id])
+        ->where([
             ['delete_yn', '=', 'N']
         ])->first();
 

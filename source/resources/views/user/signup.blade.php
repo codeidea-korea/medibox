@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-</head>
-<body>
-
+@include('user.header')
+    
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
@@ -40,12 +30,18 @@
                 <!-- id -->
                 <p>
                     <label for="id">아이디(휴대폰 번호)</label>
-                    <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." onkeyup="checkValidationIdDupplicated()" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
+                    <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." maxLength=13 onkeyup="checkValidationIdDupplicated()" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
 
                     <!-- 형식과 다르거나 중복 됐을 때 나오는 오류메시지 -->
                     <span id="id_error1">올바른 휴대폰 번호를 입력해주세요.</span>
                     <span id="id_error2">이미 가입되어있는 휴대폰 번호입니다.</span>
                 </p>
+                <p>
+                    <label for="name">이름</label>
+                    <input type="text" name="name" id="name" placeholder="이름을 입력해주세요." required>
+                    <span id="name_error1">이름을 입력해주세요.</span>
+                </p>
+                
                 <!-- password -->
                 <p>
                     <label for="pw">비밀번호</label>
@@ -76,6 +72,7 @@
             $('#id_error2').hide();
             $('#pw_error1').hide();
             $('#pw_error2').hide();
+            $('#name_error1').hide();
         }
         function checkValidationPassword(){
             var pw_1 = document.querySelector('#pw_1').value;
@@ -131,11 +128,16 @@
             var id = document.querySelector('#id').value;
             var pw_1 = document.querySelector('#pw_1').value;
             var pw_2 = document.querySelector('#pw_2').value;
+            var name = document.querySelector('#name').value;
             var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
             hideValidationText();
 
             if (!id || id == '' || regPhone.test(id) !== true) {
                 $('#id_error1').show();
+                return false;
+            }
+            if (!name || name == '') {
+                $('#name_error1').show();
                 return false;
             }
             if(isDupplicated) {
@@ -155,5 +157,7 @@
         }
         hideValidationText();
     </script>
+@include('user.footer')
+
 </body>
 </html>

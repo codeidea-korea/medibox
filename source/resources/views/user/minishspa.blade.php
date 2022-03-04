@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/slick.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
+@include('user.header')
     
     <header id="header">
         <!-- 뒤로가기 버튼 -->
@@ -57,6 +43,8 @@
             <p>미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다. 최첨단 의료 장비를 통해 구강질환의 원인 세균에 대한 분석, 전문가의 섬세한 손길을 통해 체계적인 구강 관리를 원하시는 분들께 추천하고 있습니다.</p>
         </div>
     </section>
+
+    @include('user.footer')
 
 </body>
 </html>

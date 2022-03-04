@@ -239,7 +239,7 @@
 				alert(response.ment);
 				return false;
 			}
-			alert(response.ment);
+			alert(response.ment.replace('\\r', '\n'));
 			location.reload();
 		}, function(e){
 			console.log(e);

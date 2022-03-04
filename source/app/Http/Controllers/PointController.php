@@ -135,7 +135,7 @@ class PointController extends Controller
         $memo = $request->post('memo', '');
 
         $result = [];
-        $result['ment'] = '포인트가 적립되지 않았습니다.\n정보를 다시 한번 확인해주세요.';
+        $result['ment'] = '포인트가 적립되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['result'] = false;
 
         if(empty($admin_seqno) || empty($user_seqno) || empty($point_type)) {
@@ -199,7 +199,7 @@ class PointController extends Controller
             ]
         );
 
-        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 적립되었습니다.';
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 적립되었습니다.';
         $result['data'] = $user;
         $result['result'] = true;
 
@@ -216,7 +216,7 @@ class PointController extends Controller
         $memo = $request->post('memo', '');
 
         $result = [];
-        $result['ment'] = '포인트가 환불되지 않았습니다.\n정보를 다시 한번 확인해주세요.';
+        $result['ment'] = '포인트가 환불되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['result'] = false;
 
         if(empty($admin_seqno) || empty($user_seqno) || empty($point_type)) {
@@ -308,7 +308,7 @@ class PointController extends Controller
             ]
         );
 
-        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 환불되었습니다.';
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 환불되었습니다.';
         $result['data'] = $user;
         $result['result'] = true;
 
@@ -324,7 +324,7 @@ class PointController extends Controller
         $memo = $request->post('memo', '');
 
         $result = [];
-        $result['ment'] = '포인트가 사용되지 않았습니다.\n정보를 다시 한번 확인해주세요.';
+        $result['ment'] = '포인트가 사용되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['code'] = 'USER-INPUT';
         $result['result'] = false;
 
@@ -385,7 +385,7 @@ class PointController extends Controller
             ]
         );
 
-        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\n['.$amount.'] point가 사용되었습니다.';
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 사용되었습니다.';
         $result['data'] = $user;
         $result['code'] = 'S';
         $result['result'] = true;

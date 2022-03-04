@@ -199,7 +199,7 @@ function checkCollectPoint(){
 			}
 			var tmpCollects = '';
 			if(pointType == 'P') {
-				tmpCollects = tmpCollects + '<option value="0" price="0" return="0">포인트 <포인트선택시 기재></option>';
+				tmpCollects = tmpCollects + '<option value="0" price="0" type="P" return="0">포인트 <포인트선택시 기재></option>';
 			}
 			for(var inx = 0; inx < response.data.length; inx++){
 				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+response.data[inx].type_name+'-'+response.data[inx].service_sub_name+'</option>';
@@ -210,7 +210,16 @@ function checkCollectPoint(){
 				product_seqno = $(this).val();
 				$('#collect_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('return')) +' P');
 				var currentPoint = getPoint($(this).find('option:selected').attr('type'));
+				var type = $(this).find('option:selected').attr('type');
 				$('#collect_pres_point').val(medibox.methods.toNumber(currentPoint) +' P'); 
+				// readonly
+				if (type == 'P') {
+					$('#collect_point').removeAttr('readonly');
+					$('#collect_point').attr('style', ' ');
+				} else {
+					$('#collect_point').attr('readonly', 'readonly');
+					$('#collect_point').attr('style', 'background:#d3d3d3;');
+				}
 				$('#collect_sum_point').val(medibox.methods.toNumber((currentPoint + Number($(this).find('option:selected').attr('return')))) +' P');
 			});
 		}, function(e){
@@ -232,7 +241,7 @@ function checkCollectPoint(){
 				alert(response.ment);
 				return false;
 			}
-			alert(response.ment);
+			alert(response.ment.replace('\\r', '\n'));
 			location.reload();
 		}, function(e){
 			console.log(e);
