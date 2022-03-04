@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/slick.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
-    
+@include('user.header')
+
     <header id="header">
         <!-- 뒤로가기 버튼 -->
         <button class="back" onclick="location.href='/brand';">
@@ -58,6 +44,8 @@
             <p>체계적이고 정밀한 검안을 통해 고객님들께 선명하고 편안한 시력을 선사하여 만족도 높은 시생활이 가능토록 도와드립니다.</p>
         </div>
     </section>
+
+    @include('user.footer')
 
 </body>
 </html>

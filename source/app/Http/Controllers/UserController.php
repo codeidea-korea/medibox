@@ -68,8 +68,8 @@ class UserController extends Controller
         $result['ment'] = '실패';
         $result['result'] = false;
 
-        $user = DB::table("user_info")->where([
-            ['user_phone', '=', $user_phone],
+        $user = DB::table("user_info")->whereRaw('replace(user_phone, \'-\', \'\') = replace(?, \'-\', \'\')', [$user_phone])
+        ->where([
             ['delete_yn', '=', 'N']
         ])->first();
 

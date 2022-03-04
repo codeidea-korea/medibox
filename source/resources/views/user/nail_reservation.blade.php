@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/slick.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
+@include('user.header')
     
     <header id="header">
         <!-- 뒤로가기 버튼 -->
@@ -41,11 +27,11 @@
     <!-- 발몽스파 예약 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
-            <figure class="minish_spa01"></figure>
-            <figure class="minish_spa02"></figure>
-            <figure class="minish_spa03"></figure>
-            <figure class="minish_spa04"></figure>
-            <figure class="minish_spa05"></figure>
+            <figure class="nail01"></figure>
+            <figure class="nail02"></figure>
+            <figure class="nail03"></figure>
+            <figure class="nail04"></figure>
+            <figure class="nail05"></figure>
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -64,6 +50,8 @@
         </div>
         <a href="tel:02-540-2252" class="reservation_btn">전화 예약하기</a>
     </section>
+
+    @include('user.footer')
 
 </body>
 </html>

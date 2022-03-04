@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
-
+@include('user.header')
+    
     <!-- header -->
     <header id="header">
         <!-- 뒤로가기 버튼 -->
@@ -62,72 +50,7 @@
 
     <section id="pay_history">
         <ul class="_history_items">
-            <li>
-                <div class="history_item">
-                    <div class="left">
-                        <h3>바라는 네일 정액권</h3>
-                        <span class="category">정액권</span>
-                        <span class="date">2022년 1월 12일 18:35</span>
-                    </div>
-                    <div class="right">
-                        <span class="point">- 90,000 P</span>
-                        <span class="whether use">사용</span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="history_item">
-                    <div class="left">
-                        <h3>미니쉬 치과병원</h3>
-                        <span class="category">내 포인트</span>
-                        <span class="date">2022년 1월 10일 14:30</span>
-                    </div>
-                    <div class="right">
-                        <span class="point">- 300,000 P</span>
-                        <span class="whether refund">환불</span>
-                    </div>
-                </div>
-            </li>
-            
-            <li>
-                <div class="history_item">
-                    <div class="left">
-                        <h3>미니쉬 스파</h3>
-                        <span class="category">패키지</span>
-                        <span class="date">2021년 12월 12일 12:00</span>
-                    </div>
-                    <div class="right">
-                        <span class="point">- 500,000 P</span>
-                        <span class="whether use">사용</span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="history_item">
-                    <div class="left">
-                        <h3>발몽 스파</h3>
-                        <span class="category">패키지</span>
-                        <span class="date">2021년 12월 1일 20:34</span>
-                    </div>
-                    <div class="right">
-                        <span class="point">- 300,000P</span>
-                        <span class="whether use">사용</span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="history_item">
-                    <div class="left">
-                        <h3>포레스타 블랙 정액권</h3>
-                        <span class="category">정액권</span>
-                        <span class="date">2021년 12월 1일 20:34</span>
-                    </div>
-                    <div class="right">
-                        <span class="point">- 1,000,000 P</span>
-                        <span class="whether use">사용</span>
-                    </div>
-                </div>
-            </li>
+        <li></li>
         </ul>
     </section>
 
@@ -297,5 +220,7 @@
 		getList();
 	});
 	</script>
+@include('user.footer')
+
 </body>
 </html>

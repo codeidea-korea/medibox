@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
-
+@include('user.header')
+    
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
@@ -239,5 +227,7 @@
         }
         </script>
         
+@include('user.footer')
+
 </body>
 </html>

@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('user/js/slick.min.js') }}"></script>
-    <script src="{{ asset('user/js/medibox.js') }}"></script>
-</head>
-<body>
+@include('user.header')
     
     <header id="header">
         <!-- 뒤로가기 버튼 -->
@@ -58,6 +44,8 @@
             <p>편안한 휴식을 위해 1인 1룸, 청결한 위생을 위해 1인 1시트, 체계적인 분석과 진단을 통한 트리트먼트로 오직 한 분을 위한 시간과 공간을 선사합니다.</p>
         </div>
     </section>
+
+    @include('user.footer')
 
 </body>
 </html>

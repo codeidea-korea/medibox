@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-    <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+@include('user.header')
+
     <script src="{{ asset('user/js/tabmenu.js') }}"></script>
-</head>
-<body>
-
+    
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
@@ -55,7 +45,7 @@
                 <h2>내 포인트</h2>
                 <div class="container">
                     <div class="my_point">
-                        <span><strong id="point" class="_userPoint">6,000,000</strong>P</span>
+                        <span><strong id="point" class="_userPoint">0</strong>P</span>
                     </div>
                     <div class="payment">
                         <a href="/point/payment/P">결제하기</a>
@@ -66,36 +56,6 @@
 
             <div class="my_pass_wrap _subscribe">
                 <h2>정액권</h2>
-    
-                <div class="container foresta">
-                    <div class="my_pass">
-                        <h3>포레스타 정액권</h3>
-                        <span><strong id="point">2,200,000</strong>P</span>
-                    </div>
-                    <div class="payment">
-                        <a href="/point/payment">결제하기</a>
-                    </div>
-                </div>
-    
-                <div class="container nail">
-                    <div class="my_pass">
-                        <h3>네일 정액권</h3>
-                        <span><strong id="point">1,050,000</strong>P</span>
-                    </div>
-                    <div class="payment">
-                        <a href="/point/payment">결제하기</a>
-                    </div>
-                </div>
-    
-                <div class="container package">
-                    <div class="my_pass">
-                        <h3>PACKAGE</h3>
-                        <span><strong id="point">500,000</strong>P</span>
-                    </div>
-                    <div class="payment">
-                        <a href="/point/payment">결제하기</a>
-                    </div>
-                </div>
             </div>
 
         </section>
@@ -180,6 +140,8 @@
 		getInfo();
 	});
 	</script>
+@include('user.footer')
+
 
 </body>
 </html>

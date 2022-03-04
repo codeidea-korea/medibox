@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medibox</title>
 
-    <link rel="stylesheet" href="{{ asset('user/css/common.css') }}">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}">
-</head>
-<body>
-    
+@include('user.header')
+
     <!-- 로그인 화면 -->
     <div id="login">
         <!-- 뒤로가기 버튼 -->
@@ -40,7 +30,7 @@
                 <!-- login id -->
                 <p>
                     <label for="id">아이디(휴대폰 번호)</label>
-                    <input type="tel" name="id" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" id="id" placeholder="휴대폰 번호를 입력해주세요." required>
+                    <input type="tel" name="id" id="id" maxLength=13 placeholder="휴대폰 번호를 입력해주세요." required>
                 </p>
                 <!-- login password -->
                 <p>
@@ -68,7 +58,6 @@
 		alert('{{ session()->get('error') }}');
 		{{ session()->forget('error') }}
 	</script>
-	Session::forget('error');
 	@endif
 
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
@@ -119,6 +108,8 @@
             return true;
         }
     </script>
+
+@include('user.footer')
 
 </body>
 </html>
