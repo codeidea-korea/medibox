@@ -418,6 +418,22 @@ class UserController extends Controller
                 ->count();
             $user->pointUseHistory = $pointUseHistory;
             $user->pointUseHistoryCount = $pointUseHistoryCount;
+
+            // 패키지 어떤 상품을 구매했는지 표현
+            $collectPackage = DB::table("user_point_hst")
+                ->leftJoin('product', 'product.product_seqno', '=', 'user_point_hst.product_seqno')
+                ->select('user_point_hst.*'
+                    , 'product.type_name'
+                    , 'product.price'
+                    , 'product.return_point')
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'S'], ['user_point_hst.point_type', '=', 'K']])
+                ->first();
+            if(empty($collectPackage)) {
+                $user->used_package = '';
+            } else {
+                $user->used_package = $collectPackage->type_name;
+            }
+            $user->collectPackage = $collectPackage;
         }
 
         $result['ment'] = '성공';

@@ -151,12 +151,26 @@ class PointController extends Controller
         }
 
         if($product_seqno != 0 && $point_type != 'P') {
+            // 패키지의 경우, 계정 최초 1회만 구매 가능함
+            if($point_type == 'K') {
+                // 내 적립 내역 뒤져서 존재 하는지 확인
+                $pointHistory = DB::table("user_point_hst")->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['point_type', '=', 'K']
+                ])->first();
+
+                if(! empty($pointHistory)) {
+                    $result['ment'] = '포인트가 적립되지 않았습니다.\r패키지는 적립 이력이 있어 패키지 적립이 불가능합니다.';
+                    return $result;
+                }
+            }
             $product = DB::table("product")->where([
                 ['product_seqno', '=', $product_seqno],
                 ['point_type', '=', $point_type]
             ])->first();
 
             if(empty($product)) {
+                $result['ment'] = '포인트가 적립되지 않았습니다.\r존재하지 않는 서비스입니다.';
                 return $result;
             }
             $amount = $product->return_point;
@@ -191,7 +205,7 @@ class PointController extends Controller
 
         DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
-            ['point_type', '=', $point_type]
+            ['point_type', '=', ($point_type == 'K' || $point_type == 'S1' ? 'P' : $point_type)]
         ])->update(
             [
                 'point' => $point->point + $amount
@@ -205,6 +219,7 @@ class PointController extends Controller
 
         return $result;
     }
+
     // 포인트 환불
     public function refund(Request $request)
     {
@@ -219,6 +234,10 @@ class PointController extends Controller
         $result['ment'] = '포인트가 환불되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['result'] = false;
 
+        if(empty($amount) || $amount < 0) {
+            $result['ment'] = '포인트가 환불되지 않았습니다.\r환불할 포인트는 0보다 큰 자연수여야 합니다.';
+            return $result;
+        }
         if(empty($admin_seqno) || empty($user_seqno) || empty($point_type)) {
             return $result;
         }
@@ -266,7 +285,7 @@ class PointController extends Controller
         // 내 포인트에 차감 처리
         $point = DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
-            ['point_type', '=', $point_type]
+            ['point_type', '=', ($point_type == 'K' || $point_type == 'S1' ? 'P' : $point_type)]
         ])->first();
         // 차감 가능 여부 확인
         if(empty($point) || $point->point < $amount) {
@@ -300,7 +319,7 @@ class PointController extends Controller
 
         DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
-            ['point_type', '=', $point_type]
+            ['point_type', '=', ($point_type == 'K' || $point_type == 'S1' ? 'P' : $point_type)]
         ])->update(
             [
                 'point' => $point->point - $amount
@@ -392,6 +411,86 @@ class PointController extends Controller
 
         return $result;
     }
+    // 적립2 - 상품명하고 금액만으로 관리자 직접 입력 (서비스가 없는 경우)
+    public function useBySelf(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 구매 가능
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+
+        $shop_name = $request->post('shop_name', ''); // 대상 샵명
+        $service_name = $request->post('service_name', ''); // 대상 상품명
+        $amount = $request->post('amount'); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
+
+        $point_type = $request->post('point_type'); // 사용 구분
+        $memo = $request->post('memo', '');
+
+        $result = [];
+        $result['ment'] = '포인트가 사용되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($point_type) || empty($shop_name) || empty($service_name)) {
+            return $result;
+        }
+        if(empty($amount) || $amount < 1) {
+            $result['ment'] = '포인트가 사용되지 않았습니다.\r사용할 포인트는 0보다 큰 자연수여야 합니다.';
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        // 내 포인트에 차감 처리
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', $point_type]
+        ])->first();
+        // 차감 가능 여부 확인
+        if(empty($point) || $point->point < $amount) {
+            $result['ment'] = $result['ment'] . '\r사용가능한 포인트가 부족합니다.';
+            $result['code'] = 'POINT-LESS';
+            return $result;
+        }
+
+        // 히스토리에 포인트 이력 추가
+        $id = DB::table('user_point_hst')->insertGetId(
+            [
+                'admin_seqno' => $admin_seqno
+                , 'user_seqno' => $user_seqno
+                , 'point_type' => $point_type
+                , 'product_seqno' => 0
+                , 'shop_name' => $shop_name
+                , 'product_name' => $service_name
+                , 'hst_type' => 'U'
+                , 'point' => $amount
+                , 'memo' => $memo
+                , 'create_dt' => date('Y-m-d H:i:s')
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', $point_type]
+        ])->update(
+            [
+                'point' => $point->point - $amount
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 사용되었습니다.';
+        $result['data'] = $user;
+        $result['code'] = 'S';
+        $result['result'] = true;
+
+        return $result;
+    }
 
     // 포인트 타입 조회 (전체)
     public function getTypes(Request $request)
@@ -421,7 +520,7 @@ class PointController extends Controller
 
         $where = [];
         array_push($where, ['offline_type', '=', 'Y']);
-        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
         }
 
@@ -450,7 +549,7 @@ class PointController extends Controller
         $where = [];
         array_push($where, ['offline_type', '=', 'N']);
         array_push($where, ['return_point', '>', 0]);
-        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
         }
 
@@ -479,7 +578,7 @@ class PointController extends Controller
 
         $where = [];
         array_push($where, ['offline_type', '=', 'Y']);
-        if (!empty($point_type) && $point_type != '' && $point_type != 'P' && $point_type != 'K') {
+        if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
         }
         if (!empty($service_name) && $service_name != '') {

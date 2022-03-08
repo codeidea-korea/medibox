@@ -85,6 +85,17 @@
 					</div>
 				</div>
 				<div class="wr-list">
+					<div class="wr-list-label ">상품선택/직접기입</div>
+					<div class="wr-list-con flex">					
+						<label class="radio-wrap">
+							<input type="radio" name="service_input_type" onclick="toggleServiceInputTypeChange()" value="choose" checked><span></span>상품선택
+						</label>
+						<label class="radio-wrap">
+							<input type="radio" name="service_input_type" onclick="toggleServiceInputTypeChange()" value="self"><span></span>직접기입
+						</label>
+					</div>
+				</div>
+				<div class="wr-list">
 					<div class="wr-list-label required">사용샵</div>
 					<div class="wr-list-con flex">					
 						<select class="default _shops">
@@ -97,7 +108,7 @@
 						</select>
 					</div>
 				</div>
-				<div class="wr-list">
+				<div class="wr-list _chooseService">
 					<div class="wr-list-label required">서비스</div>
 					<div class="wr-list-con flex">					
 						<select class="default _services">
@@ -105,6 +116,12 @@
 							<option>에너지-30분</option>
 							<option>에너지-30분</option>
 						</select>
+					</div>
+				</div>
+				<div class="wr-list _chooseSelf">
+					<div class="wr-list-label required">서비스</div>
+					<div class="wr-list-con flex">				
+						<input type="text" id="use_self_service" name="" value="" class="span" placeholder="서비스 내용을 입력해주세요.">
 					</div>
 				</div>
 				<div class="wr-list">
@@ -144,9 +161,27 @@
 	</div>	
 </div>
 
-
-
 	<script>
+	function getServiceInputType(){
+		return $('input[name=service_input_type]:checked').val();
+	}
+	function toggleServiceInputTypeChange(){
+		var service_input_type = getServiceInputType();
+		if(service_input_type == 'self') {
+			$('#use_self_service').val('');
+			$('._chooseSelf').show();
+			$('._chooseService').hide();
+			$('#use_point').removeAttr('readonly');
+			$('#use_point').attr('style', ' ');
+		} else {
+			// 기존
+			$('._chooseService').show();
+			$('._chooseSelf').hide();
+			$('._price').val(backupPrice);
+			$('#use_point').attr('readonly', 'readonly');
+			$('#use_point').attr('style', 'background:#d3d3d3;');
+		}
+	}
 	function all_checked(sw) {
 		var f = document.fboardlist;
 
@@ -166,6 +201,9 @@
 	
 	function getUseTypes(){
 		getTypes(function (){
+			$('#use_point_type > option[value=K]').remove();
+			$('#use_point_type > option[value=S1]').remove();
+
 			$('#use_point_type').off().on('change', function(){
 				getShops($(this).val());
 				var type = $(this).val();
@@ -201,6 +239,7 @@
 	}
 	var service_name;
 	var product_seqno;
+	var backupPrice;
 	function getServices(pointType, shopName){
 		service_name = shopName;
 		medibox.methods.point.services({ point_type: pointType, service_name: shopName }, function(request, response){
@@ -211,7 +250,7 @@
 			}
 			var tmpServices = '';
 			for(var inx = 0; inx < response.data.length; inx++){
-				tmpServices = tmpServices + '<option value="'+response.data[inx].product_seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : '')+'</option>';
+				tmpServices = tmpServices + '<option value="'+response.data[inx].product_seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : '') + ' ('+ medibox.methods.toNumber(response.data[inx].price)+' 원)</option>';
 			}
 			$('._services').html(tmpServices);
 			
@@ -220,30 +259,62 @@
 				$('._price').val(medibox.methods.toNumber($(this).find('option:selected').attr('price')) +' P');
 			});
 			product_seqno = response.data[0].product_seqno;
-			$('._price').val(medibox.methods.toNumber(response.data[0].price) +' P');
+			var service_input_type = getServiceInputType();
+			if(service_input_type != 'self') {
+				$('._price').val(medibox.methods.toNumber(response.data[0].price) +' P');
+			}
+			backupPrice = medibox.methods.toNumber(response.data[0].price) +' P';
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
 		});
 	}
 	function usePoint(){
-		var point_type = $('#use_point_type').val();
-		var memo = $('#use_memo').val();
-		
-		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-			point_type:point_type, memo:memo };
+		var service_input_type = getServiceInputType();
 
-		medibox.methods.point.use(data, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
-			}
-			alert(response.ment.replace('\\r', '\n'));
-			location.reload();
-		}, function(e){
-			console.log(e);
-			alert('서버 통신 에러');
-		});
+		if(service_input_type == 'self') {
+			var point_type = $('#use_point_type').val();
+			var use_self_service = $('#use_self_service').val();
+			var amount = $('#use_point').val();
+			var memo = $('#use_memo').val();
+			
+			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, shop_name: service_name, service_name: use_self_service,
+				point_type:point_type, amount:replacePoint(amount), memo:memo };
+
+			medibox.methods.point.useSelf(data, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert(response.ment.replace('\\r', '\n'));
+				location.reload();
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		} else {
+			var point_type = $('#use_point_type').val();
+			var memo = $('#use_memo').val();
+			
+			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
+				point_type:point_type, memo:memo };
+
+			medibox.methods.point.use(data, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert(response.ment.replace('\\r', '\n'));
+				location.reload();
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		}
 	}
+	$(document).ready(function(){
+		toggleServiceInputTypeChange();
+	});
 	</script>

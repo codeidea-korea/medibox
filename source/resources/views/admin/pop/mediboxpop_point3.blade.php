@@ -166,10 +166,10 @@ function checkRefundPoint(){
 						point = pointDetails.point.point;
 						break;
 					case 'K':
-						point = pointDetails.package.point;
+						point = pointDetails.point.point;
 						break;
 					case 'S1':
-						point = pointDetails.all.point;
+						point = pointDetails.point.point;
 						break;
 					case 'S2':
 						point = pointDetails.nail.point;
@@ -198,7 +198,7 @@ function checkRefundPoint(){
 		var amount = $('#refund_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: 0,
-			point_type:point_type, memo:memo, amount:amount };
+			point_type:point_type, memo:memo, amount:replacePoint(amount) };
 
 		medibox.methods.point.refund(data, function(request, response){
 			console.log('output : ' + response);

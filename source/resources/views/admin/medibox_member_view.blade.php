@@ -19,24 +19,30 @@ $page_title = '회원관리';
 				<div class="view-list">
 					<div class="view-list-label">아이디</div>
 					<div class="view-list-con _userId">010-0000-0000</div>
-					<div class="view-list-label">포인트</div>
-					<div class="view-list-con _userPoint">100,000 P</div>
+					<div class="view-list-label">패키지</div>
+					<div class="view-list-con _userPackage"></div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">비밀번호</div>
 					<div class="view-list-con _userPassword">****</div>
-					<div class="view-list-label">정액권</div>
-					<div class="view-list-con _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
+					<div class="view-list-label">포인트</div>
+					<div class="view-list-con _userPoint">100,000 P</div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">이름</div>
 					<div class="view-list-con _userName">관리자</div>
-					<div class="view-list-label"></div>
-					<div class="view-list-con _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
+					<div class="view-list-label">정액권</div>
+					<div class="view-list-con _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">가입일시</div>
 					<div class="view-list-con _createAt">2021.01128</div>
+					<div class="view-list-label"></div>
+					<div class="view-list-con _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
+				</div>
+				<div class="view-list">
+					<div class="view-list-label">&nbsp;</div>
+					<div class="view-list-con"></div>
 					<div class="view-list-label"></div>
 					<div class="view-list-con _foresta">포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,150,000 P</div>
 				</div>
@@ -252,13 +258,13 @@ $page_title = '회원관리';
 			bodyData = bodyData 
 						+'<tr>'
 						+'	<td>'+no+'</td>'
-						+'	<td>'+serviceName+'</td>'
+						+'	<td>'+(data[inx].hst_type == 'R' ? getPointTypeFullName(data[inx].point_type) : serviceName)+'</td>'
 						+'	<td>'+(data[inx].hst_type == 'R' ? '<span class="color-red">환불</span>' : '적립')+'</td>'
 						+'	<td>'+(data[inx].hst_type == 'R' 
 							? '<span class="color-red">'+medibox.methods.toNumber(data[inx].point)+'</span>' 
 							: medibox.methods.toNumber(data[inx].point))+'</td>'
 						+'	<td>'+data[inx].create_dt+'</td>'
-						+'	<td>'+data[inx].memo+'</td>'
+						+'	<td>'+(data[inx].memo ? data[inx].memo : '')+'</td>'
 						+'</tr>';
 		}
 		if(count > 0)
@@ -316,11 +322,15 @@ $page_title = '회원관리';
 						+'	<td>'+no+'</td>'
 						+'	<td>'+serviceName+'</td>'
 						+'	<td>'+(data[inx].hst_type == 'U' ? '사용' : '-')+'</td>'
-						+'	<td>'+data[inx].service_name+'</td>'
-						+'	<td>'+data[inx].type_name + (data[inx].service_sub_name ? data[inx].service_sub_name : '') +'</td>'
+
+						+'	<td>'+(data[inx].product_seqno == 0 ? data[inx].shop_name : data[inx].service_name)+'</td>'
+						+'	<td>'+(data[inx].product_seqno == 0 
+							? data[inx].product_name 
+							: (data[inx].type_name + (data[inx].service_sub_name ? data[inx].service_sub_name : ''))) +'</td>'
+
 						+'	<td>-'+medibox.methods.toNumber(data[inx].point)+'</td>'
 						+'	<td>'+data[inx].create_dt+'</td>'
-						+'	<td>'+data[inx].memo+'</td>'
+						+'	<td>'+(data[inx].memo ? data[inx].memo : '')+'</td>'
 						+'</tr>';
 		}
 		if(count > 0)
@@ -364,6 +374,7 @@ $page_title = '회원관리';
 			$('._userPassword').text( response.data.user_pw );
 			$('._userName').text( response.data.user_name );
 			$('._createAt').text( response.data.create_dt );
+			$('._userPackage').text( (response.data.used_package ? response.data.used_package : '') );
 
 			// TODO: 매핑 테이블 추가 필요
 			pointDetails.point = response.data.points.filter(a => a.point_type == 'P')[0];
@@ -411,6 +422,24 @@ $page_title = '회원관리';
 				break;
 		}
 		return point;
+	}
+	function getPointTypeFullName(type){
+		switch(type){
+			case 'S1':
+				return '통합 정액권';
+			case 'S2':
+				return '네일 정액권';
+			case 'S3':
+				return '발몽 정액권';
+			case 'S4':
+				return '포레스타 정액권';
+			case 'P':
+				return '포인트';
+			case 'K':
+				return '패키지';
+			default:
+				return '-';
+		}
 	}
 	function getPointType(type){
 		switch(type){
@@ -462,6 +491,9 @@ $page_title = '회원관리';
 			},
 			type: 'inline'
 		});
+	}
+	function replacePoint(amount){
+		return amount.replace(/P/gi, "").replace(/p/gi, "").replace(/ /gi, "").replace(/,/gi, "");
 	}
 	
 	function getTypes(fnCallback){
