@@ -77,7 +77,7 @@
             
             var tmpItem = '<h2>정액권</h2>';
             for(var inx = 0; inx<response.data.length; inx++){
-                if(response.data[inx].point_type == 'P') {
+                if(response.data[inx].point_type == 'P' || response.data[inx].point_type == 'K' || response.data[inx].point_type == 'S1') {
                     continue;
                 }
                 if(response.data[inx].point < 1) {

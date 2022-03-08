@@ -83,6 +83,8 @@ create table user_point_hst
     admin_seqno    bigint      not null,
     user_seqno    bigint      not null,
     product_seqno    bigint      null,
+    shop_name    varchar(200)      null, -- 상품 대표명 (product_seqno 가 없는 경우)
+    product_name    varchar(200)      null, -- 상품 대표명 (product_seqno 가 없는 경우)
     point_type   varchar(2)      not null, -- P: 포인트, S1-4: 통합/네일/발몽/포레스타 정액권, K: 패키지, N: 직접 입력
     hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
     admin_name    varchar(50)      null, -- 담당자 명

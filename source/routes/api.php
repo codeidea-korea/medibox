@@ -42,6 +42,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('user/point-collect', [PointController::class, 'collect']);
     Route::post('user/point-refund', [PointController::class, 'refund']);
     Route::post('user/point-use', [PointController::class, 'use']);
+    Route::post('user/point-use-self', [PointController::class, 'useBySelf']);
+    
 
     Route::get('point-types', [PointController::class, 'getTypes']);
     Route::get('point-types/shops', [PointController::class, 'getShops']);

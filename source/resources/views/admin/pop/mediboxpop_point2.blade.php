@@ -222,6 +222,13 @@ function checkCollectPoint(){
 				}
 				$('#collect_sum_point').val(medibox.methods.toNumber((currentPoint + Number($(this).find('option:selected').attr('return')))) +' P');
 			});
+			if(pointType == 'P') {
+				product_seqno = 0;
+				$('#collect_point').val('0 P');
+			} else {
+				product_seqno = response.data[0].product_seqno;
+				$('#collect_point').val(medibox.methods.toNumber(response.data[0].return_point) +' P');
+			}
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -233,7 +240,7 @@ function checkCollectPoint(){
 		var amount = $('#collect_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-			point_type:point_type, memo:memo, amount:amount };
+			point_type:point_type, memo:memo, amount:replacePoint(amount) };
 
 		medibox.methods.point.collect(data, function(request, response){
 			console.log('output : ' + response);
