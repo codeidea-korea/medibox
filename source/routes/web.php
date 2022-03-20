@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [UserController::class, 'main']);
 Route::get('/index', [UserController::class, 'main']);
 Route::get('/user/login', [UserController::class, 'login'])->name('user.login'); // login_main
-Route::get('/user/signup', [UserController::class, 'signup'])->name('user.signup');
+Route::get('/user/signup', [UserController::class, 'signup1'])->name('user.signup');
+Route::get('/user/signup-step1', [UserController::class, 'signup1'])->name('user.signup1');
+Route::get('/user/signup-step2', [UserController::class, 'signup2'])->name('user.signup2');
+Route::get('/user/signup-step3', [UserController::class, 'signup3'])->name('user.signup3');
 
 Route::get('/point', [UserController::class, 'pointhome']) ->name('user.pointhome');
 Route::get('/point/payment/{type}', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
@@ -32,7 +35,9 @@ Route::get('/brand/deepfocus', [UserController::class, 'deepfocus']) ->name('use
 Route::get('/brand/minishtherapy', [UserController::class, 'minishtherapy']) ->name('user.minishtherapy');
 Route::get('/brand/forestablack', [UserController::class, 'forestablack']) ->name('user.forestablack');
 
-Route::get('/mypage', [UserController::class, 'mypage']) ->name('user.mypage');
+Route::get('/profile', [UserController::class, 'profile']) ->name('user.profile');
+Route::get('/profile/edit', [UserController::class, 'profile_edit']) ->name('user.profile.edit');
+Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name('user.mypage.edit');
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
 Route::get('/reservation/deepfocus', [UserController::class, 'deepfocus_reservation']) ->name('user.deepfocus_reservation');
 Route::get('/reservation/forestablack', [UserController::class, 'forestablack_reservation']) ->name('user.forestablack_reservation');
@@ -44,6 +49,10 @@ Route::get('/reservation/valmontspa', [UserController::class, 'valmontspa_reserv
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
 Route::get('/terms/policy', [UserController::class, 'policy']) ->name('user.policy');
+
+Route::get('/terms/tos', [UserController::class, 'tos']) ->name('user.tos');
+Route::get('/terms/thirdparty', [UserController::class, 'thirdparty']) ->name('user.thirdparty');
+Route::get('/terms/marketing', [UserController::class, 'marketing']) ->name('user.marketing');
 
 
 

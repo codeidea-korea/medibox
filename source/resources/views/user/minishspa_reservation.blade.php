@@ -28,14 +28,105 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_spa01"></figure>
-            <figure class="minish_spa02"></figure>
+            <!-- <figure class="minish_spa02"></figure>
             <figure class="minish_spa03"></figure>
             <figure class="minish_spa04"></figure>
-            <figure class="minish_spa05"></figure>
+            <figure class="minish_spa05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
         </div>
+        <!-- 22.03.07 수정 -->
+        <!-- <div class="reservation_des">
+            <div class="title">
+                <h2>미니쉬 스파</h2>
+                <a href="#!" class="share_btn">
+                    <img src="./img/icon_share.svg" alt="공유하기">
+                </a>
+            </div>
+            <ul class="tab_menu">
+                <li class="on">정보</li>
+                <li>서비스</li>
+                <li>문의</li>
+            </ul>
+            <div class="tab_content">
+                <div class="intro_inner">
+                    <h3>제휴업체소개</h3>
+                    <p>
+                        ‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’<br>
+                        미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
+                    </p>
+                </div>
+                <div class="info_inner">
+                    <h3>업체 정보</h3>
+                    <ul>
+                        <li class="working_time">
+                            10:00 ~ 20:00<br>
+                            월요일 휴무
+                        </li>
+                        <li class="tel">
+                            02-540-2252
+                        </li>
+                        <li class="address">
+                            서울시 강남구 연주로 728
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="tab_content">
+                <div class="service_inner menu_inner">
+                    <h3>서비스(<span class="itm_num"></span>)</h3>
+
+                    <div class="menu">
+                        <h4>BASIC (구강 예방치료 프로그램)</h4>
+                        <ul>
+                            <li>
+                                <span class="program">미니쉬 SPA</span>
+                                <span class="price">100,000원</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu">
+                        <h4>SPECIAL (생애주기 예방 프로그램)</h4>
+                        <ul>
+                            <li>
+                                <span class="program">건치 백세 프로그램 (4회)</span>
+                                <span class="price">700,000원</span>
+                            </li>
+                            <li>
+                                <span class="program">잇몸튼튼 프로그램(4회)</span>
+                                <span class="price">700,000원</span>
+                            </li>
+                            <li>
+                                <span class="program">맘앤대디 프로그램(2인 1회)</span>
+                                <span class="price">700,000원</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="menu">
+                        <h4>PREMIUM</h4>
+                        <ul>
+                            <li>
+                                <span class="program">
+                                    구강종합검진 (1회)<br>
+                                    + 평생 건강관리 (4회)
+                                </span>
+                                <span class="price">1,080,000원</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab_content">
+                <div class="inquiry_inner">
+                    <h3>준비중입니다.</h3>
+                </div>
+            </div>
+        </div> -->
+        <!-- 22.03.09 수정 -->
         <div class="brand_item_des reservation_des">
             <h2>미니쉬 스파</h2>
             <span>Minsh Spa</span>
@@ -48,7 +139,10 @@
                 <li>공휴일, 명절 연휴 휴무</li>
             </ul>
         </div>
-        <a href="tel:02-540-2252" class="reservation_btn">전화 예약하기</a>
+
+        <!-- 22.03.18 수정 -->
+        <!-- <a href="tel:02-540-2252" class="reservation_btn">예약하기</a> -->
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 @include('user.footer')
 

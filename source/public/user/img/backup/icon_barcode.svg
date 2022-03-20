@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(-0.432 -0.432)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="바코드" transform="translate(-364 -64)">
+    <g id="그룹_385" data-name="그룹 385">
+      <rect id="바코드_아이콘" data-name="바코드 아이콘" width="30" height="30" transform="translate(364 64)" fill="#fff"/>
+    </g>
+    <g id="그룹_387" data-name="그룹 387" transform="translate(367.432 67.432)">
+      <g id="그룹_386" data-name="그룹 386" clip-path="url(#clip-path)">
+        <path id="패스_170" data-name="패스 170" d="M7.229,26.085H.5V19.356" transform="translate(-0.087 -3.363)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+        <path id="패스_171" data-name="패스 171" d="M26.085,19.356v6.729H19.356" transform="translate(-3.363 -3.363)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+        <path id="패스_172" data-name="패스 172" d="M19.378.5h6.711V7.229" transform="translate(-3.366 -0.087)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+        <path id="패스_173" data-name="패스 173" d="M.5,7.229V.5H7.212" transform="translate(-0.087 -0.087)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+        <line id="선_29" data-name="선 29" x2="19.903" transform="translate(1.616 11.568)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

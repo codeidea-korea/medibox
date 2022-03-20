@@ -27,7 +27,9 @@
 
         <section id="policy_list">
             <ul>
-                <li><a href="/terms/policy">이용약관</a></li>
+                <!-- 22.03.18 수정 -->
+                <!-- <li><a href="./privacy.html">이용약관</a></li> -->
+                <li><a href="/terms/tos">이용약관</a></li>
                 <li><a href="/terms/privacy">개인정보 수집이용</a></li>
             </ul>
         </section>

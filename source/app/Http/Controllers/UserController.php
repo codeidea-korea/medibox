@@ -88,6 +88,8 @@ class UserController extends Controller
         $user_phone = $request->post('id');
         $user_pw = $request->post('pw', '');
         $user_name = $request->post('name');
+        $recommended_code = $request->post('recommended_code', '');
+        $recommended_shop = $request->post('recommended_shop');
         $event_yn = $request->post('event_yn', 'N');
         $approve_yn = 'Y';
         $delete_yn = 'N';
@@ -123,6 +125,8 @@ class UserController extends Controller
                 , 'event_yn' => $event_yn
                 , 'approve_yn' => $approve_yn
                 , 'delete_yn' => $delete_yn
+                , 'recommended_shop' => $recommended_shop
+                , 'recommended_code' => $recommended_code
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]

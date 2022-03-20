@@ -1,5 +1,12 @@
 @import url('https://fonts.cdnfonts.com/css/copperplate');
 
+body {padding-bottom:4.8rem;max-width:780px;margin:0 auto;}
+section {min-height:calc(100vh - 7.6rem);}
+
+/* 버튼 비활성화/활성화 */
+button[type="submit"].btn {position:fixed;bottom:4.8rem;left:0;width:100%;padding:1.5rem 0;color:#fff;background:#b4b4b4;z-index:99;}
+button[type="submit"].btn.on {background:#000;transition:0.2s;}
+
 /* main_title */
 h2.main_title {font-size:1.5rem;margin-bottom:0.9rem;font-family: 'Copperplate', sans-serif;text-align:center;}
 p.main_sub_title {font-size:0.7rem;font-weight:500;line-height:1.1rem;text-align:center;}
@@ -26,6 +33,22 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 /* 프로필 헤더 */
 #header.profile {background:#000;}
 #header.profile .title span {color:#fff;}
+
+
+/* 하단 퀵메뉴 */
+.bottom_menu {position:fixed;bottom:0;left:0;width:100%;background:#FFFFFF;padding:0 1rem;z-index:999;}
+.bottom_menu ul {display:flex;}
+.bottom_menu ul li {flex:1;text-align:center;}
+.bottom_menu ul li svg {height:1.2rem;}
+.bottom_menu ul li a {display:block;padding:1.2rem 0.5rem;}
+.bottom_menu ul li span {display:block;font-size:0.7rem;font-weight:500;color:#B4B4B4;}
+
+.bottom_menu ul li.on {border-top:2px solid #000;}
+.bottom_menu ul li.on span {color:#000;}
+
+/* 아이콘 색 */
+.bottom_menu ul li svg>g {fill:#B4B4B4;stroke:#B4B4B4;}
+.bottom_menu ul li.on svg>g {fill:#000;stroke:#000;}
 
 
 /* 쿠폰, 멤버쉽, 바우처 빈 화면 */
@@ -55,11 +78,11 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 
 /* 로그인 페이지 */
-#login {position:relative;display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;width:100%;height:100vh;color:#fff;}
+#login {position:relative;display:flex;justify-content:center;align-items:center;flex-direction:column;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;width:100%;height:100vh;padding-bottom:4.8rem;color:#fff;}
 
 /* 뒤로가기버튼 */
 #login .back {position:absolute;top:0.5rem;left:0.5rem;}
-#login .container {width:100%;padding:0 0.5rem;}
+#login .container {width:100%;padding:0 0.5rem;margin-bottom:1rem;}
 
 #login p.main_sub_title {margin-bottom:10vh;}
 
@@ -71,7 +94,7 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #login form input::placeholder {color:#b4b4b4;}
 #login form #login_btn {text-align:center;width:100%;background:#000;color:#fff;padding:0.6rem 0;border-radius:0.25rem;font-size:1rem;}
 
-#login .sign_up {position:absolute;bottom:2rem;width:100%;text-align:center;font-size:0;}
+#login .sign_up {text-align:center;font-size:0;}
 #login .sign_up span {font-size:0.7rem;font-weight:400;color:#eaeaea;}
 #login .sign_up a {display:inline-block;color:#fff;text-decoration:underline;text-underline-position: under;margin-left:0.5rem;}
 
@@ -79,8 +102,11 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 
 /* 회원가입 */
-#signUp {padding:1.9rem 1rem 0 1rem;}
-#signUp form p {position:relative;margin-bottom:1.5rem;}
+#signUp {padding:1.9rem 1rem 10rem 1rem;}
+/* 2022.03.07 수정 */
+#signUp form>div {position:relative;margin-bottom:1.5rem;}
+#signUp form>div>h2 {font-size:0.8rem;font-weight:500;margin-bottom:0.5rem;}
+
 #signUp form label {display:block;margin-bottom:0.5rem;font-size:0.8rem;font-weight:500;}
 #signUp form input {width:100%;border:1px solid #dfdfdf;border-radius:0.25rem;line-height:2.4rem;padding:0 0.6rem;font-size:0.9rem;font-weight:400;}
 #signUp form input::placeholder {color:#b4b4b4;}
@@ -90,8 +116,18 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
     position:absolute;bottom:-1.25rem;right:0;font-size:0.7rem;font-weight:400;color:#FF1717;text-align:right;
 }
 
-#signUp #next_btn {position:fixed;bottom:0;left:0;width:100%;padding:1.15rem 0 1.9rem 0;color:#fff;background:#b4b4b4;}
+/* 최초추천샵 */
+#signUp .shop_select .select_wrap {position:relative;}
 
+#signUp .shop_select .select_box {display:flex;justify-content:space-between;padding:0.55rem 0.65rem;border:1px solid #E3E3E3;border-radius:0.25rem;}
+#signUp .shop_select .select_box>span {font-size:0.9rem;color:#B4B4B4;}
+#signUp .shop_select .select_box.on>span {color:#000000;}
+
+/* 22.03.14 수정 */
+#signUp .shop_select .option {position:absolute;top:100%;left:0;width:100%;height:0;background:#fff;padding:0;box-shadow:0 3px 6px rgba(0,0,0,0.16);overflow-y:auto;transition:0.4s;z-index:9;}
+#signUp .shop_select .option.on {height:30vh;padding:0.6rem 0;}
+#signUp .shop_select .option>li {padding:0.5rem 1.2rem;font-size:0.9rem;}
+#signUp .shop_select .option>li~li {border-top:1px solid #F0F0F0;}
 
 
 
@@ -110,17 +146,20 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #agreement form>p>label {font-size:0.9rem;font-weight:400;}
 #agreement form>p>.agreement_view_btn {float:right;font-size:0.9rem;color:#716E6E;text-decoration:underline;text-underline-position:under;}
 
-/* 완료 버튼 */
-#agreement #complete_btn {position:fixed;bottom:0;left:0;width:100%;padding:1.15rem 0 1.9rem 0;color:#fff;background:#b4b4b4;}
-
-
 
 
 /* 개인정보 이용동의 */
-#privacy .privacy_txt_wrap {padding:1.25rem 1rem;}
-#privacy .privacy_txt_wrap>li {font-size:0.7rem;line-height:1rem;font-weight:400;color:#716E6E;margin-bottom:1em;}
-
-
+#privacy h2 {padding:1rem;font-size:1rem;font-weight:500;text-align:center;}
+#privacy h3 {font-size:0.8rem;margin-bottom:0.1rem;color:#000;}
+#privacy .txt_wrap {padding:0 1rem;}
+#privacy .txt_wrap>li {font-size:0.7rem;line-height:1rem;font-weight:400;color:#716E6E;margin-bottom:1em;}
+#privacy .depth {padding:0.5rem;}
+#privacy .depth>li~li {margin-top:0.2rem;}
+#privacy table {text-align:center;margin:0.5rem 0;}
+#privacy table tr:first-of-type {background:#f1f1f1;}
+#privacy table.row-table tr:first-of-type {background:none;}
+#privacy table.row-table tr>td:first-of-type {background:#f1f1f1;width:25%;}
+#privacy table tr td {line-height:1.4;border:1px solid #ddd;border-collapse:collapse;padding:0.5rem;}
 
 
 /* 포인트 결제 */
@@ -129,10 +168,10 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 #point_tab_menu>ul {position:relative;display:flex;justify-content:center;}
 
-#point_tab_menu>ul>li {font-size:0.9rem;color:#B4B4B4;padding:0 0.5rem;margin:0 0.75rem;transition:0.3s;}
+#point_tab_menu>ul>li {font-size:0.9rem;color:#B4B4B4;padding:0 0.5rem;margin:0 0.75rem;border-radius:0.5rem;transition:0.3s;}
 #point_tab_menu>ul>li.on {color:#fff;}
 
-#point_tab_menu .highlight {/* position:absolute;*/ top:0.5rem;bottom:0.5rem;background:#000;border-radius:0.5rem;transition:0.3s;z-index:-1;}
+.highlight {background:#000;border-radius:0.5rem;}
 
 
 
@@ -144,15 +183,19 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #point_payment h2 {font-size:0.9rem;margin-bottom:0.8rem;color:#000;}
 #point_payment .container {border-radius:1rem;box-shadow:0 3px 9px rgba(0,0,0,0.16);overflow:hidden;}
 
+/* 패키지 결제시 포인트 로고 추가 */
+#point_payment .my_point_wrap .package {position:absolute;top:9%;right:5%;display:block;width:6vw;}
+#point_payment .my_point_wrap .package img {display:none;width:100%;}
+#point_payment .my_point_wrap .package img.on {display:block;}
+#point_payment .my_point_wrap .package span.grade {display:block;text-align:center;font-size:2.5vw;font-weight:500;color:#808080;}
+
 #point_payment .my_point_wrap {margin-bottom:1.5rem;}
 #point_payment .my_pass_wrap .container {margin-bottom:1rem;}
 #point_payment .my_point_wrap .container {position:relative;background:#000;}
 
-/* 패키지 결제시 포인트 로고 추가 */
-#point_payment .my_point_wrap .container::before {content:"";position:absolute;top:1rem;right:1.25rem;display:block;width:8%;padding-bottom:8%;background:url(../img/package_logo.svg) no-repeat center center/contain;}
 
-#point_payment .container {display:flex;flex-direction:column;height:50vmin;}
-#point_payment .my_point, #point_payment .my_pass {display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;}
+#point_payment .container {}
+#point_payment .my_point, #point_payment .my_pass {display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;text-align:center;padding:15% 0;}
 
 #point_payment .my_pass h3 {font-size:3.5vw;}
 #point_payment .my_point span,
@@ -164,8 +207,8 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #point_payment .payment a {flex:1;position:relative;display:block;font-size:4vw;font-weight:500;text-align:center;padding:0 0 1.05rem 0;}
 #point_payment .payment a~a::before {content:"";position:absolute;top:0;left:0;display:block;width:0.5px;height:1.5em;background:#ABABAB}
 
-#point_payment .my_pass_wrap .foresta {background:url(../img/pass_img01.png) no-repeat center center/120%;}
-#point_payment .my_pass_wrap .nail {background:url(../img/pass_img02.png) no-repeat center center/120%;}
+#point_payment .my_pass_wrap .foresta {background:url(../img/pass_img01.png) no-repeat center center/130%;}
+#point_payment .my_pass_wrap .nail {background:url(../img/pass_img02.png) no-repeat center center/130%;}
 #point_payment .my_pass_wrap .package {background:#175C81;}
 
 
@@ -173,6 +216,7 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 
 /* 포인트 결제 페이지 */
+#payment_page {padding-bottom:20%;}
 #payment_page .service_select_wrap {padding:1.25rem 1rem 1.75rem 1rem;border-bottom:0.5rem solid #F0F0F0;}
 #payment_page .service_select_wrap .select_wrap {position:relative;}
 #payment_page .service_select_wrap h2 {font-weight:500;margin-bottom:0.5rem;}
@@ -201,7 +245,9 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #payment_page .service_result_wrap>div:first-child {margin-bottom:1.25rem;}
 
 /* 결제하기 버튼 */
-#payment_page #payment_btn {position:fixed;bottom:0;left:0;width:100%;padding:1.15rem 0 1.9rem 0;color:#fff;background:#b4b4b4;}
+/* 2022.03.04 수정 */
+/* #payment_page #payment_btn {position:fixed;bottom:0;left:0;width:100%;padding:1.15rem 0 1.9rem 0;color:#fff;} */
+#payment_page #payment_btn {position:fixed;bottom:4.8rem;left:0;width:100%;padding:1.5rem 0;color:#fff;}
 
 
 
@@ -269,7 +315,7 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 
 /* 브랜드 소개 페이지 */
-#brand_intro {position:relative;height:calc(100vh - 2.6rem);}
+#brand_intro {position:relative;}
 #brand_intro .brand_item_slider figure {height:45vh;
     background-position:center;
     background-size:cover;
@@ -278,49 +324,128 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 #brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
 
-#brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem;overflow-y:scroll;}
+#brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 1rem 7rem 1rem;overflow-y:scroll;}
 #brand_intro .brand_item_des h2 {font-size:1.25rem;font-weight:500;}
 #brand_intro .brand_item_des span {display:block;font-size:0.7rem;color:#716E6E;margin-bottom:1rem;}
 #brand_intro .brand_item_des p {font-size:0.85rem;line-height:1.6rem;margin-bottom:1em;}
 
-#brand_intro .minish_spa01 {background:url(../img/minish_spa01.JPG) no-repeat center center/cover;}
-#brand_intro .minish_spa02 {background:url(../img/minish_spa02.JPG) no-repeat center center/cover;}
-#brand_intro .minish_spa03 {background:url(../img/minish_spa03.JPG) no-repeat center center/cover;}
-#brand_intro .minish_spa04 {background:url(../img/minish_spa04.JPG) no-repeat center center/cover;}
-#brand_intro .minish_spa05 {background:url(../img/minish_spa05.JPG) no-repeat center center/cover;}
+/* ---------- forestablack_reservation.html ---------- */
+/* ---------- minishmanultherapy_reservation.html ---------- */
+/* ---------- nail_reservation.html ---------- */
+/* ---------- minishspa_reservation.html ---------- */
+/* ---------- valmontspa_reservation.html ---------- */
+/* ---------- deepfocus_reservation.html ---------- */
+/* 브랜드 예약 페이지 */
+#brand_intro .reservation_des {bottom:4.2rem;}
 
-#brand_intro .valmont_spa01 {background:url(../img/valmont_spa01.JPG) no-repeat center center/cover;}
-#brand_intro .valmont_spa02 {background:url(../img/valmont_spa02.JPG) no-repeat center center/cover;}
-#brand_intro .valmont_spa03 {background:url(../img/valmont_spa03.JPG) no-repeat center center/cover;}
-#brand_intro .valmont_spa04 {background:url(../img/valmont_spa04.JPG) no-repeat center center/cover;}
-#brand_intro .valmont_spa05 {background:url(../img/valmont_spa05.JPG) no-repeat center center/cover;}
+#brand_intro .brand_item_des ul {padding-left:1.7rem;}
+#brand_intro .brand_item_des ul.address {background:url(../img/icon_location.svg) no-repeat top left;margin-bottom:0.75rem;}
+#brand_intro .brand_item_des ul.working_time {background:url(../img/icon_clock.svg) no-repeat top left}
 
-#brand_intro .nail01 {background:url(../img/nail01.JPG) no-repeat center center/cover;}
-#brand_intro .nail02 {background:url(../img/nail02.JPG) no-repeat center center/cover;}
-#brand_intro .nail03 {background:url(../img/nail03.JPG) no-repeat center center/cover;}
-#brand_intro .nail04 {background:url(../img/nail04.JPG) no-repeat center center/cover;}
-#brand_intro .nail05 {background:url(../img/nail05.JPG) no-repeat center center/cover;}
+#brand_intro .brand_item_des ul>li {font-size:0.85rem;margin-bottom:0.35rem;}
 
-#brand_intro .deep_focus01 {background:url(../img/deep_focus01.JPG) no-repeat center center/cover;}
-#brand_intro .deep_focus02 {background:url(../img/deep_focus02.JPG) no-repeat center center/cover;}
-#brand_intro .deep_focus03 {background:url(../img/deep_focus03.JPG) no-repeat center center/cover;}
-#brand_intro .deep_focus04 {background:url(../img/deep_focus04.JPG) no-repeat center center/cover;}
-#brand_intro .deep_focus05 {background:url(../img/deep_focus05.JPG) no-repeat center center/cover;}
+/* 22.03.07 추가 */
+/* 브랜드 예약 페이지 */
+/* #brand_intro .reservation_des {position:absolute;top:40%;bottom:4.25rem;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 0;overflow-y:scroll;}
 
-#brand_intro .minish_manul_therapy01 {background:url(../img/minish_manul_therapy01.JPG) no-repeat center center/cover;}
-#brand_intro .minish_manul_therapy02 {background:url(../img/minish_manul_therapy02.JPG) no-repeat center center/cover;}
-#brand_intro .minish_manul_therapy03 {background:url(../img/minish_manul_therapy03.JPG) no-repeat center center/cover;}
-#brand_intro .minish_manul_therapy04 {background:url(../img/minish_manul_therapy04.JPG) no-repeat center center/cover;}
-#brand_intro .minish_manul_therapy05 {background:url(../img/minish_manul_therapy05.JPG) no-repeat center center/cover;}
+#brand_intro .reservation_des .title {display:flex;align-items:center;border-bottom:8px solid #F7F7F7;padding:0 1rem 1rem 1rem;}
+#brand_intro .reservation_des .title h2 {font-size:1.25rem;font-weight:500;}
+#brand_intro .reservation_des .title .share_btn {display:block;margin-left:auto;}
 
-#brand_intro .foresta_black01 {background:url(../img/foresta_black01.JPG) no-repeat center center/cover;}
-#brand_intro .foresta_black02 {background:url(../img/foresta_black02.JPG) no-repeat center center/cover;}
-#brand_intro .foresta_black03 {background:url(../img/foresta_black03.JPG) no-repeat center center/cover;}
-#brand_intro .foresta_black04 {background:url(../img/foresta_black04.JPG) no-repeat center center/cover;}
-#brand_intro .foresta_black05 {background:url(../img/foresta_black05.JPG) no-repeat center center/cover;}
+#brand_intro .reservation_des .tab_menu {display:flex;padding:0 1rem;text-align:center;border-bottom:1px solid #F0F0F0;}
+#brand_intro .reservation_des .tab_menu>li {flex:1;line-height:2.25rem;font-weight:500;color:#B4B4B4;}
+#brand_intro .reservation_des .tab_menu>li.on {color:#000000;border-bottom:1.5px solid #000000;}
+
+#brand_intro .reservation_des .tab_content {display:none;padding-bottom:5rem;}
+#brand_intro .reservation_des .tab_content h3 {font-weight:500;margin-bottom:0.5rem;} */
+
+/* 정보 탭 */
+/* #brand_intro .reservation_des .tab_content .intro_inner {border-bottom:8px solid #F7F7F7;padding:1rem;}
+#brand_intro .reservation_des .tab_content .intro_inner p {line-height:1.8;}
+
+#brand_intro .reservation_des .tab_content .info_inner {padding:1rem;}
+#brand_intro .reservation_des .tab_content .info_inner ul>li {line-height:1.8;margin-bottom:0.5rem;padding-left:1.7rem;}
+
+#brand_intro .reservation_des .tab_content .info_inner ul>li {background-repeat:no-repeat;background-position:left top 0.1rem;}
+#brand_intro .reservation_des .tab_content .info_inner ul>li.working_time {background-image:url(../img/icon_clock.svg);background-size:1.7em;}
+#brand_intro .reservation_des .tab_content .info_inner ul>li.tel {background-image:url(../img/icon_tel.svg);background-size:1.5em;}
+#brand_intro .reservation_des .tab_content .info_inner ul>li.address {background-image:url(../img/icon_location.svg);background-size:1.7em;} */
+
+/* 서비스 탭, 디자이너 탭 (이미지 있는 페이지) */
+/* #brand_intro .reservation_des .tab_content .pic_inner {padding:1rem;}
+#brand_intro .reservation_des .tab_content .pic_inner ul>li {display:flex;padding:0.5rem 0;border-bottom:1px solid #F0F0F0;}
+#brand_intro .reservation_des .tab_content .pic_inner figure {border-radius:0.5rem;overflow:hidden;margin-right:1rem;}
+#brand_intro .reservation_des .tab_content .pic_inner .des {padding:0.2rem 0;} */
+
+/* 서비스 탭 (이미지 없는 페이지) */
+/* #brand_intro .reservation_des .tab_content .menu_inner {padding:1rem 0;}
+#brand_intro .reservation_des .tab_content .menu_inner h3 {padding:0 1rem;}
+
+#brand_intro .reservation_des .tab_content .menu_inner h4 {position:relative;padding:0.8rem 1rem;font-weight:500;border-bottom:1px solid #F0F0F0;}
+#brand_intro .reservation_des .tab_content .menu_inner h4::before {content:url(../img/arrow_bottom.svg);display:block;position:absolute;top:50%;right:1rem;transform:translateY(-50%);}
+#brand_intro .reservation_des .tab_content .menu_inner h4.on::before {transform:translateY(-50%) rotate(180deg);}
+
+#brand_intro .reservation_des .tab_content .menu_inner ul {display:none;}
+#brand_intro .reservation_des .tab_content .menu_inner ul>li {display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem 0.8rem 1.8rem;border-bottom:1px solid #F0F0F0;}
+
+#brand_intro .reservation_des .tab_content .menu_inner ul>li span.price {font-size:0.9rem;} */
+
+
+/* 서비스 탭 폰트 */
+/* #brand_intro .reservation_des .tab_content .service_inner .des p {margin-bottom:0.2rem;}
+#brand_intro .reservation_des .tab_content .service_inner .des strong {display:block;font-size:0.9rem;font-weight:500;} */
+
+/* 디자이너 탭 폰트 */
+/* #brand_intro .reservation_des .tab_content .designer_inner .des p {font-size:0.9rem;font-weight:500;margin-bottom:0.2rem;}
+#brand_intro .reservation_des .tab_content .designer_inner .des strong {display:block;font-size:0.7rem;color:rgba(0,0,0,0.5);} */
+
+/* 문의 탭 */
+/* #brand_intro .reservation_des .tab_content .inquiry_inner {padding:2rem 0;text-align:center;} */
 
 
 
+/* 22.03.04 수정 */
+/* #brand_intro .reservation_btn {position:fixed;bottom:0;width:100%;text-align:center;background:#000;color:#fff;padding:1.15rem 0 1.9rem 0;} */
+#brand_intro .reservation_btn {position:fixed;bottom:4.8rem;left:0;width:100%;text-align:center;background:#000;color:#fff;padding:1.5rem 0;}
+
+#brand_intro .minish_spa01 {background:url(../img/minish_spa01.jpg) no-repeat center center/cover;}
+#brand_intro .minish_spa02 {background:url(../img/minish_spa02.jpg) no-repeat center center/cover;}
+#brand_intro .minish_spa03 {background:url(../img/minish_spa03.jpg) no-repeat center center/cover;}
+#brand_intro .minish_spa04 {background:url(../img/minish_spa04.jpg) no-repeat center center/cover;}
+#brand_intro .minish_spa05 {background:url(../img/minish_spa05.jpg) no-repeat center center/cover;}
+
+#brand_intro .valmont_spa01 {background:url(../img/valmont_spa01.jpg) no-repeat center center/cover;}
+#brand_intro .valmont_spa02 {background:url(../img/valmont_spa02.jpg) no-repeat center center/cover;}
+#brand_intro .valmont_spa03 {background:url(../img/valmont_spa03.jpg) no-repeat center center/cover;}
+#brand_intro .valmont_spa04 {background:url(../img/valmont_spa04.jpg) no-repeat center center/cover;}
+#brand_intro .valmont_spa05 {background:url(../img/valmont_spa05.jpg) no-repeat center center/cover;}
+
+#brand_intro .nail01 {background:url(../img/nail01.jpg) no-repeat center center/cover;}
+#brand_intro .nail02 {background:url(../img/nail02.jpg) no-repeat center center/cover;}
+#brand_intro .nail03 {background:url(../img/nail03.jpg) no-repeat center center/cover;}
+#brand_intro .nail04 {background:url(../img/nail04.jpg) no-repeat center center/cover;}
+#brand_intro .nail05 {background:url(../img/nail05.jpg) no-repeat center center/cover;}
+
+#brand_intro .deep_focus01 {background:url(../img/deep_focus01.jpg) no-repeat center center/cover;}
+#brand_intro .deep_focus02 {background:url(../img/deep_focus02.jpg) no-repeat center center/cover;}
+#brand_intro .deep_focus03 {background:url(../img/deep_focus03.jpg) no-repeat center center/cover;}
+#brand_intro .deep_focus04 {background:url(../img/deep_focus04.jpg) no-repeat center center/cover;}
+#brand_intro .deep_focus05 {background:url(../img/deep_focus05.jpg) no-repeat center center/cover;}
+
+#brand_intro .minish_manul_therapy01 {background:url(../img/minish_manul_therapy01.jpg) no-repeat center center/cover;}
+#brand_intro .minish_manul_therapy02 {background:url(../img/minish_manul_therapy02.jpg) no-repeat center center/cover;}
+#brand_intro .minish_manul_therapy03 {background:url(../img/minish_manul_therapy03.jpg) no-repeat center center/cover;}
+#brand_intro .minish_manul_therapy04 {background:url(../img/minish_manul_therapy04.jpg) no-repeat center center/cover;}
+#brand_intro .minish_manul_therapy05 {background:url(../img/minish_manul_therapy05.jpg) no-repeat center center/cover;}
+
+#brand_intro .foresta_black01 {background:url(../img/foresta_black01.jpg) no-repeat center center/cover;}
+#brand_intro .foresta_black02 {background:url(../img/foresta_black02.jpg) no-repeat center center/cover;}
+#brand_intro .foresta_black03 {background:url(../img/foresta_black03.jpg) no-repeat center center/cover;}
+#brand_intro .foresta_black04 {background:url(../img/foresta_black04.jpg) no-repeat center center/cover;}
+#brand_intro .foresta_black05 {background:url(../img/foresta_black05.jpg) no-repeat center center/cover;}
+
+
+/* ---------- profile.html ---------- */
 /* 프로필 메인 */
 #profile {}
 #profile .top_wrap {padding:0.9rem 1rem 1.5rem 1rem;background:#000;color:#fff;}
@@ -332,23 +457,30 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 /* 유저 아이디, 포인트, 편집버튼 */
 #profile .user_wrap span {display:block;}
 #profile .user_wrap .user_id {font-size:1rem;font-weight:500;}
-#profile .user_wrap .user_point {font-size:0.8rem;margin-bottom:0.65rem;}
+
+#profile .user_wrap .user_class {font-size:0.7rem;margin-bottom:0.5rem;color:#B4B4B4;}
+#profile .user_wrap .user_class::before {content:"고객등급";display:inline-block;margin-right:0.5rem;}
+
 #profile .user_wrap .profile_edit_btn {display:inline-block;font-size:0.7rem;padding:0.25rem 0.7rem;border:1px solid #fff;border-radius:10rem;text-align:center;}
 
-/* 퀵메뉴(결제내역, 포인트, 바우처 등) */
-#profile .quick_menu_wrap>ul {display:flex;flex-wrap:wrap;background:#262626;}
-#profile .quick_menu_wrap>ul>li {width:calc(100% / 3);text-align:center;}
-#profile .quick_menu_wrap>ul>li>a {display:block;line-height:2.5rem;font-size:0.8rem;font-weight:500;}
+/* 퀵메뉴(서비스, 바우처, 쿠폰 등) */
+#profile .quick_menu_wrap>ul {display:flex;flex-wrap:wrap;margin-left:-0.35rem;}
+#profile .quick_menu_wrap>ul>li {width:calc(100% / 3 - 0.35rem);text-align:center;margin-left:0.35rem;background:#262626;border-radius:0.5rem;}
+#profile .quick_menu_wrap>ul>li>a {display:block;font-size:0.8rem;font-weight:500;padding:0.8rem 0;}
+#profile .quick_menu_wrap>ul>li>a img {display:block;margin:0 auto 0.25rem auto;}
 
 
 /* 공지사항 자주묻는질문 등의 메뉴 */
-#profile .profile_menu {padding:0.5rem 0;}
+#profile .menu_wrap {border-top:8px solid #F7F7F7;font-size:0.9rem;}
 
-#profile .profile_menu>li~li {border-top:1px solid #E3E3E3;}
-#profile .profile_menu>li:last-child {border-bottom:8px solid #F0F0F0;}
+#profile .menu>li~li {border-top:1px solid #E3E3E3;}
+#profile .menu>li:last-child {border-bottom:8px solid #F7F7F7;}
 
-#profile .profile_menu>li>a {position:relative;display:block;padding:1rem;}
-#profile .profile_menu>li>a::before {content:url(../img/arrow_bottom.svg);position:absolute;top:50%;right:1rem;transform:translateY(-50%) rotate(-90deg);}
+#profile .menu>li>a {position:relative;display:block;padding:1rem;}
+#profile .menu>li>a::before {content:url(../img/arrow_bottom.svg);position:absolute;top:50%;right:1rem;transform:translateY(-50%) rotate(-90deg);}
+
+/* 결제내역, 예약내역메뉴 */
+#profile .history_menu {font-weight:500;}
 
 
 /* 메디박스 고객센터 */
@@ -370,12 +502,94 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #profile .inquire>li:nth-child(2)>a::after {content:url(../img/icon_kakao.png);}
 
 /* 프로필 푸터 */
-#footer {padding:1rem 1rem 2rem 1rem;color:#888888;font-size:0.6rem;background:#F7F7F7;}
+#footer {padding:1rem 1rem 5rem 1rem;color:#888888;font-size:0.6rem;background:#F7F7F7;}
 #footer .footer_link {margin-bottom:0.45rem;}
 #footer .footer_link>ul {display:flex;justify-content:space-between;align-items:center;}
 #footer .footer_link>ul>li {position:relative;}
 #footer .footer_link>ul>.line {display:block;width:1px;height:1em;background:#888888;}
 #footer .footer_link>ul>li>a {display:block;}
+
+
+/* 2022.03.04 수정 */
+/* 마이페이지 */
+#myPage {padding:1.9rem 1rem 8rem 1rem;}
+#myPage form p {position:relative;margin-bottom:1.5rem;}
+#myPage form p.receive_check>label:last-child {padding-left:0.75rem;}
+#myPage form label {display:block;margin-bottom:0.5rem;font-size:0.8rem;font-weight:500;}
+#myPage form input {width:100%;border:1px solid #dfdfdf;border-radius:0.25rem;line-height:2.4rem;padding:0 0.6rem;font-size:0.9rem;font-weight:400;}
+#myPage form input::placeholder {color:#b4b4b4;}
+
+#myPage span#id_error1,
+#myPage span#id_error2 {
+    position:absolute;bottom:-1.25rem;right:0;font-size:0.7rem;font-weight:400;color:#FF1717;text-align:right;
+}
+
+
+/* 약관 및 정책 */
+#myPage .policy_wrap {margin-bottom:2rem;}
+#myPage .policy_wrap a {position:relative;display:block;font-weight:500;}
+#myPage .policy_wrap a::after {content:url(../img/arrow_bottom.svg);position:absolute;top:0;right:0;display:block;transform:rotate(-90deg);}
+
+/* 로그아웃 및 회원탈퇴 */
+#myPage .logout_wrap {text-align:center;font-size:0;}
+#myPage .logout_wrap a {position:relative;font-size:0.7rem;font-weight:500;color:#716E6E;padding:0 0.9rem;}
+#myPage .logout_wrap a~a::before {content:"";position:absolute;top:50%;left:0;transform:translateY(-50%);display:block;width:1px;height:0.6rem;background:#716E6E;}
+
+/* 프로필 메인 */
+/* #profile {}
+#profile .top_wrap {padding:0.9rem 1rem 1.5rem 1rem;background:#000;color:#fff;}
+#profile .user_wrap {display:flex;align-items:center;margin-bottom:1rem;} */
+
+/* 유저 프로필 사진 */
+/* #profile .user_wrap figure {width:5rem;height:5rem;border-radius:50%;background:#aaa;margin-right:0.9rem;} */
+
+/* 유저 아이디, 포인트, 편집버튼 */
+/* #profile .user_wrap span {display:block;}
+#profile .user_wrap .user_id {font-size:1rem;font-weight:500;}
+#profile .user_wrap .user_point {font-size:0.8rem;margin-bottom:0.65rem;}
+#profile .user_wrap .profile_edit_btn {display:inline-block;font-size:0.7rem;padding:0.25rem 0.7rem;border:1px solid #fff;border-radius:10rem;text-align:center;} */
+
+/* 퀵메뉴(결제내역, 포인트, 바우처 등) */
+/* #profile .quick_menu_wrap>ul {display:flex;flex-wrap:wrap;background:#262626;}
+#profile .quick_menu_wrap>ul>li {width:calc(100% / 3);text-align:center;}
+#profile .quick_menu_wrap>ul>li>a {display:block;line-height:2.5rem;font-size:0.8rem;font-weight:500;} */
+
+
+/* 공지사항 자주묻는질문 등의 메뉴 */
+/* #profile .profile_menu {padding:0.5rem 0;}
+
+#profile .profile_menu>li~li {border-top:1px solid #E3E3E3;}
+#profile .profile_menu>li:last-child {border-bottom:8px solid #F0F0F0;}
+
+#profile .profile_menu>li>a {position:relative;display:block;padding:1rem;}
+#profile .profile_menu>li>a::before {content:url(../img/arrow_bottom.svg);position:absolute;top:50%;right:1rem;transform:translateY(-50%) rotate(-90deg);} */
+
+
+/* 메디박스 고객센터 */
+/* #profile .service_menu {padding:1.5rem 1rem;}
+#profile .service_menu h3 {font-size:0.7rem;font-weight:500;margin-bottom:0.5rem;} */
+
+/* 운영시간 & 점심시간 */
+/* #profile .working_time>li {font-size:0.7rem;color:#716E6E;}
+#profile .working_time>li:last-child {margin-bottom:0.5rem;} */
+
+/* 문의 버튼 */
+/* #profile .inquire {display:flex;}
+#profile .inquire>li {flex:1;}
+#profile .inquire>li~li {margin-left:0.4rem;}
+#profile .inquire>li>a {position:relative;display:block;padding:0.5rem;border:1px solid #E3E3E3;border-radius:0.25rem;font-size:0.7rem;font-weight:500;}
+
+#profile .inquire>li>a::after {position:absolute;top:50%;right:0.5rem;transform:translateY(-50%);font-size:0;}
+#profile .inquire>li:nth-child(1)>a::after {content:url(../img/icon_phone.png);}
+#profile .inquire>li:nth-child(2)>a::after {content:url(../img/icon_kakao.png);} */
+
+/* 프로필 푸터 */
+/* #footer {padding:1rem 1rem 2rem 1rem;color:#888888;font-size:0.6rem;background:#F7F7F7;}
+#footer .footer_link {margin-bottom:0.45rem;}
+#footer .footer_link>ul {display:flex;justify-content:space-between;align-items:center;}
+#footer .footer_link>ul>li {position:relative;}
+#footer .footer_link>ul>.line {display:block;width:1px;height:1em;background:#888888;}
+#footer .footer_link>ul>li>a {display:block;} */
 
 
 
@@ -411,30 +625,19 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 
 /* 예약하기 화면 */
 #reservation {position:relative;padding:1.5rem 1rem;background:#F7F7F7;height:calc(100vh - 2.6rem);}
-#reservation ul {display:flex;flex-wrap:wrap;gap:0.55rem;}
-#reservation ul li a {display:flex;width:4.25rem;height:4.25rem;border-radius:0.5rem;background:rgba(255,255,255,0.3);background:#fff;border:0.5px solid #DFDFDF;box-shadow:0px 3px 6px rgba(0,0,0,0.16);}
+
+/* 22.03.14 수정 */
+#reservation ul {display:flex;flex-wrap:wrap;margin-left:-0.55rem;}
+#reservation ul li {position:relative;width:calc(100% / 6 - 0.55rem);padding-bottom:calc(100% / 6 - 0.55rem);margin-left:0.55rem;margin-bottom:0.55rem;}
+#reservation ul li a {position:absolute;top:0;left:0;width:100%;height:100%;display:flex;border-radius:0.5rem;background:rgba(255,255,255,0.3);background:#fff;border:0.5px solid #DFDFDF;box-shadow:0px 3px 6px rgba(0,0,0,0.16);}
 #reservation .menu_box {margin:auto;text-align:center;}
-#reservation .menu_box span {display:block;font-size:0.65rem;}
+#reservation .menu_box img {height:100%;}
+#reservation .menu_box span {display:block;font-size:0.75rem;}
 
 /* 하단 배너 광고 */
-#reservation figure {position:fixed;bottom:3.5rem;left:1rem;right:1rem;}
-#reservation figure::before {content:"광고";position:absolute;bottom:calc(100% + 0.2em);left:0;font-size:0.7rem;color:#B4B4B4;}
-
-#reservation figure img {width:100%;}
-
-
-
-/* 브랜드 예약 페이지 */
-#brand_intro .reservation_des {bottom:4.25rem;}
-
-#brand_intro .brand_item_des ul {padding-left:1.7rem;}
-#brand_intro .brand_item_des ul.address {background:url(../img/icon_location.svg) no-repeat top left;margin-bottom:0.75rem;}
-#brand_intro .brand_item_des ul.working_time {background:url(../img/icon_clock.svg) no-repeat top left}
-
-#brand_intro .brand_item_des ul>li {font-size:0.85rem;margin-bottom:0.35rem;}
-
-#brand_intro .reservation_btn {position:fixed;bottom:0;width:100%;text-align:center;background:#000;color:#fff;padding:1.15rem 0 1.9rem 0;}
-
+/* 22.03.14 수정 */
+#reservation #Advertisement {margin-top:0.5rem;width:100%;}
+#reservation #Advertisement img {width:100%;}
 
 
 /* 약관 및 정책 리스트 */
@@ -476,6 +679,42 @@ input[type="checkbox"]:checked + label::before {border:1px solid #000;background
 #popup07 .bottom>a:first-child {background:#B5B5B5;}
 #popup07 .bottom>a {flex:1;}
 
+/* 22.03.18 추가 */
+@media (min-width:780px) {
+    /* ---------- pointhome.html ---------- */
+    #point_payment .my_point_wrap .package {position:absolute;top:9%;right:5%;display:block;width:2rem;}
+    #point_payment .my_point_wrap .package span.grade {font-size:1.2rem;}
+
+    #point_payment .my_pass h3 {font-size:2rem;}
+
+    #point_payment .my_point span,
+    #point_payment .my_pass span,
+    #point_payment .my_point strong,
+    #point_payment .my_pass strong {font-size:3.5rem;}
+    
+    #point_payment .payment a {font-size:1.4rem;}
+
+    #point_payment .my_membership_wrap .container::before {font-size:40rem;}
+
+    #point_payment .my_membership h3 {font-size:4rem;}
+
+    /* ---------- main.html ---------- */
+    /* 브랜드 시안4 */
+    #brand .brand_menu4 .brand_wrap li a .txt_box img {width:2.5rem;}
+}
+
+
+/* 22.03.07 추가 */
+/* 예약페이지 반응형 */
+@media (max-width:768px) {
+    #reservation ul li {position:relative;width:calc(100% / 5 - 0.55rem);padding-bottom:calc(100% / 5 - 0.55rem);}    
+}
+@media (max-width:668px) {
+    #reservation ul li {position:relative;width:calc(100% / 4 - 0.55rem);padding-bottom:calc(100% / 4 - 0.55rem);}    
+}
+@media (max-width:568px) {
+    #reservation ul li {position:relative;width:calc(100% / 3 - 0.55rem);padding-bottom:calc(100% / 3 - 0.55rem);}    
+}
 
 @media (max-width:413px) {
     html {font-size:18px;}

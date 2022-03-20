@@ -28,10 +28,10 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_manul_therapy01"></figure>
-            <figure class="minish_manul_therapy02"></figure>
+            <!-- <figure class="minish_manul_therapy02"></figure>
             <figure class="minish_manul_therapy03"></figure>
             <figure class="minish_manul_therapy04"></figure>
-            <figure class="minish_manul_therapy05"></figure>
+            <figure class="minish_manul_therapy05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>

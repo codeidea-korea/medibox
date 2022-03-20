@@ -1,7 +1,5 @@
 
 @include('user.header')
-
-    <script src="{{ asset('user/js/tabmenu.js') }}"></script>
     
         <!-- header -->
         <header id="header">
@@ -44,6 +42,19 @@
             <div class="my_point_wrap">
                 <h2>내 포인트</h2>
                 <div class="container">
+                    <!-- 22.03.18 추가 -->
+                    <figure class="package _pkgTag">
+                        <!-- 비활성화 -->
+                        <img src="/user/img/package_logo.svg" alt="package logo _pkgImg">
+                        <!-- 활성화 -->
+                        <!-- <img src="./img/package_logo.svg" alt="package logo" class="on"> -->
+
+                        <!-- 패키지 등급 -->
+                        <!-- <span class="grade grade1">50</span> -->
+                        <!-- <span class="grade grade2">100</span> -->
+                        <!-- <span class="grade grade3">150</span> -->
+                    </figure>
+                    <!------------------>
                     <div class="my_point">
                         <span><strong id="point" class="_userPoint">0</strong>P</span>
                     </div>
@@ -77,6 +88,24 @@
             
             var tmpItem = '<h2>정액권</h2>';
             for(var inx = 0; inx<response.data.length; inx++){
+                if(response.data[inx].point_type == 'K'){
+                    // 2022.03.20. 패키지가 존재하는 경우에만 on 으로 바꾸고 패키지 등급 처리
+                    // 패키지는 포인트에서 잔액 차감을 처리하므로 충전 총액을 노출하면 됨
+                    // <span class="grade grade1">50</span>
+                    $('._pkgImg').addClass('on');
+                    var grade = 0;
+                    if(response.data[inx].point == 500000) {
+                        grade = 1;
+                    } else if(response.data[inx].point == 1000000) {
+                        grade = 2;
+                    } else if(response.data[inx].point > 1000000) {
+                        grade = 3;
+                    }
+                    $('._pkgTag').html($('._pkgTag').html() + (grade > 0 
+                        ? '<span class="grade grade'+grade+'">'+(response.data[inx].point / 10000)+'</span>'
+                        : '')
+                    );
+                }
                 if(response.data[inx].point_type == 'P' || response.data[inx].point_type == 'K' || response.data[inx].point_type == 'S1') {
                     continue;
                 }

@@ -21,8 +21,12 @@ class UserController extends Controller
             $id = $request->post('id', '');
             $pw = $request->post('pw1', '');
             $name = $request->post('name', '홍길동');
+            $recommended_code = $request->post('recommended_code', '');
+            $recommended_shop = $request->post('recommended_shop');
+            
                 
-            return view('user.agreement')->with('id', $id)->with('pw', $pw)->with('name', $name);
+            return view('user.agreement')->with('id', $id)->with('pw', $pw)->with('name', $name)
+                ->with('recommended_code', $recommended_code)->with('recommended_shop', $recommended_shop);
         }
     
         return view('user.agreement');
@@ -84,7 +88,7 @@ class UserController extends Controller
     {
         return view('user.minishtherapy');
     }
-    public function mypage(Request $request)
+    public function profile(Request $request)
     {
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
@@ -104,8 +108,56 @@ class UserController extends Controller
 
         $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
 
-        return view('user.mypage')->with('id', $user->user_phone)
+        return view('user.profile')->with('id', $user->user_phone)
             ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn);
+    }
+    public function profile_edit(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $request->session()->put('error', '계정을 확인해주세요.');
+            return back()->withInput();
+        }
+
+        $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
+
+        return view('user.profile_edit')->with('id', $user->user_phone)
+            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn)
+            ->with('gender', $user->gender)->with('recommended_shop', $user->recommended_shop)->with('recommended_code', $user->recommended_code);
+    }
+    public function mypage_edit(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $request->session()->put('error', '계정을 확인해주세요.');
+            return back()->withInput();
+        }
+
+        $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
+
+        return view('user.mypage_edit')->with('id', $user->user_phone)
+            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn)
+            ->with('gender', $user->gender)->with('recommended_shop', $user->recommended_shop)->with('recommended_code', $user->recommended_code);
     }
     public function mypage_privacy(Request $request)
     {
@@ -161,13 +213,35 @@ class UserController extends Controller
     {
         return view('user.privacy');
     }
+    
+    public function tos(Request $request)
+    {
+        return view('user.tos');
+    }
+    public function thirdparty(Request $request)
+    {
+        return view('user.thirdparty');
+    }
+    public function marketing(Request $request)
+    {
+        return view('user.marketing');
+    }
+
     public function reservation(Request $request)
     {
         return view('user.reservation');
     }
-    public function signup(Request $request)
+    public function signup1(Request $request)
     {
-        return view('user.signup');
+        return view('user.signup1');
+    }
+    public function signup2(Request $request)
+    {
+        return view('user.signup2');
+    }
+    public function signup3(Request $request)
+    {
+        return view('user.signup3');
     }
     public function valmontspa(Request $request)
     {

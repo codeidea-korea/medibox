@@ -27,11 +27,12 @@
     <!-- 발몽스파 예약 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
+            <!-- 22.03.18 수정 -->
             <figure class="valmont_spa01"></figure>
             <figure class="valmont_spa02"></figure>
             <figure class="valmont_spa03"></figure>
             <figure class="valmont_spa04"></figure>
-            <figure class="valmont_spa05"></figure>
+            <!-- <figure class="valmont_spa05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -48,7 +49,10 @@
                 <li>공휴일, 명절 연휴 휴무</li>
             </ul>
         </div>
-        <a href="tel:02-540-2252" class="reservation_btn">전화 예약하기</a>
+
+        <!-- 22.03.18 수정 -->
+        <!-- <a href="tel:02-540-2252" class="reservation_btn">예약하기</a> -->
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
     @include('user.footer')
