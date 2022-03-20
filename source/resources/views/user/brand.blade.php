@@ -60,7 +60,7 @@
                     </div>
                 </a>
             </li>
-            <li class="minish_manul_therapy">
+            <li class="miniish_manul_therapy">
                 <a href="/brand/minishtherapy">
                     <div class="txt_box">
                         <span>Minish Manul Therapy</span>

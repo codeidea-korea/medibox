@@ -1,6 +1,13 @@
 
 @include('user.header')
 
+	<!-- google 로그인 추가 -->
+    <script src="https://apis.google.com/js/api:client.js" async defer></script>
+	<!-- 네이버 로그인 추가 -->
+  	<script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+	<!-- 카카오 로그인 추가 -->
+  	<script type="text/javascript" src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
+    
     <!-- 로그인 화면 -->
     <div id="login">
         <!-- 뒤로가기 버튼 -->
@@ -42,14 +49,59 @@
                     <button type="submit" id="login_btn">로그인</button>
                 </p>
             </form>
+            
+            <!------------ 2차버전 추가 ------------>
+            <!-- 아이디 찾기 & 비밀번호 찾기 & 회원가입 -->
+            <!-- 
+            <ul class="find">
+                <li>
+                    <a href="#" onclick="wait()">아이디 찾기</a>
+                </li>
+                <li>
+                    <a href="#" onclick="wait()">비밀번호 찾기</a>
+                </li>
+                <li>
+                    <a href="/user/signup">회원가입하기</a>
+                </li>
+            </ul>
+            -->
+            <!--
+            <div class="social_login">
+                <h4>
+                    <span>간편로그인</span>
+                </h4>
+                <ul>
+                    <li>
+                        <a href="#!">
+                            <img src="{{ asset('user/img/kakao.svg') }}" alt="카카오 로그인" id="loginKakao">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!">
+                            <img src="{{ asset('user/img/naver.svg') }}" alt="네이버 로그인" id="naver_id_login">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!">
+                            <img src="{{ asset('user/img/google.svg') }}" alt="구글 로그인" id="loginGoogle">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            -->
+            <!------------------------------------>
+            
         </div>
-        <div class="sign_up">
-            <!-- sign up -->
+
+        <!--------------- 1차 ---------------->
+        <!-- sign up -->
+         <div class="sign_up">
             <span>
                 아직 메디박스 회원이 아니신가요?
                 <a href="/user/signup">회원가입하기</a>
             </span>
-        </div>
+        </div> <!-- -->
+        <!------------------------------------>
     </div>
 
 	@if(Session::has('error'))
@@ -63,6 +115,37 @@
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>
     <script>
+        function wait(){
+            alert('준비중입니다.');
+        }
+        var naver_id_login;
+        function initSNSLogin(){
+            Kakao.init('d4aeeca0375caae66d2a2aa8bfa2efd9');
+			$('#loginKakao').off().on('click', function(){
+			    location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=d4aeeca0375caae66d2a2aa8bfa2efd9&redirect_uri=https://'+location.hostname+'/login/oauth/kakao&response_type=code';
+			});
+            // 구글 로그인
+            setTimeout(() => {
+                gapi.load('auth2', function() {
+                    gapi.auth2.init({
+                        client_id: '473022129853-9lub1aopq2814f7o4k31ek2t9qc81c5u.apps.googleusercontent.com'
+//						, cookiepolicy: 'single_host_origin'
+                        , scope: "profile email"
+                        , ux_mode: 'redirect'
+                        , redirect_uri: 'https://'+location.hostname+'/login/oauth/google'
+                    });
+                });
+            }, 300);
+            // 네이버 로그인
+            naver_id_login = new naver_id_login("w6z6OE_m70O7AnhQJXAb", "https://"+location.hostname+"/login/oauth/naver");
+            var state = naver_id_login.getUniqState();
+            naver_id_login.setButton("white", 2,40);
+            naver_id_login.setDomain(location.hostname);
+            naver_id_login.setState(state);
+            //  	naver_id_login.setPopup();
+            naver_id_login.init_naver_id_login();
+            $('#naver_id_login > a').html('&nbsp;');
+        }
         function checkValidation(){
             var id = document.querySelector('#id').value;
             var pw = document.querySelector('#pw').value;
@@ -72,10 +155,12 @@
                 alert('올바른 휴대폰 번호를 입력해주세요.');
                 return false;
             }
+            /*
             if (regPhone.test(id) !== true) {
                 alert('올바른 휴대폰 번호를 입력해주세요.');
                 return false;
             }
+            */
             if(!pw || pw == '' || pw.length < 4) {
                 alert('비밀번호를 입력해주세요.');
                 return false;

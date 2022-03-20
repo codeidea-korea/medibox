@@ -90,7 +90,14 @@
                 </div>                
             </div>
 
-            <button type="button" onclick="usePoint()" id="payment_btn">결제하기</button>
+            <!-- 결제 버튼 -->
+            <!-- 22.03.18 수정 -->
+            <!-- <button type="submit" id="payment_btn">결제하기</button> -->
+
+            <!-- 버튼 비활성화 -->
+            <button type="button" onclick="usePoint()" id="payment_btn" class="btn">결제하기</button>
+            <!-- 버튼 활성화 -->
+            <!-- <button type="button" onclick="usePoint()" id="payment_btn" class="btn on">결제하기</button> -->
 
         </section>
     
@@ -141,6 +148,7 @@
 			$('#use_point').html(medibox.methods.toNumber(response.data[0].price));
 			$('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
 			$('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
+            $('#payment_btn').addClass('on');
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -153,6 +161,7 @@
         $('#use_point').html(medibox.methods.toNumber(price));
         $('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(price)));
         $('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(price)));
+        $('#payment_btn').addClass('on');
     }
 	function usePoint(){
         if(! confirm('포인트 결제 하시겠습니까?')) {

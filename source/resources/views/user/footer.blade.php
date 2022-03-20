@@ -1,7 +1,7 @@
 
-<div class="bottom_menu">
+<div class="bottom_menu _footbar">
     <ul>
-        <li class="on"><a href="/">
+        <li><a href="/brand">
             <svg xmlns="http://www.w3.org/2000/svg" width="20.617" height="19.702" viewBox="0 0 20.617 19.702">
                 <g id="icon_brand" data-name="그룹 1072" transform="translate(-32.191 -819.151)">
                   <path id="Path" d="M296.466,897.516l10.387-7.67,10.23,7.67" transform="translate(-264.275 -70.695)"/>
@@ -46,7 +46,7 @@
               </svg>                  
             <span>이벤트</span>
         </a></li>
-        <li><a href="/mypage">
+        <li><a href="/profile">
             <svg xmlns="http://www.w3.org/2000/svg" width="20.15" height="22.319" viewBox="0 0 20.15 22.319">
                 <g id="icon_my" transform="translate(-609.023 -889.945)">
                   <path id="Path-11" d="M627.922,912.263h0v-3.079c.057-3.326-2.029-6.081-4.662-6.156h-9.323c-2.634.075-4.72,2.83-4.662,6.156v3.079" transform="translate(0.5)" stroke-width="1.5"/>
@@ -57,3 +57,24 @@
         </a></li>
     </ul>
 </div>
+
+<script>
+function activatedFootbar(){
+  var footbarButtons = $('._footbar > ul > li');
+  var buttonTypes = [
+    { type: 'brand', button: footbarButtons[0] },
+    { type: 'reservation', button: footbarButtons[1] },
+    { type: 'point', button: footbarButtons[2] },
+    { type: 'event', button: footbarButtons[3] },
+    { type: 'profile', button: footbarButtons[4] },
+  ];
+  var thisUrl = location.href;
+
+  for(var inx = 0; inx < buttonTypes.length; inx++) {
+    if(thisUrl.indexOf(buttonTypes[inx].type) > 0) {
+      $(buttonTypes[inx].button).addClass('on');
+    }
+  }
+}
+activatedFootbar();
+</script>

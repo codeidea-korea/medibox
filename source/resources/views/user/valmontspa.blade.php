@@ -27,11 +27,12 @@
     <!-- 미니쉬스파 브랜드 소개 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
+            <!-- 22.03.18 수정 -->
             <figure class="valmont_spa01"></figure>
             <figure class="valmont_spa02"></figure>
             <figure class="valmont_spa03"></figure>
             <figure class="valmont_spa04"></figure>
-            <figure class="valmont_spa05"></figure>
+            <!-- <figure class="valmont_spa05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>

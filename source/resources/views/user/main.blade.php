@@ -36,7 +36,7 @@
                     </li>
                     @if ( session('user_seqno') )
                         <li>
-                            <a href="/mypage">
+                            <a href="/profile">
                                 <div class="menu_box">
                                     <img src="/user/img/icon_login.svg" alt="MYpage">
                                     <span>MY</span>
@@ -96,6 +96,13 @@
 
 
     <script>
+        @if ( session('user_seqno') )
+            $(document).ready(function(){
+                $('.gnb li:nth-child(1)>a').off();
+            });
+        @else
+    //        $('.gnb li:nth-child(1)>a').off();
+        @endif
         window.onpageshow = function(event) {
             $('#loading').fadeOut('slow');
             $('.popup').removeClass('on');

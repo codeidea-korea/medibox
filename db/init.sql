@@ -40,6 +40,18 @@ create table user_info
 create index user_info__index_1
     on user_info (user_phone);
 
+alter table user_info add column gender varchar(1) default 'M';
+alter table user_info add column recommended_shop varchar(200);
+alter table user_info add column recommended_code varchar(100);
+alter table user_info add column push_yn    varchar(1)      not null default 'N';
+alter table user_info add column email_yn    varchar(1)      not null default 'N';
+alter table user_info add column sns_yn    varchar(1)      not null default 'N';
+
+alter table user_info add column naver_id    varchar(300);
+alter table user_info add column kakao_id    varchar(300);
+alter table user_info add column google_id    varchar(300);
+
+
 -- 포인트(종류) 마스터 테이블
 create table point_info
 (
@@ -96,6 +108,20 @@ create table user_point_hst
 ) character set utf16;
 create index user_point_hst__index_1
     on user_point_hst (user_seqno);
+
+-- 사용자 패키지 구매/환불 가능 여부
+create table user_package
+(
+    user_package_seqno bigint auto_increment
+        primary key,
+    user_seqno    bigint      not null,
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    allow_refund   varchar(1)      not null, -- 환불가능여부 Y / N
+    deleted   varchar(1)      not null, -- 환불처리된, 삭제여부 Y / N
+    point    int      default 0,
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
 
 -- 상품 가격 정보
 create table product

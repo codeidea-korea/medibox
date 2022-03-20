@@ -154,11 +154,17 @@ class PointController extends Controller
             // 패키지의 경우, 계정 최초 1회만 구매 가능함
             if($point_type == 'K') {
                 // 내 적립 내역 뒤져서 존재 하는지 확인
+                /*
                 $pointHistory = DB::table("user_point_hst")->where([
                     ['user_seqno', '=', $user_seqno],
                     ['point_type', '=', 'K']
                 ])->first();
-
+                */
+                $pointHistory = DB::table("user_package")->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['deleted', '=', 'N']
+                ])->first();
+                
                 if(! empty($pointHistory)) {
                     $result['ment'] = '포인트가 적립되지 않았습니다.\r패키지는 적립 이력이 있어 패키지 적립이 불가능합니다.';
                     return $result;
@@ -212,6 +218,21 @@ class PointController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        // 패키지 데이터 저장
+        if($point_type == 'K') {
+            $id = DB::table('user_package')->insertGetId(
+                [
+                    'user_seqno' => $user_seqno
+                    , 'hst_type' => 'S'
+                    , 'allow_refund' => 'Y'
+                    , 'deleted' => 'N'
+                    , 'point' => $amount 
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 적립되었습니다.';
         $result['data'] = $user;
@@ -249,6 +270,34 @@ class PointController extends Controller
         if(empty($user)) {
             return $result;
         }
+        // 패키지일 경우, 
+        if($point_type == 'K') {
+            $pointHistory = DB::table("user_package")->where([
+                ['user_seqno', '=', $user_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+
+            // 적립 여부 확인
+            if(empty($pointHistory)) {
+                $result['ment'] = '포인트가 환불되지 않았습니다.\r패키지 적립 이력이 없습니다.';
+                return $result;
+            }
+            // 패키지 구매후 사용 이력이 있으면 환불 안됨
+            $countCollectPackageAfterUsed = DB::table("user_point_hst")->where([
+                ['hst_type', '=', 'U'],
+                ['create_dt', '>', $pointHistory->create_dt]
+            ])->count();
+            if($countCollectPackageAfterUsed > 0) {
+                $result['ment'] = '포인트가 환불되지 않았습니다.\r패키지 포인트 적립후 사용한 내역이 있습니다.';
+                return $result;
+            }            
+            // 전액 환불이 아니면 환불 안됨
+            if($pointHistory->point != $amount) {
+                $result['ment'] = '포인트가 환불되지 않았습니다.\r패키지 포인트의 환불은 전액 환불만 가능합니다.';
+                return $result;
+            }
+        }
+
         // TODO: 현재 구매 상품을 기준으로 환불이 이루어지지 않으므로, 정확한 의미의 환불은 아니고, 환불 처리를 정확하게 돌리려면 구매키를 받아서 검증을 해야함!
 /*
         if($product_seqno != 0 && $point_type != 'P') {
@@ -326,6 +375,18 @@ class PointController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        // 패키지일 경우, 
+        if($point_type == 'K') {
+            DB::table('user_package')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['deleted', '=', 'N']
+            ])->update(
+                [
+                    'deleted' => 'Y'
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 환불되었습니다.';
         $result['data'] = $user;

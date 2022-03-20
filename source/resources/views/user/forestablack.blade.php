@@ -28,10 +28,10 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="foresta_black01"></figure>
-            <figure class="foresta_black02"></figure>
+            <!-- <figure class="foresta_black02"></figure>
             <figure class="foresta_black03"></figure>
             <figure class="foresta_black04"></figure>
-            <figure class="foresta_black05"></figure>
+            <figure class="foresta_black05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>

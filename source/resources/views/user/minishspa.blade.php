@@ -28,10 +28,10 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_spa01"></figure>
-            <figure class="minish_spa02"></figure>
+            <!-- <figure class="minish_spa02"></figure>
             <figure class="minish_spa03"></figure>
             <figure class="minish_spa04"></figure>
-            <figure class="minish_spa05"></figure>
+            <figure class="minish_spa05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>

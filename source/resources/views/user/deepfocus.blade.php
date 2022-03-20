@@ -27,11 +27,12 @@
     <!-- 미니쉬스파 브랜드 소개 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
+            <!-- 22.03.18 수정 -->
             <figure class="deep_focus01"></figure>
             <figure class="deep_focus02"></figure>
-            <figure class="deep_focus03"></figure>
+            <!-- <figure class="deep_focus03"></figure>
             <figure class="deep_focus04"></figure>
-            <figure class="deep_focus05"></figure>
+            <figure class="deep_focus05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>

@@ -24,14 +24,15 @@
     </header>
 
 
-    <!-- 발몽스파 예약 페이지 -->
+    <!-- 딥포커스 검안센터 예약 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
+            <!-- 22.03.18 수정 -->
             <figure class="deep_focus01"></figure>
             <figure class="deep_focus02"></figure>
-            <figure class="deep_focus03"></figure>
+            <!-- <figure class="deep_focus03"></figure>
             <figure class="deep_focus04"></figure>
-            <figure class="deep_focus05"></figure>
+            <figure class="deep_focus05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -49,7 +50,10 @@
                 <li>19:00 라스트 오더</li>
             </ul>
         </div>
-        <a href="tel:02-540-2252" class="reservation_btn">전화 예약하기</a>
+
+        <!-- 22.03.18 수정 -->
+        <!-- <a href="tel:02-540-2252" class="reservation_btn">예약하기</a> -->
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
     @include('user.footer')

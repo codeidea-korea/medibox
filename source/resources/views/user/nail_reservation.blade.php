@@ -24,14 +24,14 @@
     </header>
 
 
-    <!-- 발몽스파 예약 페이지 -->
+    <!-- 바라는네일 예약 페이지 -->
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="nail01"></figure>
-            <figure class="nail02"></figure>
+            <!-- <figure class="nail02"></figure>
             <figure class="nail03"></figure>
             <figure class="nail04"></figure>
-            <figure class="nail05"></figure>
+            <figure class="nail05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -48,7 +48,10 @@
                 <li>일요일 정기 휴무</li>
             </ul>
         </div>
-        <a href="tel:02-540-2252" class="reservation_btn">전화 예약하기</a>
+
+        <!-- 22.03.18 수정 -->
+        <!-- <a href="tel:02-540-2252" class="reservation_btn">예약하기</a> -->
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>    
     </section>
 
     @include('user.footer')
