@@ -11,8 +11,8 @@ $page_title = '회원관리';
 		<div class="data-sel">
 			<input type="text" name="startDay" id="startDay" value="2022-02-09" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">&nbsp;&nbsp;~
 			<input type="text" name="endDay" id="endDay" value="{{ date('Y-m-d', strtotime('+1 day')) }}" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">
-			<input type="text" name="searchField" id="searchField" value="" class="span250" placeholder="전화번호/이름">
-			<a href="#" onclick="getList()" class="btn gray">검색</a>
+			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="전화번호/이름">
+			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
 	</form>
@@ -100,6 +100,15 @@ $page_title = '회원관리';
 	function wait(){
 		alert('준비중입니다.');
 	}
+	function loadList(no) {
+		pageNo = no;
+		getList();
+	}
+	function enterkey() {
+		if (window.event.keyCode == 13) {
+			loadList(1);
+		}
+	}
 	function getList(){
 		var startDay = $('input[name=startDay]').val();
 		var endDay = $('input[name=endDay]').val();
@@ -142,8 +151,16 @@ $page_title = '회원관리';
 
 			var bodyData = '';
 			for(var inx=0; inx<response.data.length; inx++){
-				var no = (response.count - (request.pageNo - 1)/pageSize) - inx;
+				var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
 				var pointsDescription = '';
+				if(response.data[inx].points.length < 1) {
+					try{
+						throw ('정상적으로 가입되지 않은 고객입니다.');
+					}catch(e){
+						console.error(e);
+						continue;
+					}
+				}
 				for(var jnx=0; jnx<response.data[inx].points.length; jnx++){
 					if(response.data[inx].points[jnx].point_type == 'K' || response.data[inx].points[jnx].point_type == 'P') continue;
 
@@ -158,7 +175,7 @@ $page_title = '회원관리';
 							+'	<td>'+(response.data[inx].delete_yn == 'Y' ? '탈퇴' : response.data[inx].create_dt)+'</td>'
 							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber(response.data[inx].points.filter(a => a.point_type == 'P')[0].point)+' P</td>'
 							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+pointsDescription+'</td>' 
-							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber(response.data[inx].points.filter(a => a.point_type == 'K')[0].point)+' P</td>'
+							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber((response.data[inx].packageHistory ? response.data[inx].packageHistory.point : 0))+' P</td>'
 							+'	<td><a href="#" onclick="gotoInfoDetail(\''+response.data[inx].user_phone+'\')" class="btnEdit">수정</a></td>'
 							+'</tr>';
 				

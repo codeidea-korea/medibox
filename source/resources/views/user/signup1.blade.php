@@ -25,11 +25,13 @@
         </header>
 
         <section id="signUp">
-            <form action="/terms/agreement" method="post" onsubmit="checkValidation()">
+            <form action="/terms/agreement" method="post" onsubmit="return checkValidation()">
                 {{ csrf_field() }}
                 <!-- id -->
                 <div>
-                    <label for="id">아이디(휴대폰 번호)</label>
+                    <!-- 22.03.20 (태그 수정) -->
+                    <!-- <label for="id">아이디(휴대폰 번호)</label> -->
+                    <h2>아이디(휴대폰 번호)</h2>
                     <!-- 22.03.11 type 수정, pattern 추가 -->
                     <!-- <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." required> -->
                     <input type="text" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" maxLength=13 onkeyup="checkValidationIdDupplicated()" required>
@@ -41,13 +43,17 @@
                     <!-- <span id="id_error2">이미 가입되어있는 휴대폰 번호입니다.</span> -->
                 </div>
                 <div>
-                    <label for="name">이름</label>
+                    <!-- 22.03.20 (태그 수정) -->
+                    <!-- <label for="pw">비밀번호</label> -->
+                    <h2>이름</h2>
                     <input type="text" name="name" id="name" placeholder="이름을 입력해주세요." required onkeyup="checkAllChoose()">
                     <span id="name_error1">이름을 입력해주세요.</span>
                 </div>
                 <!-- password -->
                 <div>
-                    <label for="pw">비밀번호</label>
+                    <!-- 22.03.20 (태그 수정) -->
+                    <!-- <label for="pw">비밀번호 확인</label> -->
+                    <h2>비밀번호</h2>
                     <input type="password" name="pw1" id="pw_1" placeholder="비밀번호를 입력해주세요." onkeyup="checkAllChoose()" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" required>
 
                     <!-- 형식과 다를 때 나오는 오류메시지 -->
@@ -55,7 +61,7 @@
                 </div>
                 <!-- password check -->
                 <div>
-                    <label for="pw">비밀번호 확인</label>
+                    <h2>비밀번호 확인</h2>
                     <input type="password" name="pw2" id="pw_2" placeholder="비밀번호를 입력해주세요." onkeyup="checkAllChoose()" required>
 
                     <!-- 비밀번호가 일치하지 않을 때 나오는 오류메시지 -->
@@ -118,8 +124,7 @@
                 $('#next_btn').removeClass('on');
                 return false;
             }
-            var name = document.querySelector('#name').value;
-            if(!name || name == '')  {
+            if(!checkValidationName())  {
                 $('#next_btn').removeClass('on');
                 return false;
             }
@@ -140,14 +145,21 @@
             $('#pw_error1').hide();
             $('#pw_error2').hide();
             $('#name_error1').hide();
+
+            $('#id').removeClass('on');
+            $('#name').removeClass('on');
+            $('#pw_1').removeClass('on');
+            $('#pw_2').removeClass('on');
         }
         function checkValidationPassword(){
             var pw_1 = document.querySelector('#pw_1').value;
             var regx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
 
             $('#pw_error1').hide();
+            $('#pw_1').removeClass('on');
             if (!pw_1 || pw_1 == '' || regx.test(pw_1) !== true) {
                 $('#pw_error1').show();
+                $('#pw_1').addClass('on');
                 return false;
             }
             return true;
@@ -157,8 +169,22 @@
             var pw_2 = document.querySelector('#pw_2').value;
 
             $('#pw_error2').hide();
+            $('#pw_2').removeClass('on');
             if (pw_1 != pw_2) {
                 $('#pw_error2').show();
+                $('#pw_2').addClass('on');
+                return false;
+            }
+            return true;
+        }
+        function checkValidationName(){
+            var name = document.querySelector('#name').value;
+            $('#name').removeClass('on');
+            $('#name_error1').hide();
+
+            if (!name || name == '') {
+                $('#name_error1').show();
+                $('#name').addClass('on');
                 return false;
             }
             return true;
@@ -167,10 +193,12 @@
         function checkValidationIdDupplicated(){
             $('#id_error1').hide();
             $('#id_error2').hide();
+            $('#id').removeClass('on');
             var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
             var id = document.querySelector('#id').value;
 
             if (!id || id == '' || regPhone.test(id) !== true) {
+                $('#id').addClass('on');
                 $('#id_error1').show();
                 return false;
             }
@@ -182,10 +210,12 @@
                 if(!response.result){
                     $('#next_btn').removeClass('on');
                     $('#id_error2').show();
+                    $('#id').addClass('on');
                     isDupplicated = true;
                     return false;
                 }
                 $('#id_error2').hide();
+                $('#id').removeClass('on');
                 isDupplicated = false;
                 checkAllChoose();
                 return true;
@@ -201,27 +231,41 @@
             var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
             hideValidationText();
 
+            $('#id').removeClass('on');
+            $('#name').removeClass('on');
+            $('#pw_1').removeClass('on');
+            $('#pw_2').removeClass('on');
+
             if (!id || id == '' || regPhone.test(id) !== true) {
                 $('#id_error1').show();
+                $('#id').addClass('on');
                 return false;
             }
             if (!name || name == '') {
                 $('#name_error1').show();
+                $('#name').addClass('on');
                 return false;
             }
             if(isDupplicated) {
                 $('#id_error2').show();
+                $('#id').addClass('on');
                 return false;
             }
-            if(checkValidationPassword()) {
+            if(!checkValidationPassword()) {
                 $('#pw_error1').show();
+                $('#pw_1').addClass('on');
                 return false;
             }
-            if(checkValidationPassword2()) {
+            if(!checkValidationPassword2()) {
                 $('#pw_error2').show();
+                $('#pw_2').addClass('on');
                 return false;
             }
             if(!$('#next_btn').hasClass('on')) {
+                return false;
+            }
+            var shop = $('input[name=recommended_shop]').val();
+            if(!shop || shop == '')  {
                 return false;
             }
 

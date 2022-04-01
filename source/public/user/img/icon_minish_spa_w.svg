@@ -1,0 +1,21 @@
+<svg id="그룹_605" data-name="그룹 605" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="사각형_143" data-name="사각형 143" width="24.327" height="6.57" fill="none" stroke="#fff" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <rect id="사각형_140" data-name="사각형 140" width="30" height="30" fill="#ff5f5f" opacity="0"/>
+  <g id="그룹_268" data-name="그룹 268" transform="translate(2.73 4)">
+    <g id="그룹_267" data-name="그룹 267">
+      <g id="ic-medical-tooth-2" transform="translate(4.368)">
+        <path id="패스_65" data-name="패스 65" d="M728.818,471.605c2.127.059,2.594-1.082,4.436-.656,5.635,1.508,2.752,8.521,1.5,12.256-.2.683-2.353,7.908-4.227,4.491-.6-3.051-.4-4.388-1.513-5.943h-.391c-1.117,1.556-.914,2.892-1.513,5.943-1.879,3.424-4.021-3.818-4.227-4.491-1.258-3.728-4.139-10.759,1.5-12.257,1.839-.426,2.307.715,4.436.656" transform="translate(-721.02 -470.854)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"/>
+        <path id="패스_66" data-name="패스 66" d="M725.1,477.859h0a3.431,3.431,0,0,1,2.736-2.386" transform="translate(-722.97 -473.063)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-linecap="square" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="그룹_263" data-name="그룹 263" transform="translate(0 14.473)">
+        <g id="그룹_262" data-name="그룹 262" clip-path="url(#clip-path)">
+          <path id="패스_159" data-name="패스 159" d="M21.469.738c1.714.6,2.747,1.382,2.747,2.232,0,1.916-5.246,3.469-11.717,3.469S.783,4.886.783,2.97c0-.794.9-1.526,2.416-2.11" transform="translate(-0.336 -0.317)" fill="none" stroke="#fff" stroke-width="1"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

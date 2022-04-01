@@ -27,12 +27,18 @@
 
     <!-- 브랜드 메뉴 -->
     <section id="brand">
-        <ul>
+        <ul class="brand_wrap">
             <li class="minish_spa">
                 <a href="/brand/minishspa">
                     <div class="txt_box">
-                        <span>Minsh Spa</span>
-                        <h2>미니쉬 스파</h2>
+                        <!-- 22.03.30 수정 -->
+                        <!-- <span>Minsh Spa</span> -->
+                        <span>MINISH Spa</span>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>미니쉬 스파</h2> -->
+                        <h3>미니쉬 스파</h3>
+                        <!------------------>
                     </div>
                 </a>
             </li>
@@ -40,7 +46,11 @@
                 <a href="/brand/valmontspa">
                     <div class="txt_box">
                         <span>Valmont Spa</span>
-                        <h2>발몽 스파</h2>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>발몽 스파</h2> -->
+                        <h3>발몽 스파</h3>
+                        <!------------------>      
                     </div>
                 </a>
             </li>
@@ -48,7 +58,11 @@
                 <a href="/brand/nail">
                     <div class="txt_box">
                         <span>Nail</span>
-                        <h2>바라는 네일</h2>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>바라는 네일</h2> -->
+                        <h3>바라는 네일</h3>
+                        <!------------------>   
                     </div>
                 </a>
             </li>
@@ -56,15 +70,25 @@
                 <a href="/brand/deepfocus">
                     <div class="txt_box">
                         <span>Deep Focus</span>
-                        <h2>딥포커스 검안센터</h2>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>딥포커스 검안센터</h2> -->
+                        <h3>딥포커스 검안센터</h3>
+                        <!------------------> 
                     </div>
                 </a>
             </li>
-            <li class="miniish_manul_therapy">
+            <li class="minish_manul_therapy">
                 <a href="/brand/minishtherapy">
                     <div class="txt_box">
-                        <span>Minish Manul Therapy</span>
-                        <h2>미니쉬 도수</h2>
+                        <!-- 22.03.30 수정 -->
+                        <!-- <span>Minish Manul Therapy</span> -->
+                        <span>MINISH Manul Therapy</span>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>미니쉬 도수</h2> -->
+                        <h3>미니쉬 도수</h3>
+                        <!------------------> 
                     </div>
                 </a>
             </li>
@@ -72,7 +96,11 @@
                 <a href="/brand/forestablack">
                     <div class="txt_box">
                         <span>Foresta Black</span>
-                        <h2>포레스타 블랙</h2>
+
+                        <!-- 22.03.18 수정 -->
+                        <!-- <h2>포레스타 블랙</h2> -->
+                        <h3>포레스타 블랙</h3>
+                        <!------------------> 
                     </div>
                 </a>
             </li>

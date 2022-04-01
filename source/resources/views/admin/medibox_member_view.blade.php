@@ -246,7 +246,7 @@ $page_title = '회원관리';
 		}
 		var bodyData = '';
 		for(var inx=0; inx<data.length; inx++){
-			var no = (count - (rpageNo - 1)/rpageSize) - inx;
+			var no = (count - (rpageNo - 1)*rpageSize) - inx;
 			var serviceName = '';
 			if(data[inx].point_type == 'P') {
 				serviceName = '포인트';
@@ -308,7 +308,7 @@ $page_title = '회원관리';
 		}
 		var bodyData = '';
 		for(var inx=0; inx<data.length; inx++){
-			var no = (count - (upageNo - 1)/upageSize) - inx;
+			var no = (count - (upageNo - 1)*upageSize) - inx;
 			var serviceName = '';
 			if(data[inx].point_type == 'P') {
 				serviceName = '포인트';
@@ -374,7 +374,7 @@ $page_title = '회원관리';
 			$('._userPassword').text( response.data.user_pw );
 			$('._userName').text( response.data.user_name );
 			$('._createAt').text( response.data.create_dt );
-			$('._userPackage').text( (response.data.used_package ? response.data.used_package : '') );
+			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );
 
 			// TODO: 매핑 테이블 추가 필요
 			pointDetails.point = response.data.points.filter(a => a.point_type == 'P')[0];
@@ -384,7 +384,7 @@ $page_title = '회원관리';
 			pointDetails.balmong = response.data.points.filter(a => a.point_type == 'S3')[0];
 			pointDetails.foresta = response.data.points.filter(a => a.point_type == 'S4')[0];
 
-			$('._userPoint').text( medibox.methods.toNumber(response.data.points.filter(a => a.point_type == 'P')[0].point) +' P');
+			$('._userPoint').text( medibox.methods.toNumber(pointDetails.point.point) +' P');
 			$('._nail').html('네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.nail.point) +' P');
 			$('._balmong').html('발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.balmong.point) +' P');
 			$('._foresta').html('포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.foresta.point) +' P');

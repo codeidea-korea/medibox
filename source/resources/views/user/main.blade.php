@@ -45,7 +45,7 @@
                         </li>
                     @else
                         <li>
-                            <a href="/user/login">
+                            <a href="/user/login" onclick="$('#popup01').remove();">
                                 <div class="menu_box">
                                     <img src="/user/img/icon_login.svg" alt="로그인">
                                     <span>로그인</span>
@@ -78,22 +78,6 @@
             </nav>
         </div>
     </div>
-
-
-    <!-- 로그인이 필요한 서비스입니다. (팝업창) -->
-    <div id="popup01" class="popup">
-        <div class="container">
-            <div class="top">
-                <strong class="popup_icon">!</strong>
-                <span>로그인이 필요한<br>서비스입니다.</span>
-            </div>
-            <div class="bottom">
-                <!-- 버튼 클릭 시 로그인 화면으로 이동 -->
-                <a href="/user/login">확인</a>
-            </div>
-        </div>
-    </div>
-
 
     <script>
         @if ( session('user_seqno') )

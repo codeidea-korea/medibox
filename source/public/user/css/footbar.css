@@ -1,0 +1,14 @@
+/* 하단 퀵메뉴 */
+.bottom_menu {position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:780px;background:#FFFFFF;padding:0 1rem;z-index:999;}
+.bottom_menu ul {display:flex;}
+.bottom_menu ul li {flex:1;position:relative;text-align:center;border-top:2px solid transparent;}
+.bottom_menu ul li svg {height:1.2rem;}
+.bottom_menu ul li a {display:block;padding:1.2rem 0.5rem;}
+.bottom_menu ul li span {display:block;font-size:0.7rem;font-weight:500;color:#B4B4B4;}
+
+.bottom_menu ul li.on {border-top-color:#000;}
+.bottom_menu ul li.on span {color:#000;}
+
+/* 아이콘 색 */
+.bottom_menu ul li svg>g {fill:#B4B4B4;stroke:#B4B4B4;}
+.bottom_menu ul li.on svg>g {fill:#000;stroke:#000;}

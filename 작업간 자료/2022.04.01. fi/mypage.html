@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Medibox</title>
+
+   <link rel="stylesheet" href="./css/common.css">
+   <link rel="stylesheet" href="./css/slick.css">
+   <link rel="stylesheet" href="./css/medibox.css">
+   <script src="./js/jquery-3.6.0.min.js"></script>
+   <script src="./js/slick.min.js"></script>
+   <script src="./js/medibox.js"></script>
+</head>
+
+<body>
+
+   <!-- header -->
+   <header id="header" class="profile">
+      <!-- page title -->
+      <div class="title">
+         <span>프로필</span>
+      </div>
+   </header>
+
+
+   <!-- 프로필 메인 -->
+   <section id="profile">
+      <div class="top_wrap">
+         <div class="user_wrap">
+            <!-- 유저 프로필 사진 -->
+            <figure>
+               <img src="" alt="">
+            </figure>
+            <div class="user">
+               <span class="user_id">홍길동님 반갑습니다.</span>
+
+               <!-- 22.04.01 한글깨짐현상 수정 -->
+               <!-- <span class="user_class">Classic</span> -->
+               <span class="user_class">
+                   <strong>고객등급</strong>
+                   Classic
+               </span>
+               <!----------------------------->
+
+               <a href="mypage_edit.html" class="profile_edit_btn">프로필 편집</a>
+            </div>
+         </div>
+         <div class="quick_menu_wrap">
+            <ul>
+
+               <!-- 22.03.21 수정 -->
+               <!-- <li><a href="./payhistory.html"> -->
+               <li><a href="./service.html">
+                     <img src="./img/icon_service.svg" alt="Medibox service">
+                     서비스
+                  </a></li>
+
+               <!-- 22.03.21 수정 -->
+               <!-- <li><a href="#!"> -->
+               <li><a href="./voucher.html">
+                     <img src="./img/icon_voucher.svg" alt="medibox voucher">
+                     바우처
+                  </a></li>
+
+               <!-- 22.03.21 수정 -->
+               <!-- <li><a href="#!"> -->
+               <li><a href="./coupon.html">
+                     <img src="./img/icon_coupon.svg" alt="medibox coupon">
+                     쿠폰
+                  </a></li>
+            </ul>
+         </div>
+      </div>
+      <div class="bottom_wrap">
+         <div class="menu_wrap">
+            <ul class="history_menu menu">
+               <li><a href="./payhistory.html">결제내역</a></li>
+               <li><a href="./reservationhistoty.html">예약내역</a></li>
+            </ul>
+            <ul class="profile_menu menu">
+
+               <!-- 22.03.21 a 링크 수정 -->
+               <!-- <li><a href="#!">공지사항</a></li> -->
+               <li><a href="./announcement.html">공지사항</a></li>
+
+               <!-- 22.03.21 a 링크 수정 -->
+               <!-- <li><a href="#!">자주 묻는 질문</a></li> -->
+               <li><a href="./faq.html">자주 묻는 질문</a></li>
+
+               <!-- 22.03.21 a 링크 수정 -->
+               <!-- <li><a href="#!">도움말</a></li> -->
+               <li><a href="./help.html">도움말</a></li>
+
+
+               <!-- 22.03.18 수정 -->
+               <!-- <li><a href="#!">약관 및 정책</a></li> -->
+               <li><a href="./policy.html">약관 및 정책</a></li>
+
+               <li><a href="#!">버전</a></li>
+            </ul>
+         </div>
+
+         <!-- 22.03.28 추가 -->
+         <div class="logout_wrap">
+            <button type="button" id="logout">로그아웃</button>
+         </div>
+         <!------------------>
+
+         <div class="service_menu">
+            <h3>메디박스 고객센터</h3>
+            <ul class="working_time">
+               <li>운영시간 / 평일 9:00 ~ 17:30 (주말,공휴일 휴무)</li>
+               <li>점심시간 / 오후 12:00 ~ 13:00</li>
+            </ul>
+            <ul class="inquire">
+               <li>
+                  <!-- 22.03.18 수정 -->
+                  <!-- <a href="#!">1600 - 1600</a> -->
+                  <a href="tel:1600-1600">1600 - 1600</a>
+               </li>
+               <li>
+                  <a href="#!">카카오 1:1 문의</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </section>
+
+
+   <footer id="footer">
+      <div class="footer_link">
+         <ul>
+            <li><a href="#!">사용자 정보</a></li>
+
+            <!-- 22.03.18 수정 -->
+            <!-- <li><a href="#!">이용약관</a></li>
+                    <li><a href="#!">개인정보처리방침</a></li> -->
+            <li><a href="./tos.html">이용약관</a></li>
+            <li><a href="./privacy.html">개인정보처리방침</a></li>
+
+            <li><a href="#!">사업자 정보 확인</a></li>
+         </ul>
+      </div>
+      <div class="copyright_wrap">
+         <span>
+            ㈜미니쉬테크는 통신판매중개자로서 메디박스의 거래 당사자가 아니며,<br> 입점 판매자가 등록한 상품정보 및 거래에 대해 책임을 지지 않습니다.
+         </span>
+      </div>
+   </footer>
+
+
+   <!-- 22.03.28 추가 -->
+   <!-- 로그아웃 팝업창 -->
+   <div id="popup06" class="popup">
+      <div class="container">
+         <div class="top">
+            <strong class="popup_icon_check popup_icon">check</strong>
+            <span>
+               로그아웃되었습니다.<br>
+               메인페이지로 이동합니다.
+            </span>
+         </div>
+         <div class="bottom">
+            <a href="#!">확인</a>
+         </div>
+      </div>
+   </div>
+
+   <div id="popup10" class="popup select">
+      <div class="container">
+         <div class="top">
+            <span>로그아웃하시겠습니까?</span>
+         </div>
+         <div class="bottom">
+            <a href="#!" class="close_btn">아니오</a>
+            <a href="#!">네</a>
+         </div>
+      </div>
+   </div>
+   <!--------------->
+
+
+</body>
+
+</html>

@@ -252,7 +252,14 @@ class UserController extends Controller
         return view('user.valmontspa_reservation');
     }
 
-
+    public function voucher(Request $request)
+    {
+        return view('user.voucher');
+    }
+    public function coupon(Request $request)
+    {
+        return view('user.coupon');
+    }
     
     public function login_main(Request $request)
     {

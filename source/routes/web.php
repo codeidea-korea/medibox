@@ -38,6 +38,10 @@ Route::get('/brand/forestablack', [UserController::class, 'forestablack']) ->nam
 Route::get('/profile', [UserController::class, 'profile']) ->name('user.profile');
 Route::get('/profile/edit', [UserController::class, 'profile_edit']) ->name('user.profile.edit');
 Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name('user.mypage.edit');
+
+Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.voucher');
+Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
+
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
 Route::get('/reservation/deepfocus', [UserController::class, 'deepfocus_reservation']) ->name('user.deepfocus_reservation');
 Route::get('/reservation/forestablack', [UserController::class, 'forestablack_reservation']) ->name('user.forestablack_reservation');
@@ -53,7 +57,6 @@ Route::get('/terms/policy', [UserController::class, 'policy']) ->name('user.poli
 Route::get('/terms/tos', [UserController::class, 'tos']) ->name('user.tos');
 Route::get('/terms/thirdparty', [UserController::class, 'thirdparty']) ->name('user.thirdparty');
 Route::get('/terms/marketing', [UserController::class, 'marketing']) ->name('user.marketing');
-
 
 
 Route::post('/user/login/proccess', [UserController::class, 'login_proccess']);

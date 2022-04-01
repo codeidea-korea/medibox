@@ -33,7 +33,7 @@
                     <h2>포인트 사용 매장</h2>
                     <div class="select_wrap">
                         <div class="select_box">
-                            <span class="_choosedShop">매장 선택하기</span>
+                            <span class="_choosedShop">매장 선택</span>
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
                         <ul class="option _shops">
@@ -52,7 +52,7 @@
                     <h2>매장별 서비스</h2>
                     <div class="select_wrap">
                         <div class="select_box">
-                            <span class="_choosedService">서비스 선택하기</span>
+                            <span class="_choosedService">서비스 선택</span>
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
                         <ul class="option _services">
@@ -117,8 +117,8 @@
                 tmpShops = tmpShops + '<li onclick="getServices(point_type, \''+response.data[inx].service_name+'\')">'+response.data[inx].service_name+'</li>';
 			}
             $('._shops').html(tmpShops);
-            $('._choosedShop').text(response.data[0].service_name);
-			getServices(point_type, response.data[0].service_name);
+//            $('._choosedShop').text(response.data[0].service_name);
+//			getServices(point_type, response.data[0].service_name);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -130,7 +130,8 @@
 	function getServices(pointType, shopName){
         service_name = shopName;
         $('._choosedShop').text(shopName);
-        $('._shops').slideUp();
+        $('._choosedShop').parent().addClass('on');
+        $('._shops').removeClass('on');
 
 		medibox.methods.point.services({ point_type: pointType, service_name: shopName }, function(request, response){
 			console.log('output : ' + response);
@@ -143,12 +144,14 @@
                 tmpServices = tmpServices + '<li onclick="chooseProduct('+response.data[inx].product_seqno+', \''+(response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : ''))+'\', '+response.data[inx].price+')" value="'+response.data[inx].product_seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : '')+'</li>';
 			}
 			$('._services').html(tmpServices);
-            $('._choosedService').text(response.data[0].type_name+(response.data[0].service_sub_name ? '-'+response.data[0].service_sub_name : ''));
+//            $('._choosedService').text(response.data[0].type_name+(response.data[0].service_sub_name ? '-'+response.data[0].service_sub_name : ''));
+            $('._choosedService').text('서비스 선택');
+            $('._choosedService').parent().removeClass('on');
 			product_seqno = response.data[0].product_seqno;
 			$('#use_point').html(medibox.methods.toNumber(response.data[0].price));
-			$('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
+			$('#use_result_point').html(medibox.methods.toNumber(response.data[0].price));
 			$('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
-            $('#payment_btn').addClass('on');
+//            $('#payment_btn').addClass('on');
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -156,10 +159,11 @@
     }
     function chooseProduct(seqno, name, price) {
         product_seqno = seqno;
+        $('._choosedService').parent().addClass('on');
         $('._choosedService').text(name);
-        $('._services').slideUp();
+        $('._services').removeClass('on');
         $('#use_point').html(medibox.methods.toNumber(price));
-        $('#use_result_point').html(medibox.methods.toNumber(currect_point - Number(price)));
+        $('#use_result_point').html(medibox.methods.toNumber(price));
         $('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(price)));
         $('#payment_btn').addClass('on');
     }

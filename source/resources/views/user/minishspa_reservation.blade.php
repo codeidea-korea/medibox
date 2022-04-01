@@ -19,7 +19,7 @@
         </button>
         <!-- page title -->
         <div class="title">
-            <span>예약 상세</span>
+            <span>미니쉬 스파</span>
         </div>
     </header>
 
@@ -36,25 +36,31 @@
         <div class="brand_item_num">
             <span class="snum"></span>
         </div>
-        <!-- 22.03.07 수정 -->
-        <!-- <div class="reservation_des">
+
+        <div class="reservation_des">
             <div class="title">
                 <h2>미니쉬 스파</h2>
                 <a href="#!" class="share_btn">
-                    <img src="./img/icon_share.svg" alt="공유하기">
+                    <img src="/user/img/icon_share.svg" alt="공유하기">
                 </a>
             </div>
             <ul class="tab_menu">
                 <li class="on">정보</li>
                 <li>서비스</li>
-                <li>문의</li>
+
+                <!-- 22.03.28 삭제 -->
+                <!-- <li>문의</li> -->
             </ul>
+
+            <!-- 정보탭 -->
             <div class="tab_content">
                 <div class="intro_inner">
                     <h3>제휴업체소개</h3>
                     <p>
-                        ‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’<br>
-                        미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
+                        구강 문제, 정확히 진단받고 제대로 관리 되어야 합니다.
+                        미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고
+                        발생한 구강질환을 비침습적 방법으로 관리할 수 있도록
+                        개인의 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
                     </p>
                 </div>
                 <div class="info_inner">
@@ -62,10 +68,10 @@
                     <ul>
                         <li class="working_time">
                             10:00 ~ 20:00<br>
-                            월요일 휴무
+                            주말 정기 휴일
                         </li>
                         <li class="tel">
-                            02-540-2252
+                            1899-2854
                         </li>
                         <li class="address">
                             서울시 강남구 연주로 728
@@ -73,61 +79,114 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- 서비스탭 -->
             <div class="tab_content">
                 <div class="service_inner menu_inner">
                     <h3>서비스(<span class="itm_num"></span>)</h3>
 
                     <div class="menu">
-                        <h4>BASIC (구강 예방치료 프로그램)</h4>
+                        <!-- 22.03.29 수정 -->
+                        <!-- <h4>미니쉬 SPA</h4> -->
+                        <h4>BASIC</h4>
                         <ul>
-                            <li>
-                                <span class="program">미니쉬 SPA</span>
+                            <li><a href="#">
+                                <!-- 22.03.29 수정 -->
+                                <!-- <span class="program">미니쉬 SPA (60분)</span> -->
+                                <span class="program">미니쉬 스파 (60분)</span>
                                 <span class="price">100,000원</span>
-                            </li>
+                            </a></li>
                         </ul>
                     </div>
 
-                    <div class="menu">
+
+                    <!-- 22.03.22 메뉴 삭제됨 -->
+                    <!-- <div class="menu">
                         <h4>SPECIAL (생애주기 예방 프로그램)</h4>
                         <ul>
-                            <li>
+                            <li><a href="#" onclick="wait()">
                                 <span class="program">건치 백세 프로그램 (4회)</span>
                                 <span class="price">700,000원</span>
-                            </li>
-                            <li>
+                            </a></li>
+                            <li><a href="#" onclick="wait()">
                                 <span class="program">잇몸튼튼 프로그램(4회)</span>
                                 <span class="price">700,000원</span>
-                            </li>
-                            <li>
+                            </a></li>
+                            <li><a href="#" onclick="wait()">
                                 <span class="program">맘앤대디 프로그램(2인 1회)</span>
                                 <span class="price">700,000원</span>
-                            </li>
+                            </a></li>
                         </ul>
-                    </div>
+                    </div> -->
 
-                    <div class="menu">
+                    <!-- <div class="menu">
                         <h4>PREMIUM</h4>
                         <ul>
-                            <li>
+                            <li><a href="#" onclick="wait()">
                                 <span class="program">
                                     구강종합검진 (1회)<br>
                                     + 평생 건강관리 (4회)
                                 </span>
                                 <span class="price">1,080,000원</span>
+                            </a></li>
+                        </ul>
+                    </div> -->
+                    <!---------------------->
+                </div>
+            </div>
+
+            <!-- 22.03.28 삭제 -->
+            <!-- 문의탭 -->
+            <!-- <div class="tab_content">
+                <div class="inquiry_inner">
+                    <div class="inquiry_area_wrap">
+                        <textarea id="inquiry_area" name="inquiry_area" placeholder="문의사항을 남겨주세요." maxlength="200" required></textarea>
+                        <button type="submit" id="inquiry_btn">문의등록</button>
+                    </div>
+                    <div class="inquiry_list_wrap">
+                        <ul>
+                            <li>
+                                <span class="name">김승우</span>
+                                <span class="date">2022년 3월 1일</span>
+                                <span class="wait">답변 전</span>
+                                <p>
+                                    미니쉬 스파는 미니쉬 병원에서 받을 수 있는 건가요? 정확한 위치 좀 알려주세요 ㅠㅠ
+                                </p>
+                            </li>
+                            <li>
+                                <span class="name">이예진</span>
+                                <span class="date">2022년 3월 1일</span>
+                                <span class="wait">답변 전</span>
+                                <p>
+                                    미니쉬 스파가 뭐예요?
+                                </p>
+                            </li>
+                            <li>
+                                <span class="name">박승아</span>
+                                <span class="date">2022년 2월 15일</span>
+                                <p>
+                                    미니쉬 스파 치면 세균막 관리과정은 총 몇시간 소요되는지 궁금합니다.
+                                </p>
+                            </li> -->
+                            <!-- 답변에는 background (class="answer") -->
+                            <!-- <li class="answer">
+                                <span class="name">미니쉬 스파</span>
+                                <span class="date">2022년 2월 27일</span>
+                                <p>
+                                    안녕하세요. 미니쉬스파입니다 ^^ ‘치면 세균막 관리
+                                    과정’은 총 13단계로 50분의 시간이 소요됩니다.
+                                </p>
                             </li>
                         </ul>
                     </div>
+                </div>
+            </div> -->
+        
+        </div>
 
-                </div>
-            </div>
-            <div class="tab_content">
-                <div class="inquiry_inner">
-                    <h3>준비중입니다.</h3>
-                </div>
-            </div>
-        </div> -->
-        <!-- 22.03.09 수정 -->
-        <div class="brand_item_des reservation_des">
+
+        <!-------------- 1차 -------------->
+        <!-- <div class="brand_item_des">
             <h2>미니쉬 스파</h2>
             <span>Minsh Spa</span>
             <ul class="address">
@@ -138,12 +197,39 @@
                 <li>주말 10:00 ~ 18:00</li>
                 <li>공휴일, 명절 연휴 휴무</li>
             </ul>
-        </div>
+        </div> -->
+        <!--------------------------------->
 
-        <!-- 22.03.18 수정 -->
-        <!-- <a href="tel:02-540-2252" class="reservation_btn">예약하기</a> -->
+
         <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
+
+
+    <div class="modal_wrap share">
+        <div class="modal_inner">
+            <h4>링크 공유</h4>
+            <ul>
+                <li><a href="#" onclick="wait()">
+                    <img src="/user/img/icon_copy.svg" alt="링크 복사">
+                    <span>링크 복사</span>
+                </a></li>
+                <li><a href="#" onclick="wait()">
+                    <img src="/user/img/kakao.svg" alt="카카오톡 공유하기">
+                    <span>카카오톡</span>
+                </a></li>
+                <li><a href="#" onclick="wait()">
+                    <img src="/user/img/naver.svg" alt="네이버 공유하기">
+                    <span>네이버</span>
+                </a></li>
+                <li><a href="#" onclick="wait()">
+                    <img src="/user/img/google.svg" alt="구글 공유하기">
+                    <span>구글</span>
+                </a></li>
+            </ul>
+            <a href="#" class="close_btn">취소</a>
+        </div>
+    </div>    
+
 @include('user.footer')
 
 

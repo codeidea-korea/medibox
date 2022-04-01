@@ -44,7 +44,7 @@
     <div id="popup03" class="popup">
         <div class="container">
             <div class="top">
-                <strong class="popup_icon">success</strong>
+                <strong class="popup_icon popup_icon_check">success</strong>
                 <span>포인트 결제가<br>완료되었습니다.</span>
             </div>
             <div class="bottom">
@@ -58,7 +58,7 @@
     <div id="popup04" class="popup">
         <div class="container">
             <div class="top">
-                <strong class="popup_icon">cancel</strong>
+                <strong class="popup_icon popup_icon_cancel">cancel</strong>
                 <span>포인트 결제가<br>취소되었습니다.</span>
             </div>
             <div class="bottom">
@@ -72,7 +72,7 @@
     <div id="popup05" class="popup">
         <div class="container">
             <div class="top">
-                <strong class="popup_icon">empty</strong>
+                <strong class="popup_icon popup_icon_empty">empty</strong>
                 <span>보유 포인트가<br>부족합니다.</span>
             </div>
             <div class="bottom">

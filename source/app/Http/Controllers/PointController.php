@@ -41,8 +41,14 @@ class PointController extends Controller
         }
         $point = DB::table('user_point')->where($where)->get();
 
+        $package = DB::table("user_package")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+
         $result['ment'] = '성공';
         $result['data'] = $point;
+        $result['package'] = $package;
         $result['result'] = true;
 
         return $result;
@@ -206,7 +212,7 @@ class PointController extends Controller
         // 내 포인트에 증가 처리
         $point = DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
-            ['point_type', '=', $point_type]
+            ['point_type', '=', ($point_type == 'K' || $point_type == 'S1' ? 'P' : $point_type)]
         ])->first();
 
         DB::table('user_point')->where([
@@ -228,6 +234,15 @@ class PointController extends Controller
                     , 'deleted' => 'N'
                     , 'point' => $amount 
                     , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', $point_type]
+            ])->update(
+                [
+                    'point' => $point->point + $amount
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );
@@ -383,6 +398,15 @@ class PointController extends Controller
             ])->update(
                 [
                     'deleted' => 'Y'
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', $point_type]
+            ])->update(
+                [
+                    'point' => 0
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );
@@ -581,6 +605,7 @@ class PointController extends Controller
 
         $where = [];
         array_push($where, ['offline_type', '=', 'Y']);
+        array_push($where, ['delete_yn', '=', 'N']);
         if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
         }
@@ -590,6 +615,7 @@ class PointController extends Controller
             ->select('service_name')
             ->distinct()
             ->orderBy('service_name', 'asc')
+            ->orderBy('orders', 'asc')
             ->get();
 
         $result['ment'] = '정상 조회 되었습니다.';
@@ -610,6 +636,7 @@ class PointController extends Controller
         $where = [];
         array_push($where, ['offline_type', '=', 'N']);
         array_push($where, ['return_point', '>', 0]);
+        array_push($where, ['delete_yn', '=', 'N']);
         if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
         }
@@ -618,7 +645,9 @@ class PointController extends Controller
             ->where($where)
             ->select('product_seqno', 'point_type', 'type_name', 'service_sub_name', 'price', 'return_point')
             ->distinct()
-            ->orderBy('service_name', 'asc')
+            ->orderBy('point_type', 'asc')
+            ->orderBy('service_sub_name', 'asc')
+            ->orderBy('orders', 'asc')
             ->get();
 
         $result['ment'] = '정상 조회 되었습니다.';
@@ -638,6 +667,7 @@ class PointController extends Controller
         $result['result'] = false;
 
         $where = [];
+        array_push($where, ['delete_yn', '=', 'N']);
         array_push($where, ['offline_type', '=', 'Y']);
         if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
             array_push($where, ['point_type', '=', $point_type]);
@@ -650,8 +680,8 @@ class PointController extends Controller
             ->where($where)
             ->select('product_seqno', 'type_name', 'service_sub_name', 'price')
             ->distinct()
-            ->orderBy('type_name', 'asc')
-            ->orderBy('service_sub_name', 'asc')
+            ->orderBy('point_type', 'asc')
+            ->orderBy('orders', 'asc')
             ->get();
 
         $result['ment'] = '정상 조회 되었습니다.';

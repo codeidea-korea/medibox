@@ -350,6 +350,12 @@ class UserController extends Controller
             $points = DB::table("user_point")
                 ->where([['user_seqno', '=', $users[$inx]->user_seqno]])->get();
             $users[$inx]->points = $points;
+
+            $packageHistory = DB::table("user_package")->where([
+                ['user_seqno', '=', $users[$inx]->user_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            $users[$inx]->packageHistory = $packageHistory;
         }
 
         $result['ment'] = '성공';
@@ -438,6 +444,12 @@ class UserController extends Controller
                 $user->used_package = $collectPackage->type_name;
             }
             $user->collectPackage = $collectPackage;
+
+            $packageHistory = DB::table("user_package")->where([
+                ['user_seqno', '=', $user_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            $user->packageHistory = $packageHistory;
         }
 
         $result['ment'] = '성공';
