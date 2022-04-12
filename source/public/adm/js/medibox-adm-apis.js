@@ -109,6 +109,8 @@ var bfCall = (function(){
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
+                memoModify: function (params, successThenFn, errorThenFn){ ajaxCall('user/memo-modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                                 
             }, point:{
                 list: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -116,6 +118,8 @@ var bfCall = (function(){
                 refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 use: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 useSelf: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use-self', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                cancel: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-cancel', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 shops: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },

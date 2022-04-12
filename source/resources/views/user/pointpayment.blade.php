@@ -37,12 +37,15 @@
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
                         <ul class="option _shops">
+                        <!-- 2022-04-04 default 값 문제  -->
+                        <!--
                             <li>발몽스파</li>
                             <li>바라는 네일</li>
                             <li>딥포커스</li>
                             <li>미니쉬 스파</li>
                             <li>미니쉬 도수</li>
                             <li>포레스타 블랙</li>
+                            -->
                         </ul>
                     </div>
                 </div>
@@ -56,9 +59,12 @@
                             <img src="/user/img/arrow_bottom.svg" alt="">
                         </div>
                         <ul class="option _services">
+                        <!-- 2022-04-04 default 값 문제  -->
+                        <!--
                             <li>베이직 케어</li>
                             <li>베이직 케어 + 패디 + 각질</li>
                             <li>베이직 젤네일 + 패디젤</li>
+                            -->
                         </ul>
                     </div>
                 </div>
@@ -105,6 +111,7 @@
 	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>
     <script>
     var point_type = '{{ $type }}';
+    var isInFirst = true;
 	function getShops(){
 		medibox.methods.point.shops({ point_type: point_type }, function(request, response){
 			console.log('output : ' + response);
@@ -117,8 +124,12 @@
                 tmpShops = tmpShops + '<li onclick="getServices(point_type, \''+response.data[inx].service_name+'\')">'+response.data[inx].service_name+'</li>';
 			}
             $('._shops').html(tmpShops);
-//            $('._choosedShop').text(response.data[0].service_name);
-//			getServices(point_type, response.data[0].service_name);
+            if(isInFirst && point_type != 'P') {
+                $('._choosedShop').text(response.data[0].service_name);
+                $('._choosedShop').parent().addClass('on');
+                getServices(point_type, response.data[0].service_name);
+                isInFirst = false;
+            }            
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -148,10 +159,15 @@
             $('._choosedService').text('서비스 선택');
             $('._choosedService').parent().removeClass('on');
 			product_seqno = response.data[0].product_seqno;
+            /*
 			$('#use_point').html(medibox.methods.toNumber(response.data[0].price));
 			$('#use_result_point').html(medibox.methods.toNumber(response.data[0].price));
 			$('#use_result_point2').html(medibox.methods.toNumber(currect_point - Number(response.data[0].price)));
-//            $('#payment_btn').addClass('on');
+            */
+			$('#use_point').html(0);
+			$('#use_result_point').html(0);
+			$('#use_result_point2').html(medibox.methods.toNumber(currect_point));
+            $('#payment_btn').removeClass('on');
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -168,6 +184,9 @@
         $('#payment_btn').addClass('on');
     }
 	function usePoint(){
+        if(! $('#payment_btn').hasClass('on') || !product_seqno) {
+            return false;
+        }
         if(! confirm('포인트 결제 하시겠습니까?')) {
             return false;
         }
@@ -179,7 +198,7 @@
 
 		medibox.methods.point.use(data, function(request, response){
 			console.log('output : ' + response);
-            location.href = '/point/approval/' + response.code;
+            location.href = '/point/approval/' + response.code + '?id='+response.data;
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

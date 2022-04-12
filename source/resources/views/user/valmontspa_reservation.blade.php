@@ -75,7 +75,7 @@
                     </ul>
                 </div>
             </div>
-
+            
             <!-- 서비스탭 -->
             <div class="tab_content">
                 <div class="service_inner menu_inner">
@@ -184,9 +184,9 @@
                     </div>
     
                     <div class="menu">
-                        <!-- 22.03.29 수정 -->
-                        <!-- <h4>[바디] MINISH TOUCH</h4> -->
-                        <h4>MINISH TOUCH</h4>
+                        <!-- 22.04.06 수정 -->
+                        <!-- <h4>MINISH TOUCH</h4> -->
+                        <h4>[바디] MINISH TOUCH</h4>
                         <ul>
                             <li><a href="#">
                                 <span class="program">MINISH TOUCH (30분)</span>
@@ -208,9 +208,9 @@
                     </div>
     
                     <div class="menu">
-                        <!-- 22.03.29 수정 -->
-                        <!-- <h4>[바디] 마더 투 비 (임산부)</h4> -->
-                        <h4>마더 투 비 (임산부)</h4>
+                        <!-- 22.04.06 수정 -->
+                        <!-- <h4>마더 투 비 (임산부)</h4> -->
+                        <h4>[바디] 마더 투 비 (임산부)</h4>
                         <ul>
                             <li><a href="#">
                                 <span class="program">마더 투 비 (60분)</span>

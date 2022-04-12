@@ -109,7 +109,7 @@ var bfCall = (function(){
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                                
+                                                
             }, point:{
                 // 나의 포인트
                 mine: function (params, successThenFn, errorThenFn){ ajaxCall('user/points', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
@@ -121,7 +121,9 @@ var bfCall = (function(){
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                 services: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops/services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-
+                
+                checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('point/check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

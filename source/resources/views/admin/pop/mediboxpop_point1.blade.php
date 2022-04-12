@@ -143,6 +143,12 @@
 					</div>
 				</div>
 				<div class="wr-list">
+					<div class="wr-list-label ">포인트 차감자</div>
+					<div class="wr-list-con flex">					
+						<input type="text" id="calculator_name" name="calculator_name" value="" class="span">
+					</div>
+				</div>
+				<div class="wr-list">
 					<div class="wr-list-label ">MEMO</div>
 					<div class="wr-list-con flex">					
 						<textarea name="" id="use_memo" class="mini autoSize " style="min-height:150px;width:100%;" placeholder=""></textarea>
@@ -277,9 +283,10 @@
 			var use_self_service = $('#use_self_service').val();
 			var amount = $('#use_point').val();
 			var memo = $('#use_memo').val();
+			var admin_name = $('#calculator_name').val();
 			
 			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, shop_name: service_name, service_name: use_self_service,
-				point_type:point_type, amount:replacePoint(amount), memo:memo };
+				point_type:point_type, amount:replacePoint(amount), memo:memo, admin_name: admin_name };
 
 			medibox.methods.point.useSelf(data, function(request, response){
 				console.log('output : ' + response);
@@ -296,9 +303,10 @@
 		} else {
 			var point_type = $('#use_point_type').val();
 			var memo = $('#use_memo').val();
+			var admin_name = $('#calculator_name').val();
 			
 			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-				point_type:point_type, memo:memo };
+				point_type:point_type, memo:memo, admin_name: admin_name };
 
 			medibox.methods.point.use(data, function(request, response){
 				console.log('output : ' + response);

@@ -192,7 +192,7 @@
                           alert(response.ment);
                           return false;
                       }
-                      $('.popup').addClass('on');
+                      $('#popup02').addClass('on');
                   }, function(e){
                       console.log(e);
                       alert('가입에 실패하였습니다. 연동 오류');

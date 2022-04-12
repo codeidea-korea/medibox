@@ -62,6 +62,12 @@
                         발생한 구강질환을 비침습적 방법으로 관리할 수 있도록
                         개인의 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
                     </p>
+
+                    <!-- 22.04.08 추가 -->
+                    <p>
+                        미니쉬 스파, 건치백세 스파 는 주치의 소견에 따라 내원주기, 기간이 달라질 수 있습니다.
+                    </p>
+                    <!------------------>
                 </div>
                 <div class="info_inner">
                     <h3>업체 정보</h3>
@@ -74,7 +80,7 @@
                             1899-2854
                         </li>
                         <li class="address">
-                            서울시 강남구 연주로 728
+                            서울시 강남구 언주로 728
                         </li>
                     </ul>
                 </div>
@@ -94,25 +100,54 @@
                                 <!-- 22.03.29 수정 -->
                                 <!-- <span class="program">미니쉬 SPA (60분)</span> -->
                                 <span class="program">미니쉬 스파 (60분)</span>
-                                <span class="price">100,000원</span>
+
+                                <!-- 22.04.08 수정 -->
+                                <!-- <span class="price">100,000원</span> -->
+                                <span class="price">1회 100,000원</span>
                             </a></li>
+
+                            <!-- 22.04.08 추가 -->
+                            <li><a href="#">
+                                <span class="program">미니쉬 스파 (60분)</span>
+                                <span class="price">4회 300,000원</span>
+                            </a></li>
+                            <!------------------>
                         </ul>
                     </div>
 
+                    <!-- 22.04.08 추가 -->
+                    <div class="menu">
+                        <h4>LUXURY</h4>
+                        <ul>
+                            <li><a href="#">
+                                <span class="program">건치백세 패키지 (60분)</span>
+                                <span class="price">1회 100,000원</span>
+                            </a></li>
+                            <li><a href="#">
+                                <span class="program">건치백세 패키지 (60분)</span>
+                                <span class="price">2회 150,000원</span>
+                            </a></li>
+                            <li><a href="#">
+                                <span class="program">건치백세 패키지 (60분)</span>
+                                <span class="price">4회 300,000원</span>
+                            </a></li>
+                        </ul>
+                    </div>
+                    <!---------------->
 
                     <!-- 22.03.22 메뉴 삭제됨 -->
                     <!-- <div class="menu">
                         <h4>SPECIAL (생애주기 예방 프로그램)</h4>
                         <ul>
-                            <li><a href="#" onclick="wait()">
+                            <li><a href="#">
                                 <span class="program">건치 백세 프로그램 (4회)</span>
                                 <span class="price">700,000원</span>
                             </a></li>
-                            <li><a href="#" onclick="wait()">
+                            <li><a href="#">
                                 <span class="program">잇몸튼튼 프로그램(4회)</span>
                                 <span class="price">700,000원</span>
                             </a></li>
-                            <li><a href="#" onclick="wait()">
+                            <li><a href="#">
                                 <span class="program">맘앤대디 프로그램(2인 1회)</span>
                                 <span class="price">700,000원</span>
                             </a></li>
@@ -122,7 +157,7 @@
                     <!-- <div class="menu">
                         <h4>PREMIUM</h4>
                         <ul>
-                            <li><a href="#" onclick="wait()">
+                            <li><a href="#">
                                 <span class="program">
                                     구강종합검진 (1회)<br>
                                     + 평생 건강관리 (4회)
@@ -190,7 +225,7 @@
             <h2>미니쉬 스파</h2>
             <span>Minsh Spa</span>
             <ul class="address">
-                <li>서울 강남구 연주로 728</li>
+                <li>서울 강남구 언주로 728</li>
             </ul>
             <ul class="working_time">
                 <li>평일 10:00 ~ 20:00</li>

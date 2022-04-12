@@ -33,7 +33,10 @@ class UserController extends Controller
     }
     public function approval(Request $request, $result_code)
     {
-        return view('user.approval')->with('code', $result_code);
+        $userSeqno = $request->session()->get('user_seqno');
+        $id = $request->get('id', '');
+
+        return view('user.approval')->with('code', $result_code)->with('id', $id)->with('userSeqno', $userSeqno);
     }
     public function brand(Request $request)
     {

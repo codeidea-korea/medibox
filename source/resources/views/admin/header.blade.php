@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202203081025"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202214121625"></script>
 </head>
 <body>
 
@@ -36,11 +36,12 @@
 		<nav id="nav">
 			<ul id="nav_ul">
 				<li class=""><a href="/admin/members" class="mont">홈</a></li>
-				<li class="active">
+				<li class="@if ($page_title == '회원관리' || $page_title == '회원등록' || $page_title == '회원수정') active @endif">
 					<a href="/admin/members" class="mont">회원관리</a>
 					<ul>
-						<li class="active"><a href="/admin/members">회원관리</a></li>
-						<li class=""><a href="/admin/members/0">회원등록</a></li>
+						<li class="@if ($page_title == '회원관리' || $page_title == '회원수정') active @endif"><a href="/admin/members">회원관리</a></li>
+						<li class="@if ($page_title == '회원등록') active @endif"><a href="/admin/members/0">회원등록</a></li>
+						<li style="display:none;" class="@if ($page_title == '회원수정') active @endif"><a href="#">회원수정</a></li>
 					</ul>
 				</li>
 			</ul>

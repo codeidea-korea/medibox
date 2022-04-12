@@ -31,6 +31,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
     Route::post('user/add', [UserController::class, 'add']);
     Route::post('user/modify', [UserController::class, 'modify']);
+    Route::post('user/memo-modify', [UserController::class, 'modifyMemo']);
+    
 
     Route::post('user/approve', [UserController::class, 'approve']);
     Route::post('user/delete', [UserController::class, 'delete']);
@@ -42,6 +44,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('user/point-collect', [PointController::class, 'collect']);
     Route::post('user/point-refund', [PointController::class, 'refund']);
     Route::post('user/point-use', [PointController::class, 'use']);
+    Route::post('user/point-cancel', [PointController::class, 'cancel']);
+    Route::post('user/point-approve', [PointController::class, 'approve']);
+    Route::get('point/check-approve', [PointController::class, 'checkApproved']);
+    
+    
     Route::post('user/point-use-self', [PointController::class, 'useBySelf']);
     
 

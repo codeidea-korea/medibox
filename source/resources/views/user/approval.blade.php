@@ -122,11 +122,35 @@
     </div>
 
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022012918"></script>
+	<script type="text/javascript" src="{{ asset('user/js/medibox-apis.js') }}?v=2022041218"></script>
     <script>
     var code = '{{ $code }}';
+    function checkApprove(){
+        medibox.methods.point.checkApprove({ user_seqno: {{ $userSeqno }}, hst_seqno: {{ $id }} }, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+                if(response.code == 'HISTORY-NULL') {
+                    $('#popup04').addClass('on');
+                    return false;
+                }
+				alert(response.ment);
+				return false;
+            }
+            if(response.code == 'S1') {
+                $('#popup03').addClass('on');
+            } else if(response.code == 'S2') {
+                // 대기중
+                setTimeout(checkApprove, 2000);
+            }
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+    }
     if(code == 'S') {
-        $('#popup03').addClass('on');
+        $(document).ready(function(){
+            checkApprove();
+        });        
     } else if(code == 'USER-INPUT') {
         $('#popup06').addClass('on');
     } else if(code == 'USER-NULL') {
@@ -144,9 +168,7 @@
         $('#popup07').removeClass('on');
         $('#popup08').removeClass('on');
 
-        setTimeout(function(){
-            gotoMain();
-        }, 3500);
+        gotoMain();
     }
     function gotoMain(){
         location.href = '/';

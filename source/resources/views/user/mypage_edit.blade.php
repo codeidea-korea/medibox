@@ -4,7 +4,7 @@
     <!-- header -->
     <header id="header">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="location.href='/';">
+        <button class="back" onclick="history.back();">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                   <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -101,21 +101,23 @@
                         <img src="/user/img/arrow_bottom.svg" alt="">
                     </div>
                     <ul class="option">
-                        <li>포레스타 블랙</li>
-                        <li>바라는 네일</li>
-                        <li>딥포커스 검안센터</li>
-                        <li>발몽스파</li>
-                        <li>미니쉬 도수</li>
-                        <li>미니쉬 스파</li>
-                        <li>기타</li>
+                        <li onclick="changeRecommendedShop('포레스타 블랙')">포레스타 블랙</li>
+                        <li onclick="changeRecommendedShop('바라는 네일')">바라는 네일</li>
+                        <li onclick="changeRecommendedShop('딥포커스 검안센터')">딥포커스 검안센터</li>
+                        <li onclick="changeRecommendedShop('발몽스파')">발몽스파</li>
+                        <li onclick="changeRecommendedShop('미니쉬 도수')">미니쉬 도수</li>
+                        <li onclick="changeRecommendedShop('미니쉬 스파')">미니쉬 스파</li>
+                        <li onclick="changeRecommendedShop('미니쉬 치과병원')">미니쉬 치과병원</li>
+                        <li onclick="changeRecommendedShop('기타')">기타</li>
                     </ul>
                 </div>
             </div>
+            <input type="hidden" name="recommended_shop" id="recommended_shop" value="{{$recommended_shop}}">
             
             <!-- 추천인코드 -->
             <div>
                 <h2>추천인코드(선택)</h2>
-                <input type="tel" placeholder="추천인 휴대폰번호를 입력해주세요." value="{{$recommended_code}}">
+                <input type="tel" name="recommended_code" id="recommended_code" placeholder="추천인 휴대폰번호를 입력해주세요." value="{{$recommended_code}}">
             </div>
             <!------------------------------------>
 
@@ -290,6 +292,9 @@
 
         return true;
     }
+    function changeRecommendedShop(val){
+        $('input[name=recommended_shop]').val(val);
+    }
     function modify(){
         if(!checkValidation()) {
             return;
@@ -302,12 +307,16 @@
         }
         var name = document.querySelector('#user_name').value;
         var isAllow04 = $('#receive_check').is(":checked");
+        var recommended_shop = document.querySelector('#recommended_shop').value;
+        var recommended_code = document.querySelector('#recommended_code').value;
 
         medibox.methods.user.modify({
             id: id
             , pw: pw
             , pw2: pw2
             , name: name
+            , recommended_shop: recommended_shop
+            , recommended_code: recommended_code
             , event_yn: isAllow04 ? 'Y' : 'N'
         }, function(request, response){
             console.log('output : ' + response);
@@ -315,11 +324,17 @@
                 alert(response.ment);
                 return false;
             }
-            $('#popup09').show();
+            $('#popup09').addClass('on');
         }, function(e){
             console.log(e);
         });
     }
+    $(document).ready(function(){
+        $('.popup a').off();
+        setTimeout(() => {
+            $('.popup a').off();
+        }, 50);
+    });
     </script>
 
 
@@ -359,10 +374,10 @@
         $('#logoutFrm').submit();
     }
     function logoutConfirm(){
-        $('#popup10').show();
+        $('#popup10').addClass('on');
     }
     function signoutConfirm(){
-        $('#popup07').show();
+        $('#popup07').addClass('on');
     }
     </script>
 
@@ -421,7 +436,7 @@
                 </span>
             </div>
             <div class="bottom">
-                <a href="#!">확인</a>
+                <a href="/profile">확인</a>
             </div>
         </div>
     </div>
@@ -453,7 +468,7 @@
                 alert('탈퇴 중 오류가 발생하였습니다.');
                 return;
             }
-            $('#popup08').show();
+            $('#popup08').addClass('on');
         }, function(e){
             console.log(e);
         });

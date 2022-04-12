@@ -133,7 +133,8 @@ class PointController extends Controller
     // 포인트 적립
     public function collect(Request $request)
     {
-        $admin_seqno = $request->post('admin_seqno'); // 담당자
+        $admin_seqno = $request->post('admin_seqno'); // 담당자 식별자
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 구매 가능
         $user_seqno = $request->post('user_seqno'); // 대상 고객
         $product_seqno = $request->post('product_seqno', 0); // 대상 상품 식별번호 (포인트는 0번)
         $point_type = $request->post('point_type'); // 적립 구분 (포인트는 P)
@@ -152,7 +153,12 @@ class PointController extends Controller
             ['user_seqno', '=', $user_seqno],
             ['delete_yn', '=', 'N']
         ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
         if(empty($user)) {
+            $result['ment'] = '포인트가 적립되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
             return $result;
         }
 
@@ -200,6 +206,7 @@ class PointController extends Controller
             [
                 'admin_seqno' => $admin_seqno
                 , 'user_seqno' => $user_seqno
+                , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
                 , 'point_type' => $point_type
                 , 'product_seqno' => $product_seqno
                 , 'hst_type' => 'S'
@@ -260,6 +267,7 @@ class PointController extends Controller
     public function refund(Request $request)
     {
         $admin_seqno = $request->post('admin_seqno'); // 담당자
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 구매 가능
         $user_seqno = $request->post('user_seqno'); // 대상 고객
         $product_seqno = $request->post('product_seqno', 0); // 대상 상품 식별번호 (포인트는 0번)
         $point_type = $request->post('point_type'); // 적립 구분 (포인트는 P)
@@ -282,7 +290,12 @@ class PointController extends Controller
             ['user_seqno', '=', $user_seqno],
             ['delete_yn', '=', 'N']
         ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
         if(empty($user)) {
+            $result['ment'] = '포인트가 환불되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
             return $result;
         }
         // 패키지일 경우, 
@@ -329,7 +342,7 @@ class PointController extends Controller
                 ['product_seqno', '=', $product_seqno],
                 ['point_type', '=', $point_type],
                 ['hst_type', '=', 'U'],
-                ['refund_point_hst_seqno', 'is', null]
+                ['refund_point_hst_seqno', 'is', '']
             ])->first();
             if(empty($pointHistory)) {
                 $result['ment'] = $result['ment'] . ' - 구매한 적 없는 경우 환불 불가';
@@ -362,6 +375,7 @@ class PointController extends Controller
             [
                 'admin_seqno' => $admin_seqno
                 , 'user_seqno' => $user_seqno
+                , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
                 , 'point_type' => $point_type
                 , 'product_seqno' => $product_seqno
                 , 'hst_type' => 'R'
@@ -422,6 +436,7 @@ class PointController extends Controller
     public function use(Request $request)
     {
         $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 구매 가능
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 구매 가능
         $user_seqno = $request->post('user_seqno'); // 대상 고객
         $product_seqno = $request->post('product_seqno'); // 대상 상품 식별번호
         $point_type = $request->post('point_type'); // 사용 구분
@@ -440,7 +455,12 @@ class PointController extends Controller
             ['user_seqno', '=', $user_seqno],
             ['delete_yn', '=', 'N']
         ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
         if(empty($user)) {
+            $result['ment'] = '포인트가 사용되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
             $result['code'] = 'USER-NULL';
             return $result;
         }
@@ -469,6 +489,7 @@ class PointController extends Controller
             [
                 'admin_seqno' => $admin_seqno
                 , 'user_seqno' => $user_seqno
+                , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
                 , 'point_type' => $point_type
                 , 'product_seqno' => $product_seqno
                 , 'hst_type' => 'U'
@@ -476,7 +497,7 @@ class PointController extends Controller
                 , 'memo' => $memo
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
-            ]
+            ], 'user_point_hst_seqno'
         );
 
         DB::table('user_point')->where([
@@ -490,7 +511,7 @@ class PointController extends Controller
         );
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 사용되었습니다.';
-        $result['data'] = $user;
+        $result['data'] = $id;
         $result['code'] = 'S';
         $result['result'] = true;
 
@@ -526,7 +547,12 @@ class PointController extends Controller
             ['user_seqno', '=', $user_seqno],
             ['delete_yn', '=', 'N']
         ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
         if(empty($user)) {
+            $result['ment'] = '포인트가 사용되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
             $result['code'] = 'USER-NULL';
             return $result;
         }
@@ -548,6 +574,7 @@ class PointController extends Controller
                 'admin_seqno' => $admin_seqno
                 , 'user_seqno' => $user_seqno
                 , 'point_type' => $point_type
+                , 'admin_name' => empty($admin) ? '' : $admin->admin_name
                 , 'product_seqno' => 0
                 , 'shop_name' => $shop_name
                 , 'product_name' => $service_name
@@ -573,6 +600,196 @@ class PointController extends Controller
         $result['data'] = $user;
         $result['code'] = 'S';
         $result['result'] = true;
+
+        return $result;
+    }
+    // 포인트 작업 취소
+    public function cancel(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 취소 가능
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 취소 가능
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+
+        $hst_type = $request->post('hst_type', 'U'); // 사용 구분
+        $hst_seqno = $request->post('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '포인트가 취소되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($hst_type) || empty($hst_seqno) || $hst_type != 'U') {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '포인트가 취소되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("user_point_hst")->where([
+            ['user_point_hst_seqno', '=', $hst_seqno],
+            ['hst_type', '=', $hst_type],
+            ['canceled', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '포인트가 취소되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->user_seqno != $user_seqno) {
+            $result['ment'] = '포인트가 취소되지 않았습니다.\r수정할 고객정보와 이력의 고객정보가 상이합니다.';
+            $result['code'] = 'HISTORY-UNMATCHED';
+            return $result;
+        }
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $history->user_seqno],
+            ['point_type', '=', $history->point_type]
+        ])->first();
+
+        // 정보를 취소 정보로 업데이트 하고, 각각의 상태에 따른 역작업을 진행한다.
+        // 1. 사용을 취소한다.
+        DB::table('user_point')->where([
+            ['user_seqno', '=', $history->user_seqno],
+            ['point_type', '=', $history->point_type]
+        ])->update(
+            [
+                'point' => $point->point + $history->point, 
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        DB::table('user_point_hst')->where([
+            ['user_point_hst_seqno', '=', $hst_seqno],
+            ['canceled', '=', 'N']
+        ])->update(
+            [
+                'canceled' => 'Y', 
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '취소되었습니다.';
+        $result['data'] = $user;
+        $result['code'] = 'S';
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 포인트 사용 승인
+    public function approve(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 취소 가능
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 취소 가능
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $hst_seqno = $request->post('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '포인트가 승인되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($hst_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '포인트가 승인되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("user_point_hst")->where([
+            ['user_point_hst_seqno', '=', $hst_seqno],
+            ['hst_type', '=', 'U'],
+            ['approved', '=', 'N'],
+            ['canceled', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '포인트가 승인되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->user_seqno != $user_seqno) {
+            $result['ment'] = '포인트가 승인되지 않았습니다.\r수정할 고객정보와 이력의 고객정보가 상이합니다.';
+            $result['code'] = 'HISTORY-UNMATCHED';
+            return $result;
+        }
+        DB::table('user_point_hst')->where([
+            ['user_point_hst_seqno', '=', $hst_seqno]
+        ])->update(
+            [
+                'approved' => 'Y', 
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '사용되었습니다.';
+        $result['data'] = $user;
+        $result['code'] = 'S';
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 포인트 사용 승인 확인
+    public function checkApproved(Request $request)
+    {
+        $user_seqno = $request->get('user_seqno'); // 대상 고객
+        $hst_seqno = $request->get('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '포인트가 승인되지 않았습니다.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($user_seqno) || empty($hst_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '포인트가 승인되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("user_point_hst")->where([
+            ['user_point_hst_seqno', '=', $hst_seqno],
+            ['hst_type', '=', 'U'],
+            ['canceled', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '포인트가 승인되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->approved == 'Y') {
+            $result['ment'] = '승인되었습니다.';
+            $result['data'] = $user;
+            $result['code'] = 'S1';
+            $result['result'] = true;
+        } else {
+            $result['ment'] = '승인 대기중입니다. 잠시 기다려주세요.';
+            $result['data'] = $user;
+            $result['code'] = 'S2';
+            $result['result'] = true;
+        }
 
         return $result;
     }
@@ -646,7 +863,7 @@ class PointController extends Controller
             ->select('product_seqno', 'point_type', 'type_name', 'service_sub_name', 'price', 'return_point')
             ->distinct()
             ->orderBy('point_type', 'asc')
-            ->orderBy('service_sub_name', 'asc')
+//            ->orderBy('service_sub_name', 'asc')
             ->orderBy('orders', 'asc')
             ->get();
 

@@ -1,7 +1,7 @@
-@include('admin.header')
 @php 
 $page_title = '회원관리';
 @endphp
+@include('admin.header')
 
 <section class="container">
 	<div class="page-title">회원관리</div>
@@ -176,7 +176,7 @@ $page_title = '회원관리';
 							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber(response.data[inx].points.filter(a => a.point_type == 'P')[0].point)+' P</td>'
 							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+pointsDescription+'</td>' 
 							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber((response.data[inx].packageHistory ? response.data[inx].packageHistory.point : 0))+' P</td>'
-							+'	<td><a href="#" onclick="gotoInfoDetail(\''+response.data[inx].user_phone+'\')" class="btnEdit">수정</a></td>'
+							+'	<td><a href="#" onclick="gotoInfoDetail(\''+response.data[inx].user_seqno+'\')" class="btnEdit">수정</a></td>'
 							+'</tr>';
 				
 			}

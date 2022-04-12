@@ -112,7 +112,7 @@
 				<div class="wr-list">
 					<div class="wr-list-label required">적립 포인트</div>
 					<div class="wr-list-con flex">					
-						<input type="text" id="collect_point" onkeyup="checkCollectPoint()" value="1,000,000 P" class="span">
+						<input type="text" id="collect_point" onkeyup="checkCollectPoint()" value="" class="span" placeholder="0 P">
 					</div>
 				</div>
 				<div class="wr-list">
@@ -127,6 +127,14 @@
 						<input type="text" id="collect_director_name" value="{{ $name }}" class="span" style="background:#d3d3d3;" readonly>
 					</div>
 				</div>
+				<!--
+				<div class="wr-list">
+					<div class="wr-list-label ">포인트 차감자</div>
+					<div class="wr-list-con flex">					
+						<input type="text" id="calculator_name" name="calculator_name" value="" class="span">
+					</div>
+				</div>
+-->
 				<div class="wr-list">
 					<div class="wr-list-label ">MEMO</div>
 					<div class="wr-list-con flex">					
@@ -158,11 +166,14 @@
 		}
 	}
 function checkCollectPoint(){
+	if($('#collect_point').val() == '') {
+		return;
+	}
 	var pres = $('#collect_pres_point').val().trim().replace('P','').replaceAll(',', '');
 	var refund = $('#collect_point').val().trim().replace('P','').replaceAll(',', '');
 	if(isNaN(refund)) {
 		alert('숫자만 입력해주세요.');
-		$('#collect_point').val('0');
+		$('#collect_point').val('');
 		return;
 	}
 	$('#collect_sum_point').val(medibox.methods.toNumber(Number(pres) + Number(refund)) + ' P');
@@ -186,7 +197,7 @@ function checkCollectPoint(){
 			});
 			getCollectItems('P');
 			$('#collect_pres_point').val(medibox.methods.toNumber(pointDetails.point.point) +' P'); 
-			$('#collect_point').val(0 + ' P');
+			$('#collect_point').val('');
 			$('#collect_sum_point').val($('#collect_pres_point').val());
 		});
 	}
@@ -224,7 +235,7 @@ function checkCollectPoint(){
 			});
 			if(pointType == 'P') {
 				product_seqno = 0;
-				$('#collect_point').val('0 P');
+				$('#collect_point').val('');
 			} else {
 				product_seqno = response.data[0].product_seqno;
 				$('#collect_point').val(medibox.methods.toNumber(response.data[0].return_point) +' P');
@@ -238,9 +249,10 @@ function checkCollectPoint(){
 		var point_type = $('#collect_point_detail_type').find('option:selected').attr('type');
 		var memo = $('#collect_memo').val();
 		var amount = $('#collect_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
+		var admin_name = ''; // $('#calculator_name').val();
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-			point_type:point_type, memo:memo, amount:replacePoint(amount) };
+			point_type:point_type, memo:memo, amount:replacePoint(amount), admin_name: admin_name };
 
 		medibox.methods.point.collect(data, function(request, response){
 			console.log('output : ' + response);

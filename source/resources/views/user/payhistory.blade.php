@@ -112,12 +112,17 @@
                     + '    <div class="history_item">'
                     + '        <div class="left">'
                     + '            <h3>'+productName+'</h3>'
-                    + '            <span class="category">'+getPointType(response.data[inx].point_type)+'</span>'
+                    + '            <span class="category">'+getPointType(response.data[inx].point_type) +'</span>'
                     + '            <span class="date">'+response.data[inx].create_dt+'</span>'
                     + '        </div>'
                     + '        <div class="right">'
                     + '            <span class="point">'+getCalculate2HstType(response.data[inx].hst_type)+medibox.methods.toNumber(response.data[inx].point)+' P</span>'
-                    + '            <span class="whether '+getClassByHstType(response.data[inx].hst_type)+'">'+getHstType(response.data[inx].hst_type)+'</span>'
+                    + '            <span class="whether '+getClassByHstType(response.data[inx].hst_type)+'">'+getHstType(response.data[inx].hst_type)+(response.data[inx].hst_type == 'U' 
+                                                ? (response.data[inx].canceled == 'N'
+                                                    ? (response.data[inx].approved == 'N' ? '(승인중)'
+                                                    : '')
+                                                : ' (취소됨)')
+                                            : '' )+'</span>'
                     + '        </div>'
                     + '    </div>'
                     + '</li>';
@@ -203,6 +208,9 @@
 			case 'U':
 			case 'R':
                 var serviceName = '';
+                if(data.product_name && data.point_type == 'P') {
+                    return data.product_name + ' ' + getHstType(data.hst_type);
+                }
                 if(data.detail && data.detail.service_name) {
                     serviceName = serviceName + data.detail.service_name;
                     if(data.detail && data.detail.type_name && data.detail.type_name != '') {

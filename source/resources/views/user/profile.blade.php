@@ -93,7 +93,7 @@
             <div class="footer_link">
                 <ul>
                     <li><a href="/profile/edit-prev">사용자 정보</a></li>
-                    <li><a href="/terms/usage">이용약관</a></li>
+                    <li><a href="/terms/tos">이용약관</a></li>
                     <li><a href="/terms/policy">개인정보처리방침</a></li>
                     <li><a href="#!" onclick="wait()">사업자 정보 확인</a></li>
                 </ul>

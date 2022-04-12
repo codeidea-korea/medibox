@@ -113,6 +113,8 @@ create index user_point_hst__index_1
     on user_point_hst (user_seqno);
 
 alter table user_point_hst add column calculate varchar(1) default '+'; -- 포인트 차감자
+alter table user_point_hst add column canceled varchar(1) default 'N'; -- hst_type 상태값에 대한 취소 여부 (사용/환불/충전 취소)
+alter table user_point_hst add column approved varchar(1) default 'N'; -- 승인 여부
 
 -- 사용자 패키지 구매/환불 가능 여부
 create table user_package
@@ -278,6 +280,23 @@ UPDATE `medibox`.`product` SET `type_name` = 'SPECIAL-딥포커스 아이테라�
 UPDATE `medibox`.`product` SET `delete_yn` = 'Y' WHERE (`product_seqno` = '46');
 UPDATE `medibox`.`product` SET `delete_yn` = 'Y' WHERE (`product_seqno` = '47');
 UPDATE `medibox`.`product` SET `delete_yn` = 'Y' WHERE (`product_seqno` = '48');
+
+UPDATE `medibox`.`product` SET `type_name` = 'BAISIC-미니쉬 스파' WHERE (`product_seqno` = '65');
+UPDATE `medibox`.`product` SET `service_sub_name` = '180분' WHERE (`product_seqno` = '34');
+UPDATE `medibox`.`product` SET `service_sub_name` = '120분' WHERE (`product_seqno` = '35');
+UPDATE `medibox`.`product` SET `service_sub_name` = '90분' WHERE (`product_seqno` = '36');
+
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('3', 'admin1', '4321!!', '메디박스 관리자1', 'N');
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('4', 'admin2', '4321@@', '메디박스 관리자2', 'N');
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('5', 'admin3', '4321##', '메디박스 관리자3', 'N');
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('6', 'admin4', '4321$$', '메디박스 관리자4', 'N');
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('7', 'admin5', '4321%%', '메디박스 관리자5', 'N');
+INSERT INTO `medibox`.`admin_info` (`admin_seqno`, `admin_id`, `admin_pw`, `admin_name`, `delete_yn`) VALUES ('8', 'admin6', '4321**', '메디박스 관리자6', 'N');
+
+insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 2, 0, 'P6', '미니쉬 스파', 'BASIC', '1시간-4회', 300000, 0);
+insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 10, 0, 'P6', '미니쉬 스파', 'LUXURY-건치백세 패키지', '1시간-1회', 100000, 0);
+insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 11, 0, 'P6', '미니쉬 스파', 'LUXURY-건치백세 패키지', '1시간-2회', 150000, 0);
+insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 12, 0, 'P6', '미니쉬 스파', 'LUXURY-건치백세 패키지', '1시간-4회', 300000, 0);
 
 commit;
 

@@ -148,7 +148,7 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* intro 메인화면 */
-#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:100vh;color:#fff;text-align:center;}
+#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:calc(100vh - 4.8rem);color:#fff;text-align:center;}
 
 #intro p.main_sub_title {margin-bottom:10vh;}
 
@@ -172,7 +172,7 @@ form input::placeholder {color:#b4b4b4;}
 
 /* login form (id, password) */
 #login form p {max-width:700px;margin:0 auto 2vh auto;}
-#login form p:nth-child(2) {margin-bottom:6vh;}
+#login form p:nth-of-type(2) {margin-bottom:6vh;}
 #login form label {display:block;margin-bottom:0.5rem;font-weight:500;}
 #login form input {border:none;background:rgba(255,255,255,0.2);backdrop-filter:blur(0.5rem);padding:0 0.65rem;border-radius:0.25rem;color:#fff;font-size:0.9rem;font-weight:400;}
 #login form #login_btn {text-align:center;width:100%;background:#000;color:#fff;padding:0.6rem 0;border-radius:0.25rem;font-size:1rem;}
@@ -429,7 +429,7 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* 결제 내역 서브헤더 메뉴 */
-#history_lnb {padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;}
+#history_lnb {position:relative;padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;z-index:9;}
 #history_lnb .depth01 {display:flex;}
 #history_lnb .depth01>li {position:relative;}
 #history_lnb .depth01>li:first-child {margin-right:0.9rem;}
@@ -444,7 +444,7 @@ form input::placeholder {color:#b4b4b4;}
 #pay_history .history_item {display:flex;justify-content:space-between;padding:1.05rem 1rem;border-bottom:1px solid #F0F0F0;}
 #pay_history .history_item span {display:block;}
 
-#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;}
+#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-left:0.5rem;white-space:nowrap;}
 
 #pay_history .history_item h3 {font-size:0.9rem;font-weight:500;margin-bottom:0.25rem;}
 #pay_history .history_item .category {font-size:0.7rem;color:#B4B4B4;margin-bottom:0.25rem;}
@@ -549,7 +549,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     background-repeat:no-repeat;
 }
 
-#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
+#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;white-space:nowrap;}
 
 #brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 1rem 7rem 1rem;overflow-y:scroll;}
 #brand_intro .brand_item_des h2 {font-size:1.25rem;font-weight:500;}
@@ -1067,8 +1067,6 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .history_wrap .cancle_btn {flex:2;}
 
 /* 링크 공유 모달창*/
-.modal_wrap.share {position:fixed;top:0;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.4);z-index:999;}
-
 .modal_wrap.share .modal_inner {position:absolute;bottom:0;width:100%;background:#fff;border-radius:1rem 1rem 0 0;}
 .modal_wrap.share .modal_inner {transform:translateY(3rem);transition:0.3s;}
 .modal_wrap.share.on .modal_inner {transform:translateY(0);}
