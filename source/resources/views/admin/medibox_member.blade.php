@@ -109,6 +109,18 @@ $page_title = '회원관리';
 			loadList(1);
 		}
 	}
+	function viewUserInfo(row){
+		var key;
+		var target = $(row.target).parent();
+		
+		if(target.dataset && target.dataset.key) {
+			key = target.dataset.key;
+		} else {
+			// NOTICE: IE 11+ 이하버전, 엣지 구버전, 크롬 84 아래버전의 안드로이드 웹뷰를 사용하는 인앱
+			key = $(target).attr('data-key');
+		}
+		gotoDetail(key);
+	}
 	function getList(){
 		var startDay = $('input[name=startDay]').val();
 		var endDay = $('input[name=endDay]').val();
@@ -168,18 +180,21 @@ $page_title = '회원관리';
 						+ getPointType(response.data[inx].points[jnx].point_type) + '정액권 ' + medibox.methods.toNumber(response.data[inx].points[jnx].point) + ' P';
 				}
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr style="cursor:pointer;" data-key="'+response.data[inx].user_seqno+'">'
 							+'	<td>'+no+'</td>'
-							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+response.data[inx].user_phone+'</td>'
+							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td>'+response.data[inx].user_name+'</td>'
 							+'	<td>'+(response.data[inx].delete_yn == 'Y' ? '탈퇴' : response.data[inx].create_dt)+'</td>'
-							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber(response.data[inx].points.filter(a => a.point_type == 'P')[0].point)+' P</td>'
-							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+pointsDescription+'</td>' 
-							+'	<td onclick="gotoDetail(\''+response.data[inx].user_seqno+'\')">'+medibox.methods.toNumber((response.data[inx].packageHistory ? response.data[inx].packageHistory.point : 0))+' P</td>'
-							+'	<td><a href="#" onclick="gotoInfoDetail(\''+response.data[inx].user_seqno+'\')" class="btnEdit">수정</a></td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].points.filter(a => a.point_type == 'P')[0].point)+' P</td>'
+							+'	<td>'+pointsDescription+'</td>' 
+							+'	<td>'+medibox.methods.toNumber((response.data[inx].packageHistory ? response.data[inx].packageHistory.point : 0))+' P</td>'
+							+'	<td data-action-type="none"><a href="#" onclick="gotoInfoDetail(\''+response.data[inx].user_seqno+'\')" class="btnEdit">수정</a></td>'
 							+'</tr>';
 				
 			}
+			$('._tableBody').html(bodyData);
+			$('._tableBody > tr > td').not('._tableBody > tr > td[data-action-type=none]').off().on('click', viewUserInfo);
+
 			if(response.count > 0)
 			{
 				var totSize = response.count;
@@ -202,7 +217,6 @@ $page_title = '회원관리';
 
 				$('.pg_wrap').html(pageTmp);
 			}
-			$('._tableBody').html(bodyData);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

@@ -208,6 +208,9 @@
 			case 'U':
 			case 'R':
                 var serviceName = '';
+                if(data.product_name && data.product_seqno < 1) {
+                    return data.shop_name + ' ' + data.product_name + ' ' + getHstType(data.hst_type);
+                }
                 if(data.product_name && data.point_type == 'P') {
                     return data.product_name + ' ' + getHstType(data.hst_type);
                 }

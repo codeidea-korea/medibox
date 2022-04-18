@@ -172,6 +172,9 @@
 		return $('input[name=service_input_type]:checked').val();
 	}
 	function toggleServiceInputTypeChange(){
+		if(isNotInProduct) {
+			return false;
+		}
 		var service_input_type = getServiceInputType();
 		if(service_input_type == 'self') {
 			$('#use_self_service').val('');
@@ -187,6 +190,29 @@
 			$('#use_point').attr('readonly', 'readonly');
 			$('#use_point').attr('style', 'background:#d3d3d3;');
 		}
+	}
+	var isNotInProduct = false;
+	function checkMustChooseSelf(){
+		// NOTICE: 해당하는 옵션은 상품에 없는 내용이므로 반드시 직접 기입만 입력이 가능한 상태
+		if(!isNotInProduct) {
+			return false;
+		}
+		// 강제로 직접기입으로 변경
+		var serviceInputType = getServiceInputType();
+		if(serviceInputType != 'self') {
+			alert('해당 서비스는 직접 기입만 제공합니다.');
+			$('input[name=service_input_type][value=self]').click();
+			$('#use_self_service').val('');
+			$('._chooseSelf').show();
+			$('._chooseService').hide();
+			$('#use_point').removeAttr('readonly');
+			$('#use_point').attr('style', ' ');
+			$('#use_point').val('0');
+			$('input[name=service_input_type][value=choose]').off().on('click', function (){ return false; });
+		} else {
+			$('input[name=service_input_type][value=choose]').off().on('click', toggleServiceInputTypeChange);
+		}
+		return false;
 	}
 	function all_checked(sw) {
 		var f = document.fboardlist;
@@ -230,12 +256,21 @@
 			}
 			var tmpShops = '';
 			for(var inx = 0; inx < response.data.length; inx++){
-				tmpShops = tmpShops + '<option value="'+response.data[inx].service_name+'">'+response.data[inx].service_name+'</option>';
+				tmpShops = tmpShops + '<option data-value="false" value="'+response.data[inx].service_name+'">'+response.data[inx].service_name+'</option>';
 			}
 			$('._shops').html(tmpShops);
 			
+			// NOTICE: 닥터 미니쉬는 직접기입으로만 가능한 형태 (상품 DB X - 서비스명, 가격이 항상 다를수 있으므로..)
+			$("._shops").append('<option data-value="true" value="닥터 미니쉬">닥터 미니쉬</option>');
+
 			$('._shops').off().on('change', function(){
-				getServices(point_type, $(this).val());
+				isNotInProduct = $(this).find('option[value=\"'+$(this).val()+'\"]').attr('data-value') == 'true';
+
+				if(!isNotInProduct) {
+					getServices(point_type, $(this).val());
+				} else {
+					checkMustChooseSelf();
+				}
 			});
 			getServices(point_type, response.data[0].service_name);
 		}, function(e){
