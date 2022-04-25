@@ -69,7 +69,13 @@ class UserController extends Controller
         if ($request->session()->has('user_seqno')) {
             $isLogin = true;
         }
-        return view('user.main')->with('isLogin', $isLogin);
+
+        $contents = DB::table("template")->where([
+            ['choosed', '=', 'Y'],
+            ['deleted', '=', 'N']
+        ])->first();
+//        return view('user.main')->with('isLogin', $isLogin);
+        return view('user.'.$contents->file_name)->with('isLogin', $isLogin);
     }
     public function medibox_list(Request $request)
     {
@@ -314,4 +320,10 @@ class UserController extends Controller
 
         return redirect('/');
     }
+
+    public function barcode(Request $request)
+    {
+        return view('user.barcode');
+    }
+    
 }

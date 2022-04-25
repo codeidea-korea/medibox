@@ -25,9 +25,25 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202214121625"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202204260210"></script>
 </head>
 <body>
+
+@php 
+$navData = [];
+$navData['회원관리'] = ['회원관리', '회원등록', '회원수정'];
+
+$navData['콘텐츠관리'] = ['공지사항 (유저/APP)', '공지사항 (파트너)', '자주 묻는 질문', '도움말', '이용약관', '개인정보약관', '메인화면 디자인 선택'];
+
+$navData['공지사항 (유저/APP)'] = ['공지사항 (유저/APP)', '공지사항 (유저/APP) 등록', '공지사항 (유저/APP) 수정'];
+$navData['공지사항 (파트너)'] = ['공지사항 (파트너)', '공지사항 (파트너) 등록', '공지사항 (파트너) 수정'];
+$navData['자주 묻는 질문'] = ['자주 묻는 질문', '자주 묻는 질문 등록', '자주 묻는 질문 수정'];
+$navData['도움말'] = ['도움말', '도움말 등록', '도움말 수정'];
+$navData['이용약관'] = ['이용약관', '이용약관 등록', '이용약관 수정'];
+$navData['개인정보약관'] = ['개인정보약관', '개인정보약관 등록', '개인정보약관 수정'];
+$navData['메인화면 디자인 선택'] = ['메인화면 디자인 선택'];
+
+@endphp
 
 <header id="header">
 	<div class="header_container">
@@ -36,12 +52,25 @@
 		<nav id="nav">
 			<ul id="nav_ul">
 				<li class=""><a href="/admin/members" class="mont">홈</a></li>
-				<li class="@if ($page_title == '회원관리' || $page_title == '회원등록' || $page_title == '회원수정') active @endif">
+				<li class="@if (in_array($page_title, $navData['회원관리'])) active @endif">
 					<a href="/admin/members" class="mont">회원관리</a>
 					<ul>
 						<li class="@if ($page_title == '회원관리' || $page_title == '회원수정') active @endif"><a href="/admin/members">회원관리</a></li>
 						<li class="@if ($page_title == '회원등록') active @endif"><a href="/admin/members/0">회원등록</a></li>
 						<li style="display:none;" class="@if ($page_title == '회원수정') active @endif"><a href="#">회원수정</a></li>
+					</ul>
+				</li>
+				<li class="@if (in_array($page_title, $navData['콘텐츠관리'])) active @endif">
+					<a href="#" class="mont">콘텐츠관리</a>
+					<ul>
+						<li class="@if (in_array($page_title, $navData['공지사항 (유저/APP)'])) active @endif"><a href="/admin/contents/notices">공지사항 (유저/APP)</a></li>
+						<li class="@if (in_array($page_title, $navData['공지사항 (파트너)'])) active @endif"><a href="/admin/contents/notices-partner">공지사항 (파트너)</a></li>
+						<li class="@if (in_array($page_title, $navData['자주 묻는 질문'])) active @endif"><a href="/admin/contents/faqs">자주 묻는 질문</a></li>
+						<li class="@if (in_array($page_title, $navData['도움말'])) active @endif"><a href="/admin/contents/helps">도움말</a></li>
+						<li class="@if (in_array($page_title, $navData['이용약관'])) active @endif"><a href="/admin/contents/usages">이용약관</a></li>
+						<li class="@if (in_array($page_title, $navData['개인정보약관'])) active @endif"><a href="/admin/contents/privacies">개인정보약관</a></li>
+
+						<li class="@if (in_array($page_title, $navData['메인화면 디자인 선택'])) active @endif"><a href="/admin/contents/template">메인화면 디자인 선택</a></li>
 					</ul>
 				</li>
 			</ul>

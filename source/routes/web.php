@@ -63,6 +63,9 @@ Route::post('/user/login/proccess', [UserController::class, 'login_proccess']);
 Route::post('/user/logout/proccess', [UserController::class, 'logout_proccess']);
 
 
+Route::get('/user/barcode', [UserController::class, 'barcode'])->name('user.barcode');
+
+
 Route::get('/admin', [AdminController::class, 'index']);
 Route::get('/admin/index', [AdminController::class, 'index']);
 
@@ -71,6 +74,27 @@ Route::prefix('admin')->group(function () {
     Route::get('/members/{id}/infos', [AdminController::class, 'medibox_member_view'])->name('admin.medibox_member_view');
     Route::get('/members/{id}', [AdminController::class, 'medibox_member_detail'])->name('admin.medibox_member_detail');
     Route::get('/login', [AdminController::class, 'login_medibox'])->name('admin.login_medibox');
+
+    // 공지사항 유저
+    Route::get('/contents/notices', [AdminController::class, 'notices']);
+    Route::get('/contents/notices/{id}', [AdminController::class, 'notice']);
+    // 공지사항 파트너
+    Route::get('/contents/notices-partner', [AdminController::class, 'partnerNotices']);
+    Route::get('/contents/notices-partner/{id}', [AdminController::class, 'partnerNotice']);
+    // 자주묻는질문
+    Route::get('/contents/faqs', [AdminController::class, 'faqs']);
+    Route::get('/contents/faqs/{id}', [AdminController::class, 'faq']);
+    // 도움말
+    Route::get('/contents/helps', [AdminController::class, 'helps']);
+    Route::get('/contents/helps/{id}', [AdminController::class, 'help']);
+    // 이용약관
+    Route::get('/contents/usages', [AdminController::class, 'usages']);
+    Route::get('/contents/usages/{id}', [AdminController::class, 'usage']);
+    // 개인정보처리약관
+    Route::get('/contents/privacies', [AdminController::class, 'privacies']);
+    Route::get('/contents/privacies/{id}', [AdminController::class, 'privacy']);
+    // 메인화면 디자인 선택
+    Route::get('/contents/template', [AdminController::class, 'template']);
 
     Route::post('/login/proccess', [AdminController::class, 'login_proccess']);
     Route::get('/logout/proccess', [AdminController::class, 'logout_proccess']);

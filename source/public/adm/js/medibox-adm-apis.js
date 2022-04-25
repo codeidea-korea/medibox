@@ -126,6 +126,48 @@ var bfCall = (function(){
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                 services: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops/services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+            }, contents:{
+                notice:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/app/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/app/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                partnerNotice:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                faq:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/faq', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/faq/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/faq/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/faq', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                help:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/help', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/help/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/help/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/help', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                usage:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/usage', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/usage/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/usage/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/usage', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                privacy:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/privacies', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/privacies/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/privacies/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/privacies', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                template:{
+                    choose: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template/choose', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    choosen: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/template/choosen', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

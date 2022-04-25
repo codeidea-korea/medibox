@@ -5,6 +5,14 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PointController;
+use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\HelpController;
+use App\Http\Controllers\NoticePartnerController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\PrivacyController;
+use App\Http\Controllers\UsageController;
+use App\Http\Controllers\TemplateController;
+// use App\Http\Controllers\PartnerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,5 +68,43 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     
     Route::get('users', [UserController::class, 'list']);
     Route::get('user', [UserController::class, 'find']);
+
+
+    // 공지사항 유저
+    Route::get('contents/notice/app', [NoticeController::class, 'list']);
+    Route::get('contents/notice/app/{id}', [NoticeController::class, 'find']);
+    Route::post('contents/notice/app', [NoticeController::class, 'add']);
+    Route::post('contents/notice/app/{id}/remove', [NoticeController::class, 'remove']);
+    // 공지사항 파트너
+    Route::get('contents/notice/partner', [NoticePartnerController::class, 'list']);
+    Route::get('contents/notice/partner/{id}', [NoticePartnerController::class, 'find']);
+    Route::post('contents/notice/partner', [NoticePartnerController::class, 'add']);
+    Route::post('contents/notice/partner/{id}/remove', [NoticePartnerController::class, 'remove']);
+    // 자주묻는질문
+    Route::get('contents/faq', [FaqController::class, 'list']);
+    Route::get('contents/faq/{id}', [FaqController::class, 'find']);
+    Route::post('contents/faq', [FaqController::class, 'add']);
+    Route::post('contents/faq/{id}/remove', [FaqController::class, 'remove']);
+    // 도움말
+    Route::get('contents/help', [HelpController::class, 'list']);
+    Route::get('contents/help/{id}', [HelpController::class, 'find']);
+    Route::post('contents/help', [HelpController::class, 'add']);
+    Route::post('contents/help/{id}/remove', [HelpController::class, 'remove']);
+    // 이용약관
+    Route::get('contents/usage', [UsageController::class, 'list']);
+    Route::get('contents/usage/{id}', [UsageController::class, 'find']);
+    Route::post('contents/usage', [UsageController::class, 'add']);
+    Route::post('contents/usage/{id}/remove', [UsageController::class, 'remove']);
+    // 개인정보처리약관
+    Route::get('contents/privacies', [PrivacyController::class, 'list']);
+    Route::get('contents/privacies/{id}', [PrivacyController::class, 'find']);
+    Route::post('contents/privacies', [PrivacyController::class, 'add']);
+    Route::post('contents/privacies/{id}/remove', [PrivacyController::class, 'remove']);
+
+    // 메인화면 템플릿 선택
+    Route::get('contents/template', [TemplateController::class, 'list']);
+    Route::get('contents/template/choosen', [TemplateController::class, 'choosen']);
+    Route::post('contents/template/choose', [TemplateController::class, 'choose']);
+
 //});
 
