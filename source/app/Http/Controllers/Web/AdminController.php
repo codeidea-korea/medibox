@@ -247,4 +247,47 @@ class AdminController extends Controller
 
         return view('admin.contents.template.main')->with('seqno', $userSeqno);
     }
+    
+    // 제휴사 관리
+    public function partners(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.list')->with('seqno', $userSeqno);
+    }
+    public function partner(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.detail')->with('seqno', $userSeqno)->with('id', $id);
+    }
+    // 매장 관리
+    public function stores(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.list')->with('seqno', $userSeqno);
+    }
+    public function store(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.detail')->with('seqno', $userSeqno)->with('id', $id);
+    }
 }

@@ -304,6 +304,7 @@ commit;
 
 alter table admin_info add column admin_type varchar(1) default 'A'; -- A 최고관리자, P 제휴사
 -- 제휴사 관리
+drop table partner;
 create table partner
 (
     seqno bigint auto_increment primary key,
@@ -326,10 +327,12 @@ create table partner
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 매장 정보
+drop table store;
 create table store
 (
     seqno bigint auto_increment primary key,
     admin_seqno    bigint      not null, -- 등록 관리자
+    partner_seqno    bigint      null,
     name   varchar(200)      not null, 
     phone    varchar(20)      null,
     address    varchar(300)      null,
@@ -350,6 +353,7 @@ create table store
 
 -- (예약) 매장별 매니저 정보
 -- (예약) 고객-매장 매니저 예약 정보
+drop table reservation;
 create table reservation
 (
     seqno bigint auto_increment primary key,
@@ -377,6 +381,7 @@ create table reservation
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 
+drop table reservation_product_grp;
 create table reservation_product_grp
 (
     seqno bigint auto_increment primary key,
@@ -389,6 +394,7 @@ create table reservation_product_grp
 ) character set utf16;
 -- (예약) 환경 설정
 
+drop table reservation_config;
 create table reservation_config
 (
     seqno bigint auto_increment primary key,
@@ -402,6 +408,7 @@ create table reservation_config
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (예약) 문의
+drop table reservation_counsel;
 create table reservation_counsel
 (
     seqno bigint auto_increment primary key,
@@ -419,6 +426,7 @@ create table reservation_counsel
 ) character set utf16;
 
 -- (쿠폰) 쿠폰
+drop table coupon;
 create table coupon
 (
     seqno bigint auto_increment
@@ -443,6 +451,7 @@ create table coupon
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (쿠폰) 쿠폰-적용할 파트너 그룹
+drop table coupon_partner_grp;
 create table coupon_partner_grp
 (
     seqno bigint auto_increment
@@ -455,6 +464,7 @@ create table coupon_partner_grp
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (쿠폰) 쿠폰-사용자 발급 현황
+drop table coupon_user;
 create table coupon_user
 (
     seqno bigint auto_increment
@@ -474,6 +484,7 @@ create table coupon_user
 -- (상품) 패키지 관리 (존재)
 
 -- (멤버쉽) 멤버쉽 관리
+drop table product_membership;
 create table product_membership
 (
     seqno bigint auto_increment
@@ -490,6 +501,7 @@ create table product_membership
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (멤버쉽) 바우처 관리
+drop table product_voucher;
 create table product_voucher
 (
     seqno bigint auto_increment
@@ -510,6 +522,7 @@ create table product_voucher
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 바우처 메인
+drop table membership_voucher_grp;
 create table membership_voucher_grp
 (
     seqno bigint auto_increment
@@ -521,6 +534,7 @@ create table membership_voucher_grp
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 바우처 기타 (서브 바우처)
+drop table membership_etc_voucher_grp;
 create table membership_etc_voucher_grp
 (
     seqno bigint auto_increment
@@ -532,6 +546,7 @@ create table membership_etc_voucher_grp
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 쿠폰
+drop table membership_coupon_grp;
 create table membership_coupon_grp
 (
     seqno bigint auto_increment
@@ -547,6 +562,7 @@ create table membership_coupon_grp
 -- product_membership_hst
 
 -- 관리자 히스토리 (나중에)
+drop table admin_action_hst;
 create table admin_action_hst
 (
     seqno bigint auto_increment
@@ -561,6 +577,7 @@ create table admin_action_hst
 ) character set utf16;
 -- 컨텐츠 관리 (나중에)
 -- (컨텐츠) 사용자 공지사항 (제목/내용/순서)
+drop table user_notice;
 create table user_notice
 (
     seqno bigint auto_increment primary key,
@@ -573,6 +590,7 @@ create table user_notice
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 파트너 공지사항 (제목/내용/순서)
+drop table partner_notice;
 create table partner_notice
 (
     seqno bigint auto_increment primary key,
@@ -585,6 +603,7 @@ create table partner_notice
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 자주묻는질문
+drop table faq;
 create table faq
 (
     seqno bigint auto_increment primary key,
@@ -597,6 +616,7 @@ create table faq
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 도움말
+drop table cont_help;
 create table cont_help
 (
     seqno bigint auto_increment primary key,
@@ -609,6 +629,7 @@ create table cont_help
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 이용약관
+drop table cont_usage;
 create table cont_usage
 (
     seqno bigint auto_increment primary key,
@@ -620,6 +641,7 @@ create table cont_usage
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 개인정보처리방침
+drop table cont_privacy;
 create table cont_privacy
 (
     seqno bigint auto_increment primary key,
@@ -631,6 +653,7 @@ create table cont_privacy
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- (컨텐츠) 배너관리
+drop table banner;
 create table banner
 (
     seqno bigint auto_increment primary key,

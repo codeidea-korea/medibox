@@ -168,6 +168,17 @@ var bfCall = (function(){
                     choosen: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/template/choosen', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 },
+            }, partner:{
+                add: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
+            }, store:{
+                add: function (params, successThenFn, errorThenFn){ ajaxCall('stores', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('stores', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

@@ -96,6 +96,13 @@ Route::prefix('admin')->group(function () {
     // 메인화면 디자인 선택
     Route::get('/contents/template', [AdminController::class, 'template']);
 
+    // 제휴사 관리
+    Route::get('/partners', [AdminController::class, 'partners']);
+    Route::get('/partners/{id}', [AdminController::class, 'partner']);
+    // 매장 관리
+    Route::get('/stores', [AdminController::class, 'stores']);
+    Route::get('/stores/{id}', [AdminController::class, 'store']);
+
     Route::post('/login/proccess', [AdminController::class, 'login_proccess']);
     Route::get('/logout/proccess', [AdminController::class, 'logout_proccess']);
 });

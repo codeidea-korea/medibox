@@ -12,7 +12,8 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PrivacyController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\TemplateController;
-// use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\StoreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +106,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('contents/template', [TemplateController::class, 'list']);
     Route::get('contents/template/choosen', [TemplateController::class, 'choosen']);
     Route::post('contents/template/choose', [TemplateController::class, 'choose']);
+    
+    // 제휴사 관리
+    Route::get('partners', [PartnerController::class, 'list']);
+    Route::get('partners/{id}', [PartnerController::class, 'find']);
+    Route::post('partners', [PartnerController::class, 'add']);
+    Route::post('partners/{id}/remove', [PartnerController::class, 'remove']);
+
+    // 매장 관리
+    Route::get('stores', [StoreController::class, 'list']);
+    Route::get('stores/{id}', [StoreController::class, 'find']);
+    Route::post('stores', [StoreController::class, 'add']);
+    Route::post('stores/{id}/modify', [StoreController::class, 'modify']);
+    Route::post('stores/{id}/remove', [StoreController::class, 'remove']);
+    
 
 //});
 

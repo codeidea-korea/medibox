@@ -25,13 +25,18 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202204260210"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202204270130"></script>
 </head>
 <body>
 
 @php 
 $navData = [];
 $navData['회원관리'] = ['회원관리', '회원등록', '회원수정'];
+
+
+$navData['제휴사 관리'] = ['제휴사 정보', '매장 정보'];
+$navData['제휴사 정보'] = ['제휴사 정보', '제휴사 등록', '제휴사 수정'];
+$navData['매장 정보'] = ['매장 정보', '매장 등록', '매장 수정'];
 
 $navData['콘텐츠관리'] = ['공지사항 (유저/APP)', '공지사항 (파트너)', '자주 묻는 질문', '도움말', '이용약관', '개인정보약관', '메인화면 디자인 선택'];
 
@@ -58,6 +63,13 @@ $navData['메인화면 디자인 선택'] = ['메인화면 디자인 선택'];
 						<li class="@if ($page_title == '회원관리' || $page_title == '회원수정') active @endif"><a href="/admin/members">회원관리</a></li>
 						<li class="@if ($page_title == '회원등록') active @endif"><a href="/admin/members/0">회원등록</a></li>
 						<li style="display:none;" class="@if ($page_title == '회원수정') active @endif"><a href="#">회원수정</a></li>
+					</ul>
+				</li>
+				<li class="@if (in_array($page_title, $navData['제휴사 관리'])) active @endif">
+					<a href="#" class="mont">제휴사 관리</a>
+					<ul>
+						<li class="@if (in_array($page_title, $navData['제휴사 정보'])) active @endif"><a href="/admin/partners">제휴사 정보</a></li>
+						<li class="@if (in_array($page_title, $navData['매장 정보'])) active @endif"><a href="/admin/stores">매장 정보</a></li>
 					</ul>
 				</li>
 				<li class="@if (in_array($page_title, $navData['콘텐츠관리'])) active @endif">
