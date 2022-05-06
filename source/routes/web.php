@@ -50,6 +50,12 @@ Route::get('/reservation/minishspa', [UserController::class, 'minishspa_reservat
 Route::get('/reservation/nail', [UserController::class, 'nail_reservation']) ->name('user.nail_reservation');
 Route::get('/reservation/valmontspa', [UserController::class, 'valmontspa_reservation']) ->name('user.valmontspa_reservation');
 
+Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/cart', [UserController::class, 'reservationCart']) ->name('user.reservation.cart');
+Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/payment', [UserController::class, 'reservationPayment']) ->name('user.reservation.payment');
+Route::get('/reservation/history', [UserController::class, 'reservationHistory']) ->name('user.reservation.history.list');
+Route::get('/reservation/history/{historyNo}', [UserController::class, 'reservationHistoryView']) ->name('user.reservation.history.view');
+Route::get('/reservation/history/{historyNo}/modify', [UserController::class, 'reservationModify']) ->name('user.reservation.modify');
+
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
 Route::get('/terms/policy', [UserController::class, 'policy']) ->name('user.policy');
@@ -102,6 +108,16 @@ Route::prefix('admin')->group(function () {
     // 매장 관리
     Route::get('/stores', [AdminController::class, 'stores']);
     Route::get('/stores/{id}', [AdminController::class, 'store']);
+    // 매장 관리
+    Route::get('/managers', [AdminController::class, 'managers']);
+    Route::get('/managers/{id}', [AdminController::class, 'manager']);
+    // 매장 관리
+    Route::get('/services', [AdminController::class, 'services']);
+    Route::get('/services/{id}', [AdminController::class, 'service']);
+
+    // 예약
+    Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);
+    Route::get('/reservations', [AdminController::class, 'reservations']);
 
     Route::post('/login/proccess', [AdminController::class, 'login_proccess']);
     Route::get('/logout/proccess', [AdminController::class, 'logout_proccess']);

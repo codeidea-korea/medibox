@@ -350,8 +350,63 @@ create table store
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
-
 -- (예약) 매장별 매니저 정보
+create table store_manager
+(
+    seqno bigint auto_increment primary key,
+    admin_seqno    bigint      not null, -- 등록 관리자
+    partner_seqno    bigint      null,
+    store_seqno    bigint      null,
+    manager_type varchar(20)      null, -- 매니저 구분
+    name   varchar(200)      not null, 
+    use_img   varchar(1)      not null, -- 매니저 사진 사용 여부
+    img1    varchar(200)      null,
+    img2    varchar(200)      null,
+    img3    varchar(200)      null,
+    img4    varchar(200)      null,
+    img5    varchar(200)      null,
+    memo varchar(500) null,
+    -- 근로 시작-종료 시간
+    start_dt    varchar(5)      null,
+    end_dt    varchar(5)      null,
+    -- 입사일/퇴사일
+    join_dt        datetime         null,
+    unjoin_dt        datetime         null,
+    -- 휴일 매핑 시퀀스
+    holiday_type   varchar(1)      not null, -- 매장에 따를지, 개별로 만들지
+    visible   varchar(1)      not null, -- 노출/비노출
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (매장/디자이너) 매장별 매니저 등급별 서비스
+create table store_service
+(
+    seqno bigint auto_increment primary key,
+    admin_seqno    bigint      not null, -- 등록 관리자
+    partner_seqno    bigint      null,
+    store_seqno    bigint      null,
+    manager_type varchar(20)      null, -- 매니저 구분
+    -- 분류 추가
+    name   varchar(200)      not null, 
+    estimated_time   varchar(5)      null, -- 예상 소요시간 00:00
+    price    int      default 0,
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (매장/디자이너) 휴일 설정
+create table holiday
+(
+    seqno bigint auto_increment primary key,
+    admin_seqno    bigint      not null, -- 등록 관리자
+    store_seqno    bigint      null, -- 매장 식별구분
+    manager_seqno    bigint      null, -- 매니저 식별구분
+    holiday_dt        datetime         null,
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
 -- (예약) 고객-매장 매니저 예약 정보
 drop table reservation;
 create table reservation
@@ -362,7 +417,8 @@ create table reservation
     store_seqno    bigint      not null, -- 해당 매장
     manager_seqno    bigint      null, -- 해당 디자이너 (없는 매장도 있음)
     user_seqno    bigint      not null, -- 등록 고객
-    in_manager   varchar(1)      not null, -- 예약 상태 (Reservation 예약완료, user-do-Not-entered 예약불이행, Cancel 예약취소, user-Entered 고객입장, Done 서비스완료)
+    service_seqno    bigint      not null, -- 서비스
+    status   varchar(1)      not null, -- 예약 상태 (Reservation 예약완료, user-do-Not-entered 예약불이행, Cancel 예약취소, user-Entered 고객입장, Done 서비스완료)
     -- 아이콘 표기 여부
     use_icon_important   varchar(1)      not null, -- 중요고객 여부 Y / N
     use_icon_phone   varchar(1)      not null, -- 전화표기 여부 Y / N
@@ -371,7 +427,6 @@ create table reservation
     custom_color   varchar(7)      null, -- #000000
     estimated_time   varchar(5)      null, -- 예상 소요시간 00:00
     start_dt        datetime  not null,
-    end_dt        datetime  not null,
 
     memo varchar(500) null,
     apply_on_mobile   varchar(1)      not null, -- 현장/모바일 등록 여부
@@ -380,6 +435,7 @@ create table reservation
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
+
 
 drop table reservation_product_grp;
 create table reservation_product_grp
@@ -687,3 +743,14 @@ insert into template (admin_seqno, file_name, representative_img, choosed, delet
 
 -- 레벨권한 설정 (나중에)
 -- (쿠폰) 이벤트 쿠폰 (나중에)
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '미니쉬 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동1', '010-1234-1234', '0', 'N');
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '발몽 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동2', '010-1234-1234', '0', 'N');
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '바라는 네일', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동3', '010-1234-1234', '0', 'N');
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '딥포커스 검안센터', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동4', '010-1234-1234', '0', 'N');
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '미니쉬 도수', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동5', '010-1234-1234', '0', 'N');
+INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '포레스타 블랙', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동6', '010-1234-1234', '0', 'N');
+
+
+
+
+alter table store_service add column dept    varchar(300) default '';

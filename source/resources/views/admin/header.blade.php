@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202204270130"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202205030459"></script>
 </head>
 <body>
 
@@ -47,6 +47,13 @@ $navData['도움말'] = ['도움말', '도움말 등록', '도움말 수정'];
 $navData['이용약관'] = ['이용약관', '이용약관 등록', '이용약관 수정'];
 $navData['개인정보약관'] = ['개인정보약관', '개인정보약관 등록', '개인정보약관 수정'];
 $navData['메인화면 디자인 선택'] = ['메인화면 디자인 선택'];
+
+$navData['예약 관리'] = ['예약 현황', '예약 내역', '예약 환경설정'];
+$navData['예약 환경설정'] = ['디자이너 정보', '서비스 정보'];
+
+$navData['디자이너 정보'] = ['디자이너 등록', '디자이너 수정', '디자이너 정보'];
+$navData['서비스 정보'] = ['서비스 등록', '서비스 수정', '서비스 정보'];
+
 
 @endphp
 
@@ -83,6 +90,20 @@ $navData['메인화면 디자인 선택'] = ['메인화면 디자인 선택'];
 						<li class="@if (in_array($page_title, $navData['개인정보약관'])) active @endif"><a href="/admin/contents/privacies">개인정보약관</a></li>
 
 						<li class="@if (in_array($page_title, $navData['메인화면 디자인 선택'])) active @endif"><a href="/admin/contents/template">메인화면 디자인 선택</a></li>
+					</ul>
+				</li>
+				<li class="@if (in_array($page_title, $navData['예약 관리'])) active @endif">
+					<a href="#" class="mont">예약 관리</a>
+					<ul>
+						<li class="@if ($page_title == '예약 현황') active @endif"><a href="/admin/reservations/condition">예약 현황</a></li>
+						<li class="@if ($page_title == '예약 내역') active @endif"><a href="/admin/reservations">예약 내역</a></li>
+						<li class="@if (in_array($page_title, $navData['예약 환경설정'])) active @endif">
+							<a href="#" class="mont">예약 환경설정</a>
+							<ul>
+								<li class="@if (in_array($page_title, $navData['디자이너 정보'])) active @endif"><a href="/admin/managers">(매장) 디자이너 관리</a></li>
+								<li class="@if (in_array($page_title, $navData['서비스 정보'])) active @endif"><a href="/admin/services">(매장) 서비스 관리</a></li>
+							</ul>
+						</li>
 					</ul>
 				</li>
 			</ul>

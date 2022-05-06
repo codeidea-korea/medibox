@@ -214,6 +214,103 @@ class UserController extends Controller
         $userSeqno = $request->session()->get('user_seqno');
         return view('user.pointpayment')->with('seqno', $userSeqno)->with('type', $type);
     }
+    
+    public function reservationCart(Request $request, $brandNo, $shopNo)
+    {
+        /*
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        */
+        $userSeqno = $request->session()->get('user_seqno');
+
+        return view('user.reservation.cart')
+            ->with('seqno', $userSeqno)
+            ->with('brandNo', $brandNo)
+            ->with('shopNo', $shopNo);
+    }
+    public function reservationModify(Request $request, $historyNo)
+    {
+        /*
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        */
+        $userSeqno = $request->session()->get('user_seqno');
+
+        return view('user.reservation.modify')
+            ->with('seqno', $userSeqno)
+            ->with('historyNo', $historyNo);
+    }
+    public function reservationPayment(Request $request, $brandNo, $shopNo)
+    {
+        /*
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        */
+        $userSeqno = $request->session()->get('user_seqno');
+        $date = $request->get('date', '');
+        $time = $request->get('time', '');
+        $serviceId = $request->get('serviceId', '');
+
+        $shopInfo = DB::table("store")->where([
+            ['seqno', '=', $shopNo],
+            ['deleted', '=', 'N']
+        ])->first();
+        $serviceInfo = DB::table("store_service")->where([
+            ['seqno', '=', $serviceId],
+            ['deleted', '=', 'N']
+        ])->first();
+        $pointInfo = DB::table("user_point")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        
+
+        $reservation_shop = $shopInfo->name; 
+        $reservation_service = $serviceInfo->name;
+        $reservation_price = $serviceInfo->price;
+
+        $remain_point = $pointInfo->point;
+        $remain_point2 = 0;
+
+        return view('user.reservation.payment')
+            ->with('seqno', $userSeqno)
+            ->with('brandNo', $brandNo)
+            ->with('shopNo', $shopNo)
+            ->with('date', $date)
+            ->with('time', $time)
+            ->with('serviceId', $serviceId)
+            ->with('reservation_shop', $reservation_shop)
+            ->with('reservation_service', $reservation_service)
+            ->with('reservation_price', $reservation_price)
+            ->with('remain_point', $remain_point)
+            ->with('remain_point2', $remain_point2);
+    }
+    public function reservationHistory(Request $request)
+    {
+        /*
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        */
+        $userSeqno = $request->session()->get('user_seqno');
+
+        return view('user.reservation.history.list')
+            ->with('seqno', $userSeqno);
+    }
+    public function reservationHistoryView(Request $request, $historyNo)
+    {
+        return view('user.reservation.history.view')
+            ->with('seqno', $userSeqno)
+            ->with('historyNo', $historyNo);
+    }
+
     public function policy(Request $request)
     {
         return view('user.policy');

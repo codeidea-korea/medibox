@@ -290,4 +290,67 @@ class AdminController extends Controller
 
         return view('admin.partners.stores.detail')->with('seqno', $userSeqno)->with('id', $id);
     }
+    // 디자이너 관리
+    public function managers(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.manager.list')->with('seqno', $userSeqno);
+    }
+    public function manager(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.manager.detail')->with('seqno', $userSeqno)->with('id', $id);
+    }
+    // 서비스 관리
+    public function services(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.service.list')->with('seqno', $userSeqno);
+    }
+    public function service(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.service.detail')->with('seqno', $userSeqno)->with('id', $id);
+    }
+
+    public function reservations(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.reservations.list')->with('seqno', $userSeqno);
+    }
+    public function reservationsCondition(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.reservations.condition')->with('seqno', $userSeqno);
+    }
 }

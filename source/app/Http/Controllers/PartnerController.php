@@ -12,6 +12,33 @@ use Illuminate\Support\Facades\Auth;
 
 class PartnerController extends Controller
 {
+    public function getAll(Request $request){
+        $id = $request->get('id');
+
+        $result = [];
+        $result['ment'] = '조회 실패';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['deleted', '=', 'N']);
+        if(! empty($id) && $id != ''){
+            array_push($where, ['seqno', '=', $id]);
+        }
+
+        $contents = DB::table("partner")->where($where)
+            ->orderBy('create_dt', 'desc')
+            ->get();
+        $count = DB::table("partner")->where($where)
+            ->count();
+
+        $result['ment'] = '성공';
+        $result['data'] = $contents;
+        $result['count'] = $count;
+        $result['result'] = true;
+
+        return $result;
+    }
+
     public function list(Request $request){
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);

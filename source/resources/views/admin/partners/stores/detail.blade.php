@@ -26,7 +26,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 				<div class="wr-list-con">
 				<!-- 카카오 주소 찾기 호출 -->
 					<input type="text" id="address" name="" value="" class="span200" placeholder="">
-					<input type="hidden" id="zipcode" name="" value="" placeholder="">
+					<input type="hidden" id="zipcode" name="" value="1" placeholder="">
 				</div>
 			</div>
 			<div class="wr-list">
@@ -334,10 +334,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 				return false;
 			}
 			var bodyData = '';
-			for(var inx=0; inx<response.data.length; inx++){
-				var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
+			for(var inx=0; inx<response.data.length; inx++){				
 				bodyData = bodyData 
-							+'<option value="'+response.data[inx].seq+'">'
+							+'<option value="'+response.data[inx].seqno+'">'
 							+ response.data[inx].cop_name
 							+'</option>';
 			}

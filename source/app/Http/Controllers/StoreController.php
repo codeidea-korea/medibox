@@ -12,6 +12,47 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
 {
+    public function getAll(Request $request){
+        $partner_seqno = $request->get('partner_seqno');
+        $id = $request->get('id');
+
+        $result = [];
+        $result['ment'] = '조회 실패';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['deleted', '=', 'N']);
+        if(! empty($partner_seqno) && $partner_seqno != ''){
+            array_push($where, ['partner_seqno', '=', $partner_seqno]);
+        }
+        if(! empty($id) && $id != ''){
+            array_push($where, ['seqno', '=', $id]);
+        }
+
+        $contents = DB::table("store")->where($where)
+            ->orderBy('create_dt', 'desc')
+            ->get();
+        // 매장에 소속된 디자이너 데이터
+        for($inx = 0; $inx < count($contents); $inx++){
+            $managerInfo = DB::table("store_manager")
+                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->first();
+            $serviceInfo = DB::table("store_service")
+                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->first();
+                
+            $contents[$inx]->managerInfo = $managerInfo;
+            $contents[$inx]->serviceInfo = $serviceInfo;
+        }
+        $count = DB::table("store")->where($where)
+            ->count();
+
+        $result['ment'] = '성공';
+        $result['data'] = $contents;
+        $result['count'] = $count;
+        $result['result'] = true;
+
+        return $result;
+    }
+
     public function list(Request $request){
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);

@@ -228,7 +228,10 @@
         <!--------------------------------->
 
 
-        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
+
+        <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
+
+        <a href="/brands/5/shops/0/reservation/cart" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
 

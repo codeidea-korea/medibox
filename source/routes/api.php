@@ -14,6 +14,10 @@ use App\Http\Controllers\UsageController;
 use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\HolidayController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,17 +113,44 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     
     // 제휴사 관리
     Route::get('partners', [PartnerController::class, 'list']);
+    Route::get('partners-all', [PartnerController::class, 'getAll']);
     Route::get('partners/{id}', [PartnerController::class, 'find']);
     Route::post('partners', [PartnerController::class, 'add']);
     Route::post('partners/{id}/remove', [PartnerController::class, 'remove']);
 
     // 매장 관리
     Route::get('stores', [StoreController::class, 'list']);
+    Route::get('stores-all', [StoreController::class, 'getAll']);
     Route::get('stores/{id}', [StoreController::class, 'find']);
     Route::post('stores', [StoreController::class, 'add']);
     Route::post('stores/{id}/modify', [StoreController::class, 'modify']);
     Route::post('stores/{id}/remove', [StoreController::class, 'remove']);
     
-
+    // 예약 관리 (예약 현황, 예약 내역)
+    Route::get('reservations', [ReservationController::class, 'list']);
+    Route::get('reservations/day', [ReservationController::class, 'getListInStore']);
+    Route::get('reservations/{id}', [ReservationController::class, 'find']);
+    Route::post('reservations', [ReservationController::class, 'add']);
+    Route::post('reservations/{id}/modify', [ReservationController::class, 'modify']);
+    Route::post('reservations/{id}/remove', [ReservationController::class, 'remove']);
+    Route::post('reservations/{id}/status', [ReservationController::class, 'modifyStatus']);
+    // 매니저 (임원/매니저/실장/디자이너 등 실무 직원 통칭)
+    Route::get('managers', [ManagerController::class, 'getListInStore']);
+    Route::get('managers/{id}', [ManagerController::class, 'find']);
+    Route::post('managers', [ManagerController::class, 'add']);
+    Route::post('managers/{id}/modify', [ManagerController::class, 'modify']);
+    Route::post('managers/{id}/remove', [ManagerController::class, 'remove']);
+    // 담당 직위 매니저들의 서비스
+    Route::get('manager-services', [ServiceController::class, 'getListInStore']);
+    Route::get('manager-services/{id}', [ServiceController::class, 'find']);
+    Route::post('manager-services', [ServiceController::class, 'add']);
+    Route::post('manager-services/{id}/modify', [ServiceController::class, 'modify']);
+    Route::post('manager-services/{id}/remove', [ServiceController::class, 'remove']);
+    // 매장/매니저별 휴일
+    Route::get('manager-holiday', [HolidayController::class, 'getListInStore']);
+    Route::post('manager-holiday', [HolidayController::class, 'add']);
+    Route::post('manager-holiday/{id}/remove', [HolidayController::class, 'remove']);
+    
+    
 //});
 

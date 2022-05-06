@@ -124,6 +124,23 @@ var bfCall = (function(){
                 
                 checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('point/check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
+            }, partner:{
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
+            }, store:{
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('stores-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                serviceAll: function (params, successThenFn, errorThenFn){ ajaxCall('stores-services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
+                reservation:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/status', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    day: function (params, successThenFn, errorThenFn){ ajaxCall('reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                }
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
