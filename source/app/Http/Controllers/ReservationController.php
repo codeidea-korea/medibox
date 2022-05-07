@@ -130,21 +130,21 @@ class ReservationController extends Controller
             ['deleted', '=', 'N']
         ])->first();
         $userInfo = DB::table("user_info")
-            ->where([['user_seqno', '=', $contents[$inx]->user_seqno]])->first();
+            ->where([['user_seqno', '=', $contents->user_seqno]])->first();
         $partnerInfo = DB::table("partner")
-            ->where([['seqno', '=', $contents[$inx]->partner_seqno]])->first();
+            ->where([['seqno', '=', $contents->partner_seqno]])->first();
         $storeInfo = DB::table("store")
-            ->where([['seqno', '=', $contents[$inx]->store_seqno]])->first();
+            ->where([['seqno', '=', $contents->store_seqno]])->first();
         $managerInfo = DB::table("store_manager")
-            ->where([['seqno', '=', $contents[$inx]->manager_seqno]])->first();
+            ->where([['seqno', '=', $contents->manager_seqno]])->first();
         $serviceInfo = DB::table("store_service")
-            ->where([['seqno', '=', $contents[$inx]->service_seqno]])->first();
+            ->where([['seqno', '=', $contents->service_seqno]])->first();
             
-        $contents[$inx]->userInfo = $userInfo;
-        $contents[$inx]->partnerInfo = $partnerInfo;
-        $contents[$inx]->storeInfo = $storeInfo;
-        $contents[$inx]->managerInfo = $managerInfo;
-        $contents[$inx]->serviceInfo = $serviceInfo;
+        $contents->userInfo = $userInfo;
+        $contents->partnerInfo = $partnerInfo;
+        $contents->storeInfo = $storeInfo;
+        $contents->managerInfo = $managerInfo;
+        $contents->serviceInfo = $serviceInfo;
 
         $result['ment'] = '성공';
         $result['data'] = $contents;

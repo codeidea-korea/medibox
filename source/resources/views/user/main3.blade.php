@@ -30,6 +30,25 @@
             <h2>브랜드 소개</h2>
 
             <ul>
+                
+                    @php
+                    if(count($brands) > 0) {
+                        for($inx = 0; $inx < count($brands); $inx++){
+                            echo '<li>'
+                                .'    <a href="/brand/'.$brands[$inx]->seqno.'">'
+                                .'        <figure class="minish_spa" style="background-image:linear-gradient(to right ,rgba(0,0,0,0.5), transparent), url(/user/img/img_brand0'.$brands[$inx]->seqno.'_01.png);"></figure><div class="txt_box">'
+                                .'            <h3>'.$brands[$inx]->cop_name.'</h3>'
+                                .'            <p>내용이 들어갑니다.</p>'
+                                .'        </div>'
+                                .'    </a>'
+                                .'</li>';
+                        }
+                    } else {
+                        echo '<li>브랜드가 없습니다.</li>';
+                    }
+                    @endphp
+
+                    {{--
                 <li><a href="/brand/minishspa">
                     <figure class="minish_spa"></figure>
                     <div class="txt_box">
@@ -84,6 +103,7 @@
                         </p>
                     </div>
                 </a></li>
+                --}}
             </ul>
         </div>   
     </section>

@@ -5,7 +5,7 @@
 
         <div class="date_select_wrap">
             <h4>날짜 선택</h4>
-            <div id="datepicker"></div>
+            <div id="datepicker" value=""></div>
         </div>
         
         <div class="time_select_wrap">
@@ -88,10 +88,6 @@
             alert('예약하실 시간을 선택해주세요.');
             return false;
         }
-        if(!targetServiceId || targetServiceId == '') {
-            alert('예약하실 서비스를 선택해주세요.');
-            return false;
-        }
         return true;
     }
     function validation2(){
@@ -99,9 +95,6 @@
             return false;
         }
         if(!searchTime || searchTime == '') {
-            return false;
-        }
-        if(!targetServiceId || targetServiceId == '') {
             return false;
         }
         return true;
@@ -115,26 +108,21 @@
             $('#next_btn').addClass('on');
         }
     }
-    function saveServiceId(id){
-        targetServiceId = id;
-        if(validation2()) {
-            $('#next_btn').addClass('on');
-        }
-    }
     var data;
     function loadHistory(){
-        var data = { user_seqno:{{ $seqno }}, id: {{$historyNo}} };
+        var param = { user_seqno:{{ $seqno }}, id: {{$historyNo}} };
 
-		medibox.methods.store.reservation.one(data, {{$historyNo}}, function(request, response){
+		medibox.methods.store.reservation.one(param, {{$historyNo}}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
 				return false;
             }
             data = response.data;
-            searchDate = response.data.start_dt.split('-')[0];
-            searchTime = response.data.start_dt.split('-')[1];
+            searchDate = response.data.start_dt.split(' ')[0];
+            searchTime = response.data.start_dt.split(' ')[1];
             $('#datepicker').val(searchDate);
+            $("#datepicker").datepicker('setDate', searchDate);
             /*
             $('.cancelPrice').text(medibox.methods.toNumber(response.data.price)+'원');
             $('.cancelDt').text(toReservationDate(response.data.start_dt));
@@ -153,7 +141,7 @@
             return false;
         }
 		var point_type = 'P';
-		var memo = '사용자 예약';
+        var memo = '사용자 예약';
 		
 		medibox.methods.store.reservation.modify({
             status: data.status
@@ -162,7 +150,7 @@
             , use_custom_color: data.use_custom_color
             , custom_color: data.custom_color
             , estimated_time: data.estimated_time
-            , start_dt: '{{$date}} {{$time}}:00'
+            , start_dt: $('#datepicker').val() + ' ' + searchTime
             , memo: data.memo + '\n[온라인] 고객 예약 수정됨'
             , apply_on_mobile: data.apply_on_mobile
             , partner_seqno: data.partner_seqno
@@ -173,7 +161,7 @@
             , admin_seqno: 0
 //                , user_name: $('#user_name').val()
 //                , user_phone: $('#user_phone').val()
-        }, function(request, response){
+        }, {{$historyNo}}, function(request, response){
             console.log('output : ' + response);
             if(!response.result){
                 alert(response.ment);
@@ -185,6 +173,9 @@
             alert('서버 통신 에러');
         });
     }
+    $(document).ready(function(){
+        loadHistory();
+    });
     </script>
 
     @include('user.footer')

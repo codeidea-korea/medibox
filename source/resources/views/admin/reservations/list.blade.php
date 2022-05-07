@@ -217,8 +217,7 @@ $page_title = '예약 내역';
 		return '';
 	}
 	function gotoDetail(seq){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/'+seq;
+		location.href = '/reservation/history/'+seq;
 	}
 	function addItem(){
 		alert('준비중입니다.');

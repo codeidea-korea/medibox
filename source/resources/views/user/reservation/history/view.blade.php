@@ -40,7 +40,7 @@
                 <div class="alarm_wrap">
                     <div class="button">
                         <h2>예약 알림 설정</h2>
-                        <button type="button" id="alarm">
+                        <button type="button" id="alarm" onclick="wait()">
                             <span class="handler"></span>
                         </button>
                     </div>
@@ -380,6 +380,10 @@
 
     <script>
     // list get
+    let price = 0;
+    function toReservationDate(aaa){
+        return aaa;
+    }
     function loadHistory(){
         var data = { user_seqno:{{ $seqno }}, id: {{$historyNo}} };
 
@@ -388,8 +392,9 @@
 			if(!response.result){
 				alert(response.ment);
 				return false;
-			}
-            $('.cancelPrice').text(medibox.methods.toNumber(response.data.price)+'원');
+            }
+            price = response.data.serviceInfo.price;
+            $('.cancelPrice').text(medibox.methods.toNumber(response.data.serviceInfo.price)+'원');
             $('.cancelDt').text(toReservationDate(response.data.start_dt));
             $('.cancelShop').text(response.data.storeInfo.name);
             $('.cancelService').text((response.data.serviceInfo ? response.data.serviceInfo.name : '-'));
@@ -405,15 +410,32 @@
     }
     
 	function remove(){
-		medibox.methods.store.reservation.status({
-			status: 'C'
-		}, {{$historyNo}}, function(request, response){
+        // 예약금 환불후 취소 처리
+        var point_type = 'P';
+		var memo = '사용자 예약 환불';
+		
+		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0,
+            point_type:point_type, memo:memo, amount: price, admin_name: '' };
+            
+		medibox.methods.point.refund(data, function(request, response){
 			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
-			}
-            $('#popup23').addClass('on');
+            if(!response.result){
+                alert(response.ment);
+                return false;
+            }
+            medibox.methods.store.reservation.status({
+                status: 'C'
+            }, {{$historyNo}}, function(request, response){
+                console.log('output : ' + response);
+                if(!response.result){
+                    alert(response.ment);
+                    return false;
+                }
+                $('#popup23').addClass('on');
+            }, function(e){
+                console.log(e);
+                alert('서버 통신 에러');
+            });
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

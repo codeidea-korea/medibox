@@ -7,18 +7,33 @@
     <title>Medibox</title>
 
     <link rel="stylesheet" href="{{ asset('user/css/common.css') }}?v=202203171921">
+    <link rel="stylesheet" href="{{ asset('user/css/jquery-ui.min.css') }}?v=202204011821">
     <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}?v=202204011821">
     <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}?v=202203171921">
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('user/js/jquery-ui.min.js') }}"></script>    
     <script src="{{ asset('user/js/slick.min.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/tabmenu.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/medibox.js') }}?v=202204011421"></script>
-    <script src="{{ asset('user/js/medibox-api.js') }}?v=202205062159"></script>
+    <script src="{{ asset('user/js/medibox-apis.js') }}?v=202205062259"></script>
+    <script src="{{ asset('user/js/datepicker.js') }}?v=202205062259"></script>
     
     <link rel="stylesheet" href="{{ asset('user/css/footbar.css') }}?v=202203231321">
 
 </head>
 <body>
+
+@if(Session::has('error'))
+	<script >
+		$(document).ready(function(){
+		  localStorage.clear();
+      $('#popup01').addClass('on');
+    });
+		{{ session()->forget('error') }}
+// location.href = '/user/login';
+	</script>
+  @endif
+  
     <header id="header">
         <!-- page title -->
         <div class="title">

@@ -28,6 +28,8 @@ Route::get('/point/history', [UserController::class, 'payhistory']) ->name('user
 Route::get('/point/approval/{result_code}', [UserController::class, 'approval']) ->name('user.approval');
 
 Route::get('/brand', [UserController::class, 'brand']) ->name('user.brand');
+Route::get('/brand/{partnerNo}', [UserController::class, 'brandDetail']) ->name('user.brand.detail');
+
 Route::get('/brand/minishspa', [UserController::class, 'minishspa']) ->name('user.minishspa');
 Route::get('/brand/valmontspa', [UserController::class, 'valmontspa']) ->name('user.valmontspa');
 Route::get('/brand/nail', [UserController::class, 'nail']) ->name('user.nail');
@@ -43,6 +45,8 @@ Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.
 Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
 
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
+Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
+
 Route::get('/reservation/deepfocus', [UserController::class, 'deepfocus_reservation']) ->name('user.deepfocus_reservation');
 Route::get('/reservation/forestablack', [UserController::class, 'forestablack_reservation']) ->name('user.forestablack_reservation');
 Route::get('/reservation/minishmanultherapy', [UserController::class, 'minishmanultherapy_reservation']) ->name('user.minishmanultherapy_reservation');
@@ -114,6 +118,8 @@ Route::prefix('admin')->group(function () {
     // 매장 관리
     Route::get('/services', [AdminController::class, 'services']);
     Route::get('/services/{id}', [AdminController::class, 'service']);
+    // 영업시간/휴일 관리
+    Route::get('/business-hours', [AdminController::class, 'businessHours']);
 
     // 예약
     Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);

@@ -107,6 +107,37 @@
         </ul>
     </section>
 
+    <script>
+        function getPartners(){
+            medibox.methods.partner.findAll({}, function(request, response){
+                console.log('output : ' + response);
+                if(!response.result){
+                    alert(response.ment);
+                    return false;
+                }
+                var bodyData = '';
+                for(var inx=0; inx<response.data.length; inx++){
+                    bodyData = bodyData 
+                        +'<li class="foresta_black" style="background-image: url('+response.data[inx].background_img+')">'
+                        +'    <a href="/brand/'+response.data[inx].seqno+'">'
+                        +'        <div class="txt_box">'
+                        +'            <span>'+response.data[inx].cop_eng_name+'</span>'
+                        +'            <h3>'+response.data[inx].cop_name+'</h3>'
+                        +'        </div>'
+                        +'    </a>'
+                        +'</li>';
+                }
+                $('.brand_wrap').html(bodyData);
+            }, function(e){
+                console.log(e);
+                alert('서버 통신 에러');
+            });
+        }
+        $(document).ready(function(){
+            getPartners();
+        });
+    </script>
+
 @include('user.footer')
 
 </body>

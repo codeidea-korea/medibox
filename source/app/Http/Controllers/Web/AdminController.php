@@ -353,4 +353,15 @@ class AdminController extends Controller
 
         return view('admin.reservations.condition')->with('seqno', $userSeqno);
     }
+
+    public function businessHours(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.partners.stores.business_hours')->with('seqno', $userSeqno);
+    }
 }

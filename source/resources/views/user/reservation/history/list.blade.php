@@ -311,7 +311,7 @@
                     +'<ul class="history_wrap">'
                     +'    <li>'
                     +'        <div class="top">'
-                    +'            <span class="current check">예약 확인</span>'
+                    +'            <span class="current '+ convertStyleForStatus(response.data[inx].status)+'">'+convertTitForStatus(response.data[inx].status)+'</span>'
                     +'            <a href="#" onclick="gotoDetail('+response.data[inx].seqno+')" class="view_detail_btn">예약 상세보기</a>'
                     +'        </div>'
                     +'        <div class="mid">'
@@ -336,13 +336,19 @@
                     +'                </ul>'
                     +'            </div>'
                     +'        </div>'
-                    +'        <div class="bot">'
-                    +'            <a href="#!" onclick="shareUri()" class="share_btn">'
-                    +'                <img src="/user/img/icon_share.svg" alt="공유하기">'
-                    +'            </a>'
-                    +'            <a href="#!" onclick="gotoModify('+response.data[inx].seqno+')" class="change_btn">예약변경</a>'
-                    +'            <a href="#!" onclick="openRemove('+response.data[inx].seqno+', '+(datas.length-1)+')" class="cancle_btn">예약취소</a>'
-                    +'        </div>'
+
+                    + (response.data[inx].status == 'R' 
+                        ? 
+                            '        <div class="bot">'
+                            +'            <a href="#!" onclick="shareUri()" class="share_btn">'
+                            +'                <img src="/user/img/icon_share.svg" alt="공유하기">'
+                            +'            </a>'
+                            +'            <a href="#!" onclick="gotoModify('+response.data[inx].seqno+')" class="change_btn">예약변경</a>'
+                            +'            <a href="#!" onclick="openRemove('+response.data[inx].seqno+', '+(datas.length-1)+')" class="cancle_btn">예약취소</a>'
+                            +'        </div>'
+                        : ''
+                    )
+
                     +'    </li>'
                     +'</ul>'
 			}
@@ -351,6 +357,27 @@
 			console.log(e);
 			alert('서버 통신 에러');
 		});
+    }
+    
+    function convertStyleForStatus(code) {
+		switch(code){
+			case 'C': return 'cancel';
+			case 'D': return 'completion';
+			case 'R': 
+			case 'N': 
+			case 'E': return 'check';
+			default: break;
+		}
+    }
+    function convertTitForStatus(code) {
+		switch(code){
+			case 'C': return '예약 취소';
+			case 'R': return '예약 완료';
+			case 'N': return '예약 불이행';
+			case 'E': return '고객 입장';
+			case 'D': return '서비스 완료';
+			default: break;
+		}
     }
 	function convert2Day(code){
 		switch(code){
@@ -367,7 +394,7 @@
     function toReservationDate(targetDt){
         var targetDate = new Date(targetDt);
         var date = targetDt.split('-');
-        return targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월 ' + targetDate.getDate() + '일 ' + convert2Day(targetDate.getDay()) + ' ' + targetDate.getHour() + ':' + targetDate.getMinute();
+        return targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월 ' + targetDate.getDate() + '일 ' + convert2Day(targetDate.getDay()) + ' ' + targetDate.getHours() + ':' + targetDate.getMinutes();
     }
     // 공유하기
     function shareUri(seq){

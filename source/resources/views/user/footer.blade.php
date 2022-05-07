@@ -72,17 +72,6 @@
         </a></li>
     </ul>
 </div>
-
-@if(Session::has('error'))
-	<script type="text/javascript" >
-		localStorage.clear();
-		setTimeout(() => {
-      $('.popup').addClass('on');
-    }, 200);
-//		{{ session()->forget('error') }}
-// location.href = '/user/login';
-	</script>
-  @endif
   
 <script>
 function activatedFootbar(){

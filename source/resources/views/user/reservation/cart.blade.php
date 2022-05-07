@@ -166,7 +166,7 @@
 
 
         <!-- 버튼 비활성화 -->
-        <button type="button" id="next_btn" class="btn">다음</button>
+        <button type="button" id="next_btn" class="btn" onclick="gotoNext()">다음</button>
         <!-- 버튼 활성화 -->
         <!-- <button type="submit" id="next_btn" class="btn on">다음</button> -->
 
@@ -310,7 +310,7 @@
 				return;
 			}
             var bodyData = '';
-            var prevDeptName = '';
+            var prevDeptName;
 			for(var inx=0; inx<response.data.length; inx++){
                 if(prevDeptName != response.data[inx].dept) {
                     bodyData = bodyData 

@@ -275,6 +275,7 @@ $page_title = '예약 현황';
 			}
 		}
 		$('#current_date').val(toDateFormatt3(toDate));
+		makeReservationBodyCeil();
 	}
 	var searchDate = toDate();
 	function findNextDate(pt){
@@ -398,12 +399,26 @@ $page_title = '예약 현황';
 			}
 			// 아티스트 x 근로시간 2차 배열
 			var bodyData = '<a href="#" class="active">전체</a>';
+			if(stores.managerInfo && stores.managerInfo.length > 0) {
+				
+				for(var inx=0; inx<stores.managerInfo.length; inx++){
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-1');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-2');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-3');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-4');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-5');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-6');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-7');
+					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').text('');
+				}
+			}
+
 			for(var inx=0; inx<response.data.length; inx++){
 				// custom_color
 				var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
-				var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;
-				
+				var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
 				var timeCeils = $('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span');
+
 				var targetIdx = 0;
 				for(var jnx=0; jnx<timeCeils.length; jnx++){
 					if($(timeCeils[jnx]).attr('data-start') == response.data[inx].start_dt.split(' ')[1].substring(0, 5)) {

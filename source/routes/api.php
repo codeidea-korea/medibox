@@ -146,11 +146,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('manager-services', [ServiceController::class, 'add']);
     Route::post('manager-services/{id}/modify', [ServiceController::class, 'modify']);
     Route::post('manager-services/{id}/remove', [ServiceController::class, 'remove']);
+    Route::get('stores-services', [ServiceController::class, 'getAllInStore']);
     // 매장/매니저별 휴일
     Route::get('manager-holiday', [HolidayController::class, 'getListInStore']);
     Route::post('manager-holiday', [HolidayController::class, 'add']);
     Route::post('manager-holiday/{id}/remove', [HolidayController::class, 'remove']);
-    
-    
 //});
 

@@ -107,6 +107,7 @@ var bfCall = (function(){
 
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('user/add', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                                                 
@@ -143,10 +144,10 @@ var bfCall = (function(){
                 }
             }
             ,toCurrency: function(x){
-                return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return '&#x20a9;'+(x + '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
             ,toNumber: function(x){
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return (x + '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         };
         this.validation = {

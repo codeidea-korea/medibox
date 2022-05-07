@@ -188,6 +188,19 @@ class StoreController extends Controller
         
         $in_manager = $request->post('in_manager', 'N');
         $manager_type = $request->post('manager_type', '');
+        
+        $start_dt = $request->post('start_dt', '');
+        $end_dt = $request->post('end_dt', '');
+        $due_day = $request->post('due_day', '');
+        
+        $lunch_start_dt = $request->post('lunch_start_dt', '');
+        $lunch_end_dt = $request->post('lunch_end_dt', '');
+        $allow_lunch_reservate = $request->post('allow_lunch_reservate', '');
+        
+        $allow_ext_holiday = $request->post('allow_ext_holiday', '');
+        $ext_holiday_weekly = $request->post('ext_holiday_weekly', '');
+        $ext_holiday_weekend_day = $request->post('ext_holiday_weekend_day', '');
+        $ext_holiday_montly = $request->post('ext_holiday_montly', '');
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -214,6 +227,19 @@ class StoreController extends Controller
                 
                 , 'in_manager' => $in_manager
                 , 'manager_type' => $manager_type
+                
+                , 'start_dt' => $start_dt
+                , 'end_dt' => $end_dt
+                , 'due_day' => $due_day
+                
+                , 'lunch_start_dt' => $lunch_start_dt
+                , 'lunch_end_dt' => $lunch_end_dt
+                , 'allow_lunch_reservate' => $allow_lunch_reservate
+                
+                , 'allow_ext_holiday' => $allow_ext_holiday
+                , 'ext_holiday_weekly' => $ext_holiday_weekly
+                , 'ext_holiday_weekend_day' => $ext_holiday_weekend_day
+                , 'ext_holiday_montly' => $ext_holiday_montly
 
                 , 'create_dt' => date('Y-m-d H:i:s')
             ]

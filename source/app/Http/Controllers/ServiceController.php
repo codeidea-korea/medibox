@@ -12,6 +12,47 @@ use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
+    public function getAllInStore(Request $request){
+        $partner_seqno = $request->get('partner_seqno');
+        $store_seqno = $request->get('store_seqno');
+
+        $result = [];
+        $result['ment'] = '조회 실패';
+        $result['result'] = false;
+
+        $where = [];
+        array_push($where, ['deleted', '=', 'N']);
+        if(! empty($store_seqno) && $store_seqno != ''){
+            array_push($where, ['store_seqno', '=', $store_seqno]);
+        }
+        if(! empty($partner_seqno) && $partner_seqno != ''){
+            array_push($where, ['partner_seqno', '=', $partner_seqno]);
+        }
+
+        $contents = DB::table("store_service")->where($where)
+            ->orderBy('create_dt', 'desc')
+            ->get();
+        $count = DB::table("store_service")->where($where)
+            ->count();
+
+        for($inx = 0; $inx < count($contents); $inx++){
+            $partnerInfo = DB::table("partner")
+                ->where([['seqno', '=', $contents[$inx]->partner_seqno]])->first();
+            $storeInfo = DB::table("store")
+                ->where([['seqno', '=', $contents[$inx]->store_seqno]])->first();
+                
+            $contents[$inx]->partnerInfo = $partnerInfo;
+            $contents[$inx]->storeInfo = $storeInfo;
+        }
+
+        $result['ment'] = '성공';
+        $result['data'] = $contents;
+        $result['count'] = $count;
+        $result['result'] = true;
+
+        return $result;
+    }
+
     public function getListInStore(Request $request){
         $partner_seqno = $request->get('partner_seqno');
         $store_seqno = $request->get('store_seqno');

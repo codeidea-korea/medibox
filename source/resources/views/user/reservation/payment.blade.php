@@ -94,11 +94,11 @@
                     <form action="#" method="post">
                         <div>
                             <h3>이름</h3>
-                            <input type="text" id="user_name" placeholder="이름을 입력해주세요.">
+                            <input type="text" id="user_name" placeholder="이름을 입력해주세요." required onkeyup="checkValidation()">
                         </div>
                         <div>
                             <h3>연락처</h3>
-                            <input type="text" id="user_phone" placeholder="연락처를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required>
+                            <input type="text" id="user_phone" placeholder="연락처를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required onkeyup="checkValidation()">
                         </div>
                     </form>
                 </div>
@@ -315,6 +315,7 @@
                 </div>
             </div>
 
+            {{--
             <!-- 정액권 -->
             <div class="tab_content">
                 <div class="service_select_wrap">  
@@ -606,7 +607,7 @@
                 </div>
 
             </div>
-            
+            --}}
 
              <!-- 버튼 비활성화 -->
             <button type="button" id="payment_btn" onclick="save()" class="btn">결제</button>
@@ -665,8 +666,26 @@
         $('.remain_point2').text(medibox.methods.toNumber(remainPoint2));
         $('#reservation_date').text(reservationDate());
     }
+    function checkValidation(){
+        const user_name = $('#user_name').val();
+        const user_phone = $('#user_phone').val();
+
+        $('#payment_btn').removeClass('on');
+        if(!user_name || user_name == '') {
+            return false;
+        }
+        if(!user_phone || user_phone == '' || user_phone.length < 12) {
+            return false;
+        }
+        $('#payment_btn').addClass('on');
+        return true;
+    }
 
     function save(){
+        if(!checkValidation()){
+            alert('예약자 정보를 입력해주세요.');
+            return false;
+        }
         
 		var point_type = 'P';
 		var memo = '사용자 예약';
@@ -714,56 +733,9 @@
 			alert('서버 통신 에러');
 		});
     }
-
-    function loadServices(){
-        medibox.methods.store.serviceAll({
-            brandId: {{$brandNo}},
-            shopId: {{$shopNo}}
-        }, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
-			}
-			$('.itm_num').text( medibox.methods.toNumber(response.count) );
-
-			if(!response.data || response.data.length == 0 || response.count == 0){
-                alert('해당 매장에는 현재 온라인 예약 가능한 서비스가 없습니다.');
-                history.back();
-				return;
-			}
-            var bodyData = '';
-            var prevDeptName = '';
-			for(var inx=0; inx<response.data.length; inx++){
-                if(prevDeptName != response.data[inx].dept) {
-                    bodyData = bodyData 
-                        + '<div class="menu">'
-                        + '    <h4>'+response.data[inx].dept+'</h4>'
-                        + '    <ul>';
-                    prevDeptName = response.data[inx].dept;
-                }
-
-                bodyData = bodyData 
-                        + '<li>'
-                        + '    <a href="#" onclick="saveServiceId('+response.data[inx].seqno+')">'
-                        + '        <span class="program">'+response.data[inx].name+' ('+convertTimeFormat(response.data[inx].estimated_time)+')</span>'
-                        + '        <span class="price">'+medibox.methods.toNumber(response.data[inx].price)+'원</span>'
-                        + '    </a>'
-                        + '</li>';
-
-                if(inx + 1 >= response.data.length || prevDeptName != response.data[inx + 1].dept) {
-                    bodyData = bodyData + '</ul></div>';
-                }
-			}
-			$('.service_inner').html($('.service_inner').html() + bodyData);
-		}, function(e){
-			console.log(e);
-			alert('서버 통신 에러');
-		});
-    }
     $(document).ready(function(){
         setup();
-        loadServices();
+        $('.popup a').off();
     });
     </script>
 

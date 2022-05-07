@@ -30,6 +30,24 @@
             <h2>브랜드 소개</h2>
             <nav id="reservation_lnb">
                 <ul class="lnb_inner">
+                    
+                    @php
+                    if(count($brands) > 0) {
+                        for($inx = 0; $inx < count($brands); $inx++){
+                            echo '<li>'
+                                .'    <a href="/brand/'.$brands[$inx]->seqno.'">'
+                                .'        <div class="menu_box">'
+                                .'            <img src="'.$brands[$inx]->icon_reservation_store.'" alt="'.$brands[$inx]->cop_name.'">'
+                                .'            <span>'.$brands[$inx]->cop_name.'</span>'
+                                .'        </div>'
+                                .'    </a>'
+                                .'</li>';
+                        }
+                    } else {
+                        echo '<li>브랜드가 없습니다.</li>';
+                    }
+                    @endphp
+{{--
                     <li>
                         <a href="/brand/minishspa">
                             <div class="menu_box">
@@ -78,6 +96,7 @@
                             </div>
                         </a>
                     </li>
+                    --}}
                 </ul>
             </nav>  
 

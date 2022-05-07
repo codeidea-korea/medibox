@@ -29,7 +29,28 @@
         <div class="brand_menu4">
             <h2>브랜드 소개</h2>
 
+
             <ul class="brand_wrap">
+                
+            @php
+            if(count($brands) > 0) {
+                for($inx = 0; $inx < count($brands); $inx++){
+                    echo '    <li class="minish_spa" style="background-image:linear-gradient(to right ,rgba(0,0,0,0.5), transparent), url(/user/img/img_brand0'.$brands[$inx]->seqno.'_02.jpg);">'
+                        .'    <a href="/brand/'.$brands[$inx]->seqno.'">'
+                        .'        <div class="txt_box">'
+                        .'            <img src="'.str_replace('.svg', '_w.svg', $brands[$inx]->icon_reservation_store).'" alt="'.$brands[$inx]->cop_name.'">'
+                        .'            <span>'.$brands[$inx]->cop_eng_name.'</span>'
+                        .'            <h3>'.$brands[$inx]->cop_name.'</h3>'
+                        .'        </div>'
+                        .'    </a>'
+                        .'</li>';
+                }
+            } else {
+                echo '<li>브랜드가 없습니다.</li>';
+            }
+            @endphp
+
+            {{--
                 <li class="minish_spa">
                 <a href="/brand/minishspa">
                     <div class="txt_box">
@@ -84,6 +105,7 @@
                     </div>
                 </a>
             </li>
+            --}}
             </ul> 
 
         </div>   

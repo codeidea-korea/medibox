@@ -40,7 +40,16 @@ class UserController extends Controller
     }
     public function brand(Request $request)
     {
-        return view('user.brand');
+        return view('user.brand.list');
+    }
+    public function brandDetail(Request $request, $partnerNo)
+    {
+        $brandInfo = DB::table("partner")->where([
+            ['seqno', '=', $partnerNo],
+            ['deleted', '=', 'N']
+        ])->first();
+
+        return view('user.brand.detail', ['brandInfo' => $brandInfo]);
     }
     public function deepfocus(Request $request)
     {
@@ -74,8 +83,13 @@ class UserController extends Controller
             ['choosed', '=', 'Y'],
             ['deleted', '=', 'N']
         ])->first();
+        
+        $brands = DB::table("partner")->where([
+            ['deleted', '=', 'N']
+        ])->get();
+
 //        return view('user.main')->with('isLogin', $isLogin);
-        return view('user.'.$contents->file_name)->with('isLogin', $isLogin);
+        return view('user.'.$contents->file_name, ['isLogin' => $isLogin, 'brands' => $brands]);
     }
     public function medibox_list(Request $request)
     {
@@ -217,12 +231,10 @@ class UserController extends Controller
     
     public function reservationCart(Request $request, $brandNo, $shopNo)
     {
-        /*
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/index');
         }
-        */
         $userSeqno = $request->session()->get('user_seqno');
 
         return view('user.reservation.cart')
@@ -232,26 +244,30 @@ class UserController extends Controller
     }
     public function reservationModify(Request $request, $historyNo)
     {
-        /*
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/index');
         }
-        */
         $userSeqno = $request->session()->get('user_seqno');
+        
+        $reservationInfo = DB::table("reservation")->where([
+            ['seqno', '=', $historyNo],
+            ['deleted', '=', 'N']
+        ])->first();
+        $targetTime = explode(' ', $reservationInfo->start_dt);
 
         return view('user.reservation.modify')
             ->with('seqno', $userSeqno)
+            ->with('date', $targetTime[0])
+            ->with('time', $targetTime[1])
             ->with('historyNo', $historyNo);
     }
     public function reservationPayment(Request $request, $brandNo, $shopNo)
     {
-        /*
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/index');
         }
-        */
         $userSeqno = $request->session()->get('user_seqno');
         $date = $request->get('date', '');
         $time = $request->get('time', '');
@@ -293,12 +309,10 @@ class UserController extends Controller
     }
     public function reservationHistory(Request $request)
     {
-        /*
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/index');
         }
-        */
         $userSeqno = $request->session()->get('user_seqno');
 
         return view('user.reservation.history.list')
@@ -306,8 +320,13 @@ class UserController extends Controller
     }
     public function reservationHistoryView(Request $request, $historyNo)
     {
+        $reservationInfo = DB::table("reservation")->where([
+            ['seqno', '=', $historyNo],
+            ['deleted', '=', 'N']
+        ])->first();
+
         return view('user.reservation.history.view')
-            ->with('seqno', $userSeqno)
+            ->with('seqno', $reservationInfo->user_seqno)
             ->with('historyNo', $historyNo);
     }
 
@@ -335,7 +354,35 @@ class UserController extends Controller
 
     public function reservation(Request $request)
     {
-        return view('user.reservation');
+        $stores = DB::table("store")->where([
+            ['deleted', '=', 'N']
+        ])->orderBy('create_dt', 'desc')->get();
+
+        for($inx = 0; $inx < count($stores); $inx++){
+            $partnerInfo = DB::table("partner")
+                ->where([['seqno', '=', $stores[$inx]->partner_seqno]])->first();
+                
+            $stores[$inx]->partnerInfo = $partnerInfo;
+        }
+
+        return view('user.store.list', ['stores' => $stores]);
+    }
+    public function reservationDetail(Request $request, $storeNo)
+    {
+        $storeInfo = DB::table("store")->where([
+            ['seqno', '=', $storeNo],
+            ['deleted', '=', 'N']
+        ])->first();
+        $services = DB::table("store_service")->where([
+            ['store_seqno', '=', $storeNo],
+            ['deleted', '=', 'N']
+        ])->orderBy('create_dt', 'desc')->get();
+        $managers = DB::table("store_manager")->where([
+            ['store_seqno', '=', $storeNo],
+            ['deleted', '=', 'N']
+        ])->orderBy('create_dt', 'desc')->get();
+
+        return view('user.store.detail', ['storeInfo' => $storeInfo, 'services' => $services, 'managers' => $managers]);
     }
     public function signup1(Request $request)
     {
