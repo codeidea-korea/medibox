@@ -40,9 +40,11 @@
                 <input type="checkbox" id="all_check" onclick="toggleAll()">
                 <label for="all_check">전체동의</label>
               </p>
-              <span>
-                <img src="/user/img/arrow_top.svg" alt="전체동의" class="arrow_top">
-              </span>
+              <!-- 22.03.20 삭제 -->
+              <!-- <span>
+                <img src="./img/arrow_top.svg" alt="전체동의" class="arrow_top">
+              </span> -->
+              <!------------------>
             </div>
             <!-- 필수, 선택 동의 -->
             <p>
@@ -105,6 +107,12 @@
                   $('#agree03').prop('checked', isCheckedAll);
                   $('#agree04').prop('checked', isCheckedAll);
                   $('#agree05').prop('checked', isCheckedAll);
+                  if(!isCheckedAll) {
+                    $('#complete_btn').removeClass('on');
+                  } else {
+                    $('#complete_btn').addClass('on');
+                  }
+                  
               }
               function checkAllCheckToggle(){
                   var isAllow01 = $('#agree01').is(":checked");
@@ -118,6 +126,11 @@
                   } else {
                     isCheckedAll = false;
                     $('#all_check').prop('checked', isCheckedAll);
+                  }
+                  if(isAllow01 && isAllow02 && isAllow03 && isAllow04) {
+                    $('#complete_btn').addClass('on');
+                  } else {
+                    $('#complete_btn').removeClass('on');
                   }
               }
               function checkValidation(){
@@ -179,14 +192,17 @@
                           alert(response.ment);
                           return false;
                       }
-                      $('.popup').addClass('on');
+                      $('#popup02').addClass('on');
                   }, function(e){
                       console.log(e);
+                      alert('가입에 실패하였습니다. 연동 오류');
+                      alert(e);
                   });
                   return false;
               }
               $(document).ready(function(){
                 $('#complete_btn').off();
+                $('.popup a').off();
               });
           </script>
 
@@ -194,7 +210,7 @@
           <div id="popup02" class="popup">
             <div class="container">
                 <div class="top">
-                    <strong class="popup_icon">success</strong>
+                    <strong class="popup_icon popup_icon_check">success</strong>
                     <span>환영합니다!<br>회원가입이 완료되었습니다.</span>
                 </div>
                 <div class="bottom">

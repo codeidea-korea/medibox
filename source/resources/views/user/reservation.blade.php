@@ -25,7 +25,9 @@
         </header>
 
         <section id="reservation">
-            <ul>
+            <!-- 22.03.20 class 추가 -->
+            <!-- <ul> -->
+            <ul class="res_icon_wrap">
                 <li>
                     <a href="/reservation/minishspa">
                         <div class="menu_box">
@@ -79,12 +81,16 @@
             <!-- 22.03.14 수정 -->
             <!-- <figure class="Advertisement">
                 <img src="./img/bottom_banner.jpg" alt="믿고 책임질 수 있는 치아교정 클리닉">
-            </figure> -->
+            </figure> --><!-- 
             <figure id="Advertisement" class="ad01">
                 <img src="/user/img/bottom_banner01_s.jpg" alt="건강하니까 이쁜거야! 미니쉬 치과 병원">
             </figure>
             <figure id="Advertisement" class="ad02">
                 <img src="/user/img/bottom_banner02.jpg" alt="믿고 책임질 수 있는 치아교정 클리닉">
+            </figure>
+            -->
+            <figure id="Advertisement" class="ad01">
+                <img src="/user/img/bottom_banner01_s.jpg" alt="건강하니까 이쁜거야! 미니쉬 치과 병원">
             </figure>
         </section>
 

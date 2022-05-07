@@ -93,7 +93,7 @@
 				<div class="wr-list">
 					<div class="wr-list-label required">환불 포인트</div>
 					<div class="wr-list-con flex">					
-						<input type="text" id="refund_point" name="" onkeyup="checkRefundPoint()" value="500,000 P" class="span">
+						<input type="text" id="refund_point" name="" onkeyup="checkRefundPoint()" value="" class="span" placeholder="0 P">
 					</div>
 				</div>
 				<div class="wr-list">
@@ -108,6 +108,14 @@
 						<input type="text" name="" value="{{ $name }}" class="span" style="background:#d3d3d3;" readonly>
 					</div>
 				</div>
+				<!--
+				<div class="wr-list">
+					<div class="wr-list-label ">포인트 차감자</div>
+					<div class="wr-list-con flex">					
+						<input type="text" id="calculator_name" name="calculator_name" value="" class="span">
+					</div>
+				</div>
+-->
 				<div class="wr-list">
 					<div class="wr-list-label ">MEMO</div>
 					<div class="wr-list-con flex">					
@@ -131,11 +139,14 @@
 
 <script>
 function checkRefundPoint(){
+	if($('#refund_point').val() == '') {
+		return;
+	}
 	var pres = $('#refund_pres_point').val().trim().replace('P','').replaceAll(',', '');
 	var refund = $('#refund_point').val().trim().replace('P','').replaceAll(',', '');
 	if(isNaN(refund)) {
 		alert('숫자만 입력해주세요.');
-		$('#refund_point').val('0');
+		$('#refund_point').val('');
 		return;
 	}
 	$('#refund_sum_point').val(medibox.methods.toNumber(Number(pres) - Number(refund)) + ' P');
@@ -188,7 +199,7 @@ function checkRefundPoint(){
 				$('#refund_pres_point').val(medibox.methods.toNumber(point) +' P'); 
 			});
 			$('#refund_pres_point').val(medibox.methods.toNumber(pointDetails.point.point) +' P'); 
-			$('#refund_point').val(0 + ' P');
+			$('#refund_point').val('');
 			$('#refund_sum_point').val($('#refund_pres_point').val());
 		});
 	}
@@ -196,9 +207,10 @@ function checkRefundPoint(){
 		var point_type = $('#refund_point_type').val();
 		var memo = $('#refund_memo').val();
 		var amount = $('#refund_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
+		var admin_name = ''; // $('#calculator_name').val();
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: 0,
-			point_type:point_type, memo:memo, amount:replacePoint(amount) };
+			point_type:point_type, memo:memo, amount:replacePoint(amount), admin_name: admin_name };
 
 		medibox.methods.point.refund(data, function(request, response){
 			console.log('output : ' + response);

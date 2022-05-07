@@ -4,7 +4,7 @@
     <!-- header -->
     <header id="header">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="location.href='/point/';">
+        <button class="back" onclick="location.href='/profile';">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                     <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -30,7 +30,9 @@
             <li>
                 <a href="#!" id="searchMonthTit">전체 기간</a>
                 <ul class="depth02">
-                    <li><a href="#!" onclick="searchMonth(0)">전체 기간</a></li>
+                    <!-- 22.03.31 추가 -->
+                    <li><a href="#!" onclick="searchMonth(0)">전체</a></li>
+                    <!------------------>
                     <li><a href="#!" onclick="searchMonth(1)">1개월</a></li>
                     <li><a href="#!" onclick="searchMonth(3)">3개월</a></li>
                     <li><a href="#!" onclick="searchMonth(6)">6개월</a></li>
@@ -40,7 +42,9 @@
             <li>
                 <a href="#!" id="searchTypeTit">전체 내역</a>
                 <ul class="depth02">
-                    <li><a href="#!" onclick="searchType('')">전체 내역</a></li>
+                    <!-- 22.03.31 추가 -->
+                    <li><a href="#!" onclick="searchType('')">전체</a></li>
+                    <!------------------>
                     <li><a href="#!" onclick="searchType('P')">포인트</a></li>
                     <li><a href="#!" onclick="searchType('!P')">정액권</a></li>
                 </ul>
@@ -108,12 +112,17 @@
                     + '    <div class="history_item">'
                     + '        <div class="left">'
                     + '            <h3>'+productName+'</h3>'
-                    + '            <span class="category">'+getPointType(response.data[inx].point_type)+'</span>'
+                    + '            <span class="category">'+getPointType(response.data[inx].point_type) +'</span>'
                     + '            <span class="date">'+response.data[inx].create_dt+'</span>'
                     + '        </div>'
                     + '        <div class="right">'
                     + '            <span class="point">'+getCalculate2HstType(response.data[inx].hst_type)+medibox.methods.toNumber(response.data[inx].point)+' P</span>'
-                    + '            <span class="whether '+getClassByHstType(response.data[inx].hst_type)+'">'+getHstType(response.data[inx].hst_type)+'</span>'
+                    + '            <span class="whether '+getClassByHstType(response.data[inx].hst_type)+'">'+getHstType(response.data[inx].hst_type)+(response.data[inx].hst_type == 'U' 
+                                                ? (response.data[inx].canceled == 'N'
+                                                    ? (response.data[inx].approved == 'N' ? '(승인중)'
+                                                    : '')
+                                                : ' (취소됨)')
+                                            : '' )+'</span>'
                     + '        </div>'
                     + '    </div>'
                     + '</li>';
@@ -199,6 +208,12 @@
 			case 'U':
 			case 'R':
                 var serviceName = '';
+                if(data.product_name && data.product_seqno < 1) {
+                    return data.shop_name + ' ' + data.product_name + ' ' + getHstType(data.hst_type);
+                }
+                if(data.product_name && data.point_type == 'P') {
+                    return data.product_name + ' ' + getHstType(data.hst_type);
+                }
                 if(data.detail && data.detail.service_name) {
                     serviceName = serviceName + data.detail.service_name;
                     if(data.detail && data.detail.type_name && data.detail.type_name != '') {

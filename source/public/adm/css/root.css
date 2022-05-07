@@ -100,18 +100,18 @@ font-family:'Black Han Sans', sans-serif;font-weight:400;
 
 
 
-.flex{display:flex;}
-.inline-flex{display:inline-flex;}
-.flex.column, .inline-flex.column{flex-direction:column;}
-.flex-top{align-items:flex-start;}
-.flex-middle{align-items:center;}
-.flex-bottom{align-items:flex-end;}
-.flex-left{justify-content:flex-start;}
-.flex-center{justify-content:center;}
-.flex-right{justify-content:flex-end;}
-.flex-stretch{align-items:stretch;}
+.flex{display:flex !important;}
+.inline-flex{display:inline-flex !important;}
+.flex.column, .inline-flex.column{flex-direction:column !important;}
+.flex-top{align-items:flex-start !important;}
+.flex-middle{align-items:center !important;}
+.flex-bottom{align-items:flex-end !important;}
+.flex-left{justify-content:flex-start !important;}
+.flex-center{justify-content:center !important;}
+.flex-right{justify-content:flex-end !important;}
+.flex-stretch{align-items:stretch !important;}
 .flex1{flex:1;}
-.flex > .left{margin-right:auto;}.flex > .right{margin-left:auto;}
+.flex > .left{margin-right:auto !important;}.flex > .right{margin-left:auto !important;}
 .item-top{align-self:start}.item-middle{align-self:center;}.item-bottom{align-self:end}.item-stretch{align-self:stretch}.item-left{margin-right:auto;}.item-right{margin-left:auto;}
 
 

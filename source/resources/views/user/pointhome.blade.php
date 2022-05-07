@@ -4,7 +4,7 @@
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
-            <button class="back" onclick="location.href='/';">
+            <button class="back" onclick="location.href='/profile';">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                     <g id="back_arrow" transform="translate(-22.295 -60)">
                       <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -45,7 +45,7 @@
                     <!-- 22.03.18 추가 -->
                     <figure class="package _pkgTag">
                         <!-- 비활성화 -->
-                        <img src="/user/img/package_logo.svg" alt="package logo _pkgImg">
+                        <img src="/user/img/package_logo.svg" class="_pkgImg" alt="package logo">
                         <!-- 활성화 -->
                         <!-- <img src="./img/package_logo.svg" alt="package logo" class="on"> -->
 
@@ -58,7 +58,10 @@
                     <div class="my_point">
                         <span><strong id="point" class="_userPoint">0</strong>P</span>
                     </div>
-                    <div class="payment">
+
+                    <!-- 22.03.20 수정 -->
+                    <!-- <div class="payment"> -->
+                    <div class="payment_btn_wrap">
                         <a href="/point/payment/P">결제하기</a>
                         <a href="/point/history">결제내역</a>
                     </div>
@@ -84,25 +87,27 @@
 				alert(response.ment);
 				return false;
 			}
-            $('._userPoint').text( medibox.methods.toNumber(response.data.filter(a => a.point_type == 'P')[0].point));
+            $('._userPoint').text( medibox.methods.toNumber(response.data.filter(p => p.point_type == 'P').reduce(function add(sum, currValue) {return sum + currValue.point;}, 0)));
             
             var tmpItem = '<h2>정액권</h2>';
             for(var inx = 0; inx<response.data.length; inx++){
-                if(response.data[inx].point_type == 'K'){
+                if(response.data[inx].point_type == 'P' && response.package && response.package.deleted == 'N'){
                     // 2022.03.20. 패키지가 존재하는 경우에만 on 으로 바꾸고 패키지 등급 처리
                     // 패키지는 포인트에서 잔액 차감을 처리하므로 충전 총액을 노출하면 됨
                     // <span class="grade grade1">50</span>
                     $('._pkgImg').addClass('on');
                     var grade = 0;
-                    if(response.data[inx].point == 500000) {
+                    if(response.package.point == 500000) {
                         grade = 1;
-                    } else if(response.data[inx].point == 1000000) {
+                    } else if(response.package.point == 200000) {
+                        grade = 4;
+                    } else if(response.package.point == 1000000) {
                         grade = 2;
-                    } else if(response.data[inx].point > 1000000) {
+                    } else if(response.package.point > 1000000) {
                         grade = 3;
                     }
                     $('._pkgTag').html($('._pkgTag').html() + (grade > 0 
-                        ? '<span class="grade grade'+grade+'">'+(response.data[inx].point / 10000)+'</span>'
+                        ? '<span class="grade grade'+grade+' on">'+(response.package.point / 10000)+'</span>'
                         : '')
                     );
                 }
@@ -116,9 +121,11 @@
                     '<div class="container '+getPointType2Class(response.data[inx].point_type)+'">'
                     +'    <div class="my_pass">'
                     +'        <h3>'+getPointType(response.data[inx].point_type)+'</h3>'
-                    +'        <span><strong id="point">'+medibox.methods.toNumber(response.data[inx].point)+'</strong>P</span>'
+                    +'        <span><strong id="point">'+medibox.methods.toNumber((
+                        response.data[inx].point_type == 'P' ? response.data.reduce(function add(sum, currValue) {return sum + currValue.point;}, 0) : response.data[inx].point
+                    ))+'</strong>P</span>'
                     +'    </div>'
-                    +'    <div class="payment">'
+                    +'    <div class="payment_btn_wrap">'
                     +'        <a href="/point/payment/'+response.data[inx].point_type+'">결제하기</a>'
                     +'    </div>'
                     +'</div>';
@@ -154,7 +161,7 @@
 			case 'S2':
 				return 'nail';
 			case 'S3':
-				return 'foresta';
+				return 'valmont';
 			case 'S4':
 				return 'foresta';
 			case 'P':

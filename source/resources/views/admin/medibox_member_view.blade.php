@@ -1,7 +1,8 @@
-@include('admin.header')
 @php 
 $page_title = '회원관리';
 @endphp
+@include('admin.header')
+
 <div id="background" class="container">
 
 	<div class="page-title">회원 정보</div>
@@ -42,10 +43,22 @@ $page_title = '회원관리';
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">&nbsp;</div>
-					<div class="view-list-con"></div>
+					<div class="view-list-con">
+					&nbsp;
+					</div>
 					<div class="view-list-label"></div>
 					<div class="view-list-con _foresta">포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,150,000 P</div>
 				</div>
+				<div class="view-list">
+					<div class="view-list-label">메모</div>
+					<div class="view-list-con" style="display: flex;padding-right: 60px;">
+						<textarea type="text" id="usermemo" name="usermemo" value="" style="height: 60px; resize: none;min-height: 60px;"></textarea>
+						<button onclick="modifyMemo()" class="btn black ml5" style="height: 60px;width: 60px;">수정</button> 
+					</div>
+					<div class="view-list-con" style="flex: none;"></div><div class="view-list-label">&nbsp;</div>
+					<div class="view-list-con">&nbsp;</div>
+				</div>
+
 			</div>
 		</div>
 
@@ -148,6 +161,7 @@ $page_title = '회원관리';
 						<col width="150">
 						<col width="150">
 						<col width="350">
+						<col width="350">
 					</colgroup>
 					<thead class="bar">
 						<tr>
@@ -158,6 +172,7 @@ $page_title = '회원관리';
 							<th>서비스</th>
 							<th>사용금액</th>
 							<th>사용일</th>
+							<th>포인트 차감자</th>
 							<th>메모</th>
 						</tr>
 					</thead>
@@ -246,7 +261,7 @@ $page_title = '회원관리';
 		}
 		var bodyData = '';
 		for(var inx=0; inx<data.length; inx++){
-			var no = (count - (rpageNo - 1)/rpageSize) - inx;
+			var no = (count - (rpageNo - 1)*rpageSize) - inx;
 			var serviceName = '';
 			if(data[inx].point_type == 'P') {
 				serviceName = '포인트';
@@ -297,7 +312,7 @@ $page_title = '회원관리';
 	function generatePointUsed(data, count){
 		if(count == 0){
 			$('._tableBodyUsed').html('<tr>'
-								+'    <td colspan="8" class="empty">입력된 정보가 없습니다.</td>'
+								+'    <td colspan="9" class="empty">입력된 정보가 없습니다.</td>'
 								+'</tr>');
 			$('._used_page').html('    <a href="#" class="pg_btn first"></a>'
 								+'    <a href="#" class="pg_btn prev"></a>'
@@ -308,7 +323,7 @@ $page_title = '회원관리';
 		}
 		var bodyData = '';
 		for(var inx=0; inx<data.length; inx++){
-			var no = (count - (upageNo - 1)/upageSize) - inx;
+			var no = (count - (upageNo - 1)*upageSize) - inx;
 			var serviceName = '';
 			if(data[inx].point_type == 'P') {
 				serviceName = '포인트';
@@ -321,7 +336,13 @@ $page_title = '회원관리';
 						+'<tr>'
 						+'	<td>'+no+'</td>'
 						+'	<td>'+serviceName+'</td>'
-						+'	<td>'+(data[inx].hst_type == 'U' ? '사용' : '-')+'</td>'
+						+'	<td>'+(data[inx].canceled == 'N' ? (data[inx].approved == 'Y' ? '사용' : '승인중') : '사용취소')
+								+ (data[inx].hst_type == 'U' && data[inx].canceled == 'Y' ? ''
+								: '<div style="display: flex;">'+ (data[inx].approved == 'Y' 
+									? '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red">사용취소</button>'
+									:	('<button onclick="approveUsePoint('+data[inx].user_point_hst_seqno+')" class="btn black ml5">승인</button>'
+										+ '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red ml5">취소</button>')) + '</div>')
+							+'</td>'
 
 						+'	<td>'+(data[inx].product_seqno == 0 ? data[inx].shop_name : data[inx].service_name)+'</td>'
 						+'	<td>'+(data[inx].product_seqno == 0 
@@ -330,6 +351,7 @@ $page_title = '회원관리';
 
 						+'	<td>-'+medibox.methods.toNumber(data[inx].point)+'</td>'
 						+'	<td>'+data[inx].create_dt+'</td>'
+						+'	<td>'+(data[inx].admin_name && data[inx].admin_name != 'null' ? data[inx].admin_name : '')+'</td>'
 						+'	<td>'+(data[inx].memo ? data[inx].memo : '')+'</td>'
 						+'</tr>';
 		}
@@ -373,8 +395,9 @@ $page_title = '회원관리';
 			$('._userId').text( response.data.user_phone );
 			$('._userPassword').text( response.data.user_pw );
 			$('._userName').text( response.data.user_name );
+			$('#usermemo').val( response.data.memo );
 			$('._createAt').text( response.data.create_dt );
-			$('._userPackage').text( (response.data.used_package ? response.data.used_package : '') );
+			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );
 
 			// TODO: 매핑 테이블 추가 필요
 			pointDetails.point = response.data.points.filter(a => a.point_type == 'P')[0];
@@ -384,7 +407,7 @@ $page_title = '회원관리';
 			pointDetails.balmong = response.data.points.filter(a => a.point_type == 'S3')[0];
 			pointDetails.foresta = response.data.points.filter(a => a.point_type == 'S4')[0];
 
-			$('._userPoint').text( medibox.methods.toNumber(response.data.points.filter(a => a.point_type == 'P')[0].point) +' P');
+			$('._userPoint').text( medibox.methods.toNumber(pointDetails.point.point) +' P');
 			$('._nail').html('네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.nail.point) +' P');
 			$('._balmong').html('발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.balmong.point) +' P');
 			$('._foresta').html('포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+ medibox.methods.toNumber(pointDetails.foresta.point) +' P');
@@ -495,6 +518,28 @@ $page_title = '회원관리';
 	function replacePoint(amount){
 		return amount.replace(/P/gi, "").replace(/p/gi, "").replace(/ /gi, "").replace(/,/gi, "");
 	}
+	function modifyMemo(){
+		var memo = $('#usermemo').val();
+		if(!memo || memo.length < 1) {
+			alert('메모 내용을 입력해주세요.');
+			return false;
+		}
+		
+		medibox.methods.user.memoModify({
+			user_seqno:{{ $id }}
+			, memo: memo
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('메모가 저장되었습니다.');
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
 	
 	function getTypes(fnCallback){
 		medibox.methods.point.types({}, function(request, response){
@@ -515,6 +560,54 @@ $page_title = '회원관리';
 			alert('서버 통신 에러');
 		});
 	}
+	// 승인
+	function approveUsePoint(seqno){
+		if(! confirm('포인트 사용을 승인합니다.')) {
+			return false;
+		}
+		medibox.methods.point.approve({
+			admin_seqno: {{ $seqno }},
+			admin_name: '',
+			user_seqno: {{ $id }},
+			hst_seqno: seqno
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('사용되었습니다.');
+			location.reload();
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+	// 취소
+	function cancelUsePoint(seqno){
+		if(! confirm('포인트 사용을 취소합니다.')) {
+			return false;
+		}
+		medibox.methods.point.cancel({
+			admin_seqno: {{ $seqno }},
+			admin_name: '',
+			user_seqno: {{ $id }},
+			hst_type: 'U',
+			hst_seqno: seqno
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('취소되었습니다.');
+			location.reload();
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+	// 사용 취소
 	</script>
 
 </div>

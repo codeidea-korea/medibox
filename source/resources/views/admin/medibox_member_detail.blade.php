@@ -1,7 +1,9 @@
-@include('admin.header')
+
 @php 
-$page_title = '회원등록';
+$page_title = $id == 0 ? '회원등록' : '회원수정';
 @endphp
+@include('admin.header')
+
 <section id="wrtie" class="container">
 
 	<div class="section-header">회원정보 @php echo $id == 0 ? '등록' : '상세'; @endphp</div>
@@ -10,7 +12,7 @@ $page_title = '회원등록';
 			<div class="wr-list">
 				<div class="wr-list-label">아이디<br/>(핸드폰번호)</div>
 				<div class="wr-list-con">
-					<input type="text" id="userId" name="" value="010-0000-0000" class="span200" placeholder="" @php echo $id == 0 ? '' : 'disabled'; @endphp maxlength="20">@php echo $id == 0 ? '<a href="#" onclick="checkValidationIdDupplicated()" class="btn black ml5">중복조회</a>' : ''; @endphp
+					<input type="text" id="userId" name="" value="" class="span200" placeholder="010-0000-0000" @php echo $id == 0 ? '' : 'disabled'; @endphp maxlength="20">@php echo $id == 0 ? '<a href="#" onclick="checkValidationIdDupplicated()" class="btn black ml5">중복조회</a>' : ''; @endphp
 				</div>
 			</div>
 			<div class="wr-list">
@@ -67,6 +69,7 @@ $page_title = '회원등록';
 	</div>
 
 	<script>
+		var userId;
 	function cancel(){
 		window.location.href = '/admin/members';
 	}
@@ -161,6 +164,7 @@ $page_title = '회원등록';
 	@php
 	if($id != 0) {
 	@endphp
+	userId = {{$id}}
 	function modify(){
 		if(!checkValidation()) {
 			return;
@@ -170,7 +174,7 @@ $page_title = '회원등록';
 		var name = document.querySelector('#userName').value;
 
 		medibox.methods.user.modify({
-			id: '{{ $id }}'
+			id: userId
 			, pw: pw
 			, pw2: pw
 			, name: name
@@ -236,9 +240,9 @@ $page_title = '회원등록';
 		}
 
 		medibox.methods.user.modify({
-			id: '{{ $id }}'
+			id: userId
 			, pw: pw
-			, pw: pw2
+			, pw2: pw2
 			, name: name
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -253,7 +257,7 @@ $page_title = '회원등록';
 		});
 	}
 	function getInfo(){
-		var data = { pageNo: 1, pageSize: 10, adminSeqno:{{ $seqno }}, user_phone:'{{ $id }}' };
+		var data = { pageNo: 1, pageSize: 10, adminSeqno:{{ $seqno }}, user_seqno:'{{ $id }}' };
 
 		medibox.methods.user.member(data, function(request, response){
 			console.log('output : ' + response);
@@ -267,6 +271,7 @@ $page_title = '회원등록';
 			$('#userId').val( response.data.user_phone );
 			$('#userPassword').val( response.data.user_pw );
 			$('#userName').val( response.data.user_name );
+			userId = response.data.user_phone; 
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -278,7 +283,7 @@ $page_title = '회원등록';
 			return;
 		}
 		medibox.methods.user.delete({
-			id: '{{ $id }}'
+			id: userId
 		}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){

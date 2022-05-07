@@ -20,21 +20,29 @@
                     </figure>
                     <div class="user">
                         <span class="user_id" id="id">{{$name}}님 반갑습니다.</span>
-                        <span class="user_class">Classic</span>
+
+                        <!-- 22.04.01 한글깨짐현상 수정 -->
+                        <!-- <span class="user_class">Classic</span> -->
+                        <span class="user_class">
+                            <strong>고객등급</strong>
+                            Classic
+                        </span>
+                        <!----------------------------->
+                        
                         <a href="/profile/edit-prev" class="profile_edit_btn">프로필 편집</a>
                     </div>
                 </div>
                 <div class="quick_menu_wrap">
                     <ul>
-                        <li><a href="/point/history">
+                        <li><a href="/point">
                             <img src="/user/img/icon_service.svg" alt="Medibox service">
                             서비스
                         </a></li>
-                        <li><a href="#!" onclick="wait()">
+                        <li><a href="/profile/voucher">
                             <img src="/user/img/icon_voucher.svg" alt="medibox voucher">
                             바우처
                         </a></li>
-                        <li><a href="#!" onclick="wait()">
+                        <li><a href="/profile/coupon">
                             <img src="/user/img/icon_coupon.svg" alt="medibox coupon">
                             쿠폰
                         </a></li>
@@ -55,6 +63,13 @@
                         <li><a href="#!" onclick="wait()">버전</a></li>
                     </ul>
                 </div>
+
+                <!-- 22.03.28 추가 -->
+                <div class="logout_wrap">
+                <button type="button" id="logout" onclick="logoutConfirm()">로그아웃</button>
+                </div>
+                <!------------------>
+
                 <div class="service_menu">
                     <h3>메디박스 고객센터</h3>
                     <ul class="working_time">
@@ -78,7 +93,7 @@
             <div class="footer_link">
                 <ul>
                     <li><a href="/profile/edit-prev">사용자 정보</a></li>
-                    <li><a href="/terms/usage">이용약관</a></li>
+                    <li><a href="/terms/tos">이용약관</a></li>
                     <li><a href="/terms/policy">개인정보처리방침</a></li>
                     <li><a href="#!" onclick="wait()">사업자 정보 확인</a></li>
                 </ul>
@@ -90,9 +105,52 @@
             </div>
         </footer>    
 
+        <!-- 22.03.28 추가 -->
+        <!-- 로그아웃 팝업창 -->
+        <div id="popup06" class="popup">
+            <div class="container">
+                <div class="top">
+                    <strong class="popup_icon_check popup_icon">check</strong>
+                    <span>
+                    로그아웃되었습니다.<br>
+                    메인페이지로 이동합니다.
+                    </span>
+                </div>
+                <div class="bottom">
+                    <a href="#!" onclick="$('#logoutFrm').submit();">확인</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="popup10" class="popup select">
+            <div class="container">
+                <div class="top">
+                    <span>로그아웃하시겠습니까?</span>
+                </div>
+                <div class="bottom">
+                    <a href="#!" class="close_btn">아니오</a>
+                    <a href="#!" onclick="logout()">네</a>
+                </div>
+            </div>
+        </div>
+        <!--------------->
+        <form method="post" id="logoutFrm" action="/user/logout/proccess">
+            {{ csrf_field() }}
+        </form>
+
     <script>
+        $(document).ready(function(){
+            $('#logout').off();
+        });
         function wait(){
             alert('준비중입니다.');
+        }
+        function logout(){
+            $('#popup10').removeClass('on');
+            $('#popup06').addClass('on');
+        }
+        function logoutConfirm(){
+            $('#popup10').addClass('on');
         }
     </script>
 @include('user.footer')

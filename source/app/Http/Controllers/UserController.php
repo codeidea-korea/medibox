@@ -169,6 +169,8 @@ class UserController extends Controller
         $user_pw2 = $request->post('pw2', '');
         $user_name = $request->post('name');
         $event_yn = $request->post('event_yn', 'N');
+        $recommended_code = $request->post('recommended_code', '');
+        $recommended_shop = $request->post('recommended_shop');
         $approve_yn = 'N';
         $delete_yn = 'N';
 
@@ -206,12 +208,36 @@ class UserController extends Controller
                 'user_pw' => $user_pw2
                 , 'user_name' => $user_name
                 , 'event_yn' => $event_yn
+                , 'recommended_shop' => $recommended_shop
+                , 'recommended_code' => $recommended_code
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
 
         $result['ment'] = '성공';
         $result['data'] = $user_name;
+        $result['result'] = true;
+
+        return $result;
+    }
+    public function modifyMemo(Request $request)
+    {
+        $user_seqno = $request->post('user_seqno');
+        $memo = $request->post('memo');
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
+            [
+                'memo' => $memo
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '성공';
+        $result['data'] = $memo;
         $result['result'] = true;
 
         return $result;
@@ -350,6 +376,12 @@ class UserController extends Controller
             $points = DB::table("user_point")
                 ->where([['user_seqno', '=', $users[$inx]->user_seqno]])->get();
             $users[$inx]->points = $points;
+
+            $packageHistory = DB::table("user_package")->where([
+                ['user_seqno', '=', $users[$inx]->user_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            $users[$inx]->packageHistory = $packageHistory;
         }
 
         $result['ment'] = '성공';
@@ -438,6 +470,12 @@ class UserController extends Controller
                 $user->used_package = $collectPackage->type_name;
             }
             $user->collectPackage = $collectPackage;
+
+            $packageHistory = DB::table("user_package")->where([
+                ['user_seqno', '=', $user_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            $user->packageHistory = $packageHistory;
         }
 
         $result['ment'] = '성공';

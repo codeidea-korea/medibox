@@ -109,6 +109,8 @@ var bfCall = (function(){
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
+                memoModify: function (params, successThenFn, errorThenFn){ ajaxCall('user/memo-modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                                 
             }, point:{
                 list: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -116,12 +118,99 @@ var bfCall = (function(){
                 refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 use: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 useSelf: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use-self', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                cancel: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-cancel', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                approve: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 shops: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                 services: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops/services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+            }, contents:{
+                notice:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/app/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/app/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                partnerNotice:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/partner', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                faq:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/faq', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/faq/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/faq/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/faq', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                help:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/help', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/help/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/help/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/help', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                usage:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/usage', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/usage/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/usage/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/usage', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                privacy:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/privacies', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/privacies/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/privacies/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/privacies', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+                template:{
+                    choose: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template/choose', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    choosen: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/template/choosen', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                },
+            }, partner:{
+                add: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
+            }, store:{
+                add: function (params, successThenFn, errorThenFn){ ajaxCall('stores', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                one: function (params, id, successThenFn, errorThenFn){ ajaxCall('stores/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('stores', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('stores-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
+                manager:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('managers', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('managers/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('managers/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('managers/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('managers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
+                    services:{
+                        add: function (params, successThenFn, errorThenFn){ ajaxCall('manager-services', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                        modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-services/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                        remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-services/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                        one: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-services/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('manager-services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
+                    }
+                }, holiday:{
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-holiday', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-holiday/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('manager-holiday/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    
+                }, reservation:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id+'/status', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    day: function (params, successThenFn, errorThenFn){ ajaxCall('reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                }
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

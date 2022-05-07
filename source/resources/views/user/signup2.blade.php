@@ -25,42 +25,72 @@
         </header>
 
         <section id="signUp">
-            <form action="/terms/agreement" method="post" onsubmit="checkValidation()">
-                {{ csrf_field() }}
-                <!-- id -->
-                <p>
-                    <label for="id">아이디(휴대폰 번호)</label>
-                    <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." maxLength=13 onkeyup="checkValidationIdDupplicated()" required>
+        <form action="signup2.html" method="post">
+            <!-- id -->
+            <div>
+                <!-- 22.03.21 태그 수정 -->
+                <!-- <label for="id">아이디(휴대폰 번호)</label> -->
+                <h2>아이디(휴대폰 번호)</h2>
+                <span class="cNum">
+                    <input type="text" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required>
 
-                    <!-- 형식과 다르거나 중복 됐을 때 나오는 오류메시지 -->
-                    <span id="id_error1">올바른 휴대폰 번호를 입력해주세요.</span>
-                    <span id="id_error2">이미 가입되어있는 휴대폰 번호입니다.</span>
-                </p>
-                <p>
-                    <label for="name">이름</label>
-                    <input type="text" name="name" id="name" placeholder="이름을 입력해주세요." required>
-                    <span id="name_error1">이름을 입력해주세요.</span>
-                </p>
-                
-                <!-- password -->
-                <p>
-                    <label for="pw">비밀번호</label>
-                    <input type="password" name="pw1" id="pw_1" placeholder="비밀번호를 입력해주세요." onkeyup="checkValidationPassword()" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" required>
+                    <!-------------- 22.03.19 수정 --------------->
+                    <!-- <button type="button" id="getNum">인증번호 받기</button> -->
 
-                    <!-- 형식과 다를 때 나오는 오류메시지 -->
-                    <span id="pw_error1">영문, 숫자, 특수문자를 포함한 8~20자로 설정해주세요.</span>
-                </p>
-                <!-- password check -->
-                <p>
-                    <label for="pw">비밀번호 확인</label>
-                    <input type="password" name="pw2" id="pw_2" placeholder="비밀번호를 입력해주세요." onkeyup="checkValidationPassword2()" required>
 
-                    <!-- 비밀번호가 일치하지 않을 때 나오는 오류메시지 -->
-                    <span id="pw_error2">비밀번호가 일치하지 않습니다.<span>
-                </p>
-                <!-- 다음 버튼 -->
-                <button type="submit" id="next_btn">다음</button>
-            </form>
+                    <!-- 버튼 비활성화 -->
+                    <button type="button" id="getNum" class="signup_btn">인증번호 받기</button>
+                    <!-- 버튼 활성화 -->
+                    <!-- <button type="button" id="getNum" class="signup_btn on">인증번호 받기</button> -->
+                    <!-- ------------------------------------- -->
+
+                </span>
+
+                <!-- 인증번호 발송 메세지 -->
+                <span id="cNum_message">
+                    인증번호 발송을 요청했습니다. 인증번호가 오지 않으면 입력정보가 정확한지 다시 확인해주세요.
+                </span>
+
+                <!-- 형식과 다르거나 중복 됐을 때 나오는 오류메시지 -->
+                <!-- <span id="id_error1">올바른 휴대폰 번호를 입력해주세요.</span> -->
+                <!-- 22.03.09 수정 -->
+                <!-- <span id="id_error2">이미 가입되어있는 휴대폰 번호입니다.</span> -->
+            </div>
+
+            <!-- 인증번호 -->
+            <div>
+                <!-- 22.03.21 태그 수정 -->
+                <!-- <label for="cNum">인증번호</label> -->
+                <h2>인증번호</h2>
+                <span class="cNum">
+                    <input type="password" name="cNum" id="cNum" placeholder="인증번호 입력"
+                        pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" required>
+
+                    <!-------------- 22.03.19 수정 --------------->
+                    <!-- <button type="button" id="numCheck">확인</button> -->
+
+
+                    <!-- 버튼 비활성화 -->
+                    <button type="button" id="numCheck" class="signup_btn">확인</button>
+                    <!-- 버튼 활성화 -->
+                    <!-- <button type="button" id="numCheck" class="signup_btn on">확인</button> -->
+                    <!-- ------------------------------------- -->
+
+                </span>
+
+                <!-- 형식과 다를 때 나오는 오류메시지 -->
+                <span class="cNumCount_wrap">
+                    <span id="cNumCount">02:58</span>
+                    <span>인증번호는 3분 이내 입력해야합니다. 제한시간이 지났을 경우, 인증번호를 다시 받아주세요.</span>
+                </span>
+            </div>
+
+            
+            <!-- 버튼 비활성화 -->
+            <button type="submit" id="next_btn" class="btn">다음</button>
+            <!-- 버튼 활성화 -->
+            <!-- <button type="submit" id="next_btn" class="btn on">다음</button> -->
+        </form>
         </section>
 
         
