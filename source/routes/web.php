@@ -120,6 +120,14 @@ Route::prefix('admin')->group(function () {
     Route::get('/services/{id}', [AdminController::class, 'service']);
     // 영업시간/휴일 관리
     Route::get('/business-hours', [AdminController::class, 'businessHours']);
+    // 포인트 사용 내역 관리
+    Route::get('/point/history', [AdminController::class, 'pointHistory']);
+    Route::get('/point/history/{historyNo}', [AdminController::class, 'pointHistoryDetail']);
+    Route::get('/point/conf', [AdminController::class, 'pointConf']);
+    // 정액권 관리
+    Route::get('/service/tickets', [AdminController::class, 'flatRateTickets']);
+    Route::get('/service/tickets/{tiketNo}', [AdminController::class, 'flatRateTicket']);
+    
 
     // 예약
     Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);

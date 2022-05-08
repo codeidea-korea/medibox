@@ -152,7 +152,6 @@ create table product
 ) character set utf16;
 
 -- alter table product add column delete_yn varchar(1) default 'N'; 
-
 insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 1, 0, 'S3', '발몽스파','MINISH SPECIAL', '90분', 300000, 0);
 insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 2, 0, 'S3', '발몽스파','MINISH SPECIAL', '120분', 450000, 0);
 insert into product (offline_type, orders, step_type, point_type, service_name, type_name, service_sub_name, price, return_point) values ('Y', 10, 0, 'S3', '발몽스파','하이드레이션', '30분', 140000, 0);
@@ -811,4 +810,35 @@ UPDATE `medibox`.`partner` SET `info` = '<p>‘왜 유럽과 미국에서는 보
 UPDATE `medibox`.`partner` SET `info` = '<p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p><p>미니쉬 도수에서는 관절 전문 병원 출신의 물리치료사의 체형교정 서비스를 제공하고 근골격의 변형예측, 근육 형상 검사가 가능한 장비를 활용한 검사 결과에 따라 개개인에 맞는 자가운동 치료 솔루션을 처방해드립니다. </p><p>멤버십 고객분들을 위한 미니쉬라운지청담만의 특별한 매뉴얼 테라피를 경험해보기시 바랍니다.</p>' WHERE (`seqno` = '5');
 UPDATE `medibox`.`partner` SET `info` = '<p>국내 최초이자 유일한 아베다의 뷰티 최상 등급인 라이프 스타일 살롱 ‘포레스타 블랙’</p><p>환경, 웰빙, 아름다움을 실천하는 아베다의 철학을 선보이며, 대표적인 친환경 브랜드인 아베다의 유기농 헤어 제품만을 사용하는 것을 원칙으로 합니다. 각 분야의 최고 전문가들이 특별한 여러분들을 위한 토탈 뷰티 서비스를 제공합니다. 아름다움을 위한 공간일 뿐만 아니라 도심 속 편안한 휴식 공간으로서, 내,외적인 균형을 통한 진정한 아름다움을 가꾸어 드립니다.</p>' WHERE (`seqno` = '6');
 
+
+UPDATE `medibox`.`store` SET `info` = '안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.안녕하세요!.', `img1` = '/user/img/minish_spa01.jpg', `img2` = '/user/img/minish_spa02.jpg', `img3` = '/user/img/minish_spa03.jpg', `start_dt` = '11:00', `end_dt` = '16:00', `allow_ext_holiday` = 'D', `ext_holiday_montly` = '5,10,17' WHERE (`seqno` = '2');
+UPDATE `medibox`.`store` SET `info` = '안녕하세요!.테스트입니다.안녕하세요!.테스트입니다.안녕하세요!.테스트입니다.안녕하세요!.테스트입니다.안녕하세요!.테스트입니다.안녕하세요!.테스트입니다.', `img1` = '/user/img/valmont_spa01.jpg', `img2` = '/user/img/valmont_spa02.jpg', `allow_ext_holiday` = 'W', `ext_holiday_weekly` = '4' WHERE (`seqno` = '3');
+
+
+
+-- (포인트) 포인트 자동 적립관리
+drop table conf_auto_point;
+create table conf_auto_point
+(
+    join_bonus   varchar(1)      not null, -- 회원가입 포인트 사용여부 Y / N
+    join_bonus_point    int      not null default 0,
+    recommand_bonus   varchar(1)      not null, -- 추천인 포인트 사용여부 Y / N
+    recommand_bonus_point    int      not null default 0,
+    recommand_bonus_rate    int      not null default 0,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+INSERT INTO `medibox`.`conf_auto_point` (`join_bonus`, `join_bonus_point`, `recommand_bonus`, `recommand_bonus_point`, `recommand_bonus_rate`) VALUES ('N', 0, 'Y', 0, 2);
+
+
+-- 제휴사 service_name
+-- 이름 type_name
+-- 내용
+-- 가격 price
+-- 적립 포인트율 
+-- 포인트 return_point
+-- 사용 기간 
+alter table product add column info varchar(200) default '';
+alter table product add column add_rate int default 0;
+alter table product add column date_use int default 14;
 

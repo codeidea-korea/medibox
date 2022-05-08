@@ -12,6 +12,92 @@ use Illuminate\Support\Facades\Auth;
 
 class PointController extends Controller
 {
+    public function list(Request $request)
+    {
+        $pageNo = $request->get('pageNo', 1);
+        $pageSize = $request->get('pageSize', 10);
+
+        $user_seqno = $request->get('no');
+        $startDt = $request->get('startDt');
+        $endDt = $request->get('endDt');
+        $hst_type = $request->get('hst_type');
+        
+        $user_phone = $request->get('id');
+        $user_name = $request->get('name');
+
+        $result = [];
+        $result['ment'] = '조회 실패';
+        $result['result'] = false;
+
+        $where = [];
+        $whereUser = [];
+        if(! empty($user_seqno) && $user_seqno != ''){
+            array_push($where, ['user_point_hst.user_seqno', '=', $user_seqno]);
+        }
+        if(! empty($user_seqno) && $user_seqno != ''){
+            array_push($where, ['user_point_hst.user_seqno', '=', $user_seqno]);
+        }
+        if(! empty($hst_type) && $hst_type != ''){
+            array_push($where, ['user_point_hst.hst_type', '=', $hst_type]);
+        }
+        if(! empty($user_phone) && $user_phone != ''){
+            array_push($whereUser, ['user_info.user_phone', '=', $user_phone]);
+        }
+        if(! empty($user_name) && $user_name != ''){
+            array_push($whereUser, ['user_info.user_name', '=', $user_name]);
+        }
+
+        $contents = DB::table("user_point_hst")
+            ->join('user_info', function ($join) use ($whereUser) {
+                $join->on('user_point_hst.user_seqno', '=', 'user_info.user_seqno')
+                     ->where($whereUser);
+            })
+            ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno')
+            ->where($where)
+            ->orderBy('user_point_hst.create_dt', 'desc')
+            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->get();
+        $count = DB::table("user_point_hst")->where($where)
+            ->join('user_info', function ($join) use ($whereUser) {
+                $join->on('user_point_hst.user_seqno', '=', 'user_info.user_seqno')
+                    ->where($whereUser);
+            })
+            ->count();
+
+        $result['ment'] = '성공';
+        $result['data'] = $contents;
+        $result['count'] = $count;
+        $result['result'] = true;
+
+        return $result;
+    }
+
+    public function conf(Request $request)
+    { 
+        $admin_seqno = $request->post('admin_seqno');
+
+        $join_bonus = $request->post('join_bonus', 'N');
+        $join_bonus_point = $request->post('join_bonus_point', 0); 
+        $recommand_bonus = $request->post('recommand_bonus', 'Y');
+        $recommand_bonus_point = $request->post('recommand_bonus_point', 0);
+        $recommand_bonus_rate = $request->post('recommand_bonus_rate', 2);
+
+        DB::table('conf_auto_point')->update(
+            [
+                'join_bonus' => $join_bonus
+                , 'join_bonus_point' => $join_bonus_point
+                , 'recommand_bonus' => $recommand_bonus
+                , 'recommand_bonus_point' => $recommand_bonus_point
+                , 'recommand_bonus_rate' => $recommand_bonus_rate
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['result'] = true;
+
+        return $result;
+    }
+
     // 나의 포인트 조회 - 일반 고객
     public function myPoint(Request $request)
     {
@@ -162,6 +248,7 @@ class PointController extends Controller
             return $result;
         }
 
+        $price = $amount;
         if($product_seqno != 0 && $point_type != 'P') {
             // 패키지의 경우, 계정 최초 1회만 구매 가능함
             if($point_type == 'K') {
@@ -192,6 +279,7 @@ class PointController extends Controller
                 return $result;
             }
             $amount = $product->return_point;
+            $price = $product->price;
         } else {
             if($point_type != 'P') {
                 return $result;
@@ -254,7 +342,80 @@ class PointController extends Controller
                 ]
             );
         }
+        
+        // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        $countUsed = DB::table("user_point_hst")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['hst_type', '=', 'U']
+        ])->count();
+        if($countUsed < 2 && $user->recommended_code && $user->recommended_code != '') {
+            $recommender = DB::table("user_info")->where([
+                ['user_phone', '=', $user->recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
 
+            $conf = DB::table("conf_auto_point")->first();
+            if(!empty($conf) && $conf->recommand_bonus == 'Y'
+                && !empty($recommender)) {
+                
+                $etcPoint = ($price / 100) * $conf->recommand_bonus_rate;
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => $admin_seqno
+                        , 'user_seqno' => $user_seqno
+                        , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 (최초 추천을 한 회원)'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $point->point + $amount + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+
+                $prevPoint = DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P'],
+                    ['delete_yn', '=', 'N']
+                ])->first();
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => $admin_seqno
+                        , 'user_seqno' => $recommender->user_seqno
+                        , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 (최초 추천을 받은 회원)'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P'],
+                    ['delete_yn', '=', 'N']
+                ])->update(
+                    [
+                        'point' => $prevPoint->point + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 적립되었습니다.';
         $result['data'] = $user;

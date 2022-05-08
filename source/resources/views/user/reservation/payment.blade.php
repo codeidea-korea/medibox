@@ -674,7 +674,7 @@
         if(!user_name || user_name == '') {
             return false;
         }
-        if(!user_phone || user_phone == '' || user_phone.length < 12) {
+        if(!user_phone || user_phone == '' || user_phone.length < 10) {
             return false;
         }
         $('#payment_btn').addClass('on');

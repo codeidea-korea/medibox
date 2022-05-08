@@ -364,4 +364,71 @@ class AdminController extends Controller
 
         return view('admin.partners.stores.business_hours')->with('seqno', $userSeqno);
     }
+    
+    public function pointHistory(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.point.list')->with('seqno', $userSeqno);
+    }
+    public function pointHistoryDetail(Request $request, $historyNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $hst = DB::table("user_point_hst")->where([
+            ['user_point_hst_seqno', '=', $historyNo]
+        ])->first();
+        $userInfo = DB::table("user_info")->where([
+            ['user_seqno', '=', $hst->user_seqno]
+        ])->first();
+        $hst->userInfo = $userInfo;
+
+        return view('admin.point.detail', ['seqno' => $userSeqno, 'historyNo' => $historyNo, 'history' => $hst]);
+    }
+    public function pointConf(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $conf = DB::table("conf_auto_point")->first();
+
+        return view('admin.point.conf', ['seqno' => $userSeqno, 'conf' => $conf]);
+    }
+
+    public function flatRateTickets(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.flatRateTickets.list')->with('seqno', $userSeqno);
+    }
+    public function flatRateTicket(Request $request, $tiketNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $product = DB::table("product")->where([
+            ['product_seqno', '=', $tiketNo],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        return view('admin.flatRateTickets.detail', ['seqno' => $userSeqno, 'tiketNo' => $tiketNo, 'product' => $product]);
+    }
 }
