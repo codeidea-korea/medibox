@@ -373,7 +373,7 @@ class AdminController extends Controller
         }
         $userSeqno = $request->session()->get('admin_seqno');
 
-        return view('admin.point.list')->with('seqno', $userSeqno);
+        return view('admin.service.point.list')->with('seqno', $userSeqno);
     }
     public function pointHistoryDetail(Request $request, $historyNo)
     {
@@ -391,7 +391,7 @@ class AdminController extends Controller
         ])->first();
         $hst->userInfo = $userInfo;
 
-        return view('admin.point.detail', ['seqno' => $userSeqno, 'historyNo' => $historyNo, 'history' => $hst]);
+        return view('admin.service.point.detail', ['seqno' => $userSeqno, 'historyNo' => $historyNo, 'history' => $hst]);
     }
     public function pointConf(Request $request)
     {
@@ -403,7 +403,7 @@ class AdminController extends Controller
 
         $conf = DB::table("conf_auto_point")->first();
 
-        return view('admin.point.conf', ['seqno' => $userSeqno, 'conf' => $conf]);
+        return view('admin.service.point.conf', ['seqno' => $userSeqno, 'conf' => $conf]);
     }
 
     public function flatRateTickets(Request $request)
@@ -414,7 +414,7 @@ class AdminController extends Controller
         }
         $userSeqno = $request->session()->get('admin_seqno');
 
-        return view('admin.flatRateTickets.list')->with('seqno', $userSeqno);
+        return view('admin.service.flatRateTickets.list')->with('seqno', $userSeqno);
     }
     public function flatRateTicket(Request $request, $tiketNo)
     {
@@ -426,9 +426,80 @@ class AdminController extends Controller
 
         $product = DB::table("product")->where([
             ['product_seqno', '=', $tiketNo],
+            ['offline_type', '=', 'N'],
+            ['point_type', '!=', 'K'],
             ['delete_yn', '=', 'N']
         ])->first();
 
-        return view('admin.flatRateTickets.detail', ['seqno' => $userSeqno, 'tiketNo' => $tiketNo, 'product' => $product]);
+        if ($tiketNo > 0 && empty($product)) {
+            $request->session()->put('error', '없는 정보입니다.');
+            return redirect('/admin/service/tickets');
+        }
+
+        return view('admin.service.flatRateTickets.detail', ['seqno' => $userSeqno, 'tiketNo' => $tiketNo, 'product' => $product]);
+    }
+
+    public function packages(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.package.list')->with('seqno', $userSeqno);
+    }
+    public function package(Request $request, $packageNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $product = DB::table("product")->where([
+            ['product_seqno', '=', $packageNo],
+            ['offline_type', '=', 'N'],
+            ['point_type', '=', 'K'],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if ($packageNo > 0 && empty($product)) {
+            $request->session()->put('error', '없는 정보입니다.');
+            return redirect('/admin/service/packages');
+        }
+
+        return view('admin.service.package.detail', ['seqno' => $userSeqno, 'packageNo' => $packageNo, 'product' => $product]);
+    }
+
+    public function vouchers(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.voucher.list')->with('seqno', $userSeqno);
+    }
+    public function voucher(Request $request, $voucherNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $product = DB::table("product_voucher")->where([
+            ['seqno', '=', $voucherNo],
+            ['deleted', '=', 'N']
+        ])->first();
+
+        if ($voucherNo > 0 && empty($product)) {
+            $request->session()->put('error', '없는 정보입니다.');
+            return redirect('/admin/service/vouchers');
+        }
+
+        return view('admin.service.voucher.detail', ['seqno' => $userSeqno, 'voucherNo' => $voucherNo, 'product' => $product]);
     }
 }

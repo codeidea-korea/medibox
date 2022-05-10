@@ -38,7 +38,7 @@
                                 .'    <a href="/brand/'.$brands[$inx]->seqno.'">'
                                 .'        <figure class="minish_spa" style="background-image:linear-gradient(to right ,rgba(0,0,0,0.5), transparent), url(/user/img/img_brand0'.$brands[$inx]->seqno.'_01.png);"></figure><div class="txt_box">'
                                 .'            <h3>'.$brands[$inx]->cop_name.'</h3>'
-                                .'            <p>내용이 들어갑니다.</p>'
+                                .'            <p>'.$brands[$inx]->main_line_sentence.'</p>'
                                 .'        </div>'
                                 .'    </a>'
                                 .'</li>';

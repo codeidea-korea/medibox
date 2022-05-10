@@ -19,6 +19,8 @@ use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VoucherController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -162,5 +164,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('products', [ProductController::class, 'add']);
     Route::post('products/{id}/modify', [ProductController::class, 'modify']);
     Route::post('products/{id}/remove', [ProductController::class, 'remove']);
+    
+    // 바우처 관리
+    Route::get('vouchers', [VoucherController::class, 'list']);
+    Route::get('vouchers/{id}', [VoucherController::class, 'find']);
+    Route::post('vouchers', [VoucherController::class, 'add']);
+    Route::post('vouchers/{id}/modify', [VoucherController::class, 'modify']);
+    Route::post('vouchers/{id}/remove', [VoucherController::class, 'remove']);
+    
 //});
 

@@ -40,7 +40,13 @@
               </svg>                  
             <span>예약</span>
         </a></li>
-        <li><a href="/point">
+        <li>
+        
+        @if ( session('user_seqno') )
+          <a href="/point">
+        @else
+          <a href="#" onclick="$('#popup01').addClass('on');">
+        @endif  
             <svg xmlns="http://www.w3.org/2000/svg" width="24.43" height="17.79" viewBox="0 0 24.43 17.79">
                 <g id="그룹_216" data-name="그룹 216" transform="translate(-195.25 -828.25)">
                   <path id="패스_122" data-name="패스 122" d="M2.293,0H20.637A2.407,2.407,0,0,1,22.93,2.506V13.784a2.407,2.407,0,0,1-2.293,2.506H2.293A2.407,2.407,0,0,1,0,13.784V2.506A2.407,2.407,0,0,1,2.293,0Z" transform="translate(196 829)" fill="none" stroke-linecap="round" stroke-width="1.5"/>
@@ -49,7 +55,7 @@
               </svg>
             <span>결제</span>
         </a></li>
-        <li><a href="#" onclick="alert('준비중입니다.');">
+        <li><a href="/profile/events">
             <svg xmlns="http://www.w3.org/2000/svg" width="19.76" height="22.428" viewBox="0 0 19.76 22.428">
                 <g id="icon_event" data-name="그룹 1075" transform="translate(-280.25 -818.323)">
                   <rect id="Rectangle-3" width="18.26" height="2.615" transform="translate(281 823.615)" stroke-linecap="square" stroke-width="1.5"/>
@@ -61,7 +67,13 @@
               </svg>                  
             <span>이벤트</span>
         </a></li>
-        <li><a href="/profile">
+        <li>
+          
+        @if ( session('user_seqno') )
+          <a href="/profile">
+        @else
+          <a href="#" onclick="$('#popup01').addClass('on');">
+        @endif  
             <svg xmlns="http://www.w3.org/2000/svg" width="20.15" height="22.319" viewBox="0 0 20.15 22.319">
                 <g id="icon_my" transform="translate(-609.023 -889.945)">
                   <path id="Path-11" d="M627.922,912.263h0v-3.079c.057-3.326-2.029-6.081-4.662-6.156h-9.323c-2.634.075-4.72,2.83-4.662,6.156v3.079" transform="translate(0.5)" stroke-width="1.5"/>
@@ -77,8 +89,8 @@
 function activatedFootbar(){
   var footbarButtons = $('._footbar > ul > li');
   var buttonTypes = [
-    { type: 'brand', button: footbarButtons[0] },
     { type: 'reservation', button: footbarButtons[1] },
+    { type: 'brand', button: footbarButtons[0] },
     { type: 'point', button: footbarButtons[2] },
     { type: 'event', button: footbarButtons[3] },
     { type: 'profile', button: footbarButtons[4] },
@@ -88,8 +100,10 @@ function activatedFootbar(){
   for(var inx = 0; inx < buttonTypes.length; inx++) {
     if(thisUrl.indexOf(buttonTypes[inx].type) > 0) {
       $(buttonTypes[inx].button).addClass('on');
+      return;
     }
   }
+  $(buttonTypes[1].button).addClass('on');
 }
 activatedFootbar();
 </script>

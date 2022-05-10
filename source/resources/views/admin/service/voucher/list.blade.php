@@ -1,15 +1,15 @@
 @php 
-$page_title = '정액권 관리';
+$page_title = '바우처 관리';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">정액권 관리</div>
+	<div class="page-title">바우처 관리</div>
 	
 	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
-			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="정액권명">
+			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="바우처명">
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
@@ -19,7 +19,7 @@ $page_title = '정액권 관리';
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
 			<div class="rightSet">
-                <a href="#" onclick="addItem()" class="btn green small icon-add">등록</a>
+                <a href="#" onclick="addItem()" class="btn green small icon-add">바우처 등록</a>
                 <!-- <a href="#" onclick="removeAll()" class="btn red small icon-del">삭제</a> -->
             </div>
 		</div>
@@ -30,17 +30,13 @@ $page_title = '정액권 관리';
 				<col width="60">
 				<col width="60">
 				<col width="60">
-				<col width="60">
-				<col width="60">
 			</colgroup>
 			<thead>
 				<tr>
 					<th><a href="#">번호</a></th>
-					<th><a href="#">정액권 이름</a></th>
-					<th><a href="#">정액권 제휴사</a></th>
+					<th><a href="#">바우처 이름</a></th>
 					<th><a href="#">사용기간</a></th>
-					<th><a href="#">가격</a></th>
-					<th><a href="#">적립 포인트</a></th>
+					<th><a href="#">발급수량</a></th>
 					<th><a href="#">수정/삭제</a></th>
 				</tr>
 			</thead>
@@ -102,30 +98,6 @@ $page_title = '정액권 관리';
 		}
 		gotoDetail(key);
 	}
-	function getPointType(type){
-		switch(type){
-			case 'S1':
-				return '통합';
-			case 'S2':
-				return '바라는 네일';
-			case 'S3':
-				return '발몽스파';
-			case 'S4':
-				return '포레스타 블랙';
-			case 'S5':
-				return '딥포커스 검안센터';
-			case 'S6':
-				return '미니쉬 스파';
-			case 'S7':
-				return '미니쉬 도수';
-			case 'P':
-				return '포인트';
-			case 'K':
-				return '패키지';
-			default:
-				return '-';
-		}
-	}
 	function getDateType(code){
 		if(code >= 365) {
 			return Math.round(code / 365) + '년';
@@ -141,13 +113,13 @@ $page_title = '정액권 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, offline_type:'N', point_type:'K' };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
 
 		if(searchField && searchField != '') {
-			data.type_name = searchField;
+			data.name = searchField;
 		}
 
-		medibox.methods.point.products.list(data, function(request, response){
+		medibox.methods.point.vouchers.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -157,7 +129,7 @@ $page_title = '정액권 관리';
 
 			if(response.count == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="7" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="5" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('.pg_wrap').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -175,12 +147,10 @@ $page_title = '정액권 관리';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].type_name+'</td>'
-							+'	<td>'+getPointType(response.data[inx].point_type)+'</td>'
+							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+getDateType(response.data[inx].date_use)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].price)+'원</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].return_point)+'p</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);
@@ -213,10 +183,10 @@ $page_title = '정액권 관리';
 		});
 	}
 	function gotoDetail(seq){
-		location.href = '/admin/service/tickets/'+seq;
+		location.href = '/admin/service/vouchers/'+seq;
 	}
 	function addItem(){
-		location.href = '/admin/service/tickets/0';
+		location.href = '/admin/service/vouchers/0';
 	}
 	$(document).ready(function(){
 		getList();

@@ -31,7 +31,7 @@
         <div class="res_payment_tab">
             <ul class="tab_menu">
                 <li class="on">포인트</li>
-                <li onclick="wait()">정액권</li>
+                <!-- <li onclick="wait()">정액권</li> -->
             </ul>
 
             <!-- 포인트 -->
@@ -628,7 +628,7 @@
                 </span>
             </div>
             <div class="bottom">
-                <a href="/reservation/history">확인</a>
+                <a href="/reservation-history">확인</a>
             </div>
         </div>
     </div>    

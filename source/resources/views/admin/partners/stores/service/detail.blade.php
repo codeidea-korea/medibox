@@ -348,10 +348,10 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 
 		
 		var _bodyContents = '<option>선택해주세요.</option>';
-		for(var idx = 0; idx < 2; idx++){
+		for(var idx = 0; idx <= 2; idx++){
 			for(var jdx = 0; jdx < 6; jdx++){
 				if(idx == 0 && jdx == 0) continue;
-				_bodyContents = _bodyContents + '<option value="0'+idx+':'+(jdx*10)+'">'+(idx == 0 ? '' : idx+'시간 ')+(jdx == 0 ? '' : jdx*10+'분')+'</option>';
+				_bodyContents = _bodyContents + '<option value="0'+idx+':'+(jdx == 0 ? '00' : jdx*10)+'">'+(idx == 0 ? '' : idx+'시간 ')+(jdx == 0 ? '' : jdx*10+'분')+'</option>';
 			}
 		}
 		$('#estimated_time').html(_bodyContents);

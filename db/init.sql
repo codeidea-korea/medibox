@@ -565,12 +565,12 @@ create table product_voucher
     name   varchar(200)      not null,
     context   varchar(200)      null,
     unit_count    int      default 0, -- 발급 수량
-    limit_week   int      not null, -- 제한 주 (0 이면 무한)
+    date_use   int      not null, -- 제한 주 (0 이면 무한)
 
     use_partner   varchar(1)      not null, -- 제휴사 연결 여부 Y / N
     partner_seqno bigint null, -- 해당 제휴사
     store_seqno    bigint      null, -- 해당 매장
-    product_seqno    bigint      null, -- 해당 서비스
+    service_seqno    bigint      null, -- 해당 서비스
 
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,
@@ -841,4 +841,32 @@ INSERT INTO `medibox`.`conf_auto_point` (`join_bonus`, `join_bonus_point`, `reco
 alter table product add column info varchar(200) default '';
 alter table product add column add_rate int default 0;
 alter table product add column date_use int default 14;
+
+
+alter table partner add column main_line_sentence varchar(300) default '';
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 치과 병원 구강관리 SPA 1:1<br>맞춤 관리 및 코칭 서비스' WHERE (`seqno` = '1');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 발몽 스파 스페셜 테라피' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '1:1 관리 예약 우선제 / 전문적인 케어' WHERE (`seqno` = '3');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '기존 뉴욕스토리안경원의<br>프리미엄 검안 전문체' WHERE (`seqno` = '4');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '전문교육을 이수한 도수 치료사가 손을<br>이용하여 시행하는 프리미엄 물리치료' WHERE (`seqno` = '5');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '국내 최초이자 유일한 아베다의 뷰티<br>최상 등급 라이프 살롱' WHERE (`seqno` = '6');
+
+UPDATE `medibox`.`store` SET `img1` = '/user/img/nail01.jpg' WHERE (`seqno` = '1');
+UPDATE `medibox`.`store` SET `img1` = '/user/img/minish_spa01.jpg' WHERE (`seqno` = '2');
+UPDATE `medibox`.`store` SET `img1` = '/user/img/valmont_spa01.jpg' WHERE (`seqno` = '3');
+UPDATE `medibox`.`store` SET `img1` = '/user/img/deep_focus01.jpg' WHERE (`seqno` = '4');
+UPDATE `medibox`.`store` SET `img1` = '/img/foresta_black01.jpg' WHERE (`seqno` = '5');
+UPDATE `medibox`.`store` SET `img1` = '/user/img/minish_manul_therapy01.jpg' WHERE (`seqno` = '6');
+
+-- point_type (P:포인트, K:패키지, S:정액권)
+/*
+alter table product add column partner_seqno bigint null; -- 기존 point_type에서 제휴사 구분하던 부분을 seq 로 분리
+
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '바라는 네일') where point_type = 'S2';
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '발몽 스파') where point_type = 'S3';
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '포레스타 블랙') where point_type = 'S4';
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '딥포커스') where point_type = 'S5';
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 스파') where point_type = 'S6';
+update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 도수') where point_type = 'S7';
+*/
 

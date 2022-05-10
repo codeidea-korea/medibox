@@ -1,16 +1,16 @@
 @php 
-$page_title = '예약 내역';
+$page_title = '패키지 관리';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">예약 내역</div>
+	<div class="page-title">패키지 관리</div>
 	
 	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
-			<!-- <input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="회사명">
-			<a href="#" onclick="loadList(1)" class="btn gray">검색</a> -->
+			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="패키지명">
+			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
 	</form>
@@ -19,45 +19,23 @@ $page_title = '예약 내역';
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
 			<div class="rightSet">
-                <a href="/admin/reservations/condition" onclick="" class="btn green small icon-add">등록</a>
+                <a href="#" onclick="addItem()" class="btn green small icon-add">패키지 등록</a>
                 <!-- <a href="#" onclick="removeAll()" class="btn red small icon-del">삭제</a> -->
             </div>
 		</div>
 		<table>
 			<colgroup>
 				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<col width="50">
-				<!--  <col width="50"> -->
-				<col width="50">
-				<col width="50">
+				<col width="90">
+				<col width="60">
+				<col width="60">
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#" class="sort">번호</a></th>
-					<th><a href="#" class="sort asc">예약구분</a></th>
-					<th><a href="#" class="sort desc">예약일시</a></th>
-					<th><a href="#" class="sort desc">고객명</a></th>
-					<th><a href="#" class="sort desc">휴대폰</a></th>
-					<th><a href="#" class="sort desc">제휴사</a></th>
-					<th><a href="#" class="sort desc">매장</a></th>
-					<th><a href="#" class="sort desc">직위</a></th>
-					<th><a href="#" class="sort desc">디자이너</a></th>
-					<th><a href="#" class="sort desc">예약항목</a></th>
-					<th><a href="#" class="sort desc">예약상태</a></th>
-					<th><a href="#" class="sort desc">등록일시</a></th>
-					<!-- <th><a href="#" class="sort desc">결제</a></th> -->
-					<th><a href="#" class="sort desc">메모</a></th>
-					<th><a href="#" class="sort desc">예약화면</a></th>
+					<th><a href="#">번호</a></th>
+					<th><a href="#">패키지 이름</a></th>
+					<th><a href="#">적립 포인트</a></th>
+					<th><a href="#">수정/삭제</a></th>
 				</tr>
 			</thead>
 
@@ -104,6 +82,7 @@ $page_title = '예약 내역';
 		if (window.event.keyCode == 13) {
 			loadList(1);
 		}
+		return false;
 	}
 	function viewInfo(row){
 		var key;
@@ -117,16 +96,52 @@ $page_title = '예약 내역';
 		}
 		gotoDetail(key);
 	}
+	function getPointType(type){
+		switch(type){
+			case 'S1':
+				return '통합';
+			case 'S2':
+				return '바라는 네일';
+			case 'S3':
+				return '발몽스파';
+			case 'S4':
+				return '포레스타 블랙';
+			case 'S5':
+				return '딥포커스 검안센터';
+			case 'S6':
+				return '미니쉬 스파';
+			case 'S7':
+				return '미니쉬 도수';
+			case 'P':
+				return '포인트';
+			case 'K':
+				return '패키지';
+			default:
+				return '-';
+		}
+	}
+	function getDateType(code){
+		if(code >= 365) {
+			return Math.round(code / 365) + '년';
+		} else if(code >= 30) {
+			return Math.round(code / 30) + '개월';
+		} else if(code >= 7) {
+			return Math.round(code / 7) + '주';
+		} else if(code == 0) {
+			return '제한 없음';
+		}
+		return code + '일';
+	}
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, offline_type:'N', point_type:'K', revers_type_condition: 'N' };
 
 		if(searchField && searchField != '') {
-			data.name = searchField;
+			data.type_name = searchField;
 		}
 
-		medibox.methods.store.reservation.list(data, function(request, response){
+		medibox.methods.point.products.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -136,7 +151,7 @@ $page_title = '예약 내역';
 
 			if(response.count == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="14" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="4" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('.pg_wrap').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -154,29 +169,12 @@ $page_title = '예약 내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td><h3>'+ (response.data[inx].apply_on_mobile == 'Y' ? '모바일' : '현장등록') +'</td>'
-							+'	<td>'+response.data[inx].start_dt+'</td>'
-
-							+'	<td>'+response.data[inx].userInfo.user_name+'</td>'
-							+'	<td>'+response.data[inx].userInfo.user_phone+'</td>'
-
-							+'	<td>'+response.data[inx].partnerInfo.cop_name+'</td>'
-
-							+'	<td>'+response.data[inx].storeInfo.name+'</td>'
-
-							+'	<td>'+(response.data[inx].managerInfo ? response.data[inx].managerInfo.manager_type : '기본')+'</td>' // 직
-							+'	<td>'+(response.data[inx].managerInfo ? response.data[inx].managerInfo.name : '-')+'</td>'
-
-							+'	<td>'+(response.data[inx].serviceInfo ? response.data[inx].serviceInfo.name : '-')+'</td>' // 예약 항목 (복수개 가능, 우선 단일)
-							+'	<td>'+convertStatus2String(response.data[inx].status)+'</td>'
-							+'	<td>'+response.data[inx].create_dt+'</td>'
-//							+'	<td>'+response.data[inx].cop_phone+'</td>' // 결제 ? 매핑 불가
-							+'	<td>'+response.data[inx].memo+'</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">이동</a></td>'
+							+'	<td>'+response.data[inx].type_name+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].return_point)+'p</td>'
+							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);
-//			$('._tableBody > tr > td').not('._tableBody > tr > td[data-action-type=none]').off().on('click', viewInfo);
 
 			if(response.count > 0)
 			{
@@ -205,25 +203,12 @@ $page_title = '예약 내역';
 			alert('서버 통신 에러');
 		});
 	}
-	function convertStatus2String(code){
-		switch(code){
-			case 'R': return '예약 완료';
-			case 'N': return '예약 불이행';
-			case 'C': return '예약 취소';
-			case 'E': return '고객 입장';
-			case 'D': return '서비스 완료';
-			default: break;
-		}
-		return '';
-	}
 	function gotoDetail(seq){
-		location.href = '/reservation-history/'+seq;
+		location.href = '/admin/service/packages/'+seq;
 	}
 	function addItem(){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/0';
-	}		
-	
+		location.href = '/admin/service/packages/0';
+	}
 	$(document).ready(function(){
 		getList();
 	});

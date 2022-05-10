@@ -18,6 +18,7 @@ class ProductController extends Controller
         $pageSize = $request->get('pageSize', 10);
         $offline_type = $request->get('offline_type');
         $type_name = $request->get('type_name');
+        $revers_type_condition = $request->get('revers_type_condition', 'N');
         $point_type = $request->get('point_type');
         
         $result = [];
@@ -30,14 +31,18 @@ class ProductController extends Controller
             array_push($where, ['offline_type', '=', $offline_type]);
         }
         if(! empty($type_name) && $type_name != ''){
-            array_push($where, ['type_name', '=', $type_name]);
+            array_push($where, ['type_name', 'like', '%'.$type_name.'%']);
         }
         if(! empty($point_type) && $point_type != ''){
-            array_push($where, ['point_type', '!=', $point_type]);
+            if($revers_type_condition == 'Y') {
+                array_push($where, ['point_type', '!=', $point_type]);
+            } else {
+                array_push($where, ['point_type', '=', $point_type]);
+            }
         }
         
         $contents = DB::table("product")->where($where)
-            ->orderBy('orders', 'desc')
+//            ->orderBy('orders', 'desc')
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();

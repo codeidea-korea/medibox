@@ -53,14 +53,12 @@ $page_title = '포인트 자동 적립관리';
 	<script>
 		var userId;
 	function cancel(){
-		window.location.href = '/point/history';
-	}
-	userId = {{$id}};
-	
+		window.location.href = '/admin/point/history';
+	}	
 	function modify(){
-		var join_bonus = document.querySelector('#join_bonus').value;
+		var join_bonus = $('input[name=join_bonus]:checked').val();
 		var join_bonus_point = document.querySelector('#join_bonus_point').value;
-		var recommand_bonus = document.querySelector('#recommand_bonus').value;
+		var recommand_bonus = $('input[name=recommand_bonus]:checked').val();
 		var recommand_bonus_point = document.querySelector('#recommand_bonus_point').value;
 		var recommand_bonus_rate = document.querySelector('#recommand_bonus_rate').value;
 
@@ -77,7 +75,7 @@ $page_title = '포인트 자동 적립관리';
 				return false;
 			}
 			alert('수정 되었습니다.');
-			cancel();
+			location.reload();
 		}, function(e){
 			console.log(e);
 		});

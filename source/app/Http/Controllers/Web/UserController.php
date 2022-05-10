@@ -470,4 +470,41 @@ class UserController extends Controller
         return view('user.barcode');
     }
     
+    
+    public function notices(Request $request)
+    {
+        return view('user.contents.notice.list');
+    }
+    public function notice(Request $request, $id)
+    {
+        return view('user.contents.notice.detail')->with('id', $id);
+    }
+    public function faqs(Request $request)
+    {
+        return view('user.contents.faq.list');
+    }
+    public function faq(Request $request, $id)
+    {
+        return view('user.contents.faq.detail')->with('id', $id);
+    }
+    public function helps(Request $request)
+    {
+        return view('user.contents.help.list');
+    }
+    public function help(Request $request, $id)
+    {
+        return view('user.contents.help.detail')->with('id', $id);
+    }
+    public function events(Request $request)
+    {
+        return view('user.contents.event.list');
+    }
+    public function event(Request $request, $id)
+    {
+        return view('user.contents.event.detail')->with('id', $id);
+    }
+    public function version(Request $request)
+    {
+        return view('user.contents.version');
+    }
 }
