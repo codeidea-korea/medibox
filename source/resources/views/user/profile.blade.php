@@ -53,14 +53,14 @@
                 <div class="menu_wrap">
                     <ul class="history_menu menu">
                         <li><a href="/point/history">결제내역</a></li>
-                        <li><a href="#" onclick="wait()">예약내역</a></li>
+                        <li><a href="/reservation-history">예약내역</a></li>
                     </ul>
                     <ul class="profile_menu menu">
-                        <li><a href="#!" onclick="wait()">공지사항</a></li>
-                        <li><a href="#!" onclick="wait()">자주 묻는 질문</a></li>
-                        <li><a href="#!" onclick="wait()">도움말</a></li>
+                        <li><a href="/profile/notices">공지사항</a></li>
+                        <li><a href="/profile/faqs">자주 묻는 질문</a></li>
+                        <li><a href="/profile/helps">도움말</a></li>
                         <li><a href="/terms/policy">약관 및 정책</a></li>
-                        <li><a href="#!" onclick="wait()">버전</a></li>
+                        <li><a href="/profile/app-version">버전</a></li>
                     </ul>
                 </div>
 
@@ -78,10 +78,10 @@
                     </ul>
                     <ul class="inquire">
                         <li>
-                            <a href="#!">1600 - 1600</a>
+                            <a href='tel:1600-1600'>1600 - 1600</a>
                         </li>
                         <li>
-                            <a href="#!">카카오 1:1 문의</a>
+                            <a href="tel:1600-1600">카카오 1:1 문의</a>
                         </li>
                     </ul>
                 </div>

@@ -76,7 +76,7 @@
         $('#popup25').addClass('on');
     }
     function gotoList(){
-        location.href = '/reservation/history';
+        location.href = '/reservation-history';
     }
     
     function validation(){

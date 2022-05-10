@@ -18,6 +18,9 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\VoucherController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -69,6 +72,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('point-types/shops', [PointController::class, 'getShops']);
     Route::get('point-types/shops/services', [PointController::class, 'getServices']);
     Route::get('point-types/collects', [PointController::class, 'getCollects']);
+    
+    Route::get('point/history', [PointController::class, 'list']);
+    Route::post('point/auto-conf', [PointController::class, 'conf']);
     
     
     Route::get('users', [UserController::class, 'list']);
@@ -151,5 +157,20 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('manager-holiday', [HolidayController::class, 'getListInStore']);
     Route::post('manager-holiday', [HolidayController::class, 'add']);
     Route::post('manager-holiday/{id}/remove', [HolidayController::class, 'remove']);
+
+    // 상품 관리
+    Route::get('products', [ProductController::class, 'list']);
+    Route::get('products/{id}', [ProductController::class, 'find']);
+    Route::post('products', [ProductController::class, 'add']);
+    Route::post('products/{id}/modify', [ProductController::class, 'modify']);
+    Route::post('products/{id}/remove', [ProductController::class, 'remove']);
+    
+    // 바우처 관리
+    Route::get('vouchers', [VoucherController::class, 'list']);
+    Route::get('vouchers/{id}', [VoucherController::class, 'find']);
+    Route::post('vouchers', [VoucherController::class, 'add']);
+    Route::post('vouchers/{id}/modify', [VoucherController::class, 'modify']);
+    Route::post('vouchers/{id}/remove', [VoucherController::class, 'remove']);
+    
 //});
 

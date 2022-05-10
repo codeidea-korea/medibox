@@ -244,11 +244,13 @@
             $('#next_btn').addClass('on');
         }
     }
-    function saveServiceId(id){
+    function saveServiceId(id, target){
         targetServiceId = id;
         if(validation2()) {
             $('#next_btn').addClass('on');
         }
+        $('._serviceTag > a').removeClass('_choosed');
+        $(target).addClass('_choosed');
     }
     function cancel(){
         $('#popup25').addClass('on');
@@ -321,8 +323,8 @@
                 }
 
                 bodyData = bodyData 
-                        + '<li>'
-                        + '    <a href="#" onclick="saveServiceId('+response.data[inx].seqno+')">'
+                        + '<li class="_serviceTag">'
+                        + '    <a href="#" onclick="saveServiceId('+response.data[inx].seqno+', this)">'
                         + '        <span class="program">'+response.data[inx].name+' ('+convertTimeFormat(response.data[inx].estimated_time)+')</span>'
                         + '        <span class="price">'+medibox.methods.toNumber(response.data[inx].price)+'원</span>'
                         + '    </a>'
@@ -345,4 +347,9 @@
 
     @include('user.footer')
 
+    <style>
+        ._choosed{
+            color:red;
+        }
+    </style>
 </body>

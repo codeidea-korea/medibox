@@ -442,7 +442,7 @@
 		});
 	}
     function gotoModify(){
-        location.href = '/reservation/history/{{$historyNo}}/modify';
+        location.href = '/reservation-history/{{$historyNo}}/modify';
     }
 
     $(document).ready(function(){

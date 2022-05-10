@@ -44,8 +44,17 @@ Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name(
 Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.voucher');
 Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
 
-Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
-Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
+Route::get('/profile/notices', [UserController::class, 'notices']) ->name('user.notices');
+Route::get('/profile/notices/{id}', [UserController::class, 'notice']) ->name('user.notice');
+Route::get('/profile/faqs', [UserController::class, 'faqs']) ->name('user.faqs');
+Route::get('/profile/faqs/{id}', [UserController::class, 'faq']) ->name('user.faq');
+Route::get('/profile/helps', [UserController::class, 'helps']) ->name('user.helps');
+Route::get('/profile/helps/{id}', [UserController::class, 'help']) ->name('user.help');
+
+Route::get('/profile/events', [UserController::class, 'events']) ->name('user.events');
+Route::get('/profile/events/{id}', [UserController::class, 'event']) ->name('user.event');
+
+Route::get('/profile/app-version', [UserController::class, 'version']) ->name('user.version');
 
 Route::get('/reservation/deepfocus', [UserController::class, 'deepfocus_reservation']) ->name('user.deepfocus_reservation');
 Route::get('/reservation/forestablack', [UserController::class, 'forestablack_reservation']) ->name('user.forestablack_reservation');
@@ -56,9 +65,12 @@ Route::get('/reservation/valmontspa', [UserController::class, 'valmontspa_reserv
 
 Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/cart', [UserController::class, 'reservationCart']) ->name('user.reservation.cart');
 Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/payment', [UserController::class, 'reservationPayment']) ->name('user.reservation.payment');
-Route::get('/reservation/history', [UserController::class, 'reservationHistory']) ->name('user.reservation.history.list');
-Route::get('/reservation/history/{historyNo}', [UserController::class, 'reservationHistoryView']) ->name('user.reservation.history.view');
-Route::get('/reservation/history/{historyNo}/modify', [UserController::class, 'reservationModify']) ->name('user.reservation.modify');
+Route::get('/reservation-history', [UserController::class, 'reservationHistory']) ->name('user.reservation.history.list');
+Route::get('/reservation-history/{historyNo}', [UserController::class, 'reservationHistoryView']) ->name('user.reservation.history.view');
+Route::get('/reservation-history/{historyNo}/modify', [UserController::class, 'reservationModify']) ->name('user.reservation.modify');
+
+Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
+Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
 
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
@@ -120,6 +132,20 @@ Route::prefix('admin')->group(function () {
     Route::get('/services/{id}', [AdminController::class, 'service']);
     // 영업시간/휴일 관리
     Route::get('/business-hours', [AdminController::class, 'businessHours']);
+    // 포인트 사용 내역 관리
+    Route::get('/point/history', [AdminController::class, 'pointHistory']);
+    Route::get('/point/history/{historyNo}', [AdminController::class, 'pointHistoryDetail']);
+    Route::get('/point/conf', [AdminController::class, 'pointConf']);
+    // 정액권 관리
+    Route::get('/service/tickets', [AdminController::class, 'flatRateTickets']);
+    Route::get('/service/tickets/{tiketNo}', [AdminController::class, 'flatRateTicket']);
+    // 패키지 관리
+    Route::get('/service/packages', [AdminController::class, 'packages']);
+    Route::get('/service/packages/{packageNo}', [AdminController::class, 'package']);
+    // 바우처 관리
+    Route::get('/service/vouchers', [AdminController::class, 'vouchers']);
+    Route::get('/service/vouchers/{voucherNo}', [AdminController::class, 'voucher']);
+    
 
     // 예약
     Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);

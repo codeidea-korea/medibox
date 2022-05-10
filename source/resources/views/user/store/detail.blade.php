@@ -510,8 +510,12 @@
         
 
 <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
-
-        <a href="/brands/{{$storeInfo->partner_seqno}}/shops/{{$storeInfo->seqno}}/reservation/cart" class="reservation_btn">예약하기</a>
+            @if ( session('user_seqno') )
+                <a href="/brands/{{$storeInfo->partner_seqno}}/shops/{{$storeInfo->seqno}}/reservation/cart" class="reservation_btn">예약하기</a>
+            @else
+                <a href="#" onclick="$('#popup01').addClass('on');" class="reservation_btn">예약하기</a>
+            @endif
+        
     </section>
 
 

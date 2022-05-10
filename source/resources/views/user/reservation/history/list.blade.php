@@ -324,15 +324,19 @@
                     +'            <div class="store">'
                     +'                <h3>예약 매장</h3>'
                     +'                <ul>'
-                    +'                    <li>'+response.data[inx].storeInfo.name+'</li>'
+                    +'                    <li>'+response.data[inx].storeInfo.name +'</li>'
                     +'                </ul>'
                     +'            </div>'
                     +'            <div class="menu">'
                     +'                <h3>예약 메뉴</h3>'
                     +'                <ul>'
                     +'                    <li>'+(response.data[inx].serviceInfo ? response.data[inx].serviceInfo.name : '-')+'</li>'
-                    +'                    <li>['+(response.data[inx].managerInfo ? response.data[inx].managerInfo.manager_type : '기본')+'] '
+                    + (
+                        response.data[inx].managerInfo 
+                            ? '                    <li>['+(response.data[inx].managerInfo ? response.data[inx].managerInfo.manager_type : '기본')+'] '
                                                 +(response.data[inx].managerInfo ? response.data[inx].managerInfo.name : '-')+'</li>'
+                            : ''
+                    )
                     +'                </ul>'
                     +'            </div>'
                     +'        </div>'
@@ -394,12 +398,12 @@
     function toReservationDate(targetDt){
         var targetDate = new Date(targetDt);
         var date = targetDt.split('-');
-        return targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월 ' + targetDate.getDate() + '일 ' + convert2Day(targetDate.getDay()) + ' ' + targetDate.getHours() + ':' + targetDate.getMinutes();
+        return targetDate.getFullYear() + '년 ' + (targetDate.getMonth() + 1) + '월 ' + targetDate.getDate() + '일 ' + convert2Day(targetDate.getDay()) + ' ' + targetDate.getHours() + ':' + (targetDate.getMinutes() < 10 ? '0'+targetDate.getMinutes(): targetDate.getMinutes());
     }
     // 공유하기
     function shareUri(seq){
         wait();
-//        '/reservation/history/' + seq; // 이 링크를 쉐어
+//        '/reservation-history/' + seq; // 이 링크를 쉐어
     }
     // 예약 취소
     function openRemove(seq, inx){
@@ -430,17 +434,17 @@
 	}
     // 예약 상세
     function gotoDetail(seq){
-        location.href = '/reservation/history/' + seq;
+        location.href = '/reservation-history/' + seq;
     }
     function gotoModify(seq){
-        location.href = '/reservation/history/'+seq+'/modify';
+        location.href = '/reservation-history/'+seq+'/modify';
     }
 
     function clip(){
         var url = '';
         var textarea = document.createElement("textarea");
         document.body.appendChild(textarea);
-        url = location.origin + '/reservation/history/'+prevReservationId;
+        url = location.origin + '/reservation-history/'+prevReservationId;
         textarea.value = url;
         textarea.select();
         document.execCommand("copy");

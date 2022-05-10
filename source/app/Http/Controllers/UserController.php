@@ -154,6 +154,21 @@ class UserController extends Controller
             );
         }
 
+        // 회원가입시 포인트 지급 처리
+        $conf = DB::table("conf_auto_point")->first();
+        if(!empty($conf) && $conf->join_bonus == 'Y') {
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $user->user_seqno],
+                ['point_type', '=', 'P'],
+                ['delete_yn', '=', 'N']
+            ])->update(
+                [
+                    'point' => $conf->join_bonus_point
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+
         $result['ment'] = '성공';
         $result['data'] = $user_name;
         $result['result'] = true;
