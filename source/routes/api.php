@@ -20,6 +20,8 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CouponUsedController;
 
 
 /*
@@ -171,6 +173,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('vouchers', [VoucherController::class, 'add']);
     Route::post('vouchers/{id}/modify', [VoucherController::class, 'modify']);
     Route::post('vouchers/{id}/remove', [VoucherController::class, 'remove']);
+    
+    // 쿠폰 관리
+    Route::get('coupon', [CouponController::class, 'list']);
+    Route::get('coupon/{id}', [CouponController::class, 'find']);
+    Route::post('coupon', [CouponController::class, 'add']);
+    Route::post('coupon/{id}/modify', [CouponController::class, 'modify']);
+    Route::post('coupon/{id}/remove', [CouponController::class, 'remove']);
+    Route::post('coupon/{id}/status', [CouponController::class, 'modifyStatus']);
+    // 쿠폰 사용 내역
+    Route::get('coupon-history', [CouponUsedController::class, 'list']);
+    Route::get('coupon-history/{id}', [CouponUsedController::class, 'find']);
     
 //});
 

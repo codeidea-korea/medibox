@@ -145,6 +145,12 @@ Route::prefix('admin')->group(function () {
     // 바우처 관리
     Route::get('/service/vouchers', [AdminController::class, 'vouchers']);
     Route::get('/service/vouchers/{voucherNo}', [AdminController::class, 'voucher']);
+    // 쿠폰 관리
+    Route::get('/service/coupon', [AdminController::class, 'coupons']);
+    Route::get('/service/coupon/{couponNo}', [AdminController::class, 'coupon']);
+    // 쿠폰 사용 내역
+    Route::get('/service/coupon-history', [AdminController::class, 'couponHistory']);
+    Route::get('/service/coupon-history/{historyNo}', [AdminController::class, 'couponHistoryDetail']);
     
 
     // 예약

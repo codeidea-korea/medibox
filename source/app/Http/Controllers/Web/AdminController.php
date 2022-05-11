@@ -502,4 +502,64 @@ class AdminController extends Controller
 
         return view('admin.service.voucher.detail', ['seqno' => $userSeqno, 'voucherNo' => $voucherNo, 'product' => $product]);
     }
+
+    public function coupons(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.coupon.list')->with('seqno', $userSeqno);
+    }
+    public function coupon(Request $request, $couponNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.coupon.detail', ['seqno' => $userSeqno, 'couponNo' => $couponNo]);
+    }
+
+    public function couponHistory(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.coupon.history.list')->with('seqno', $userSeqno);
+    }
+    public function couponHistoryDetail(Request $request, $historyNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+        
+        $contents = DB::table("coupon_user")->where([
+            ['product_seqno', '=', $historyNo],
+            ['deleted', '=', 'N']
+        ])
+        ->join('coupon', function ($join) {
+            $join->on('coupon_user.coupon_seqno', '=', 'coupon.coupon_seqno');
+        })
+        ->join('user_info', function ($join) {
+            $join->on('coupon_user.user_seqno', '=', 'user_info.user_seqno');
+        })->first();
+
+        $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $contents->coupon_partner_grp_seqno)));
+        $partners = DB::table("partner")
+            ->where([['deleted', '=', 'N']])
+            ->whereIn('seqno', $partnerNos)
+            ->get();
+        $contents->partners = $partners;
+
+        return view('admin.service.coupon.history.detail', ['seqno' => $userSeqno, 'history' => $contents, 'historyNo' => $historyNo]);
+    }
 }

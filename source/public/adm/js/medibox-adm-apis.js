@@ -143,7 +143,20 @@ var bfCall = (function(){
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('vouchers/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('vouchers/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('vouchers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                }
+                },
+                coupon: {
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('coupon', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+
+                    history:{
+                        one: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon-history/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    }
+                },
             }, contents:{
                 notice:{
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },

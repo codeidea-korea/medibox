@@ -487,7 +487,7 @@ create table coupon
     seqno bigint auto_increment
         primary key,
     -- 적용 제휴사 그룹 (0이면 전부 적용)
-    coupon_partner_grp_seqno bigint not null, -- 해당 제휴사
+    coupon_partner_grp_seqno varchar(200) null, -- 해당 제휴사
     name   varchar(200)      not null, -- 쿠폰명
     context   varchar(200)      null, -- 쿠폰 내용
     issuance_type   varchar(1)      not null, -- 지급유형 (A 자동 지급)
@@ -528,6 +528,10 @@ create table coupon_user
     user_seqno bigint not null, 
 
     used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    -- 쿠폰 사용기간
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    real_discount_price int not null, -- 혜택 금액 (실제 할인된 금액)
 
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,

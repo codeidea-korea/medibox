@@ -6,14 +6,12 @@ $page_title = '매장 정보';
 <section class="container">
 	<div class="page-title">매장 정보</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="회사명">
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">

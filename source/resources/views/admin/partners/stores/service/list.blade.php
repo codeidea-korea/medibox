@@ -6,7 +6,6 @@ $page_title = '서비스 정보';
 <section class="container">
 	<div class="page-title">서비스 정보</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
@@ -35,7 +34,6 @@ $page_title = '서비스 정보';
 			</select>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">

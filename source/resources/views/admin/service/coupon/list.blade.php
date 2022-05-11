@@ -1,35 +1,34 @@
 @php 
-$page_title = '포인트 사용내역';
+$page_title = '쿠폰 관리';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">포인트 사용내역</div>
+	<div class="page-title">쿠폰 관리</div>
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
-			
 			<div class="wr-wrap line label160">
 				<div class="wr-list">
-					<div class="wr-list-label">회원 아이디</div>
+					<div class="wr-list-label">쿠폰 제휴사</div>
 					<div class="wr-list-con">
-						<input type="text" id="id" name="" value="" class="span200" placeholder="핸드폰번호">
-					</div>
-				</div>
-				<div class="wr-list"> 
-					<div class="wr-list-label">회원 이름</div>
-					<div class="wr-list-con">
-						<input type="text" id="name" name="" value="" class="span200" placeholder="이름">
+						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
+							<option>검색가능 셀렉트</option>
+						</select>
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">고객 번호</div>
+					<div class="wr-list-label">쿠폰 검색</div> 
 					<div class="wr-list-con">
-						<input type="text" id="no" name="" value="" class="span200" placeholder="고객번호">
+						<select class="default" id="coupon_search_type">
+							<option value="name">쿠폰명</option>
+							<option value="seqno">쿠폰번호</option>
+						</select>
+						<input type="text" name="search_field1" id="search_field1" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">기간</div>
+					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
 						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
 						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
@@ -42,24 +41,17 @@ $page_title = '포인트 사용내역';
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">사용 유형</div>
+					<div class="wr-list-label">쿠폰 할인유형</div>
 					<div class="wr-list-con">
-						<label class="radio-wrap"><input type="radio" name="hst_type" value="" checked="checked"><span></span>전체</label>
-						<label class="radio-wrap"><input type="radio" name="hst_type" value="U"><span></span>사용</label>
-						<label class="radio-wrap"><input type="radio" name="hst_type" value="S"><span></span>충전</label>
-						<label class="radio-wrap"><input type="radio" name="hst_type" value="R"><span></span>환불</label>
+						<label class="radio-wrap"><input type="radio" name="type" value="" checked="checked"><span></span>전체</label>
+						<label class="radio-wrap"><input type="radio" name="type" value="F"><span></span>정액할인</label>
+						<label class="radio-wrap"><input type="radio" name="type" value="P"><span></span>정률할인</label>
+						<label class="radio-wrap"><input type="radio" name="type" value="G"><span></span>상품지급</label>
 					</div>
 				</div>
-				<!--
-				<div class="wr-list">
-					<div class="wr-list-label">사용 제휴사</div>
-					<div class="wr-list-con">
-						<textarea id="contents" name="" value="" class="" placeholder="내용을 작성해주세요."></textarea>
-					</div>
-				</div>
-				-->
 			</div>
-
+		</div>	
+		<div class="data-sel">
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
@@ -68,8 +60,8 @@ $page_title = '포인트 사용내역';
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
 			<div class="rightSet">
-                <a href="#" onclick="addItem()" class="btn green small icon-add">포인트 자동 적립 관리</a>
-                <!-- <a href="#" onclick="removeAll()" class="btn red small icon-del">삭제</a> -->
+                <a href="/admin/service/coupon-history" class="btn green small icon-add">쿠폰 이용 현황</a>
+                <a href="#" onclick="addItem()" class="btn green small icon-add">쿠폰 등록</a>
             </div>
 		</div>
 		<table>
@@ -88,17 +80,17 @@ $page_title = '포인트 사용내역';
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#" class="sort">번호</a></th>
-					<th><a href="#">아이디</a></th>
-					<th><a href="#" >이름</a></th>
-					<th><a href="#" >포인트 종류</a></th>
-					<th><a href="#" >사용유무</a></th>
-					<th><a href="#" >제휴사</a></th>
-					<th><a href="#" >사용샵</a></th>
-					<th><a href="#" >서비스</a></th>
-					<th><a href="#" >포인트</a></th>
-					<th><a href="#" >결제일</a></th>
-					<th><a href="#" >선택</a></th>
+					<th><a href="#">번호</a></th>
+					<th><a href="#">쿠폰 제휴사</a></th>
+					<th><a href="#">쿠폰명</a></th>
+					<th><a href="#">쿠폰 사용기간</a></th>
+					<th><a href="#">발급 상태</a></th>
+					<th><a href="#">쿠폰 할인 유형</a></th>
+					<th><a href="#">지급 유형</a></th>
+					<th><a href="#">지급 조건</a></th>
+					<th><a href="#">할인 금액</a></th>
+					<th><a href="#">최소 기준금액</a></th>
+					<th><a href="#">수정/삭제</a></th>
 				</tr>
 			</thead>
 
@@ -133,6 +125,10 @@ $page_title = '포인트 사용내역';
 	<script>	
 	var pageNo = 1;
 	var pageSize = 10;
+
+	function wait(){
+		alert('준비중입니다.');
+	}
 	var startDay = '';
 	var endDay = '';
 
@@ -162,9 +158,33 @@ $page_title = '포인트 사용내역';
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
+	
+	function getPartners(){
+		// TODO: 제휴사 로그인시에는 해당 값에 할당
+		var partnerId = '';
 
-	function wait(){
-		alert('준비중입니다.');
+		var data = { adminSeqno:{{ $seqno }} };
+
+		if(partnerId && partnerId != '') {
+			data.partner_seqno = partnerId;
+		}
+
+		medibox.methods.partner.findAll(data, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			var bodyData = '<option value="">선택해주세요.</option>';
+			for(var inx=0; inx<response.data.length; inx++){
+				bodyData = bodyData 
+					+'<option value="'+response.data[inx].seqno+'">'+response.data[inx].cop_name+'</option>';
+			}
+			$('#partnersPop').html(bodyData);
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
 	}
 	function loadList(no) {
 		pageNo = no;
@@ -174,6 +194,7 @@ $page_title = '포인트 사용내역';
 		if (window.event.keyCode == 13) {
 			loadList(1);
 		}
+		return false;
 	}
 	function viewInfo(row){
 		var key;
@@ -187,70 +208,85 @@ $page_title = '포인트 사용내역';
 		}
 		gotoDetail(key);
 	}
-	function getPointTypeFullName(type){
-		switch(type){
-			case 'S1':
-				return '통합 정액권';
-			case 'S2':
-				return '네일 정액권';
-			case 'S3':
-				return '발몽 정액권';
-			case 'S4':
-				return '포레스타 정액권';
+	function getAllowedIssuanceType(code){
+		switch(code) {
+			case 'A':
+				return '발급중';
+			case 'C':
+				return '발급중지';
+			case 'E':
+				return '발급종료';
+			default:
+				return '-';
+				break;
+		}
+	}
+	function getType(code){
+		switch(code) { 
+			case 'F':
+				return '정액할인';
 			case 'P':
-				return '포인트';
-			case 'K':
-				return '패키지';
+				return '정률할인';
+			case 'G':
+				return '상품지급';
 			default:
 				return '-';
+				break;
 		}
 	}
-	function getHstType(type){
-		switch(type){
-			case 'U':
-				return '사용';
-			case 'S':
-				return '충전';
-			case 'R':
-				return '환불';
+	function getIssuanceType(code){
+		switch(code) {
+			case 'A':
+				return '자동지급';
 			default:
 				return '-';
+				break;
 		}
 	}
-	function getPointType(type){
-		switch(type){
-			case 'S1':
-				return '통합';
-			case 'S2':
-				return '바라는 네일';
-			case 'S3':
-				return '발몽스파';
-			case 'S4':
-				return '포레스타 블랙';
-			case 'S5':
-				return '딥포커스 검안센터';
-			case 'S6':
-				return '미니쉬 스파';
-			case 'S7':
-				return '미니쉬 도수';
-			case 'P':
-				return '포인트';
-			case 'K':
-				return '패키지';
+	function getConditionType(code){
+		switch(code) {
+			case 'A':
+				return '전체발급';
+			case 'J':
+				return '회원가입시';
+			case 'M':
+				return '멤버쉽';
 			default:
 				return '-';
+				break;
 		}
 	}
-	function nullSafety(str){
-		return !str ? '' : str;
-	}
+	
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }},
-				id:$('#id').val(), name:$('#name').val(), no:$('#no').val(), hst_type:$('input[name=hst_type]:checked').val(), startDay:startDay, endDay:endDay };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
 
-		medibox.methods.point.history(data, function(request, response){
+		var partner_seqno = $('#partnersPop').val();
+		var coupon_search_type = $('#coupon_search_type').val();
+		var search_field1 = $('#search_field1').val();
+		var type = $('input[name=type]:checked').val();
+
+		if(partner_seqno && partner_seqno != '') {
+			data.partner_seqno = partner_seqno;
+		}
+		if(coupon_search_type && coupon_search_type != '') {
+			data.coupon_search_type = coupon_search_type;
+		}
+		if(search_field1 && search_field1 != '') {
+			data.search_field1 = search_field1;
+		}
+		if(type && type != '') {
+			data.type = type;
+		}
+		if(startDay && startDay != '') {
+			data.start_dt = startDay;
+		}
+		if(type && type != '') {
+			data.end_dt = endDay;
+		}
+
+		medibox.methods.point.coupon.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -274,35 +310,20 @@ $page_title = '포인트 사용내역';
 
 			var bodyData = '';
 			for(var inx=0; inx<response.data.length; inx++){
-				var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
-				var serviceName;
-				if(response.data[inx].point_type == 'P') {
-					serviceName = '포인트';
-				} else if(response.data[inx].point_type == 'K') {
-					serviceName = '패키지';
-				} else {
-					serviceName = '정액권-' + getPointType(response.data[inx].point_type);
-				}				
-
+                var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].user_phone+'</td>'
-							+'	<td>'+response.data[inx].user_name+'</td>'
-							+'	<td>'+serviceName+'</td>'
-							+'	<td>'+getHstType(response.data[inx].hst_type)+'</td>'
-
-							+'	<td>'+getPointType(response.data[inx].point_type)+'</td>'
-
-							+ (!response.data[inx].product_name || response.data[inx].product_name == '' 
-								? ('	<td>'+nullSafety(response.data[inx].service_name)+'</td>'
-								  +'	<td>'+nullSafety(response.data[inx].type_name)+'</td>')
-								: ('	<td>'+nullSafety(response.data[inx].shop_name)+'</td>'
-								  +'	<td>'+nullSafety(response.data[inx].product_name)+'</td>')
-								)
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].point)+'</td>'
-							+'	<td>'+response.data[inx].create_dt+'</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].user_point_hst_seqno+'\')" class="btnEdit">선택</a></td>'
+							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+response.data[inx].name+'</td>'
+							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
+							+'	<td>'+getAllowedIssuanceType(response.data[inx].allowed_issuance_type)+'</td>'
+							+'	<td>'+getType(response.data[inx].type)+'</td>'
+							+'	<td>'+getIssuanceType(response.data[inx].issuance_type)+'</td>'
+							+'	<td>'+getConditionType(response.data[inx].issuance_condition_type)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);
@@ -335,13 +356,14 @@ $page_title = '포인트 사용내역';
 		});
 	}
 	function gotoDetail(seq){
-		location.href = '/admin/point/history/'+seq;
+		location.href = '/admin/service/coupon/'+seq;
 	}
 	function addItem(){
-		location.href = '/admin/point/conf';
+		location.href = '/admin/service/coupon/0';
 	}
 	$(document).ready(function(){
 		getList();
+		getPartners();
 	});
 	</script>
 
