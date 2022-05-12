@@ -157,6 +157,18 @@ var bfCall = (function(){
                         list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     }
                 },
+                membership: {
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('membership', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('membership', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+
+                    history:{
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('membership-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    }
+                },
             }, contents:{
                 notice:{
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('contents/notice/app', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },

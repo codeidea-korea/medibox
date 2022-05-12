@@ -551,7 +551,7 @@ create table product_membership
     admin_seqno    bigint      not null,
     name   varchar(200)      not null,
     price   int      not null, -- 오프라인 가격
-    limit_week   int      not null, -- 제한 주 (0 이면 무한)
+    date_use   int      not null, -- 제한 주 (0 이면 무한)
 
     point    int      default 0, -- 부여 포인트
 
@@ -581,13 +581,14 @@ create table product_voucher
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 바우처 메인
-drop table membership_voucher_grp;
-create table membership_voucher_grp
+drop table membership_service_grp;
+create table membership_service_grp
 (
     seqno bigint auto_increment
         primary key,
     membership_seqno    bigint      not null,
-    voucher_seqno    bigint      not null,
+    service_seqno    bigint      not null,
+    unit_count    int      not null,
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
@@ -619,6 +620,59 @@ create table membership_coupon_grp
 
 -- 멤버쉽 사용 내역 (쿠폰/바우처/멤버쉽 통합되어 있는데 분리해서 짜야됨)
 -- product_membership_hst
+-- coupon_user
+
+alter table coupon_user add column membership_seqno bigint      null;
+alter table coupon_user add column hst_type varchar(1)      not null;
+
+drop table voucher_user;
+create table voucher_user
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_seqno    bigint      null, -- 멤버쉽에서 들어온 쿠폰의 경우
+    voucher_seqno    bigint      not null,
+    user_seqno    bigint      not null,
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    approved varchar(1)      not null, -- 승인 여부
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- 매핑 
+drop table membership_user;
+create table membership_user
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_seqno    bigint     not null, -- 
+    user_seqno    bigint      not null,
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    approved varchar(1)      not null, -- 승인 여부
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- hst
+drop table membership_user_hst;
+create table membership_user_hst
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_user_seqno    bigint     not null,
+    service_seqno    bigint      null, -- 서비스를 사용했으면
+    voucher_seqno    bigint      null, -- 바우처를 사용했으면
+    coupon_seqno    bigint      null, -- 쿠폰을 사용했으면
+    product_name    varchar(200)      null, -- 미등록 상품을 소비했으면
+    user_seqno    bigint      not null,
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
 
 -- 관리자 히스토리 (나중에)
 drop table admin_action_hst;

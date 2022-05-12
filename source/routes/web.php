@@ -151,6 +151,11 @@ Route::prefix('admin')->group(function () {
     // 쿠폰 사용 내역
     Route::get('/service/coupon-history', [AdminController::class, 'couponHistory']);
     Route::get('/service/coupon-history/{historyNo}', [AdminController::class, 'couponHistoryDetail']);
+    // 멤버쉽 관리
+    Route::get('/service/membership', [AdminController::class, 'memberships']);
+    Route::get('/service/membership/{couponNo}', [AdminController::class, 'membership']);
+    // 멤버쉽 사용 내역
+    Route::get('/service/membership-history', [AdminController::class, 'membershipHistory']);
     
 
     // 예약

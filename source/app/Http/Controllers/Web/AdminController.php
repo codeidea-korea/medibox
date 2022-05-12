@@ -562,4 +562,39 @@ class AdminController extends Controller
 
         return view('admin.service.coupon.history.detail', ['seqno' => $userSeqno, 'history' => $contents, 'historyNo' => $historyNo]);
     }
+
+    public function memberships(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.membership.list')->with('seqno', $userSeqno);
+    }
+    public function membership(Request $request, $membershipNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.service.membership.detail', ['seqno' => $userSeqno, 'membershipNo' => $membershipNo]);
+    }
+    public function membershipHistory(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $contents = DB::table("product_membership")->where([
+            ['deleted', '=', 'N']
+        ])->get();
+
+        return view('admin.service.membership.history.list', ['seqno' => $userSeqno, 'contents' => $contents]);
+    }
 }

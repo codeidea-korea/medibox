@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202205110459"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202205120459"></script>
 </head>
 <body>
 
@@ -101,7 +101,7 @@ $navData['바우처 관리'] = ['바우처 관리', '바우처 등록', '바우�
 						<li class="@if (in_array($page_title, $navData['포인트 관리'])) active @endif"><a href="/admin/point/history">포인트 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['정액권 관리'])) active @endif"><a href="/admin/service/tickets">정액권 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['패키지 관리'])) active @endif"><a href="/admin/service/packages">패키지 관리</a></li>
-						<li class="@if (in_array($page_title, $navData['멤버쉽 관리'])) active @endif"><a href="#" onclick="wait()">멤버쉽 관리</a></li>
+						<li class="@if (in_array($page_title, $navData['멤버쉽 관리'])) active @endif"><a href="/admin/service/membership">멤버쉽 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['바우처 관리'])) active @endif"><a href="/admin/service/vouchers">바우처 관리</a></li>
 					</ul>
 				</li>

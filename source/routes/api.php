@@ -22,6 +22,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponUsedController;
+use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\MembershipUsedController;
 
 
 /*
@@ -184,6 +186,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     // 쿠폰 사용 내역
     Route::get('coupon-history', [CouponUsedController::class, 'list']);
     Route::get('coupon-history/{id}', [CouponUsedController::class, 'find']);
+    
+    // 멤버쉽 관리
+    Route::get('membership', [MembershipController::class, 'list']);
+    Route::get('membership/{id}', [MembershipController::class, 'find']);
+    Route::post('membership', [MembershipController::class, 'add']);
+    Route::post('membership/{id}/modify', [MembershipController::class, 'modify']);
+    Route::post('membership/{id}/remove', [MembershipController::class, 'remove']);
+    // 멤버쉽 사용 내역
+    Route::get('membership-history', [MembershipUsedController::class, 'list']);
     
 //});
 

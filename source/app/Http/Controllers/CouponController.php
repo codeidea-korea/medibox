@@ -25,6 +25,7 @@ class CouponController extends Controller
 
         $coupon_search_type = $request->get('coupon_search_type', 'name');
         $search_field1 = $request->get('search_field1');
+        $name = $request->get('name');
         $start_dt = $request->get('start_dt');
         $end_dt = $request->get('end_dt');
         $type = $request->get('type');
@@ -44,6 +45,9 @@ class CouponController extends Controller
             } else if($coupon_search_type == 'seqno') {
                 array_push($where, ['seqno', '=', $search_field1]);
             }
+        }
+        if(! empty($name) && $name != ''){
+            array_push($where, ['name', 'like', '%'.$name.'%']);
         }
         if(! empty($start_dt) && $start_dt != ''){
             array_push($where, ['start_dt', '>=', $start_dt]);
