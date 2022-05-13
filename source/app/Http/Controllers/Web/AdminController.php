@@ -597,4 +597,30 @@ class AdminController extends Controller
 
         return view('admin.service.membership.history.list', ['seqno' => $userSeqno, 'contents' => $contents]);
     }
+
+    
+    public function paymentsMembership(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        $contents = DB::table("product_membership")->where([
+            ['deleted', '=', 'N']
+        ])->get();
+
+        return view('admin.payments.memberships', ['seqno' => $userSeqno]);
+    }
+    public function paymentsPoints(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.payments.points', ['seqno' => $userSeqno]);
+    }
 }

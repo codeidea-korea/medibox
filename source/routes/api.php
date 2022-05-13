@@ -24,7 +24,7 @@ use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CouponUsedController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\MembershipUsedController;
-
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,6 +127,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('partners/{id}', [PartnerController::class, 'find']);
     Route::post('partners', [PartnerController::class, 'add']);
     Route::post('partners/{id}/remove', [PartnerController::class, 'remove']);
+    Route::post('partners/{id}/modify', [PartnerController::class, 'modify']);
 
     // 매장 관리
     Route::get('stores', [StoreController::class, 'list']);
@@ -195,6 +196,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('membership/{id}/remove', [MembershipController::class, 'remove']);
     // 멤버쉽 사용 내역
     Route::get('membership-history', [MembershipUsedController::class, 'list']);
-    
+
+    // 파일 업로드
+    Route::post('file/{type}', [FileController::class, 'add']);
 //});
 

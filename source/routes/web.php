@@ -156,6 +156,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/service/membership/{couponNo}', [AdminController::class, 'membership']);
     // 멤버쉽 사용 내역
     Route::get('/service/membership-history', [AdminController::class, 'membershipHistory']);
+    // 결제 사용내역
+    Route::get('/payments/membership', [AdminController::class, 'paymentsMembership']);
+    Route::get('/payments/point', [AdminController::class, 'paymentsPoints']);
     
 
     // 예약

@@ -167,12 +167,10 @@ $page_title = '제휴사 정보';
 		});
 	}
 	function gotoDetail(seq){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/'+seq;
+		location.href = '/admin/partners/'+seq;
 	}
 	function addItem(){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/0';
+		location.href = '/admin/partners/0';
 	}		
 	function remove(seq){
 		if(!confirm('정말 삭제 하시겠습니까?\n*기존 데이터는 모두 삭제됩니다.')) {

@@ -23,6 +23,8 @@ create index admin_info__index_1
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('dev.codeidea@gmail.com','code0809_','Codeidea 개발자','N');
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('admin','4321','메디박스 관리자','N');
 
+alter table admin_info add column partner_seqno bigint null;
+
 -- 사용자
 create table user_info
 (

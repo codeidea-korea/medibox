@@ -82,7 +82,8 @@ class MembershipUsedController extends Controller
                 'user_info.user_seqno', 'user_info.user_phone', 'user_info.user_name',
                 'product_membership.name', 'membership_user.real_start_dt', 'membership_user.real_end_dt',
                 'store_service.name', 'product_voucher.name', 'coupon.name', 
-                'membership_user_hst.hst_type', 'membership_user_hst.create_dt')
+                'membership_user_hst.hst_type', 'membership_user_hst.create_dt',
+                'membership_user.real_start_dt', 'membership_user.real_end_dt')
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
@@ -100,7 +101,8 @@ class MembershipUsedController extends Controller
                 'user_info.user_seqno', 'user_info.user_phone', 'user_info.user_name',
                 'product_membership.name as membership_name', 'membership_user.real_start_dt', 'membership_user.real_end_dt',
                 'store_service.name as service_name', 'product_voucher.name as voucher_name', 'coupon.name as coupon_name', 
-                'membership_user_hst.hst_type', 'membership_user_hst.create_dt')
+                'membership_user_hst.hst_type', 'membership_user_hst.create_dt',
+                'membership_user.real_start_dt', 'membership_user.real_end_dt')
             ->count();
 
         $result['ment'] = '성공';

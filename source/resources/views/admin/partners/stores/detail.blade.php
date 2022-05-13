@@ -7,8 +7,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 <section id="wrtie" class="container">
 
 	<div class="section-header">매장 정보 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
-	<div class="wrtieContents">
+	<div class="wrtieContents" style="flex-direction:column;">
 		<div class="wr-wrap line label160">
+			<div class="wr-head"> 기본 정보 </div>
 			<div class="wr-list">
 				<div class="wr-list-label">매장 이름</div>
 				<div class="wr-list-con">
@@ -35,9 +36,10 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 					<input type="text" id="address_detail" name="" value="" class="span200" placeholder="">
 				</div>
 			</div>
-
-			<!-- 매장 소개 부분 우선 제외 -->
-
+		</div>
+		<br>
+		<div class="wr-wrap line label160">
+			<div class="wr-head"> 매장 소개 </div>
 			<div class="wr-list">
 				<div class="wr-list-label">소속 제휴사</div>
 				<div class="wr-list-con">
@@ -46,6 +48,71 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 					</select>
 				</div>
 			</div>
+			<div class="wr-list">
+				<div class="wr-list-label">제휴 업체 소개</div>
+				<div class="wr-list-con">
+					<textarea id="info" name="" value="" placeholder="소개말을 작성하여 주세요."></textarea>
+				</div>
+			</div>
+			<div class="wr-list">
+				<div class="wr-list-label">매장 사진</div>
+				<div class="wr-list-con">
+					<input type="hidden" id="img1">
+					<input type="hidden" id="img2">
+					<input type="hidden" id="img3">
+					<input type="hidden" id="img4">
+					<input type="hidden" id="img5">
+
+					<div class="gallery">
+						<ul>
+							<li>
+								<div class="imgCon"><img id="imgView1" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+								<div class="txtCon">
+									<i onclick="removePicture(1)" class="del"></i>
+								</div>
+							</li>
+							<li>
+								<div class="imgCon"><img id="imgView2" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+								<div class="txtCon">
+									<i onclick="removePicture(2)" class="del"></i>
+								</div>
+							</li>
+							<li>
+								<div class="imgCon"><img id="imgView3" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+								<div class="txtCon">
+									<i onclick="removePicture(3)" class="del"></i>
+								</div>
+							</li>
+							<li>
+								<div class="imgCon"><img id="imgView4" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+								<div class="txtCon">
+									<i onclick="removePicture(4)" class="del"></i>
+								</div>
+							</li>
+							<li>
+								<div class="imgCon"><img id="imgView5" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+								<div class="txtCon">
+									<i onclick="removePicture(5)" class="del"></i>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="filebox">
+						<label for="upload_0" class="upload-btn">파일찾기
+						<input name="" type="file" multiple="" id="upload_0" class="upload-hidden" onchange="uploadFile()">
+					</label></div>
+					<p class="help-block">
+						※ 매장 사진은 최대 5장 등록이 가능합니다.<br>
+						※ 해상도 0000 x 000 px에 최적화 되어 있습니다.<br>
+						※ 메디박스의 운영정책을 위반하거나 관련없는 사진은 노출 제외 처리 됩니다.
+					</p>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="wr-wrap line label160">
+			<div class="wr-head"> 매장 권한 </div>
 			<div class="wr-list">
 				<div class="wr-list-label">디자이너 유무</div>
 				<div class="wr-list-con">
@@ -68,6 +135,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			</div>
 		</div>
 	</div>
+	<style>
+	.gallery li{width:calc(20% - 16px) !important;background:#fff;padding:20px;border:1px solid rgba(0,0,0,0.1);border-radius:4px;}
+	</style>
 	
 	<div class="btnSet">
 		<a href="#" onclick="cancel()" class="btn gray">취소</a>
@@ -90,6 +160,70 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 	</div>
 
 	<script>
+	var imgPoint = 1;
+	var pictures = [];
+	var maxLength = 5;
+
+	function addPicture(path){
+		if(imgPoint > maxLength) {
+			alert('매장 사진은 최대 5장 등록이 가능합니다.');
+			return false;
+		}
+		$('#img' + imgPoint).val(path);
+		$('#imgView' + imgPoint).attr('src', path + '?v=' + (new Date().getTime()));
+		pictures[imgPoint] = path;
+		imgPoint = imgPoint + 1;
+	}
+	function removePicture(idx){
+		// index 삭제후 당기기
+		if(imgPoint > (maxLength + 1) || imgPoint < 1) {
+			alert('존재할 수 없는 이미지 포인터입니다.');
+			return false;
+		}
+		if(idx >= imgPoint || imgPoint == 1) {
+			return false;
+		}
+		pictures[idx - 1] = null;
+		for(var inx = (idx - 1); inx < maxLength; idx++){
+			$('#img' + (inx + 1)).val(pictures[inx]);
+			$('#imgView' + (inx + 1)).attr('src', pictures[inx] + '?v=' + (new Date().getTime()));
+		}
+		imgPoint = imgPoint - 1;
+	}
+	function uploadFile(){
+		if(imgPoint > maxLength) {
+			alert('매장 사진은 최대 5장 등록이 가능합니다.');
+			return false;
+		}
+		if(!$("#upload_0") || !$("#upload_0")[0] || !$("#upload_0")[0].files[0]) {
+			return false;
+		}
+
+		var form = new FormData();
+		form.append( "upload", $("#upload_0")[0].files[0] );
+		
+		jQuery.ajax({
+			url : "/api/file/store"
+			, type : "POST"
+			, processData : false
+			, contentType : false
+			, data : form
+			, async: false
+			, success:function(response) {
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				addPicture('/storage/'+response.path);
+				$("#upload_0")[0].files[0] = null;
+			}
+			,error: function (jqXHR) 
+			{ 
+				alert(jqXHR.responseText); 
+			}
+		});
+	}
 	function addManagerType(){
 		var managerTypes = document.querySelector('#manager_type').value;
 		var managerTypeInput = document.querySelector('#managerTypeInput').value;
@@ -164,6 +298,12 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var partner_seqno = document.querySelector('#partner_seqno').value;
         var in_manager = $('#in_manager').is(":checked");
         var manager_type = document.querySelector('#manager_type').value;
+        var info = $('#info').val();
+        var img1 = $('#img1').val();
+        var img2 = $('#img2').val();
+        var img3 = $('#img3').val();
+        var img4 = $('#img4').val();
+        var img5 = $('#img5').val();
 
 		medibox.methods.store.add({
 			name: name
@@ -174,6 +314,12 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			, partner_seqno: partner_seqno
 			, in_manager: in_manager ? 'Y' : 'N'
 			, manager_type: manager_type
+			, info: info
+			, img1: img1
+			, img2: img2
+			, img3: img3
+			, img4: img4
+			, img5: img5
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -208,6 +354,12 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var partner_seqno = document.querySelector('#partner_seqno').value;
         var in_manager = $('#in_manager').is(":checked");
         var manager_type = document.querySelector('#manager_type').value;
+        var info = $('#info').val();
+        var img1 = $('#img1').val();
+        var img2 = $('#img2').val();
+        var img3 = $('#img3').val();
+        var img4 = $('#img4').val();
+        var img5 = $('#img5').val();
 
 		medibox.methods.store.modify({
 			name: name
@@ -218,6 +370,12 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			, partner_seqno: partner_seqno
 			, in_manager: in_manager ? 'Y' : 'N'
 			, manager_type: manager_type
+			, info: info
+			, img1: img1
+			, img2: img2
+			, img3: img3
+			, img4: img4
+			, img5: img5
 			, admin_seqno: {{ $seqno }}
 		}, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
@@ -249,6 +407,14 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			$('#in_manager').prop('checked', response.data.in_manager == 'Y');
 			
 			$('#partner_seqno').val( response.data.partner_seqno );
+
+			$('#info').val(response.data.info);
+
+			for(var inx = 1; inx <= 5; inx++) {
+				if(!response.data['img' + inx]) continue;
+				addPicture(response.data['img' + inx]);
+			}
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
 
 			$('#manager_type').val( response.data.manager_type );
 			if(response.data.manager_type && response.data.manager_type != '') {
@@ -349,6 +515,10 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 
 	$(document).ready(function(){
 		getPartners();
+
+		setTimeout(() => {
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
+		}, 200);
 	});
 	</script>
 </section>

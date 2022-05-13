@@ -214,6 +214,7 @@ var bfCall = (function(){
             }, partner:{
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 list: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
                 findAll: function (params, successThenFn, errorThenFn){ ajaxCall('partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
