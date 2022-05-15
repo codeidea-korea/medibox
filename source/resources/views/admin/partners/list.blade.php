@@ -102,6 +102,15 @@ $page_title = '제휴사 정보';
 			data.name = searchField;
 		}
 
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+		}
+		@endphp
+
 		medibox.methods.partner.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){

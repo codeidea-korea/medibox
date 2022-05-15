@@ -71,6 +71,8 @@ class ReservationController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $user_seqno = $request->get('user_seqno');
+        $partner_ids = $request->get('partner_ids');
+        $store_seqno = $request->get('store_seqno');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -81,6 +83,9 @@ class ReservationController extends Controller
         if(! empty($user_seqno) && $user_seqno != ''){
             array_push($where, ['user_seqno', '=', $user_seqno]);
         }
+        if(! empty($store_seqno) && $store_seqno != ''){
+            array_push($where, ['store_seqno', '=', $store_seqno]);
+        }
 
         $contents = DB::table("reservation")->where($where)
             ->orderBy('create_dt', 'desc')
@@ -88,6 +93,19 @@ class ReservationController extends Controller
             ->get();
         $count = DB::table("reservation")->where($where)
             ->count();
+
+        if(! empty($partner_ids) && $partner_ids != ''){
+            $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $partner_ids)));
+
+            $contents = DB::table("reservation")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->orderBy('create_dt', 'desc')
+                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+                ->get();
+            $count = DB::table("reservation")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->count();
+        }
 
         // 고객(n:1), 제휴사(n:1), 매장(n:1), 디자이너(n:1)
         for($inx = 0; $inx < count($contents); $inx++){

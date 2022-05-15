@@ -202,6 +202,16 @@ $page_title = '예약 현황';
 			data.id = partnerId;
 		}
 
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'"; partnerId = '.session()->get('partner_seqno').';';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
+
 		medibox.methods.partner.findAll(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -227,6 +237,7 @@ $page_title = '예약 현황';
 			$('#partnersPop').html(bodyData);
 			partners = response.data;
 			getStores(partnerId);
+			getStoresPop(partnerId)
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -482,6 +493,16 @@ $page_title = '예약 현황';
 		partnerseqno = partner_seqno;
 		storeseqno = id;
 		var data = { partner_seqno:partner_seqno, id: id, adminSeqno:{{ $seqno }} };
+
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);

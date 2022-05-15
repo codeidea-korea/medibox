@@ -210,7 +210,7 @@ var bfCall = (function(){
                     choose: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template/choose', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     choosen: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/template/choosen', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/template', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                },
+                }
             }, partner:{
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('partners', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -255,12 +255,35 @@ var bfCall = (function(){
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                     day: function (params, successThenFn, errorThenFn){ ajaxCall('reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                 }
+            }, 
+            event:{
+                
+                coupon: {
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('event-coupon', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('event-coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+
+                    history:{
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('event-coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    }
+                }
+            }, admin:{
+                level:{
+                    add: function (params, successThenFn, errorThenFn){ ajaxCall('admin/level', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('admin/level/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('admin/level/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('admin/level/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('admin/level', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                }
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
             ,toNumber: function(x){
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return !x || isNaN(x) || x == null ? 0 : (x + '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         };
         this.validation = {

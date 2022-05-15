@@ -14,6 +14,7 @@ class PartnerController extends Controller
 {
     public function getAll(Request $request){
         $id = $request->get('id');
+        $partner_ids = $request->get('partner_ids');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -31,6 +32,18 @@ class PartnerController extends Controller
         $count = DB::table("partner")->where($where)
             ->count();
 
+        if(! empty($partner_ids) && $partner_ids != ''){
+            $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $partner_ids)));
+
+            $contents = DB::table("partner")->where($where)
+                ->whereIn('seqno', $partnerNos)
+                ->orderBy('create_dt', 'desc')
+                ->get();
+            $count = DB::table("partner")->where($where)
+                ->whereIn('seqno', $partnerNos)
+                ->count();
+        }
+
         $result['ment'] = '성공';
         $result['data'] = $contents;
         $result['count'] = $count;
@@ -43,6 +56,7 @@ class PartnerController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
+        $partner_ids = $request->get('partner_ids');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -53,13 +67,27 @@ class PartnerController extends Controller
         if(! empty($name) && $name != ''){
             array_push($where, ['cop_name', '=', $name]);
         }
-
+        
         $contents = DB::table("partner")->where($where)
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
         $count = DB::table("partner")->where($where)
             ->count();
+
+        if(! empty($partner_ids) && $partner_ids != ''){
+            $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $partner_ids)));
+
+
+            $contents = DB::table("partner")->where($where)
+                ->whereIn('seqno', $partnerNos)
+                ->orderBy('create_dt', 'desc')
+                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+                ->get();
+            $count = DB::table("partner")->where($where)
+                ->whereIn('seqno', $partnerNos)
+                ->count();
+        }
 
         $result['ment'] = '성공';
         $result['data'] = $contents;

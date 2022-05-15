@@ -1,34 +1,26 @@
 @php 
-$page_title = '쿠폰 이용 현황';
+$page_title = '이벤트 쿠폰 유저별 발급내역';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">쿠폰 이용 현황</div>
+	<div class="page-title">이벤트 쿠폰 유저별 발급내역</div>
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<div class="wr-wrap line label160">
 				<div class="wr-list">
-					<div class="wr-list-label">쿠폰 제휴사</div>
+					<div class="wr-list-label">이벤트 검색</div> 
 					<div class="wr-list-con">
-						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
-							<option>검색가능 셀렉트</option>
-						</select>
-					</div>
-				</div>
-				<div class="wr-list">
-					<div class="wr-list-label">쿠폰 검색</div> 
-					<div class="wr-list-con">
-						<select class="default" id="coupon_search_type">
-							<option value="name">쿠폰명</option>
-							<option value="seqno">쿠폰번호</option>
+						<select class="default" id="event_search_type">
+							<option value="name">이벤트 제목</option>
+							<option value="context">이벤트 내용</option>
 						</select>
 						<input type="text" name="search_field1" id="search_field1" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">쿠폰 사용기간</div>
+					<div class="wr-list-label">이벤트 기간</div>
 					<div class="wr-list-con">
 						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
 						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
@@ -41,6 +33,55 @@ $page_title = '쿠폰 이용 현황';
 					</div>
 				</div>
 				<div class="wr-list">
+					<div class="wr-list-label">이벤트 기간</div>
+					<div class="wr-list-con">
+						<label class="radio-wrap"><input type="radio" name="status" value="" checked="checked"><span></span>전체</label>
+						<label class="radio-wrap"><input type="radio" name="status" value="A"><span></span>발급중</label>
+						<label class="radio-wrap"><input type="radio" name="status" value="C"><span></span>발급중지</label>
+						<label class="radio-wrap"><input type="radio" name="status" value="E"><span></span>발급종료</label>
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">쿠폰 사용 유무</div>
+					<div class="wr-list-con">
+						<label class="radio-wrap"><input type="radio" name="used_coupon" value="" checked="checked"><span></span>전체</label>
+						<label class="radio-wrap"><input type="radio" name="used_coupon" value="Y"><span></span>쿠폰 사용</label>
+						<label class="radio-wrap"><input type="radio" name="used_coupon" value="N"><span></span>쿠폰 미사용</label>
+					</div>
+				</div>
+
+				<div class="wr-list">
+					<div class="wr-list-label">쿠폰 제휴사</div>
+					<div class="wr-list-con">
+						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
+							<option value="">검색가능 셀렉트</option>
+						</select>
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">쿠폰 검색</div> 
+					<div class="wr-list-con">
+						<select class="default" id="coupon_search_type">
+							<option value="name">쿠폰명</option>
+							<option value="seqno">쿠폰번호</option>
+						</select>
+						<input type="text" name="search_field2" id="search_field2" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">쿠폰 사용기간</div>
+					<div class="wr-list-con">
+						<a href="#" onclick="setCouponDay(0)" class="btn">오늘</a>
+						<a href="#" onclick="setCouponDay(-7)" class="btn">1주</a>
+						<a href="#" onclick="setCouponDay(-30)" class="btn">1개월</a>
+						<a href="#" onclick="setCouponDay(-180)" class="btn">6개월</a>
+						<a href="#" onclick="setCouponDay(-365)" class="btn">1년</a>
+						<input type="text" id="_coupon_start" class="datepick _coupon_start">			
+						~
+						<input type="text" id="_coupon_end" class="datepick _coupon_end">		
+					</div>
+				</div>
+				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 할인유형</div>
 					<div class="wr-list-con">
 						<label class="radio-wrap"><input type="radio" name="type" value="" checked="checked"><span></span>전체</label>
@@ -49,14 +90,37 @@ $page_title = '쿠폰 이용 현황';
 						<label class="radio-wrap"><input type="radio" name="type" value="G"><span></span>상품지급</label>
 					</div>
 				</div>
+
 				<div class="wr-list">
-					<div class="wr-list-label">회원 검색</div> 
+					<div class="wr-list-label">유저 정보</div> 
 					<div class="wr-list-con">
 						<select class="default" id="user_search_type">
 							<option value="id">아이디</option>
 							<option value="name">이름</option>
 						</select>
-						<input type="text" name="search_field2" id="search_field2" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
+						<input type="text" name="search_field3" id="search_field3" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">유저 쿠폰 발급일</div>
+					<div class="wr-list-con">
+						<a href="#" onclick="setUserCouponDay(0)" class="btn">오늘</a>
+						<a href="#" onclick="setUserCouponDay(-7)" class="btn">1주</a>
+						<a href="#" onclick="setUserCouponDay(-30)" class="btn">1개월</a>
+						<a href="#" onclick="setUserCouponDay(-180)" class="btn">6개월</a>
+						<a href="#" onclick="setUserCouponDay(-365)" class="btn">1년</a>
+						<input type="text" id="_user_coupon_start" class="datepick _user_coupon_start">			
+						~
+						<input type="text" id="_user_coupon_end" class="datepick _user_coupon_end">		
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">쿠폰 사용상태</div>
+					<div class="wr-list-con">
+						<label class="radio-wrap"><input type="radio" name="used" value="" checked="checked"><span></span>전체</label>
+						<label class="radio-wrap"><input type="radio" name="used" value="N"><span></span>사용전</label>
+						<label class="radio-wrap"><input type="radio" name="used" value="Y"><span></span>사용완료</label>
+						<label class="radio-wrap"><input type="radio" name="used" value="X"><span></span>쿠폰만료</label>
 					</div>
 				</div>
 			</div>
@@ -69,15 +133,17 @@ $page_title = '쿠폰 이용 현황';
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
+			<div class="rightSet">
+            </div>
 		</div>
 		<table>
 			<colgroup>
 				<col width="50">
+				<col width="60">
+				<col width="60">
+				<col width="60">
+				<col width="60">
 				<col width="90">
-				<col width="60">
-				<col width="60">
-				<col width="60">
-				<col width="60">
 				<col width="60">
 				<col width="60">
 				<col width="60">
@@ -92,21 +158,22 @@ $page_title = '쿠폰 이용 현황';
 			<thead>
 				<tr>
 					<th><a href="#">번호</a></th>
-					<th><a href="#">회원 아이디</a></th>
+					<th><a href="#">유저 아이디</a></th>
 					<th><a href="#">이름</a></th>
+					<th><a href="#">유저 쿠폰 발급일</a></th>
+					<th><a href="#">유저 쿠폰 사용상태</a></th>
+
+					<th><a href="#">이벤트명</a></th>
+					<th><a href="#">이벤트 기간</a></th>
+					<th><a href="#">이벤트 상태</a></th>
+					<th><a href="#">쿠폰 유무</a></th>
 					<th><a href="#">쿠폰 제휴사</a></th>
 					<th><a href="#">쿠폰명</a></th>
-					<th><a href="#">쿠폰 발급일</a></th>
-					<th><a href="#">쿠폰 사용 상태</a></th>
 					<th><a href="#">쿠폰 사용기간</a></th>
-					<th><a href="#">쿠폰 사용일</a></th>
 					<th><a href="#">쿠폰 할인 유형</a></th>
-					<th><a href="#">지급 유형</a></th>
-					<th><a href="#">지급 조건</a></th>
 					<th><a href="#">할인 금액</a></th>
 					<th><a href="#">최소 기준금액</a></th>
-					<th><a href="#">혜택금액</a></th>
-					<th><a href="#">상세</a></th>
+					<th><a href="#">수정/삭제</a></th>
 				</tr>
 			</thead>
 
@@ -147,22 +214,43 @@ $page_title = '쿠폰 이용 현황';
 	}
 	var startDay = '';
 	var endDay = '';
+	var couponStartDay = '';
+	var couponEndDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy년 m월 d 일'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		startDay = $(this).val();
 	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		endDay = $(this).val();
+	});
+	$('._coupon_start').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		couponStartDay = $(this).val();
+	});
+	$('._coupon_end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		couponEndDay = $(this).val();
+	});
+
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
@@ -173,6 +261,13 @@ $page_title = '쿠폰 이용 현황';
 		prevDate.setDate(prevDate.getDate() + date);
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
+	}
+	function setCouponDay(date) {
+		var date = new Date();
+		var prevDate = new Date();
+		prevDate.setDate(prevDate.getDate() + date);
+		$(".datepick._coupon_start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
+		$(".datepick._coupon_end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
 	
 	function getPartners(){
@@ -259,6 +354,16 @@ $page_title = '쿠폰 이용 현황';
 				break;
 		}
 	}
+	function getUsedCouponType(code){
+		switch(code) {
+			case 'Y':
+				return '유';
+			default:
+				return '무';
+				break;
+		}
+	}
+	
 	function getConditionType(code){
 		switch(code) {
 			case 'A':
@@ -295,17 +400,21 @@ $page_title = '쿠폰 이용 현황';
 		var coupon_search_type = $('#coupon_search_type').val();
 		var search_field1 = $('#search_field1').val();
 		var type = $('input[name=type]:checked').val();
-		var user_search_type = $('#user_search_type').val();
+		
+		var event_search_type = $('#event_search_type').val();
 		var search_field2 = $('#search_field2').val();
+		var type = $('#type').val();
+		var status = $('input[name=status]:checked').val();
+		var used_coupon = $('input[name=used_coupon]:checked').val();
 
 		if(partner_seqno && partner_seqno != '') {
 			data.partner_seqno = partner_seqno;
 		}
 		if(coupon_search_type && coupon_search_type != '') {
 			data.coupon_search_type = coupon_search_type;
-			if(search_field1 && search_field1 != '') {
-				data.search_field1 = search_field1;
-			}
+		}
+		if(search_field1 && search_field1 != '') {
+			data.search_field1 = search_field1;
 		}
 		if(type && type != '') {
 			data.type = type;
@@ -316,14 +425,23 @@ $page_title = '쿠폰 이용 현황';
 		if(type && type != '') {
 			data.end_dt = endDay;
 		}
-		if(user_search_type && user_search_type != '') {
-			data.user_search_type = user_search_type;
-			if(search_field2 && search_field2 != '') {
-				data.search_field2 = search_field2;
-			}
+		if(event_search_type && event_search_type != '') {
+			data.event_search_type = event_search_type;
+		}
+		if(search_field2 && search_field2 != '') {
+			data.search_field2 = search_field2;
+		}
+		if(type && type != '') {
+			data.type = type;
+		}
+		if(status && status != '') {
+			data.status = status;
+		}
+		if(used_coupon && used_coupon != '') {
+			data.used_coupon = used_coupon;
 		}
 
-		medibox.methods.point.coupon.history.list(data, function(request, response){
+		medibox.methods.event.coupon.history.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -352,25 +470,21 @@ $page_title = '쿠폰 이용 현황';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].user_phone+'</td>'
+							+'	<td>'+response.data[inx].user_id+'</td>'
 							+'	<td>'+response.data[inx].user_name+'</td>'
-
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
-							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'
-							+'	<td>'+getTypeCouponTime(response.data[inx].used, response.data[inx].end_dt)+'</td>'
-							+'	<td>'+(
-								response.data[inx].issuance_condition_type == 'J'
-									? '발급일 기준 한달'
-									: (response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt)
-							)+'</td>'
-							+'	<td>'+response.data[inx].update_dt+'</td>'
+							+'	<td>'+getTypeCouponTime(response.data[inx].used, response.data[inx].real_end_dt)+'</td>'
+
+							+'	<td>'+response.data[inx].name+'</td>'
+							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
+							+'	<td>'+getIssuanceType(response.data[inx].status)+'</td>'
+							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
+							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+response.data[inx].coupon_name+'</td>'
+							+'	<td>'+response.data[inx].coupon_start_dt + ' ~ ' + response.data[inx].coupon_end_dt+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
-							+'	<td>'+getIssuanceType(response.data[inx].issuance_type)+'</td>'
-							+'	<td>'+getConditionType(response.data[inx].issuance_condition_type)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].real_discount_price)+'</td>'
 							+'	<td><a href="#" onclick="loadCouponInfo(\''+inx+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
@@ -403,9 +517,6 @@ $page_title = '쿠폰 이용 현황';
 			alert('서버 통신 에러');
 		});
 	}
-	function addItem(){
-		location.href = '/admin/service/coupon-history/0';
-	}
 	$(document).ready(function(){
 		getList();
 		getPartners();
@@ -415,5 +526,5 @@ $page_title = '쿠폰 이용 현황';
 
 </section>
 
-@include('admin.service.coupon.history.pop.detail')
+@include('admin.event.coupon.history.pop.detail')
 @include('admin.footer')

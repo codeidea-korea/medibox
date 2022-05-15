@@ -501,7 +501,13 @@ class UserController extends Controller
     }
     public function event(Request $request, $id)
     {
-        return view('user.contents.event.detail')->with('id', $id);
+        $userSeqno = $request->session()->get('user_seqno');
+        $event_coupon = DB::table('even_banner')->where([
+            ['seqno', '=', $id],
+            ['deleted', '=', 'N']
+        ])->first();
+
+        return view('user.contents.event.detail', ['id' => $id, 'userSeqno' => $userSeqno, 'event_coupon' => $event_coupon]);
     }
     public function version(Request $request)
     {

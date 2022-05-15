@@ -23,7 +23,6 @@ create index admin_info__index_1
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('dev.codeidea@gmail.com','code0809_','Codeidea 개발자','N');
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('admin','4321','메디박스 관리자','N');
 
-alter table admin_info add column partner_seqno bigint null;
 
 -- 사용자
 create table user_info
@@ -800,8 +799,6 @@ insert into template (admin_seqno, file_name, representative_img, choosed, delet
 insert into template (admin_seqno, file_name, representative_img, choosed, deleted) values (0, 'main3', '/adm/img/template/temp02.png', 'N', 'N');
 insert into template (admin_seqno, file_name, representative_img, choosed, deleted) values (0, 'main4', '/adm/img/template/temp03.png', 'N', 'N');
 
--- 레벨권한 설정 (나중에)
--- (쿠폰) 이벤트 쿠폰 (나중에)
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '미니쉬 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동1', '010-1234-1234', '0', 'N');
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '발몽 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동2', '010-1234-1234', '0', 'N');
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '바라는 네일', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동3', '010-1234-1234', '0', 'N');
@@ -929,4 +926,79 @@ update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox
 update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 스파') where point_type = 'S6';
 update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 도수') where point_type = 'S7';
 */
+
+
+-- 레벨권한 설정 (나중에)
+alter table admin_info add column store_seqno bigint null; -- 소속 지점
+alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:제휴사 관리자, S:숍(매장별)관리자
+alter table admin_info add column level_partner_grp_seqno varchar(200) null; -- 관리자 권한 제휴사 리스트
+
+
+
+
+-- (쿠폰) 이벤트 쿠폰
+drop table even_coupon;
+create table even_coupon
+(
+    seqno bigint auto_increment
+        primary key,
+    name   varchar(200)      not null, -- 쿠폰명
+    context   text      null, -- 쿠폰 내용
+    -- 쿠폰 정보
+    coupon_partner_grp_seqno varchar(200) null, -- 해당 제휴사
+    -- 쿠폰 사용기간
+    start_dt        datetime  not null,
+    end_dt        datetime  not null,
+    type   varchar(1)      not null, -- 쿠폰 유형 (F 정액, P 정률, G 경품-지급)
+    discount_price int not null,
+    max_discount_price int not null, -- 0인 경우 무제한
+    limit_base_price int not null, -- 최소 기준금액 (0인 경우 제한 없음)
+    allowed_issuance_type   varchar(1)      not null, -- 발급 허용 상태 (A 발급중, C 발급중지, E 발급종료)
+
+    event_banner_seqno bigint null, -- 이벤트 배너 식별자 1:1 (추후 1:n 확장시 매핑 테이블 별도 구현 필요)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (쿠폰) 이벤트 배너
+drop table even_banner;
+create table even_banner
+(
+    seqno bigint auto_increment
+        primary key,
+    name   varchar(200)      not null, -- 이벤트명
+    context   text      null, -- 이벤트명 내용
+    thumbnail   varchar(300)      null, -- 썸네일
+    img   varchar(300)      null, -- 이미지
+    start_dt        datetime  not null,
+    end_dt        datetime  not null,
+    used_coupon   varchar(1)      not null, -- 쿠폰 사용 유무
+
+    event_coupon_seqno bigint null, -- 이벤트 쿠폰 식별자 1:1 (추후 1:n 확장시 매핑 테이블 별도 구현 필요)
+    status   varchar(1)      not null, -- 배너 상태 (A 활성화, C 중지, E 종료)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (쿠폰) 이벤트 배너-사용자 신청 현황 (기획서에는 이벤트 쿠폰이라 되어 있으나, 이벤트 쿠폰에서 쿠폰을 사용하지 않아도 노출되어야 하므로 배너가 맞음)
+drop table even_banner_user;
+create table even_banner_user
+(
+    seqno bigint auto_increment
+        primary key,
+    even_banner_seqno bigint not null, 
+    user_seqno bigint not null, 
+
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    -- 이벤트 쿠폰 사용기간
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    real_discount_price int null, -- 혜택 금액 (실제 할인된 금액)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
 

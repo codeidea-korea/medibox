@@ -38,6 +38,10 @@ class AdminController extends Controller
             return back()->withInput();
         }
         $request->session()->put('admin_seqno', $admin->admin_seqno);
+        $request->session()->put('admin_type', $admin->admin_type);
+        $request->session()->put('partner_seqno', $admin->partner_seqno);
+        $request->session()->put('store_seqno', $admin->store_seqno);
+        $request->session()->put('level_partner_grp_seqno', $admin->level_partner_grp_seqno);
 
         return redirect('/admin');
     }
@@ -622,5 +626,59 @@ class AdminController extends Controller
         $userSeqno = $request->session()->get('admin_seqno');
 
         return view('admin.payments.points', ['seqno' => $userSeqno]);
+    }
+    
+    public function eventCoupons(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.event.coupon.list')->with('seqno', $userSeqno);
+    }
+    public function eventCoupon(Request $request, $couponNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.event.coupon.detail', ['seqno' => $userSeqno, 'couponNo' => $couponNo]);
+    }
+
+    public function eventCouponHistory(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.event.coupon.history.list')->with('seqno', $userSeqno);
+    }
+    
+    
+    public function adminLevels(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.admin.list')->with('seqno', $userSeqno);
+    }
+    public function adminLevel(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.admin.detail', ['seqno' => $userSeqno, 'id' => $id]);
     }
 }

@@ -15,6 +15,7 @@ class StoreController extends Controller
     public function getAll(Request $request){
         $partner_seqno = $request->get('partner_seqno');
         $id = $request->get('id');
+        $partner_ids = $request->get('partner_ids');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -32,6 +33,20 @@ class StoreController extends Controller
         $contents = DB::table("store")->where($where)
             ->orderBy('create_dt', 'desc')
             ->get();
+        $count = DB::table("store")->where($where)
+            ->count();
+
+        if(! empty($partner_ids) && $partner_ids != ''){
+            $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $partner_ids)));
+
+            $contents = DB::table("store")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->orderBy('create_dt', 'desc')
+                ->get();
+            $count = DB::table("store")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->count();
+        }
         // 매장에 소속된 디자이너 데이터
         for($inx = 0; $inx < count($contents); $inx++){
             $managerInfo = DB::table("store_manager")
@@ -42,8 +57,6 @@ class StoreController extends Controller
             $contents[$inx]->managerInfo = $managerInfo;
             $contents[$inx]->serviceInfo = $serviceInfo;
         }
-        $count = DB::table("store")->where($where)
-            ->count();
 
         $result['ment'] = '성공';
         $result['data'] = $contents;
@@ -58,6 +71,8 @@ class StoreController extends Controller
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
         $partner_seqno = $request->get('partner_seqno');
+        $partner_ids = $request->get('partner_ids');
+        $store_seqno = $request->get('store_seqno');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -71,6 +86,9 @@ class StoreController extends Controller
         if(! empty($partner_seqno) && $partner_seqno != ''){
             array_push($where, ['partner_seqno', '=', $partner_seqno]);
         }
+        if(! empty($store_seqno) && $store_seqno != ''){
+            array_push($where, ['seqno', '=', $store_seqno]);
+        }
 
         $contents = DB::table("store")->where($where)
             ->orderBy('create_dt', 'desc')
@@ -78,6 +96,19 @@ class StoreController extends Controller
             ->get();
         $count = DB::table("store")->where($where)
             ->count();
+
+        if(! empty($partner_ids) && $partner_ids != ''){
+            $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $partner_ids)));
+
+            $contents = DB::table("store")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->orderBy('create_dt', 'desc')
+                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+                ->get();
+            $count = DB::table("store")->where($where)
+                ->whereIn('partner_seqno', $partnerNos)
+                ->count();
+        }
 
         $result['ment'] = '성공';
         $result['data'] = $contents;

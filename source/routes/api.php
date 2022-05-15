@@ -25,6 +25,10 @@ use App\Http\Controllers\CouponUsedController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\MembershipUsedController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\EventBannerController;
+use App\Http\Controllers\EvenBannerUsedController;
+use App\Http\Controllers\AdminController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +192,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('coupon-history', [CouponUsedController::class, 'list']);
     Route::get('coupon-history/{id}', [CouponUsedController::class, 'find']);
     
+    // 이벤트 쿠폰 관리
+    Route::get('event-coupon', [EventBannerController::class, 'list']);
+    Route::get('event-coupon/{id}', [EventBannerController::class, 'find']);
+    Route::post('event-coupon', [EventBannerController::class, 'add']);
+    Route::post('event-coupon/{id}/modify', [EventBannerController::class, 'modify']);
+    Route::post('event-coupon/{id}/remove', [EventBannerController::class, 'remove']);
+    Route::post('event-coupon/{id}/status', [EventBannerController::class, 'modifyStatus']);
+    Route::post('event-coupon/{id}/join', [EventBannerController::class, 'join']);
+    
+    // 이벤트 쿠폰 사용 내역
+    Route::get('event-coupon-history', [EvenBannerUsedController::class, 'list']);
+
     // 멤버쉽 관리
     Route::get('membership', [MembershipController::class, 'list']);
     Route::get('membership/{id}', [MembershipController::class, 'find']);
@@ -196,6 +212,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('membership/{id}/remove', [MembershipController::class, 'remove']);
     // 멤버쉽 사용 내역
     Route::get('membership-history', [MembershipUsedController::class, 'list']);
+
+    // 관리자 레벨
+    Route::get('admin/level', [AdminController::class, 'list']);
+    Route::get('admin/level/{id}', [AdminController::class, 'find']);
+    Route::post('admin/level', [AdminController::class, 'add']);
+    Route::post('admin/level/{id}/modify', [AdminController::class, 'modify']);
+    Route::post('admin/level/{id}/remove', [AdminController::class, 'remove']);    
 
     // 파일 업로드
     Route::post('file/{type}', [FileController::class, 'add']);

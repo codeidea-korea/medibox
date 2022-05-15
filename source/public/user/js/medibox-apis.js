@@ -155,6 +155,14 @@ var bfCall = (function(){
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('contents/help/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('contents/help', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 }
+            },
+            event:{
+                coupon: {
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('event-coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    join: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/join', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    
+                }
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+(x + '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");

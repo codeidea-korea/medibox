@@ -215,6 +215,15 @@ $page_title = '서비스 정보';
 		if(partnerId && partnerId != '') {
 			data.id = partnerId;
 		}
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.partner.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -236,6 +245,15 @@ $page_title = '서비스 정보';
 	}
 	function getStoresPop(partner_seqno){
 		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);

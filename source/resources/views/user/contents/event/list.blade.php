@@ -61,16 +61,20 @@
             var pageNo = 1;
             var pageSize = 20;
             var blocked = false;
-            var firstH = $('#announcement > ul > li')[0].clientHeight * 9;
-            var eachH = $('#announcement > ul > li')[0].clientHeight * 20;
+            var firstH = $('#event > .event_wrap')[0].clientHeight * 9;
+            var eachH = $('#event > .event_wrap')[0].clientHeight * 20;
             
+            function toDateFormatt(){
+                var thisDay = new Date();
+                return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
+            }
             function gotoDetail(seq){
                 location.href = '/profile/faqs/' + seq;
             }
             function getList(){                
-                var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0 };
+                var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0, lend_dt:toDateFormatt()  };
 
-                medibox.methods.contents.faq.list(data, function(request, response){
+                medibox.methods.event.coupon.list(data, function(request, response){
                     console.log('output : ' + response);
                     if(!response.result){
                         alert(response.ment);
@@ -78,9 +82,9 @@
                     }
 //                    $('#totalCnt').text( medibox.methods.toNumber(response.count) );
 
-                    if(pageNo == 1) $('#announcement > ul').html('');
+                    if(pageNo == 1) $('#event').html('');
                     if(response.count == 0){
-                        $('#announcement').html(
+                        $('#event').html(
                             '<figure class="empty_reservation">'
                             +'    <img src="/user/img/icon_empty_reservation.png" alt="자주 묻는 질문이 없습니다.">'
                             +'    <p>자주 묻는 질문이 없습니다.</p>'
@@ -93,12 +97,17 @@
                         var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
                         
                         bodyData = bodyData 
-                                +'<li style="cursor:pointer;" onclick="gotoDetail('+response.data[inx].seqno+')">'
-                                +'    <h3>'+response.data[inx].title+'</h3>'
-                                +'    <span class="date">'+response.data[inx].create_dt+'</span>'
-                                +'</li>';
+                                +'<div class="event_wrap">'
+                                +'    <a href="/profile/events/'+response.data[inx].seqno+'">'
+                                +'        <figure>'
+                                +'            <img src="'+response.data[inx].thumbnail+'" alt="'+response.data[inx].name+'">'
+                                +'        </figure>'
+                                +'        <h3>'+response.data[inx].name+'</h3>'
+                                +'        <p>이벤트기간 : '+response.data[inx].start_dt.substring(0, 10) + ' ~ ' + response.data[inx].end_dt.substring(0, 10)+'</p>'
+                                +'    </a>'
+                                +'</div>';
                     }
-                    $('#announcement > ul').html($('#announcement > ul').html()+bodyData);
+                    $('#event').html($('#event').html()+bodyData);
                     blocked = false;
                 }, function(e){
                     console.log(e);

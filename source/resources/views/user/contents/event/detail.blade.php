@@ -26,34 +26,68 @@
         </button>        
         <!-- page title -->
         <div class="title">
-            <span>자주 묻는 질문</span>
+            <span>이벤트</span>
         </div>
     </header>
     <!-- 이벤트 상세 페이지-->
     <section id="event_detail">
         <div class="container">
-            <h3 id="title">건강한 치아성형 미니쉬 리얼 모델 모집!</h3>
-            <span id="createDt">이벤트기간 : 11.01 ~ 11.27</span>
+            <span class="img">
+                <img src="{{ $event_coupon->img }}">
+            </span>
+            <h3 id="title">{{$event_coupon->name}}</h3>
+            <span id="createDt">이벤트기간 : {{$event_coupon->start_dt}} ~ {{$event_coupon->end_dt}}</span>
             <p id="contents">
-                안녕하세요 미니쉬치과병원입니다. ^^<br>
-                이번 달부터 진행되는 본원 진료 대기고객분들을 위한 체형교정 서비스를 안내해드립니다.<br>
-                <br>
-                저희 미니쉬가진료 중간에 생기는 대기 시간을 이용하여<br>
-                고객분들의 지치고 힘든 몸에 휴식을 드리고자 합니다. 관절 전문 병원에서 근무하셨던 원내 물리치료사분이 50분 동안 고객님을 꼼꼼하고 세심하게 봐 드리며 집에 돌아가 혼자서도 직접할 수 있는 운동법들을 알려드립니다.<br>
-                <br>
-                건강은 예방과 관리가 중요하기에<br>
-                환자고객분의 치아 건강뿐만이 아니라 전신 건강을 위해<br>
-                미니쉬치과병원은 끊임없이 노력합니다.<br>
-                <br>
-                프로그램<br>
-                -거북목, 일자목 예방 및 관리<br>
-                -목과 어깨 근육의 뭉침 관리<br>
-                -허리 통증 예방 및 관리<br>
-                -골반 비대칭 예방 및 관리<br>              
+            @php
+                echo $event_coupon->context;
+            @endphp
             </p>
+            
+            @php
+            // used_coupon 와 관계없이 사용자가 신청이 가능할 수 있음
+                echo '<button onclick="joinEvent()">이벤트 신청</button>';
+            @endphp
+            
         </div>
     </section>  
 
+    <script>
+            var userNo = '{{$userSeqno}}';
+            
+            function toDateFormatt(){
+                var thisDay = new Date();
+                return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
+            }
+            @php
+            if(!empty($userSeqno) && $userSeqno > 0) {
+                @endphp
+                    function joinEvent(){                
+                        var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0, user_seqno: userNo };
+
+                        medibox.methods.event.coupon.jon(data, {{$id}}, function(request, response){
+                            console.log('output : ' + response);
+                            if(!response.result){
+                                alert(response.ment);
+                                return false;
+                            }
+                            alert('이벤트 신청이 되었습니다.');
+                            location.href= '/profile/events';
+                        }, function(e){
+                            console.log(e);
+                            blocked = false;
+                            alert('서버 통신 에러');
+                        });
+                    }
+                @php
+            } else {
+                @endphp
+                function joinEvent(){
+                    alert('로그인을 먼저 해주세요.');
+                }
+                @php
+            }
+            @endphp
+        </script>
         @include('user.footer')
 </body>
 </html>

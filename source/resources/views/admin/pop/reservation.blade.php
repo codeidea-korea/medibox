@@ -218,6 +218,9 @@
 			}
 			$('#storePop').html(bodyData);
 			stores = response.data;
+			if(stores.length) {
+				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null);
+			}
 			makeManagers();
 			getServicesPop();
 			getManagersPop();

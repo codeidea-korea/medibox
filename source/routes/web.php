@@ -159,6 +159,14 @@ Route::prefix('admin')->group(function () {
     // 결제 사용내역
     Route::get('/payments/membership', [AdminController::class, 'paymentsMembership']);
     Route::get('/payments/point', [AdminController::class, 'paymentsPoints']);
+    // 이벤트 쿠폰 관리
+    Route::get('/service/event-coupon', [AdminController::class, 'eventCoupons']);
+    Route::get('/service/event-coupon/{couponNo}', [AdminController::class, 'eventCoupon']);
+    // 이벤트 쿠폰 사용 내역
+    Route::get('/service/event-coupon-history', [AdminController::class, 'eventCouponHistory']);
+    // 관리자 레벨 관리
+    Route::get('/level', [AdminController::class, 'adminLevels']);
+    Route::get('/level/{id}', [AdminController::class, 'adminLevel']);
     
 
     // 예약

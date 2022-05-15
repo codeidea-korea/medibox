@@ -101,6 +101,16 @@ $page_title = '매장 정보';
 		
 		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
 
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
+
 		if(searchField && searchField != '') {
 			data.name = searchField;
 		}

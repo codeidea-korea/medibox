@@ -39,7 +39,7 @@ $navData['결제 사용내역'] = ['포인트 사용내역', '쿠폰/바우처/�
 $navData['포인트 사용내역'] = ['포인트 사용내역'];
 $navData['쿠폰/바우처/멤버쉽 사용내역'] = ['쿠폰/바우처/멤버쉽 사용내역'];
 
-$navData['레벨 권한 설정'] = ['레벨 권한 설정'];
+$navData['레벨 권한 설정'] = ['레벨 권한 설정', '관리자 아이디 권한 등록', '관리자 아이디 권한 수정'];
 $navData['관리자 history'] = ['관리자 history'];
 
 @endphp
@@ -54,7 +54,13 @@ $navData['관리자 history'] = ['관리자 history'];
 				<li class="@if (in_array($page_title, $navData['제휴사 관리'])) active @endif">
 					<a href="#" class="mont">제휴사 관리</a>
 					<ul>
+						@php
+						if(session()->get('admin_type') != 'S') {
+						@endphp
 						<li class="@if (in_array($page_title, $navData['제휴사 정보'])) active @endif"><a href="/admin/partners">제휴사 정보</a></li>
+						@php
+						}
+						@endphp
 						<li class="@if (in_array($page_title, $navData['매장 정보'])) active @endif"><a href="/admin/stores">매장 정보</a></li>
 					</ul>
 				</li>
@@ -73,10 +79,13 @@ $navData['관리자 history'] = ['관리자 history'];
 						</li>
 					</ul>
 				</li>
+				@php
+				if(session()->get('admin_type') == 'A' || session()->get('admin_type') == 'B') {
+				@endphp
 				<li class="@if (in_array($page_title, $navData['서비스/바우처/쿠폰 관리'])) active @endif">
 					<a href="#" class="mont">서비스/바우처/쿠폰 관리</a>
 					<ul>
-						<li class="@if (in_array($page_title, $navData['이벤트 쿠폰 관리'])) active @endif"><a href="#" onclick="wait()">이벤트 쿠폰 관리</a></li>
+						<li class="@if (in_array($page_title, $navData['이벤트 쿠폰 관리'])) active @endif"><a href="/admin/service/event-coupon">이벤트 쿠폰 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['쿠폰 관리'])) active @endif"><a href="/admin/service/coupon">쿠폰 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['포인트 관리'])) active @endif"><a href="/admin/point/history">포인트 관리</a></li>
 						<li class="@if (in_array($page_title, $navData['정액권 관리'])) active @endif"><a href="/admin/service/tickets">정액권 관리</a></li>
@@ -85,6 +94,9 @@ $navData['관리자 history'] = ['관리자 history'];
 						<li class="@if (in_array($page_title, $navData['바우처 관리'])) active @endif"><a href="/admin/service/vouchers">바우처 관리</a></li>
 					</ul>
 				</li>
+				@php
+				}
+				@endphp
 				<li class="@if (in_array($page_title, $navData['회원관리'])) active @endif">
 					<a href="/admin/members" class="mont">회원관리</a>
 					<ul>
@@ -100,8 +112,11 @@ $navData['관리자 history'] = ['관리자 history'];
 						<li class="@if (in_array($page_title, $navData['쿠폰/바우처/멤버쉽 사용내역'])) active @endif"><a href="/admin/payments/membership">쿠폰/바우처/멤버쉽 사용내역</a></li>
 					</ul>
 				</li>
+				@php
+				if(session()->get('admin_type') == 'A' || session()->get('admin_type') == 'B') {
+				@endphp
 				<li class="@if (in_array($page_title, $navData['레벨 권한 설정'])) active @endif">
-					<a href="#" onclick="wait()" class="mont">레벨 권한 설정</a>
+					<a href="/admin/level" class="mont">레벨 권한 설정</a>
 				</li>
 				<!--
 				<li class="@if (in_array($page_title, $navData['관리자 history'])) active @endif">
@@ -121,6 +136,9 @@ $navData['관리자 history'] = ['관리자 history'];
 						<li class="@if (in_array($page_title, $navData['메인화면 디자인 선택'])) active @endif"><a href="/admin/contents/template">메인화면 디자인 선택</a></li>
 					</ul>
 				</li>
+				@php
+				}
+				@endphp
 			</ul>
 		</nav>
 	</div>
