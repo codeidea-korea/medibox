@@ -28,6 +28,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\EventBannerController;
 use App\Http\Controllers\EvenBannerUsedController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminHistoryController;
 
 
 /*
@@ -219,6 +220,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('admin/level', [AdminController::class, 'add']);
     Route::post('admin/level/{id}/modify', [AdminController::class, 'modify']);
     Route::post('admin/level/{id}/remove', [AdminController::class, 'remove']);    
+
+    // 관리자 history 관리
+    Route::get('admin/history/action', [AdminHistoryController::class, 'list']);
+    Route::post('admin/history/action', [AdminHistoryController::class, 'add']);
+
 
     // 파일 업로드
     Route::post('file/{type}', [FileController::class, 'add']);

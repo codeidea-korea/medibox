@@ -171,6 +171,11 @@ class ReservationController extends Controller
         return $result;
     }
 
+    public function getEstimatedTimes($start_dt, $estimated_time){
+        $estimated_times = explode(':', $estimated_time);
+        return date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime($start_dt . ' +'. ((int)$estimated_times[0]) .'hours')) . ' +' . ((int)$estimated_times[1]) .'minutes'));
+    }
+
     public function add(Request $request)
     {
         $admin_seqno = $request->post('admin_seqno');
@@ -206,6 +211,47 @@ class ReservationController extends Controller
             ])->first();
             if(!empty($estimatedService)) {
                 $estimated_time = $estimatedService->estimated_time;
+            }
+        }
+        // 같은 매장, 같은 디자이너, 시간 중복 확인
+        {
+            // 12시 ~ 15시 예약을 잡으려 할때 start_dt + estimated_time
+            // 오류 1) 기존 x ~ 13시 2) 기존 14시 ~ x
+            $reservationInfo = DB::table("reservation")->where([
+                ['partner_seqno', '=', $partner_seqno],
+                ['store_seqno', '=', $store_seqno],
+                ['manager_seqno', '=', $manager_seqno],
+                ['start_dt', '>', date("Y-m-d", strtotime($start_dt)) . ' 00:00:00'],
+                ['start_dt', '<', date("Y-m-d", strtotime($start_dt)) . ' 23:59:59'],
+                ['deleted', '=', 'N']
+            ])->get();
+            $storeInfo = DB::table("store")->where([
+                ['partner_seqno', '=', $partner_seqno],
+                ['seqno', '=', $store_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+
+//            allow_lunch_reservate
+
+            $resStartTime = strtotime($start_dt);
+            $resEndTime = strtotime($this->getEstimatedTimes($start_dt, $estimated_time));
+
+            for($inx = 0; $inx < count($reservationInfo); $inx++){
+                $targetStartTime = strtotime($reservationInfo[$inx]->start_dt);
+                $targetEndTime = strtotime($this->getEstimatedTimes($reservationInfo[$inx]->start_dt, $reservationInfo[$inx]->estimated_time));
+
+                // 1) 기존 14시 ~ x, 10~12. 11~13
+                if($targetStartTime <= $resStartTime && $resStartTime <= $targetStartTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                    return $result;
+                }
+                // 2) 기존 x ~ 13시
+                if($targetStartTime <= $resEndTime && $resEndTime <= $targetStartTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                    return $result;
+                }
+                // 점심 시간을 사용하는 매장의 경우
+                // 
             }
         }
 
@@ -271,6 +317,38 @@ class ReservationController extends Controller
         $result = [];
         $result['ment'] = '등록 실패';
         $result['result'] = false;
+        // 같은 매장, 같은 디자이너, 시간 중복 확인
+        {
+            // 12시 ~ 15시 예약을 잡으려 할때 start_dt + estimated_time
+            // 오류 1) 기존 x ~ 13시 2) 기존 14시 ~ x
+            $reservationInfo = DB::table("reservation")->where([
+                ['partner_seqno', '=', $partner_seqno],
+                ['store_seqno', '=', $store_seqno],
+                ['manager_seqno', '=', $manager_seqno],
+                ['start_dt', '>', date("Y-m-d", strtotime($start_dt)) . ' 00:00:00'],
+                ['start_dt', '<', date("Y-m-d", strtotime($start_dt)) . ' 23:59:59'],
+                ['deleted', '=', 'N']
+            ])->get();
+
+            $resStartTime = strtotime($start_dt);
+            $resEndTime = strtotime($this->getEstimatedTimes($start_dt, $estimated_time));
+
+            for($inx = 0; $inx < count($reservationInfo); $inx++){
+                $targetStartTime = strtotime($reservationInfo[$inx]->start_dt);
+                $targetEndTime = strtotime($this->getEstimatedTimes($reservationInfo[$inx]->start_dt, $reservationInfo[$inx]->estimated_time));
+
+                // 1) 기존 14시 ~ x, 10~12. 11~13
+                if($targetStartTime <= $resStartTime && $resStartTime <= $targetStartTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                    return $result;
+                }
+                // 2) 기존 x ~ 13시
+                if($targetStartTime <= $resEndTime && $resEndTime <= $targetStartTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                    return $result;
+                }
+            }
+        }
 
         DB::table('reservation')->where('seqno', '=', $id)->update(
             [

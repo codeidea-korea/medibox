@@ -840,9 +840,9 @@ alter table partner add column info  text;
 
 alter table store add column info  text;
 
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Spa', `background_img` = '/user/img/img_brand01.png', `icon_reservation_store` = '/user/img/icon_minish_spa.svg', `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p>' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Valmont Spa', `background_img` = '/user/img/img_brand02.png', `icon_reservation_store` = '/user/img/icon_valmont_spa.svg', `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p>' WHERE (`seqno` = '2');
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Nail', `background_img` = '/user/img/img_brand03.png', `icon_reservation_store` = '/user/img/icon_nail.svg', `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p>' WHERE (`seqno` = '3');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Dental Spa', `background_img` = '/user/img/img_brand01.png', `icon_reservation_store` = '/user/img/icon_minish_spa.svg', `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p>' WHERE (`seqno` = '1');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Valmont Spa', `background_img` = '/user/img/img_brand02.png', `icon_reservation_store` = '/user/img/icon_valmont_spa.svg', `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p>' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Tomorrow’s wish', `background_img` = '/user/img/img_brand03.png', `icon_reservation_store` = '/user/img/icon_nail.svg', `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p>' WHERE (`seqno` = '3');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Deep Focus', `background_img` = '/user/img/img_brand04.png', `icon_reservation_store` = '/user/img/icon_deep_focus.svg', `info` = '<p>‘왜 유럽과 미국에서는 보편화된 전문 검안을 한국에서는 찾아보기 어려울까?’ 이런 의문으로 시작한 딥포커스 정밀 검안센터는 ‘김광용 OPTICIAN’에 의해 15년 동안 연구된 눈 중심 전문 검안센터입니다.</p>' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Manual Therapy', `background_img` = '/user/img/img_brand05.png', `icon_reservation_store` = '/user/img/icon_foresta_black.svg', `info` = '<p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p>' WHERE (`seqno` = '5');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Foresta Black', `background_img` = '/user/img/img_brand06.png', `icon_reservation_store` = '/user/img/icon_minish_manul_therapy.svg', `info` = '<p>국내 최초이자 유일한 아베다의 뷰티 최상 등급인 라이프 스타일 살롱 ‘포레스타 블랙’</p>' WHERE (`seqno` = '6');
@@ -861,9 +861,9 @@ UPDATE `medibox`.`partner` SET `slide_img_01` = '/user/img/minish_manul_therapy0
 UPDATE `medibox`.`partner` SET `slide_img_01` = '/user/img/foresta_black01.jpg' WHERE (`seqno` = '6');
 
 UPDATE `medibox`.`partner` SET `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p><p>미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다. 최첨단 의료 장비를 통해 구강질환의 원인 세균에 대한 분석, 전문가의 섬세한 손길을 통해 체계적인 구강 관리를 원하시는 분들께 추천하고 있습니다.</p>' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p><p>발몽의 노하우를 전수받은 숙련된 테라피스트가 발몽제품과 발몽 테크닉을 얼굴 피부와 전신에 완벽히 적용합니다. 최상급 인테리어로 안락함과 행복함을 드리며, 필요와 기대에 맞추고자 노력합니다.</p><p>편안한 휴식을 위해 1인 1룸, 청결한 위생을 위해 1인 1시트, 체계적인 분석과 진단을 통한 트리트먼트로 오직 한 분을 위한 시간과 공간을 선사합니다.</p>' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `info` = '<p>스위스 발몽 코스메틱의 헤리티지와 미니쉬의 만남! 코코 샤넬, 찰리 채플린, 소피아 로렌 등 세계적인 유명인사들의 피부 재생 치료로 유명세를 탔던 발몽 클리닉. 1985년 그 병원 이름을 따 ‘발몽’이라는 화장품 브랜드가 탄생됐습니다. 스위스 천연 자원으로 만들어진 발몽 제품과 발몽 테크닉을 이용하여 얼굴 피부와 전신에 스며들게 합니다. 발몽의 노하우를 전수받은 숙련된 테라피스트가 함께하여, 당신의 아름다움을 되찾아 드립니다. 편안한 휴식을 위한 1인 1룸, 청결한 위생을 위한 1인 1시트, 체계적인 분석과 정밀한 진단을 통한 트리트먼트로 오직 고객만을 위한 시간과 공간을 선사합니다. 발몽스파에서 지금 바로 실현해보세요.</p>' WHERE (`seqno` = '2');
 UPDATE `medibox`.`partner` SET `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p><p>파고드는 발톱관리 & 문제성 손발톱관리 & 물어뜯는 손톱관리 & 문제성 각질프리미엄 관리를 함께 만나실 수 있습니다.</p><p>고객님의 맞춤관리로 네일과 패디관리뿐만 아니라 휴식과 편안함을 즐기실 수 있는 공간을 제공해드립니다.</p>' WHERE (`seqno` = '3');
-UPDATE `medibox`.`partner` SET `info` = '<p>‘왜 유럽과 미국에서는 보편화된 전문 검안을 한국에서는 찾아보기 어려울까?’ 이런 의문으로 시작한 딥포커스 정밀 검안센터는 ‘김광용 OPTICIAN’에 의해 15년 동안 연구된 눈 중심 전문 검안센터입니다.</p><p>우리의 눈은 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다. 때문에 눈 질환과 시기능 이상은 구별이 필요합니다.</p><p>체계적이고 정밀한 검안을 통해 고객님들께 선명하고 편안한 시력을 선사하여 만족도 높은 시생활이 가능토록 도와드립니다.</p>' WHERE (`seqno` = '4');
+UPDATE `medibox`.`partner` SET `info` = '<p>‘검안에 눈뜨다’ 더 선명한 세상을 마주하는 DEEP FOCUS ‘유럽과 미국엔 보편화된 전문 검안 센터, 왜 한국에선 찾기 어려울까?’ ‘김광용 OPTICIAN’이 15여 년간 연구한 눈 중심 전문 검안 센터는 이처럼 간단한 질문에서 출발하였습니다.</p><p>익숙한듯 당연하지만, 하루하루 눈의 쓰임새는 정말 중요합니다. 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다. 때문에 눈 질환과 시기능 이상은 구별이 필요합니다.</p><p>우리의 눈은 세상을 보고, 사랑하는 이의 눈을 마주하기도 합니다. 정밀하고 체계적인 검안 시스템을 갖춘 딥포커스에서 더욱 선명해질 당신의 시선을 약속합니다.</p>' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `info` = '<p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p><p>미니쉬 도수에서는 관절 전문 병원 출신의 물리치료사의 체형교정 서비스를 제공하고 근골격의 변형예측, 근육 형상 검사가 가능한 장비를 활용한 검사 결과에 따라 개개인에 맞는 자가운동 치료 솔루션을 처방해드립니다. </p><p>멤버십 고객분들을 위한 미니쉬라운지청담만의 특별한 매뉴얼 테라피를 경험해보기시 바랍니다.</p>' WHERE (`seqno` = '5');
 UPDATE `medibox`.`partner` SET `info` = '<p>국내 최초이자 유일한 아베다의 뷰티 최상 등급인 라이프 스타일 살롱 ‘포레스타 블랙’</p><p>환경, 웰빙, 아름다움을 실천하는 아베다의 철학을 선보이며, 대표적인 친환경 브랜드인 아베다의 유기농 헤어 제품만을 사용하는 것을 원칙으로 합니다. 각 분야의 최고 전문가들이 특별한 여러분들을 위한 토탈 뷰티 서비스를 제공합니다. 아름다움을 위한 공간일 뿐만 아니라 도심 속 편안한 휴식 공간으로서, 내,외적인 균형을 통한 진정한 아름다움을 가꾸어 드립니다.</p>' WHERE (`seqno` = '6');
 
@@ -1000,5 +1000,21 @@ create table even_banner_user
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+
+-- 관리자 히스토리
+drop table admin_action_history;
+create table admin_action_history
+(
+    seqno bigint auto_increment
+        primary key,
+    admin_seqno bigint not null, 
+    admin_id varchar(200) not null,
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    menu varchar(300) not null, -- 무슨 메뉴에서 ?
+    action varchar(300) not null, -- 어떤 작업을 했는지 ?
+    request_ip varchar(20) not null, -- 어디서
+    params text null -- 상세 데이터
 ) character set utf16;
 

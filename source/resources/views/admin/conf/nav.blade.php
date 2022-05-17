@@ -118,11 +118,9 @@ $navData['관리자 history'] = ['관리자 history'];
 				<li class="@if (in_array($page_title, $navData['레벨 권한 설정'])) active @endif">
 					<a href="/admin/level" class="mont">레벨 권한 설정</a>
 				</li>
-				<!--
 				<li class="@if (in_array($page_title, $navData['관리자 history'])) active @endif">
-					<a href="#" onclick="wait()" class="mont">관리자 history</a>
+					<a href="/admin/history/action" class="mont">관리자 history</a>
 				</li>
-				-->
 				<li class="@if (in_array($page_title, $navData['콘텐츠관리'])) active @endif">
 					<a href="#" class="mont">콘텐츠관리</a>
 					<ul>

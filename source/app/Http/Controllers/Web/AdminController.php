@@ -33,10 +33,11 @@ class AdminController extends Controller
         ])->first();
 
         if(empty($admin)) {
-            $result['ment'] = '없는 계정입니다.';
+            $result['ment'] = '아이디나 비밀번호가 잘못되었습니다.';
             $request->session()->put('error', $result['ment']);
             return back()->withInput();
         }
+        $request->session()->put('admin_id', $admin->admin_id);
         $request->session()->put('admin_seqno', $admin->admin_seqno);
         $request->session()->put('admin_type', $admin->admin_type);
         $request->session()->put('partner_seqno', $admin->partner_seqno);
@@ -680,5 +681,16 @@ class AdminController extends Controller
         $userSeqno = $request->session()->get('admin_seqno');
 
         return view('admin.admin.detail', ['seqno' => $userSeqno, 'id' => $id]);
+    }
+
+    public function adminActionHistory(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.admin.history.list')->with('seqno', $userSeqno);
     }
 }

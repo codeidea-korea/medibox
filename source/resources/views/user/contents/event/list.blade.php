@@ -86,8 +86,8 @@
                     if(response.count == 0){
                         $('#event').html(
                             '<figure class="empty_reservation">'
-                            +'    <img src="/user/img/icon_empty_reservation.png" alt="자주 묻는 질문이 없습니다.">'
-                            +'    <p>자주 묻는 질문이 없습니다.</p>'
+                            +'    <img src="/user/img/icon_empty_reservation.png" alt="이벤트가 없습니다.">'
+                            +'    <p>이벤트가 없습니다.</p>'
                             +'</figure>');
                         return;
                     }

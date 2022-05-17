@@ -347,7 +347,7 @@ $page_title = '예약가능시간 관리';
 		for(var inx = 0; inx<7; inx++){
 			$('input[name=due_day'+inx+']').prop('checked', false); 
 		}
-		if(data.due_day.indexOf(',') > 0) {
+		if(data.due_day && data.due_day.indexOf(',') > 0) {
 			const targetDay = data.due_day.split(',');
 			for(var inx = 0; inx<7; inx++){
 				if(targetDay[inx].hasOwnProperty(inx)) $('input[name=due_day'+inx+']').prop('checked', true); 
@@ -369,7 +369,7 @@ $page_title = '예약가능시간 관리';
 		for(var idx = 5; idx < 22; idx++){
 			for(var jdx = 0; jdx < 2; jdx++){
 				if(idx == 0 && jdx == 0) continue;
-				_bodyContents = _bodyContents + '<option value="0'+idx+':'+(jdx*30)+'">'+(idx == 0 ? '' : idx+'시 ')+(jdx == 0 ? '' : jdx*30+'분')+'</option>';
+				_bodyContents = _bodyContents + '<option value="'+(idx < 10 ? '0'+idx : idx)+':'+(jdx == 0? '0' : '')+''+(jdx*30)+'">'+(idx == 0 ? '' : idx+'시 ')+(jdx == 0 ? '' : jdx*30+'분')+'</option>';
 			}
 		}
 		$('#start_dt').html(_bodyContents);

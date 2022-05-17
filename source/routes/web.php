@@ -168,6 +168,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/level', [AdminController::class, 'adminLevels']);
     Route::get('/level/{id}', [AdminController::class, 'adminLevel']);
     
+    // 관리자 액션 히스토리
+    Route::get('/history/action', [AdminController::class, 'adminActionHistory']);
 
     // 예약
     Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);

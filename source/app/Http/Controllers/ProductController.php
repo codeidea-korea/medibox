@@ -91,6 +91,7 @@ class ProductController extends Controller
         $info = $request->post('info');
         $add_rate = $request->post('add_rate');
         $date_use = $request->post('date_use');
+        $return_point = $request->post('return_point');
 
         $ordered = $request->post('ordered', '1');
 
@@ -107,6 +108,7 @@ class ProductController extends Controller
                 , 'price' => $price
                 , 'offline_type' => $offline_type
                 , 'step_type' => $step_type
+                , 'return_point' => $return_point
                 , 'orders' => $ordered
                 , 'info' => $info
                 , 'add_rate' => $add_rate
@@ -134,6 +136,7 @@ class ProductController extends Controller
         $price = $request->post('price');
         $offline_type = $request->post('offline_type');
         $step_type = $request->post('step_type');
+        $return_point = $request->post('return_point');
         $info = $request->post('info');
         $add_rate = $request->post('add_rate');
         $date_use = $request->post('date_use');
@@ -155,6 +158,7 @@ class ProductController extends Controller
                 , 'price' => $price
                 , 'offline_type' => $offline_type
                 , 'step_type' => $step_type
+                , 'return_point' => $return_point
                 , 'orders' => $ordered
                 , 'info' => $info
                 , 'add_rate' => $add_rate

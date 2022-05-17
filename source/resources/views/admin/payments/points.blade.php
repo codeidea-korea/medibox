@@ -180,10 +180,10 @@ $page_title = '포인트 사용내역';
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
 	}
-	function setDay(date) {
+	function setDay(terms) {
 		var date = new Date();
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}

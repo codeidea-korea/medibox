@@ -33,7 +33,7 @@
                     <div class="txt_box">
                         <!-- 22.03.30 수정 -->
                         <!-- <span>Minsh Spa</span> -->
-                        <span>MINISH Spa</span>
+                        <span>MINISH Dental Spa</span>
 
                         <!-- 22.03.18 수정 -->
                         <!-- <h2>미니쉬 스파</h2> -->
@@ -45,7 +45,7 @@
             <li class="valmont_spa">
                 <a href="/brand/valmontspa">
                     <div class="txt_box">
-                        <span>Valmont Spa</span>
+                        <span>MINISH Valmont Spa</span>
 
                         <!-- 22.03.18 수정 -->
                         <!-- <h2>발몽 스파</h2> -->
@@ -57,7 +57,7 @@
             <li class="nail">
                 <a href="/brand/nail">
                     <div class="txt_box">
-                        <span>Nail</span>
+                        <span>Tomorrow’s wish</span>
 
                         <!-- 22.03.18 수정 -->
                         <!-- <h2>바라는 네일</h2> -->

@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202205140459"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202205160459"></script>
 </head>
 <body>
 
@@ -34,11 +34,38 @@
 <script>
 function logout(){
 	localStorage.clear();
+
+	var menu = '관리자 화면 상단';
+	var action = '로그 아웃';
+
+	$.ajax({
+		url: '/api/admin/history/action'
+		, data: JSON.stringify({
+			admin_seqno: admin_seqno,
+			admin_id: admin_id,
+			menu: menu,
+			action: action,
+			params: " ",
+		})
+		, type: 'POST'
+		, async: false
+		, contentType: 'application/json'
+		, cache: false
+		, timeout: 20000
+		, success: function(response){ 
+			console.log(response); 
+		}, error: function(e, xpr, mm){ 
+			console.log(e); 
+		}
+	});
 	location.href = '/admin/logout/proccess';
 }
 function wait(){
 	alert('준비중입니다.');
 }
+var admin_seqno = "{{ session()->get('admin_seqno') }}";
+var admin_id = "{{ session()->get('admin_id') }}";
+
 </script>
 
 <div id="wrapper">
