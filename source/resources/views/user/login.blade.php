@@ -29,8 +29,8 @@
             <!-- main_title -->
             <h2 class="main_title">MEDI BOX</h2>
             <p class="main_sub_title">
-                특별한 당신을 위한<br>
-                Health Care
+                오직 당신을 위한<br>
+                Health & Beauty care
             </p>
             <form method="post" action="/user/login/proccess" onsubmit="login()">
                 {{ csrf_field() }}

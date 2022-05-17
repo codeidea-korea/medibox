@@ -6,7 +6,6 @@ $page_title = '디자이너 정보';
 <section class="container">
 	<div class="page-title">디자이너 정보</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
@@ -35,7 +34,6 @@ $page_title = '디자이너 정보';
 			</select>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">
@@ -232,6 +230,15 @@ $page_title = '디자이너 정보';
 		if(partnerId && partnerId != '') {
 			data.id = partnerId;
 		}
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.partner.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -253,6 +260,15 @@ $page_title = '디자이너 정보';
 	}
 	function getStoresPop(partner_seqno){
 		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);

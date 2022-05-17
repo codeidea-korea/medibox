@@ -280,7 +280,7 @@
         <!-------------- 1차 -------------->
         <!-- <div class="brand_item_des">
             <h2>발몽 스파</h2>
-            <span>Valmont Spa</span>
+            <span>MINISH Valmont Spa</span>
             <ul class="address">
                 <li>서울 강남구 도산대로49길 9 스타크빌딩 2층 (신사동)</li>
             </ul>

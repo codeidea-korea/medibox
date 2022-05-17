@@ -145,7 +145,31 @@ Route::prefix('admin')->group(function () {
     // 바우처 관리
     Route::get('/service/vouchers', [AdminController::class, 'vouchers']);
     Route::get('/service/vouchers/{voucherNo}', [AdminController::class, 'voucher']);
+    // 쿠폰 관리
+    Route::get('/service/coupon', [AdminController::class, 'coupons']);
+    Route::get('/service/coupon/{couponNo}', [AdminController::class, 'coupon']);
+    // 쿠폰 사용 내역
+    Route::get('/service/coupon-history', [AdminController::class, 'couponHistory']);
+    Route::get('/service/coupon-history/{historyNo}', [AdminController::class, 'couponHistoryDetail']);
+    // 멤버쉽 관리
+    Route::get('/service/membership', [AdminController::class, 'memberships']);
+    Route::get('/service/membership/{couponNo}', [AdminController::class, 'membership']);
+    // 멤버쉽 사용 내역
+    Route::get('/service/membership-history', [AdminController::class, 'membershipHistory']);
+    // 결제 사용내역
+    Route::get('/payments/membership', [AdminController::class, 'paymentsMembership']);
+    Route::get('/payments/point', [AdminController::class, 'paymentsPoints']);
+    // 이벤트 쿠폰 관리
+    Route::get('/service/event-coupon', [AdminController::class, 'eventCoupons']);
+    Route::get('/service/event-coupon/{couponNo}', [AdminController::class, 'eventCoupon']);
+    // 이벤트 쿠폰 사용 내역
+    Route::get('/service/event-coupon-history', [AdminController::class, 'eventCouponHistory']);
+    // 관리자 레벨 관리
+    Route::get('/level', [AdminController::class, 'adminLevels']);
+    Route::get('/level/{id}', [AdminController::class, 'adminLevel']);
     
+    // 관리자 액션 히스토리
+    Route::get('/history/action', [AdminController::class, 'adminActionHistory']);
 
     // 예약
     Route::get('/reservations/condition', [AdminController::class, 'reservationsCondition']);

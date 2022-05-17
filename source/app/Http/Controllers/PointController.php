@@ -24,6 +24,11 @@ class PointController extends Controller
         
         $user_phone = $request->get('id');
         $user_name = $request->get('name');
+        
+        $point_type = $request->get('point_type');
+        $startPoint = $request->get('startPoint');
+        $endPoint = $request->get('endPoint');
+        $admin_name = $request->get('admin_name');
 
         $result = [];
         $result['ment'] = '조회 실패';
@@ -45,6 +50,19 @@ class PointController extends Controller
         }
         if(! empty($user_name) && $user_name != ''){
             array_push($whereUser, ['user_info.user_name', '=', $user_name]);
+        }
+        
+        if(! empty($point_type) && $point_type != ''){
+            array_push($where, ['user_point_hst.point_type', '=', $point_type]);
+        }
+        if(! empty($startPoint) && $startPoint != ''){
+            array_push($where, ['user_point_hst.point', '>=', $startPoint]);
+        }
+        if(! empty($endPoint) && $endPoint != ''){
+            array_push($where, ['user_point_hst.point', '<=', $endPoint]);
+        }
+        if(! empty($admin_name) && $admin_name != ''){
+            array_push($where, ['user_point_hst.admin_name', 'like', '%'.$admin_name.'%']);
         }
 
         $contents = DB::table("user_point_hst")

@@ -145,7 +145,8 @@
 				</div>
 			</div>	
 			<div class="btnSet">
-				<a href="#" class="btn large blue span120" onclick="add()">저장</a>
+				<a href="#" id="_add" class="btn large blue span120" onclick="add()">저장</a>
+				<a href="#" id="_modify" class="btn large blue span120" onclick="modify()">수정</a>
 				<a href="#" class="btn large gray popClose" onclick="popHide()">취소</a>
 			</div>
 		</div>
@@ -218,6 +219,9 @@
 			}
 			$('#storePop').html(bodyData);
 			stores = response.data;
+			if(stores.length) {
+				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null);
+			}
 			makeManagers();
 			getServicesPop();
 			getManagersPop();
@@ -389,7 +393,7 @@
 			, manager_seqno: manager
 			, user_seqno: user_seqno
 			, admin_seqno: {{ $seqno }}
-		}, prevDataId, function(request, response){
+		}, reservationseqno, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);

@@ -64,7 +64,7 @@
                 <a href="/brand/valmontspa">
                     <div class="txt_box">
                         <img src="/user/img/icon_valmont_spa_w.svg" alt="발몽 스파">
-                        <span>Valmont Spa</span>
+                        <span>MINISH Valmont Spa</span>
                         <h3>발몽 스파</h3>
                     </div>
                 </a>
@@ -73,7 +73,7 @@
                 <a href="/brand/nail">
                     <div class="txt_box">
                         <img src="/user/img/icon_nail_w.svg" alt="바라는 네일">
-                        <span>Nail</span>
+                        <span>Tomorrow’s wish</span>
                         <h3>바라는 네일</h3>
                     </div>
                 </a>

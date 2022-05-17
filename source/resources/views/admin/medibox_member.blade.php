@@ -6,7 +6,6 @@ $page_title = '회원관리';
 <section class="container">
 	<div class="page-title">회원관리</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<input type="text" name="startDay" id="startDay" value="2022-02-09" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">&nbsp;&nbsp;~
@@ -15,7 +14,6 @@ $page_title = '회원관리';
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">

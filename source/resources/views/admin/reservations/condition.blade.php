@@ -16,7 +16,7 @@ $page_title = '예약 현황';
 			</div>
 			<div class="btnSet">
 				<a href="/admin/reservations" class="btn-list">예약내역</a>
-				<a href="#" onclick="popOpen()" class="btn-write">예약등록</a>
+				<a href="#" onclick="addItem()" class="btn-write">예약등록</a>
 			</div>
 		</section>
 		<!--
@@ -133,7 +133,7 @@ $page_title = '예약 현황';
 	var layer_select3 = '<ul class="layerSelect">';
 	layer_select3 += '<li><a href="#" class="active">예약완료</a></li>';
 	layer_select3 += '<li><a href="#" onclick="changeStatus(\'E\')">고객입장</a></li>';
-	layer_select3 += '<li><a href="#" onclick="wait()">예약수정</a></li>';
+	layer_select3 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
 	layer_select3 += '<li><a href="#" onclick="changeStatus(\'C\')">예약취소</a></li>';
 	layer_select3 += '<li><a href="#" onclick="changeStatus(\'N\')">예약불이행</a></li>';
 	layer_select3 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
@@ -142,14 +142,14 @@ $page_title = '예약 현황';
 	var layer_select4 = '<ul class="layerSelect">';
 	layer_select4 += '<li><a href="#" class="active">고객입장</a></li>';
 	layer_select4 += '<li><a href="#" onclick="changeStatus(\'D\')">서비스완료</a></li>';
-	layer_select4 += '<li><a href="#" onclick="wait()">예약수정</a></li>';
+	layer_select4 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
 	layer_select4 += '<li><a href="#" onclick="changeStatus(\'R\')">입장취소</a></li>';
 	layer_select4 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select4 += '</ul>';
 
 	var layer_select5 = '<ul class="layerSelect">';
 	layer_select5 += '<li><a href="#" class="active">서비스완료</a></li>';
-	layer_select5 += '<li><a href="#" onclick="wait()">예약수정</a></li>';
+	layer_select5 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
 	layer_select5 += '<li><a href="#" onclick="changeStatus(\'E\')">완료취소</a></li>';
 	layer_select5 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select5 += '</ul>';
@@ -202,6 +202,16 @@ $page_title = '예약 현황';
 			data.id = partnerId;
 		}
 
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'"; partnerId = '.session()->get('partner_seqno').';';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
+
 		medibox.methods.partner.findAll(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -227,6 +237,7 @@ $page_title = '예약 현황';
 			$('#partnersPop').html(bodyData);
 			partners = response.data;
 			getStores(partnerId);
+			getStoresPop(partnerId)
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -297,7 +308,7 @@ $page_title = '예약 현황';
 			alert('해당 매장에는 예약 가능한 직원이 없습니다. 먼저 예약 가능한 직원을 등록해주세요.');
 			return false;
 		}
-		var bodyData = '';
+		var bodyData = '<span class="cell">미지정</span>';
 		if(stores.managerInfo.length){
 			for(var inx=0; inx<stores.managerInfo.length; inx++){
 				bodyData = bodyData + '<span class="cell">'+stores.managerInfo[inx].manager_type + ' ' + stores.managerInfo[inx].name+'</span>';
@@ -331,6 +342,15 @@ $page_title = '예약 현황';
 				endTime: '15:00'
 			}
 		};
+		if(stores && stores[0]) {
+			
+			stores.conf = {
+				dueDay: {
+					startTime: stores[0].start_dt,
+					endTime: stores[0].end_dt
+				}
+			};
+		}
 		
 		var startTime = new Date(searchDate);
 		startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
@@ -348,6 +368,19 @@ $page_title = '예약 현황';
 		$('#storeOpendTime').html(bodyData);
 		
 		bodyData = '';
+		// 기본 값 추가
+		{
+			bodyData = bodyData + '<div class="col _timeRow" data-alt="미지정" data-key="0">';
+			var startTime = new Date(searchDate);
+			startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
+			startTime.setMinutes(stores.conf.dueDay.startTime.split(':')[1]);
+
+			while(startTime.getTime() < endTime.getTime()){
+				bodyData = bodyData + '<span class="cell " data-start="'+startTime.getHours()+':'+startTime.getMinutes()+'"></span>'; // 예약이 없는 시간에는 기본값 세팅
+				startTime.setMinutes(startTime.getMinutes() + timeGap);
+			}
+			bodyData = bodyData + '</div>';
+		}
 		if(stores.managerInfo) {
 			if(stores.managerInfo.length){
 				for(var inx=0; inx<stores.managerInfo.length; inx++){
@@ -383,6 +416,7 @@ $page_title = '예약 현황';
 	let storeseqno;
 	let reservationseqno = 0;
 	let userseqno = 0;
+	var reservationInfos;
 	function makeReservationBodyCeil(){
 		// TODO: 실제 예약이 발생하는, 발생한 내역을 표로 보여준다.
 		// 1. 제휴사, 매장, searchDate 날자 -> 예약정보를 조회
@@ -399,6 +433,17 @@ $page_title = '예약 현황';
 			}
 			// 아티스트 x 근로시간 2차 배열
 			var bodyData = '<a href="#" class="active">전체</a>';
+			if(!stores) {
+				return;
+			}
+					$('._timeRow[data-key=0] > span').removeClass('label-1');
+					$('._timeRow[data-key=0] > span').removeClass('label-2');
+					$('._timeRow[data-key=0] > span').removeClass('label-3');
+					$('._timeRow[data-key=0] > span').removeClass('label-4');
+					$('._timeRow[data-key=0] > span').removeClass('label-5');
+					$('._timeRow[data-key=0] > span').removeClass('label-6');
+					$('._timeRow[data-key=0] > span').removeClass('label-7');
+					$('._timeRow[data-key=0] > span').text('');
 			if(stores.managerInfo && stores.managerInfo.length > 0) {
 				
 				for(var inx=0; inx<stores.managerInfo.length; inx++){
@@ -414,10 +459,14 @@ $page_title = '예약 현황';
 			}
 
 			for(var inx=0; inx<response.data.length; inx++){
+				var manager_seqno = 0;
+				if(stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno).length > 0) {
+					manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
+				}
 				// custom_color
 				var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
 				var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
-				var timeCeils = $('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span');
+				var timeCeils = $('._timeRow[data-key='+manager_seqno+'] > span');
 
 				var targetIdx = 0;
 				for(var jnx=0; jnx<timeCeils.length; jnx++){
@@ -439,6 +488,7 @@ $page_title = '예약 현황';
 				else if(status == 'N'){
 					barCaption = 'label-6';
 				}
+				reservationInfos = response.data;
 
 				for(var jnx=1; jnx <= countColor; jnx++){
 					if(jnx == 1) {
@@ -463,7 +513,7 @@ $page_title = '예약 현황';
 			}
 			let len = 1;
 			if(stores.managerInfo && stores.managerInfo.length){
-				len = stores.managerInfo.length;
+				len = stores.managerInfo.length + 1;
 			}
 			$('#_reservateTime').width(140 * len);
 			$('#_managers').parent().width(140 * len);
@@ -482,6 +532,16 @@ $page_title = '예약 현황';
 		partnerseqno = partner_seqno;
 		storeseqno = id;
 		var data = { partner_seqno:partner_seqno, id: id, adminSeqno:{{ $seqno }} };
+
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -546,8 +606,27 @@ $page_title = '예약 현황';
 //		location.href = '/admin/partners/'+seq;
 	}
 	function addItem(){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/0';
+		$('.pop-header').text(' 예약 등록 ');
+		$('#_reservationTargetUsers').html('');
+		$('input[name=searchUserId]').val('');
+		$('#_add').show();
+		$('#_modify').hide();
+		
+
+		$('#partnersPop').val('');
+		$('#storePop').val('');
+		$('#managerPop').val('');
+		$('#servicePop').val('');
+		$('#use_icon_important').prop('checked', true);
+		$('#use_icon_phone').prop('checked', '');
+		$('#use_custom_color').prop('checked', '');
+		$('#estimated_time').val('');
+		$('#startDate').val('');
+		$('#startTime1').val('');
+		$('#startTime2').val('');
+		$('#memo').val('');
+
+		popOpen();
 	}		
 	function remove(seq){
 		if(!confirm('정말 삭제 하시겠습니까?\n*기존 데이터는 모두 삭제됩니다.')) {
@@ -564,6 +643,51 @@ $page_title = '예약 현황';
 		}, function(e){
 			console.log(e);
 		});
+	}
+	function modifyItem(){
+		// reservationseqno
+		// 
+		$('.pop-header').text(' 예약 수정 ');
+		$('#_reservationTargetUsers').html('');
+		$('input[name=searchUserId]').val('');
+		
+		var res = reservationInfos.filter(r => r.seqno == reservationseqno);
+
+		if(!res || res.length == 0) {
+			alert('존재 하지 않는 예약입니다.');
+			return false;
+		}
+		res = res[0];
+
+		$('#partnersPop').val(res.partner_seqno);
+		$('#storePop').val(res.store_seqno);
+		$('#managerPop').val(res.manager_seqno);
+		$('#servicePop').val(res.service_seqno);
+		$('#use_icon_important').prop('checked', res.use_icon_important == 'Y');
+		$('#use_icon_phone').prop('checked', res.use_icon_phone == 'Y');
+		$('#use_custom_color').prop('checked', res.use_custom_color == 'Y');
+		$('#estimated_time').val(res.estimated_time);
+		$('#_add').hide();
+		$('#_modify').show();
+
+		
+		var bodyData = '<tr data-key="'+res.userInfo.user_seqno+'" onclick="chooseUser('+res.userInfo.user_seqno+')" style="cursor:pointer;">'
+							+'	<td>'+res.userInfo.user_name+'</td>'
+							+'	<td>MEDIBOX-'+res.userInfo.user_seqno+'</td>'
+							+'	<td>'+res.userInfo.user_phone+'</td>'
+							+'	<td><a href="#" class="btn large blue span100" onclick="gotoInfoDetail(\''+res.userInfo.user_seqno+'\')">고객정보</a></td>'
+							+'</tr>';
+		$('#_reservationTargetUsers').html(bodyData);
+		chooseUser(res.userInfo.user_seqno);
+
+		var startTimes = res.start_dt.split(' ');
+		$('#startDate').val(startTimes[0]);
+		var startDetailTimes = startTimes[1].split(':');
+		$('#startTime1').val(startDetailTimes[0]);
+		$('#startTime2').val(startDetailTimes[1]);
+		$('#memo').val(res.memo);
+
+		popOpen();
 	}
 	
 	$(document).ready(function(){

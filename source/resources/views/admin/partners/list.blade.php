@@ -6,14 +6,12 @@ $page_title = '제휴사 정보';
 <section class="container">
 	<div class="page-title">제휴사 정보</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="회사명">
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">
@@ -104,6 +102,15 @@ $page_title = '제휴사 정보';
 			data.name = searchField;
 		}
 
+// {{session()->get('admin_type')}}
+		@php
+		if(session()->get('admin_type') == 'P') {
+			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
+		} else if(session()->get('admin_type') == 'S') {
+			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+		}
+		@endphp
+
 		medibox.methods.partner.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -169,12 +176,10 @@ $page_title = '제휴사 정보';
 		});
 	}
 	function gotoDetail(seq){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/'+seq;
+		location.href = '/admin/partners/'+seq;
 	}
 	function addItem(){
-		alert('준비중입니다.');
-//		location.href = '/admin/partners/0';
+		location.href = '/admin/partners/0';
 	}		
 	function remove(seq){
 		if(!confirm('정말 삭제 하시겠습니까?\n*기존 데이터는 모두 삭제됩니다.')) {

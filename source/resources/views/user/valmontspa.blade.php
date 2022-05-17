@@ -28,8 +28,8 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <!-- 22.03.18 수정 -->
-            <figure class="valmont_spa01"></figure>
             <figure class="valmont_spa02"></figure>
+            <figure class="valmont_spa01"></figure>
             <figure class="valmont_spa03"></figure>
             <figure class="valmont_spa04"></figure>
             <!-- <figure class="valmont_spa05"></figure> -->
@@ -38,11 +38,13 @@
             <span class="snum"></span>
         </div>
         <div class="brand_item_des">
-            <h2>발몽 스파</h2>
-            <span>Valmont Spa</span>
-            <p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p>
-            <p>발몽의 노하우를 전수받은 숙련된 테라피스트가 발몽제품과 발몽 테크닉을 얼굴 피부와 전신에 완벽히 적용합니다. 최상급 인테리어로 안락함과 행복함을 드리며, 필요와 기대에 맞추고자 노력합니다.</p>
-            <p>편안한 휴식을 위해 1인 1룸, 청결한 위생을 위해 1인 1시트, 체계적인 분석과 진단을 통한 트리트먼트로 오직 한 분을 위한 시간과 공간을 선사합니다.</p>
+            <h2>미니쉬 발몽 스파</h2>
+            <span>MINISH Valmont Spa</span>
+
+            <p>
+            스위스 발몽 코스메틱의 헤리티지와 미니쉬의 만남! 코코 샤넬, 찰리 채플린, 소피아 로렌 등 세계적인 유명인사들의 피부 재생 치료로 유명세를 탔던 발몽 클리닉. 1985년 그 병원 이름을 따 ‘발몽’이라는 화장품 브랜드가 탄생됐습니다. 
+            스위스 천연 자원으로 만들어진 발몽 제품과 발몽 테크닉을 이용하여 얼굴 피부와 전신에 스며들게 합니다. 발몽의 노하우를 전수받은 숙련된 테라피스트가 함께하여, 당신의 아름다움을 되찾아 드립니다. 편안한 휴식을 위한 1인 1룸, 청결한 위생을 위한 1인 1시트, 체계적인 분석과 정밀한 진단을 통한 트리트먼트로 오직 고객만을 위한 시간과 공간을 선사합니다. 발몽스파에서 지금 바로 실현해보세요.
+            </p>
         </div>
     </section>
 

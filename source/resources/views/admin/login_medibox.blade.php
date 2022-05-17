@@ -29,7 +29,7 @@
 		<div style="margin-top:280px;">
 			<img src="{{ asset('adm/img/medibox/logo-w.png') }}">
 			<p style="color:#7fa6ff;margin-top:20px;">
-				<span class="h2" style="font-size:40px;font-weight:300;display:inline-block;background:#fff;line-height:1em;padding:3px 2px">특별한 당신을 위한</span><br>
+				<span class="h2" style="font-size:40px;font-weight:300;display:inline-block;background:#fff;line-height:1em;padding:3px 2px">오직 당신을 위한</span><br>
 				<span class="h2" style="font-size:56px;font-weight:400;display:inline-block;background:#fff;line-height:1em;padding:0 2px 1px 2px;margin-top:4px;">Heal Care</span>
 			</p>
 		</div>
@@ -54,7 +54,7 @@
 			</p>
 			<p class="mt20">
 				메디박스 고객센터<br>
-				<span style="font-weight:bold;font-size:1.3em">0000-0000</span>
+				<span style="font-weight:bold;font-size:1.3em">1600-1600</span>
 			</p>
 			<p class="mt20 color-blue">
 				평일 오전 10시 ~ 오후 6시<br>
@@ -93,7 +93,33 @@
 			}
 
             return true;
-        }
+		}
+		function loginProcess(id){
+			
+			var menu = '로그인 화면';
+			var action = '로그인 시도';
+
+			$.ajax({
+				url: '/api/admin/history/action'
+				, data: JSON.stringify({
+					admin_seqno: 0,
+					admin_id: id,
+					menu: menu,
+					action: action,
+					params: " ",
+				})
+				, type: 'POST'
+				, async: false
+				, contentType: 'application/json'
+				, cache: false
+				, timeout: 20000
+				, success: function(response){ 
+					console.log(response); 
+				}, error: function(e, xpr, mm){ 
+					console.log(e); 
+				}
+			});
+		}
         function login(){
             if(!checkValidation()) {
                 return false;
@@ -108,6 +134,7 @@
 			} else {
 				localStorage.clear();
 			}
+			loginProcess(id);
 			$('#lgnFrm').submit();
 		}
 		$(document).ready(function(){
@@ -117,6 +144,7 @@
 			if(id && pw) {
 				$('#login_id2').val(atob(id));
 				$('#login_pw2').val(atob(pw));
+				loginProcess(atob(id));
 				$('#lgnFrm').submit();
 			}
 		});

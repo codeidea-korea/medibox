@@ -6,7 +6,6 @@ $page_title = '포인트 사용내역';
 <section class="container">
 	<div class="page-title">포인트 사용내역</div>
 	
-	<form name="" action="" method="post">
 	<div class="data-search-wrap">
 		<div class="data-sel">
 			
@@ -64,7 +63,6 @@ $page_title = '포인트 사용내역';
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
-	</form>
 
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">

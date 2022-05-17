@@ -721,7 +721,8 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .time_select_wrap .time_inner>ul>li>a {display:block;text-align:center;font-size:0.9rem;line-height:2.2rem;border-radius:0.25rem;border:1px solid #DFDFDF;color:#B4B4B4;}
 .time_select_wrap .time_inner>ul>li.active>a {border-color:#707070;color:#000000;}
 .time_select_wrap .time_inner>ul>li.active>a:focus {background:#000;color:#fff;}
-
+.time_select_wrap .time_inner>ul>li.active.on {background:#000;color:#fff;}
+.time_select_wrap .time_inner>ul>li.active.on>a {background:#000;color:#fff;}
 
 #res_detail .bottom .menu a {border:0.75px solid transparent;border-bottom:1px solid #F0F0F0;}
 #res_detail .bottom .menu a.on {background:#F4F4F4;border:0.75px solid #000000;}

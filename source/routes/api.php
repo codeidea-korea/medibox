@@ -20,6 +20,15 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CouponUsedController;
+use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\MembershipUsedController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\EventBannerController;
+use App\Http\Controllers\EvenBannerUsedController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminHistoryController;
 
 
 /*
@@ -123,6 +132,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('partners/{id}', [PartnerController::class, 'find']);
     Route::post('partners', [PartnerController::class, 'add']);
     Route::post('partners/{id}/remove', [PartnerController::class, 'remove']);
+    Route::post('partners/{id}/modify', [PartnerController::class, 'modify']);
 
     // 매장 관리
     Route::get('stores', [StoreController::class, 'list']);
@@ -172,5 +182,51 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('vouchers/{id}/modify', [VoucherController::class, 'modify']);
     Route::post('vouchers/{id}/remove', [VoucherController::class, 'remove']);
     
+    // 쿠폰 관리
+    Route::get('coupon', [CouponController::class, 'list']);
+    Route::get('coupon/{id}', [CouponController::class, 'find']);
+    Route::post('coupon', [CouponController::class, 'add']);
+    Route::post('coupon/{id}/modify', [CouponController::class, 'modify']);
+    Route::post('coupon/{id}/remove', [CouponController::class, 'remove']);
+    Route::post('coupon/{id}/status', [CouponController::class, 'modifyStatus']);
+    // 쿠폰 사용 내역
+    Route::get('coupon-history', [CouponUsedController::class, 'list']);
+    Route::get('coupon-history/{id}', [CouponUsedController::class, 'find']);
+    
+    // 이벤트 쿠폰 관리
+    Route::get('event-coupon', [EventBannerController::class, 'list']);
+    Route::get('event-coupon/{id}', [EventBannerController::class, 'find']);
+    Route::post('event-coupon', [EventBannerController::class, 'add']);
+    Route::post('event-coupon/{id}/modify', [EventBannerController::class, 'modify']);
+    Route::post('event-coupon/{id}/remove', [EventBannerController::class, 'remove']);
+    Route::post('event-coupon/{id}/status', [EventBannerController::class, 'modifyStatus']);
+    Route::post('event-coupon/{id}/join', [EventBannerController::class, 'join']);
+    
+    // 이벤트 쿠폰 사용 내역
+    Route::get('event-coupon-history', [EvenBannerUsedController::class, 'list']);
+
+    // 멤버쉽 관리
+    Route::get('membership', [MembershipController::class, 'list']);
+    Route::get('membership/{id}', [MembershipController::class, 'find']);
+    Route::post('membership', [MembershipController::class, 'add']);
+    Route::post('membership/{id}/modify', [MembershipController::class, 'modify']);
+    Route::post('membership/{id}/remove', [MembershipController::class, 'remove']);
+    // 멤버쉽 사용 내역
+    Route::get('membership-history', [MembershipUsedController::class, 'list']);
+
+    // 관리자 레벨
+    Route::get('admin/level', [AdminController::class, 'list']);
+    Route::get('admin/level/{id}', [AdminController::class, 'find']);
+    Route::post('admin/level', [AdminController::class, 'add']);
+    Route::post('admin/level/{id}/modify', [AdminController::class, 'modify']);
+    Route::post('admin/level/{id}/remove', [AdminController::class, 'remove']);    
+
+    // 관리자 history 관리
+    Route::get('admin/history/action', [AdminHistoryController::class, 'list']);
+    Route::post('admin/history/action', [AdminHistoryController::class, 'add']);
+
+
+    // 파일 업로드
+    Route::post('file/{type}', [FileController::class, 'add']);
 //});
 

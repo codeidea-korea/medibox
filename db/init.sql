@@ -23,6 +23,7 @@ create index admin_info__index_1
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('dev.codeidea@gmail.com','code0809_','Codeidea 개발자','N');
 insert into admin_info (admin_id, admin_pw, admin_name, delete_yn) values ('admin','4321','메디박스 관리자','N');
 
+
 -- 사용자
 create table user_info
 (
@@ -487,7 +488,7 @@ create table coupon
     seqno bigint auto_increment
         primary key,
     -- 적용 제휴사 그룹 (0이면 전부 적용)
-    coupon_partner_grp_seqno bigint not null, -- 해당 제휴사
+    coupon_partner_grp_seqno varchar(200) null, -- 해당 제휴사
     name   varchar(200)      not null, -- 쿠폰명
     context   varchar(200)      null, -- 쿠폰 내용
     issuance_type   varchar(1)      not null, -- 지급유형 (A 자동 지급)
@@ -528,6 +529,10 @@ create table coupon_user
     user_seqno bigint not null, 
 
     used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    -- 쿠폰 사용기간
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    real_discount_price int not null, -- 혜택 금액 (실제 할인된 금액)
 
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,
@@ -547,7 +552,7 @@ create table product_membership
     admin_seqno    bigint      not null,
     name   varchar(200)      not null,
     price   int      not null, -- 오프라인 가격
-    limit_week   int      not null, -- 제한 주 (0 이면 무한)
+    date_use   int      not null, -- 제한 주 (0 이면 무한)
 
     point    int      default 0, -- 부여 포인트
 
@@ -577,13 +582,14 @@ create table product_voucher
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
 -- 바우처 메인
-drop table membership_voucher_grp;
-create table membership_voucher_grp
+drop table membership_service_grp;
+create table membership_service_grp
 (
     seqno bigint auto_increment
         primary key,
     membership_seqno    bigint      not null,
-    voucher_seqno    bigint      not null,
+    service_seqno    bigint      not null,
+    unit_count    int      not null,
     deleted   varchar(1)      not null, -- 삭제여부 Y / N
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
@@ -615,6 +621,59 @@ create table membership_coupon_grp
 
 -- 멤버쉽 사용 내역 (쿠폰/바우처/멤버쉽 통합되어 있는데 분리해서 짜야됨)
 -- product_membership_hst
+-- coupon_user
+
+alter table coupon_user add column membership_seqno bigint      null;
+alter table coupon_user add column hst_type varchar(1)      not null;
+
+drop table voucher_user;
+create table voucher_user
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_seqno    bigint      null, -- 멤버쉽에서 들어온 쿠폰의 경우
+    voucher_seqno    bigint      not null,
+    user_seqno    bigint      not null,
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    approved varchar(1)      not null, -- 승인 여부
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- 매핑 
+drop table membership_user;
+create table membership_user
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_seqno    bigint     not null, -- 
+    user_seqno    bigint      not null,
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    approved varchar(1)      not null, -- 승인 여부
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- hst
+drop table membership_user_hst;
+create table membership_user_hst
+(
+    seqno bigint auto_increment
+        primary key,
+    membership_user_seqno    bigint     not null,
+    service_seqno    bigint      null, -- 서비스를 사용했으면
+    voucher_seqno    bigint      null, -- 바우처를 사용했으면
+    coupon_seqno    bigint      null, -- 쿠폰을 사용했으면
+    product_name    varchar(200)      null, -- 미등록 상품을 소비했으면
+    user_seqno    bigint      not null,
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
 
 -- 관리자 히스토리 (나중에)
 drop table admin_action_hst;
@@ -740,8 +799,6 @@ insert into template (admin_seqno, file_name, representative_img, choosed, delet
 insert into template (admin_seqno, file_name, representative_img, choosed, deleted) values (0, 'main3', '/adm/img/template/temp02.png', 'N', 'N');
 insert into template (admin_seqno, file_name, representative_img, choosed, deleted) values (0, 'main4', '/adm/img/template/temp03.png', 'N', 'N');
 
--- 레벨권한 설정 (나중에)
--- (쿠폰) 이벤트 쿠폰 (나중에)
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '미니쉬 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동1', '010-1234-1234', '0', 'N');
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '발몽 스파', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동2', '010-1234-1234', '0', 'N');
 INSERT INTO `medibox`.`partner` (`admin_seqno`, `cop_name`, `cop_no`, `cop_phone`, `online_order_business_no`, `director_name`, `director_phone`, `director_seqno`, `deleted`) VALUES ('0', '바라는 네일', '000-0-0000', '010-0000-0000', '통-0000-0-0000', '홍길동3', '010-1234-1234', '0', 'N');
@@ -783,9 +840,9 @@ alter table partner add column info  text;
 
 alter table store add column info  text;
 
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Spa', `background_img` = '/user/img/img_brand01.png', `icon_reservation_store` = '/user/img/icon_minish_spa.svg', `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p>' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Valmont Spa', `background_img` = '/user/img/img_brand02.png', `icon_reservation_store` = '/user/img/icon_valmont_spa.svg', `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p>' WHERE (`seqno` = '2');
-UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Nail', `background_img` = '/user/img/img_brand03.png', `icon_reservation_store` = '/user/img/icon_nail.svg', `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p>' WHERE (`seqno` = '3');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Dental Spa', `background_img` = '/user/img/img_brand01.png', `icon_reservation_store` = '/user/img/icon_minish_spa.svg', `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p>' WHERE (`seqno` = '1');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Valmont Spa', `background_img` = '/user/img/img_brand02.png', `icon_reservation_store` = '/user/img/icon_valmont_spa.svg', `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p>' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Tomorrow’s wish', `background_img` = '/user/img/img_brand03.png', `icon_reservation_store` = '/user/img/icon_nail.svg', `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p>' WHERE (`seqno` = '3');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Deep Focus', `background_img` = '/user/img/img_brand04.png', `icon_reservation_store` = '/user/img/icon_deep_focus.svg', `info` = '<p>‘왜 유럽과 미국에서는 보편화된 전문 검안을 한국에서는 찾아보기 어려울까?’ 이런 의문으로 시작한 딥포커스 정밀 검안센터는 ‘김광용 OPTICIAN’에 의해 15년 동안 연구된 눈 중심 전문 검안센터입니다.</p>' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'MINISH Manual Therapy', `background_img` = '/user/img/img_brand05.png', `icon_reservation_store` = '/user/img/icon_foresta_black.svg', `info` = '<p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p>' WHERE (`seqno` = '5');
 UPDATE `medibox`.`partner` SET `cop_eng_name` = 'Foresta Black', `background_img` = '/user/img/img_brand06.png', `icon_reservation_store` = '/user/img/icon_minish_manul_therapy.svg', `info` = '<p>국내 최초이자 유일한 아베다의 뷰티 최상 등급인 라이프 스타일 살롱 ‘포레스타 블랙’</p>' WHERE (`seqno` = '6');
@@ -804,9 +861,9 @@ UPDATE `medibox`.`partner` SET `slide_img_01` = '/user/img/minish_manul_therapy0
 UPDATE `medibox`.`partner` SET `slide_img_01` = '/user/img/foresta_black01.jpg' WHERE (`seqno` = '6');
 
 UPDATE `medibox`.`partner` SET `info` = '<p>‘나 자신도 몰랐던 입속 상태를 정확히 진단받고, 건강한 구강 관리가 가능토록 미니쉬가 만들었습니다.’</p><p>미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다. 최첨단 의료 장비를 통해 구강질환의 원인 세균에 대한 분석, 전문가의 섬세한 손길을 통해 체계적인 구강 관리를 원하시는 분들께 추천하고 있습니다.</p>' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `info` = '<p>스위스 발몽 코스메틱의 기술력과 미니쉬가 만나 우리의 고객이 건강하게 아름다워질 수 있도록 합니다.</p><p>발몽의 노하우를 전수받은 숙련된 테라피스트가 발몽제품과 발몽 테크닉을 얼굴 피부와 전신에 완벽히 적용합니다. 최상급 인테리어로 안락함과 행복함을 드리며, 필요와 기대에 맞추고자 노력합니다.</p><p>편안한 휴식을 위해 1인 1룸, 청결한 위생을 위해 1인 1시트, 체계적인 분석과 진단을 통한 트리트먼트로 오직 한 분을 위한 시간과 공간을 선사합니다.</p>' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `info` = '<p>스위스 발몽 코스메틱의 헤리티지와 미니쉬의 만남! 코코 샤넬, 찰리 채플린, 소피아 로렌 등 세계적인 유명인사들의 피부 재생 치료로 유명세를 탔던 발몽 클리닉. 1985년 그 병원 이름을 따 ‘발몽’이라는 화장품 브랜드가 탄생됐습니다. 스위스 천연 자원으로 만들어진 발몽 제품과 발몽 테크닉을 이용하여 얼굴 피부와 전신에 스며들게 합니다. 발몽의 노하우를 전수받은 숙련된 테라피스트가 함께하여, 당신의 아름다움을 되찾아 드립니다. 편안한 휴식을 위한 1인 1룸, 청결한 위생을 위한 1인 1시트, 체계적인 분석과 정밀한 진단을 통한 트리트먼트로 오직 고객만을 위한 시간과 공간을 선사합니다. 발몽스파에서 지금 바로 실현해보세요.</p>' WHERE (`seqno` = '2');
 UPDATE `medibox`.`partner` SET `info` = '<p>바라는 네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다. 바라는 네일에 들어오시는 순간부터 나가실 때까지 고객님 한분한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실 수 있습니다.</p><p>파고드는 발톱관리 & 문제성 손발톱관리 & 물어뜯는 손톱관리 & 문제성 각질프리미엄 관리를 함께 만나실 수 있습니다.</p><p>고객님의 맞춤관리로 네일과 패디관리뿐만 아니라 휴식과 편안함을 즐기실 수 있는 공간을 제공해드립니다.</p>' WHERE (`seqno` = '3');
-UPDATE `medibox`.`partner` SET `info` = '<p>‘왜 유럽과 미국에서는 보편화된 전문 검안을 한국에서는 찾아보기 어려울까?’ 이런 의문으로 시작한 딥포커스 정밀 검안센터는 ‘김광용 OPTICIAN’에 의해 15년 동안 연구된 눈 중심 전문 검안센터입니다.</p><p>우리의 눈은 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다. 때문에 눈 질환과 시기능 이상은 구별이 필요합니다.</p><p>체계적이고 정밀한 검안을 통해 고객님들께 선명하고 편안한 시력을 선사하여 만족도 높은 시생활이 가능토록 도와드립니다.</p>' WHERE (`seqno` = '4');
+UPDATE `medibox`.`partner` SET `info` = '<p>‘검안에 눈뜨다’ 더 선명한 세상을 마주하는 DEEP FOCUS ‘유럽과 미국엔 보편화된 전문 검안 센터, 왜 한국에선 찾기 어려울까?’ ‘김광용 OPTICIAN’이 15여 년간 연구한 눈 중심 전문 검안 센터는 이처럼 간단한 질문에서 출발하였습니다.</p><p>익숙한듯 당연하지만, 하루하루 눈의 쓰임새는 정말 중요합니다. 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다. 때문에 눈 질환과 시기능 이상은 구별이 필요합니다.</p><p>우리의 눈은 세상을 보고, 사랑하는 이의 눈을 마주하기도 합니다. 정밀하고 체계적인 검안 시스템을 갖춘 딥포커스에서 더욱 선명해질 당신의 시선을 약속합니다.</p>' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `info` = '<p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p><p>미니쉬 도수에서는 관절 전문 병원 출신의 물리치료사의 체형교정 서비스를 제공하고 근골격의 변형예측, 근육 형상 검사가 가능한 장비를 활용한 검사 결과에 따라 개개인에 맞는 자가운동 치료 솔루션을 처방해드립니다. </p><p>멤버십 고객분들을 위한 미니쉬라운지청담만의 특별한 매뉴얼 테라피를 경험해보기시 바랍니다.</p>' WHERE (`seqno` = '5');
 UPDATE `medibox`.`partner` SET `info` = '<p>국내 최초이자 유일한 아베다의 뷰티 최상 등급인 라이프 스타일 살롱 ‘포레스타 블랙’</p><p>환경, 웰빙, 아름다움을 실천하는 아베다의 철학을 선보이며, 대표적인 친환경 브랜드인 아베다의 유기농 헤어 제품만을 사용하는 것을 원칙으로 합니다. 각 분야의 최고 전문가들이 특별한 여러분들을 위한 토탈 뷰티 서비스를 제공합니다. 아름다움을 위한 공간일 뿐만 아니라 도심 속 편안한 휴식 공간으로서, 내,외적인 균형을 통한 진정한 아름다움을 가꾸어 드립니다.</p>' WHERE (`seqno` = '6');
 
@@ -869,4 +926,95 @@ update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox
 update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 스파') where point_type = 'S6';
 update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox.partner where cop_name = '미니쉬 도수') where point_type = 'S7';
 */
+
+
+-- 레벨권한 설정 (나중에)
+alter table admin_info add column store_seqno bigint null; -- 소속 지점
+alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:제휴사 관리자, S:숍(매장별)관리자
+alter table admin_info add column level_partner_grp_seqno varchar(200) null; -- 관리자 권한 제휴사 리스트
+
+
+
+
+-- (쿠폰) 이벤트 쿠폰
+drop table even_coupon;
+create table even_coupon
+(
+    seqno bigint auto_increment
+        primary key,
+    name   varchar(200)      not null, -- 쿠폰명
+    context   text      null, -- 쿠폰 내용
+    -- 쿠폰 정보
+    coupon_partner_grp_seqno varchar(200) null, -- 해당 제휴사
+    -- 쿠폰 사용기간
+    start_dt        datetime  not null,
+    end_dt        datetime  not null,
+    type   varchar(1)      not null, -- 쿠폰 유형 (F 정액, P 정률, G 경품-지급)
+    discount_price int not null,
+    max_discount_price int not null, -- 0인 경우 무제한
+    limit_base_price int not null, -- 최소 기준금액 (0인 경우 제한 없음)
+    allowed_issuance_type   varchar(1)      not null, -- 발급 허용 상태 (A 발급중, C 발급중지, E 발급종료)
+
+    event_banner_seqno bigint null, -- 이벤트 배너 식별자 1:1 (추후 1:n 확장시 매핑 테이블 별도 구현 필요)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (쿠폰) 이벤트 배너
+drop table even_banner;
+create table even_banner
+(
+    seqno bigint auto_increment
+        primary key,
+    name   varchar(200)      not null, -- 이벤트명
+    context   text      null, -- 이벤트명 내용
+    thumbnail   varchar(300)      null, -- 썸네일
+    img   varchar(300)      null, -- 이미지
+    start_dt        datetime  not null,
+    end_dt        datetime  not null,
+    used_coupon   varchar(1)      not null, -- 쿠폰 사용 유무
+
+    event_coupon_seqno bigint null, -- 이벤트 쿠폰 식별자 1:1 (추후 1:n 확장시 매핑 테이블 별도 구현 필요)
+    status   varchar(1)      not null, -- 배너 상태 (A 활성화, C 중지, E 종료)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+-- (쿠폰) 이벤트 배너-사용자 신청 현황 (기획서에는 이벤트 쿠폰이라 되어 있으나, 이벤트 쿠폰에서 쿠폰을 사용하지 않아도 노출되어야 하므로 배너가 맞음)
+drop table even_banner_user;
+create table even_banner_user
+(
+    seqno bigint auto_increment
+        primary key,
+    even_banner_seqno bigint not null, 
+    user_seqno bigint not null, 
+
+    used   varchar(1)      not null, -- 사용완료 여부 Y / N (미사용 쿠폰중 기간이 도래하면 기간만료)
+    -- 이벤트 쿠폰 사용기간
+    real_start_dt        datetime  not null,
+    real_end_dt        datetime  not null,
+    real_discount_price int null, -- 혜택 금액 (실제 할인된 금액)
+
+    deleted   varchar(1)      not null, -- 삭제여부 Y / N
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    update_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+
+-- 관리자 히스토리
+drop table admin_action_history;
+create table admin_action_history
+(
+    seqno bigint auto_increment
+        primary key,
+    admin_seqno bigint not null, 
+    admin_id varchar(200) not null,
+    create_dt        datetime         default CURRENT_TIMESTAMP null,
+    menu varchar(300) not null, -- 무슨 메뉴에서 ?
+    action varchar(300) not null, -- 어떤 작업을 했는지 ?
+    request_ip varchar(20) not null, -- 어디서
+    params text null -- 상세 데이터
+) character set utf16;
 

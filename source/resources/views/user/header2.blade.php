@@ -15,7 +15,7 @@
     <script src="{{ asset('user/js/slick.min.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/tabmenu.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/medibox.js') }}?v=202204011421"></script>
-    <script src="{{ asset('user/js/medibox-apis.js') }}?v=202205092259"></script>
+    <script src="{{ asset('user/js/medibox-apis.js') }}?v=202205150300"></script>
     <script src="{{ asset('user/js/datepicker.js') }}?v=202205062259"></script>
     
     <link rel="stylesheet" href="{{ asset('user/css/footbar.css') }}?v=202203231321">
