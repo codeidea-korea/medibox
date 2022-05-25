@@ -326,7 +326,7 @@
 		var use_icon_phone = $('#use_icon_phone').is(":checked") ? 'Y' : 'N';
 		var use_custom_color = $('#use_custom_color').is(":checked") ? 'Y' : 'N';
 		var estimated_time = $('#estimated_time').val(); 
-		var start_dt = $('#startDate').val() + ' ' + $('#startTime1').val() + ':' + $('#startTime2').val();
+		var start_dt = ($('#startDate').val()).replaceAll('.', '-') + ' ' + $('#startTime1').val() + ':' + $('#startTime2').val();
 		var memo = $('#memo').val(); 
 		var apply_on_mobile = 'N';
 
@@ -372,7 +372,7 @@
 		var use_icon_phone = $('#use_icon_phone').is(":checked") ? 'Y' : 'N';
 		var use_custom_color = $('#use_custom_color').is(":checked") ? 'Y' : 'N';
 		var estimated_time = $('#estimated_time').val(); 
-		var start_dt = $('#startDate').val() + ' ' + $('#startTime1').val() + ':' + $('#startTime2').val();
+		var start_dt = ($('#startDate').val()).replaceAll('.', '-') + ' ' + $('#startTime1').val() + ':' + $('#startTime2').val();
 		var memo = $('#memo').val(); 
 		var apply_on_mobile = 'N';
 

@@ -16,15 +16,15 @@
                     <li><a href="#!">12:30</a></li>
                     <li><a href="#!">13:00</a></li>
                     <li><a href="#!">13:30</a></li>
-                    <li class="active"><a href="#!">14:00</a></li>
-                    <li class="active"><a href="#!">14:30</a></li>
-                    <li class="active"><a href="#!">15:00</a></li>
-                    <li class="active"><a href="#!">15:30</a></li>
-                    <li class="active"><a href="#!">16:00</a></li>
-                    <li class="active"><a href="#!">16:30</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('14:00', this)">14:00</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('14:30', this)">14:30</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('15:00', this)">15:00</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('15:30', this)">15:30</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('16:00', this)">16:00</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('16:30', this)">16:30</a></li>
                     <li><a href="#!">17:00</a></li>
-                    <li class="active"><a href="#!">17:30</a></li>
-                    <li class="active"><a href="#!">18:00</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('17:30', this)">17:30</a></li>
+                    <li class="active"><a href="#!" onclick="saveSearchDate('18:00', this)">18:00</a></li>
                 </ul>
             </div>
         </div>
@@ -177,6 +177,12 @@
         loadHistory();
     });
     </script>
+
+<style>
+    .time_select_wrap .time_inner>ul>li.active>a:focus {background:none;color:black;}
+    .time_select_wrap .time_inner>ul>li.active.on {background:black;color:white;}
+    .time_select_wrap .time_inner>ul>li.active.on>a {color:white;}
+</style>
 
     @include('user.footer')
 

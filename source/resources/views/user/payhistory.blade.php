@@ -104,6 +104,14 @@
 				alert(response.ment);
 				return false;
 			}
+			if(response.data.length == 0 && pageNo == 1){
+                $('._history_items').html(
+                    '<figure class="empty_reservation">'
+                        +'<img src="/user/img/icon_empty_reservation.png" alt="결제내역이 없습니다.">'
+                        +'<p>결제내역이 없습니다.</p>'
+                    +'</figure>');
+                return;
+            }
             var tmpHtml = '';
             for(var inx = 0; inx < response.data.length; inx++){
                 var productName = getProductName(response.data[inx]);

@@ -616,7 +616,7 @@ class AdminController extends Controller
             ['deleted', '=', 'N']
         ])->get();
 
-        return view('admin.payments.memberships', ['seqno' => $userSeqno]);
+        return view('admin.payments.memberships', ['seqno' => $userSeqno, 'contents' => $contents]);
     }
     public function paymentsPoints(Request $request)
     {

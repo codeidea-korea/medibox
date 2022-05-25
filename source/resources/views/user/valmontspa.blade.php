@@ -38,7 +38,7 @@
             <span class="snum"></span>
         </div>
         <div class="brand_item_des">
-            <h2>미니쉬 발몽 스파</h2>
+            <h2>미니쉬발몽스파</h2>
             <span>MINISH Valmont Spa</span>
 
             <p>

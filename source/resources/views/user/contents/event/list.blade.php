@@ -89,6 +89,7 @@
                             +'    <img src="/user/img/icon_empty_reservation.png" alt="이벤트가 없습니다.">'
                             +'    <p>이벤트가 없습니다.</p>'
                             +'</figure>');
+                        $('#event').attr('id', 'reservation');
                         return;
                     }
 

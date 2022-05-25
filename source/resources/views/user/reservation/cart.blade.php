@@ -14,7 +14,7 @@
         <div class="date_open_wrap">
             <div class="container">
                 <a href="#!" class="date_open_btn">
-                    <span>날짜/시간 선택</span>
+                    <span id="date_option">날짜/시간 선택</span>
                 </a>
             </div>
         </div>
@@ -243,6 +243,7 @@
         if(validation2()) {
             $('#next_btn').addClass('on');
         }
+        $('#date_option').text( searchDate + ' ' + searchTime + ' 예약' );
     }
     function saveServiceId(id, target){
         targetServiceId = id;
@@ -351,5 +352,6 @@
         ._choosed{
             color:red;
         }
+        .time_select_wrap .time_inner>ul>li.active>a:focus {background:none;color:none;}
     </style>
 </body>

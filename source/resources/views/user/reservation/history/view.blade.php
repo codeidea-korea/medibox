@@ -1,6 +1,29 @@
 
 @include('user.header2')
 
+    <!-- header -->
+    <header id="header">
+        <!-- 뒤로가기 버튼 -->
+        <button class="back" onclick="history.back();">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
+                <g id="back_arrow" transform="translate(-22.295 -60)">
+                    <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
+                    <g id="그룹_389" data-name="그룹 389" transform="translate(-0.231)">
+                    <g id="그룹_388" data-name="그룹 388">
+                        <line id="선_29" data-name="선 29" x2="22.655" transform="translate(23.845 72)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+                        <path id="패스_174" data-name="패스 174" d="M3382.394,1143.563l-7.163,6.331" transform="translate(-3352 -1077.894)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                        <path id="패스_175" data-name="패스 175" d="M3375.231,1143.563l7.163,6.331" transform="translate(-3352 -1071.563)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                    </g>
+                    </g>
+                </g>
+                </svg>
+        </button>
+        <!-- page title -->
+        <div class="title">
+            <span>예약 상세</span>
+        </div>
+    </header>
+
     <section id="res_detail" class="check">
         <div class="history_wrap">
             <div class="mid">
@@ -27,7 +50,7 @@
                     <span class="cancelPrice">480,000원</span>
                 </div>
                 <div class="bot">
-                    <a href="#" class="share_btn">
+                    <a href="#" onclick="shareUri()" class="share_btn">
                         <img src="/user/img/icon_share.svg" alt="공유하기">
                     </a>
                     <a href="#" onclick="gotoModify()" class="change_btn">예약변경</a>
@@ -60,11 +83,11 @@
                     <h2>예약자 정보</h2>
                     <div class="name">
                         <h3>이름</h3>
-                        <span>미니쉬</span>
+                        <span id="res_user_name">미니쉬</span>
                     </div>
                     <div class="num">
                         <h3>연락처</h3>
-                        <span>010-1234-5678</span>
+                        <span id="res_user_phone">010-1234-5678</span>
                     </div>
                 </div>
             </div>
@@ -281,7 +304,7 @@
         </div>
     </section>
 
-
+<!--
     <div class="modal_wrap share">
         <div class="modal_inner">
             <h4>링크 공유</h4>
@@ -306,7 +329,7 @@
             <a href="#" class="close_btn">취소</a>
         </div>
     </div>
-
+-->
 
     <div id="popup22" class="popup select reservation">
         <div class="container">
@@ -373,7 +396,7 @@
                 </div>
             </div>
             <div class="bottom">
-                <a href="#" onclick="location.reload()">확인</a>
+                <a href="/reservation-history">확인</a>
             </div>
         </div>
     </div>
@@ -384,6 +407,33 @@
     function toReservationDate(aaa){
         return aaa;
     }
+	function autoHypenPhone(str){
+		str = str.replace(/[^0-9]/g, '');
+		var tmp = '';
+		if( str.length < 4){
+			return str;
+		}else if(str.length < 7){
+			tmp += str.substr(0, 3);
+			tmp += '-';
+			tmp += str.substr(3);
+			return tmp;
+		}else if(str.length < 11){
+			tmp += str.substr(0, 3);
+			tmp += '-';
+			tmp += str.substr(3, 3);
+			tmp += '-';
+			tmp += str.substr(6);
+			return tmp;
+		}else{              
+			tmp += str.substr(0, 3);
+			tmp += '-';
+			tmp += str.substr(3, 4);
+			tmp += '-';
+			tmp += str.substr(7);
+			return tmp;
+		}
+		return str;
+	}
     function loadHistory(){
         var data = { user_seqno:{{ $seqno }}, id: {{$historyNo}} };
 
@@ -400,6 +450,10 @@
             $('.cancelService').text((response.data.serviceInfo ? response.data.serviceInfo.name : '-'));
             $('.cancelDesigner').text('['+(response.data.managerInfo ? response.data.managerInfo.manager_type : '기본')+'] '
                                                     +(response.data.managerInfo ? response.data.managerInfo.name : '-'));
+
+            
+            $('#res_user_name').text(response.data.user_name);
+            $('#res_user_phone').text(autoHypenPhone(response.data.user_phone));
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -407,6 +461,13 @@
     }
     function openRemove(){
         $('#popup22').addClass('on');
+    }
+    function shareUri(){
+        medibox.methods.share({
+            title: '[MEDIBOX 예약]',
+            text: '상세보기',
+            url: '/reservation-history/' + {{$historyNo}},
+        });
     }
     
 	function remove(){

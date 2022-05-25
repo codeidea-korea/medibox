@@ -185,6 +185,13 @@
             return true;
         }
     </script>
+    <script>
+        @if ( session('error') )
+        alert("{{session('error')}}");
+        @else
+        //
+        @endif
+    </script>
 
 @include('user.footer')
 

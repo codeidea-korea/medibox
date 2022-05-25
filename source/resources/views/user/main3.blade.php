@@ -63,7 +63,7 @@
                     <figure class="valmont_spa"></figure>
                     <div class="txt_box">
                         <h3>발몽 스파</h3>
-                        <p>미니쉬 발몽 스파 스페셜 테라피</p>
+                        <p>미니쉬발몽스파 스페셜 테라피</p>
                     </div>
                 </a></li>
                 <li><a href="/brand/nail">

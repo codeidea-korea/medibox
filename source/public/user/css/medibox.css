@@ -148,7 +148,7 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* intro 메인화면 */
-#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:calc(100vh - 4.8rem);color:#fff;text-align:center;}
+#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:100vh;color:#fff;text-align:center;}
 
 #intro p.main_sub_title {margin-bottom:10vh;}
 
@@ -172,7 +172,7 @@ form input::placeholder {color:#b4b4b4;}
 
 /* login form (id, password) */
 #login form p {max-width:700px;margin:0 auto 2vh auto;}
-#login form p:nth-of-type(2) {margin-bottom:6vh;}
+#login form p:nth-child(2) {margin-bottom:6vh;}
 #login form label {display:block;margin-bottom:0.5rem;font-weight:500;}
 #login form input {border:none;background:rgba(255,255,255,0.2);backdrop-filter:blur(0.5rem);padding:0 0.65rem;border-radius:0.25rem;color:#fff;font-size:0.9rem;font-weight:400;}
 #login form #login_btn {text-align:center;width:100%;background:#000;color:#fff;padding:0.6rem 0;border-radius:0.25rem;font-size:1rem;}
@@ -429,7 +429,7 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* 결제 내역 서브헤더 메뉴 */
-#history_lnb {position:relative;padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;z-index:9;}
+#history_lnb {padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;}
 #history_lnb .depth01 {display:flex;}
 #history_lnb .depth01>li {position:relative;}
 #history_lnb .depth01>li:first-child {margin-right:0.9rem;}
@@ -444,7 +444,7 @@ form input::placeholder {color:#b4b4b4;}
 #pay_history .history_item {display:flex;justify-content:space-between;padding:1.05rem 1rem;border-bottom:1px solid #F0F0F0;}
 #pay_history .history_item span {display:block;}
 
-#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-left:0.5rem;white-space:nowrap;}
+#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;}
 
 #pay_history .history_item h3 {font-size:0.9rem;font-weight:500;margin-bottom:0.25rem;}
 #pay_history .history_item .category {font-size:0.7rem;color:#B4B4B4;margin-bottom:0.25rem;}
@@ -549,7 +549,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     background-repeat:no-repeat;
 }
 
-#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;white-space:nowrap;}
+#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
 
 #brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 1rem 7rem 1rem;overflow-y:scroll;}
 #brand_intro .brand_item_des h2 {font-size:1.25rem;font-weight:500;}
@@ -616,11 +616,23 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .menu_inner h4.on::before {transform:translateY(-50%) rotate(180deg);}
 
 #brand_intro .menu_inner ul {display:none;}
-.menu_inner ul>li>a {display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem 0.8rem 1.8rem;border-bottom:1px solid #F0F0F0;}
+.menu_inner ul>li>a {display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem 0.8rem 1.8rem;border-bottom:1px solid #F0F0F0;flex-wrap:wrap;}
 
 .menu_inner ul>li span.program>small {display:block;color:#716E6E;}
 .menu_inner ul>li span.program>small:first-child {margin-top:0.2rem;}
 .menu_inner ul>li span.price {font-size:0.9rem;}
+.program.item1{
+    width:50%;
+}
+.price.item2{
+    width:50%;
+    text-align: right;
+}
+.explanation.item3{
+    width:70%;
+    margin-top: 10px;
+    color:#535353;
+}
 
 
 /* 서비스 탭 폰트 */
@@ -721,8 +733,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .time_select_wrap .time_inner>ul>li>a {display:block;text-align:center;font-size:0.9rem;line-height:2.2rem;border-radius:0.25rem;border:1px solid #DFDFDF;color:#B4B4B4;}
 .time_select_wrap .time_inner>ul>li.active>a {border-color:#707070;color:#000000;}
 .time_select_wrap .time_inner>ul>li.active>a:focus {background:#000;color:#fff;}
-.time_select_wrap .time_inner>ul>li.active.on {background:#000;color:#fff;}
-.time_select_wrap .time_inner>ul>li.active.on>a {background:#000;color:#fff;}
+
 
 #res_detail .bottom .menu a {border:0.75px solid transparent;border-bottom:1px solid #F0F0F0;}
 #res_detail .bottom .menu a.on {background:#F4F4F4;border:0.75px solid #000000;}
@@ -883,7 +894,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 #profile .user_wrap .user_id {font-size:1rem;font-weight:500;}
 
 #profile .user_wrap .user_class {font-size:0.7rem;margin-bottom:0.5rem;color:#B4B4B4;}
-#profile .user_wrap .user_class strong {display:inline-block;margin-right:0.2rem;}
+#profile .user_wrap .user_class::before {content:"고객등급";display:inline-block;margin-right:0.5rem;}
 
 #profile .user_wrap .profile_edit_btn {display:inline-block;font-size:0.7rem;padding:0.25rem 0.7rem;border:1px solid #fff;border-radius:10rem;text-align:center;}
 
@@ -1018,13 +1029,13 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 #reservation_lnb .lnb_inner li a {display:flex;padding:0.5rem 1rem;height:110px;}
 
 #reservation_lnb .menu_box {margin:0 auto;text-align:center;}
-#reservation_lnb .menu_box span {display:block;font-size:0.65rem;}
+#reservation_lnb .menu_box span {display:block;font-size:0.65rem;word-break:keep-all;}
 
 /* 예약내역이 없습니다. */
 #reservation .reservation_history {}
 #reservation .reservation_history h2 {font-weight:500;}
 
-.empty_reservation {position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);text-align:center;z-index:1;}
+.empty_reservation {position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);text-align:center;z-index:1;width:100%;}
 .empty_reservation img {margin-bottom:1rem;}
 .empty_reservation p {font-size:1rem;color:#716E6E;}
 /* ------------------------------ */
@@ -1068,6 +1079,8 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .history_wrap .cancle_btn {flex:2;}
 
 /* 링크 공유 모달창*/
+.modal_wrap.share {position:fixed;top:0;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.4);z-index:999;}
+
 .modal_wrap.share .modal_inner {position:absolute;bottom:0;width:100%;background:#fff;border-radius:1rem 1rem 0 0;}
 .modal_wrap.share .modal_inner {transform:translateY(3rem);transition:0.3s;}
 .modal_wrap.share.on .modal_inner {transform:translateY(0);}
@@ -1240,6 +1253,10 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     #brand .brand_menu4 .brand_wrap li a .txt_box img {width:2.5rem;}
 }
 
+/* 220518추가 */
+.explanation{
+
+}
 
 /* 22.03.07 추가 */
 /* 예약페이지 반응형 */

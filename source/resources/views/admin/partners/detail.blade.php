@@ -26,7 +26,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				<div class="wr-list-label">사업자 등록증 첨부</div>
 				<div class="wr-list-con">
 					<div class="filebox">
-						<input type="text" value="선택된 파일이 없습니다." id="cop_file" class="upload-name" disabled="disabled">
+						<input type="text" placeholder="선택된 파일이 없습니다." id="cop_file" class="upload-name" disabled="disabled">
 						<label for="upload_0" class="upload-btn">파일찾기
 							<input name="" type="file" multiple="" id="upload_0" class="upload-hidden" onchange="uploadFile(this, 'cop_file')">
 						</label>
@@ -52,7 +52,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				<div class="wr-list-label">통신판매신고증 첨부</div>
 				<div class="wr-list-con">
 					<div class="filebox">
-						<input type="text" value="선택된 파일이 없습니다." id="online_order_business_file" class="upload-name" disabled="disabled">
+						<input type="text" placeholder="선택된 파일이 없습니다." id="online_order_business_file" class="upload-name" disabled="disabled">
 						<label for="upload_1" class="upload-btn">파일찾기
 							<input name="" type="file" multiple="" id="upload_1" class="upload-hidden" onchange="uploadFile(this, 'online_order_business_file')">
 						</label>
@@ -419,6 +419,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 	}
 	@endphp
 
+	/*
 	function autoHypenPhone(str){
 		str = str.replace(/[^0-9]/g, '');
 		var tmp = '';
@@ -453,6 +454,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 		var _val = this.value.trim();
 		this.value = autoHypenPhone(_val) ;
 	}
+	*/
 
 	$(document).ready(function(){
 	});

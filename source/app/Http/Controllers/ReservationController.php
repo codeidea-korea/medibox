@@ -175,6 +175,7 @@ class ReservationController extends Controller
         $estimated_times = explode(':', $estimated_time);
         return date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime($start_dt . ' +'. ((int)$estimated_times[0]) .'hours')) . ' +' . ((int)$estimated_times[1]) .'minutes'));
     }
+    function get_week_number($time) { $w = date('w', mktime(0,0,0, date('n',$time), 1, date('Y',$time))); return ceil(($w + date('j',$time) -1) / 7); }
 
     public function add(Request $request)
     {
@@ -215,14 +216,16 @@ class ReservationController extends Controller
         }
         // 같은 매장, 같은 디자이너, 시간 중복 확인
         {
+            $result['reservate'] = [];
             // 12시 ~ 15시 예약을 잡으려 할때 start_dt + estimated_time
             // 오류 1) 기존 x ~ 13시 2) 기존 14시 ~ x
+            $reservateDate = date("Y-m-d", strtotime($start_dt));
             $reservationInfo = DB::table("reservation")->where([
                 ['partner_seqno', '=', $partner_seqno],
                 ['store_seqno', '=', $store_seqno],
                 ['manager_seqno', '=', $manager_seqno],
-                ['start_dt', '>', date("Y-m-d", strtotime($start_dt)) . ' 00:00:00'],
-                ['start_dt', '<', date("Y-m-d", strtotime($start_dt)) . ' 23:59:59'],
+                ['start_dt', '>', $reservateDate . ' 00:00:00'],
+                ['start_dt', '<', $reservateDate . ' 23:59:59'],
                 ['deleted', '=', 'N']
             ])->get();
             $storeInfo = DB::table("store")->where([
@@ -231,27 +234,98 @@ class ReservationController extends Controller
                 ['deleted', '=', 'N']
             ])->first();
 
-//            allow_lunch_reservate
-
             $resStartTime = strtotime($start_dt);
             $resEndTime = strtotime($this->getEstimatedTimes($start_dt, $estimated_time));
+            $result['reservate']['resStartTime'] = $resStartTime;
+            $result['reservate']['resEndTime'] = $resEndTime;
+            $result['reservate']['reservationInfo'] = $reservationInfo;
+
+            // 매장 정보 확인
+            if(!empty($storeInfo)) {
+                // due_day 에 있는 요일인가
+                if(!empty($storeInfo->due_day) && strpos($storeInfo->due_day, date('w', strtotime($reservateDate))) === false) {
+                    $result['ment'] = '해당 요일은 매장 업무 요일이 아닙니다. 다른 시간에 예약하여 주세요.';
+                    return $result;
+                }
+                // 업무 시간에 예약을 하는 것인가
+                if(!empty($storeInfo->start_dt) && !empty($storeInfo->end_dt)) {
+                    $due_start_dt = strtotime($reservateDate . ' '. $storeInfo->start_dt . ':00');
+                    $due_end_dt = strtotime($reservateDate . ' '. $storeInfo->end_dt . ':00');
+
+                    if($due_start_dt > $resStartTime || $resEndTime > $due_end_dt) {
+                        $result['ment'] = '예약하시려는 시간이 매장의 업무 시간을 초과합니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                }
+
+                // 점심 시간을 사용하는 매장의 경우
+                if($storeInfo->allow_lunch_reservate == 'N') {
+                    $lunch_start_dt = strtotime($reservateDate . ' '. $storeInfo->lunch_start_dt . ':00');
+                    $lunch_end_dt = strtotime($reservateDate . ' '. $storeInfo->lunch_end_dt . ':00');
+
+                    if($lunch_start_dt <= $resStartTime && $resStartTime <= $lunch_end_dt) {
+                        $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    if($lunch_start_dt <= $resEndTime && $resEndTime <= $lunch_end_dt) {
+                        $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    if(($lunch_start_dt >= $resStartTime && $resEndTime >= $lunch_end_dt)
+                        || ($resStartTime >= $lunch_start_dt && $lunch_end_dt >= $resEndTime)) {
+                            $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                }
+                // 특수 휴무 사용할 경우
+                if(!empty($storeInfo->allow_ext_holiday) && $storeInfo->allow_ext_holiday == 'Y') {
+                    // 특수 요일 휴무일에 예약하는 경우
+                    if(!empty($storeInfo->ext_holiday_weekly) && $storeInfo->ext_holiday_weekly == date('w', strtotime($reservateDate))) {
+                        $result['ment'] = '해당 요일은 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    // 특수 주차 요일 휴무일에 예약하는 경우 
+                    if(!empty($storeInfo->ext_holiday_weekend_day)) {
+                        $holidayInfo = explode('-', $storeInfo->ext_holiday_weekend_day);
+                        $weeks = ['일','월','화','수','목','금','토'];
+                        if($holidayInfo[0] == get_week_number(strtotime($reservateDate)) && $holidayInfo[1] == date('w', strtotime($reservateDate))) {
+                            $result['ment'] = '해당 업체의 매월 '.$holidayInfo[0].'번째 '.$weeks[$holidayInfo[1]].'요일은 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                            return $result;
+                        }
+                    }
+                    // 지정일 휴무일에 예약하는 경우
+                    if(!empty($storeInfo->ext_holiday_montly)) {
+                        $holidays = explode(',', $storeInfo->ext_holiday_montly);
+                        for($inx = 0; $inx < count($holidays); $inx++){
+                            if(!empty($holidays[$inx]) && $holidays[$inx] == date('d', strtotime($reservateDate))) {
+                                $result['ment'] = '해당 날자는 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                                return $result;
+                            }
+                        }
+                    }
+                }
+            }
 
             for($inx = 0; $inx < count($reservationInfo); $inx++){
                 $targetStartTime = strtotime($reservationInfo[$inx]->start_dt);
                 $targetEndTime = strtotime($this->getEstimatedTimes($reservationInfo[$inx]->start_dt, $reservationInfo[$inx]->estimated_time));
 
                 // 1) 기존 14시 ~ x, 10~12. 11~13
-                if($targetStartTime <= $resStartTime && $resStartTime <= $targetStartTime) {
-                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                if($targetStartTime <= $resStartTime && $resStartTime <= $targetEndTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
                     return $result;
                 }
                 // 2) 기존 x ~ 13시
-                if($targetStartTime <= $resEndTime && $resEndTime <= $targetStartTime) {
-                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                if($targetStartTime <= $resEndTime && $resEndTime <= $targetEndTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
                     return $result;
                 }
-                // 점심 시간을 사용하는 매장의 경우
-                // 
+                // 3) 10~12, 9~15
+                if(($targetStartTime >= $resStartTime && $resEndTime >= $targetEndTime)
+                    || ($resStartTime >= $targetStartTime && $targetEndTime >= $resEndTime)) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
+                    return $result;
+                }
             }
         }
 
@@ -311,42 +385,138 @@ class ReservationController extends Controller
         
         $memo = $request->post('memo', '');
         $apply_on_mobile = $request->post('apply_on_mobile', '');
-        $user_name = $request->post('user_name', '');
-        $user_phone = $request->post('user_phone', '');
+        $user_name = $request->post('user_name');
+        $user_phone = $request->post('user_phone');
 
         $result = [];
         $result['ment'] = '등록 실패';
         $result['result'] = false;
         // 같은 매장, 같은 디자이너, 시간 중복 확인
         {
+            $result['reservate'] = [];
             // 12시 ~ 15시 예약을 잡으려 할때 start_dt + estimated_time
             // 오류 1) 기존 x ~ 13시 2) 기존 14시 ~ x
+            $reservateDate = date("Y-m-d", strtotime($start_dt));
             $reservationInfo = DB::table("reservation")->where([
                 ['partner_seqno', '=', $partner_seqno],
                 ['store_seqno', '=', $store_seqno],
                 ['manager_seqno', '=', $manager_seqno],
-                ['start_dt', '>', date("Y-m-d", strtotime($start_dt)) . ' 00:00:00'],
-                ['start_dt', '<', date("Y-m-d", strtotime($start_dt)) . ' 23:59:59'],
+                ['start_dt', '>', $reservateDate . ' 00:00:00'],
+                ['start_dt', '<', $reservateDate . ' 23:59:59'],
                 ['deleted', '=', 'N']
             ])->get();
+            $storeInfo = DB::table("store")->where([
+                ['partner_seqno', '=', $partner_seqno],
+                ['seqno', '=', $store_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
 
             $resStartTime = strtotime($start_dt);
             $resEndTime = strtotime($this->getEstimatedTimes($start_dt, $estimated_time));
+            $result['reservate']['resStartTime'] = $resStartTime;
+            $result['reservate']['resEndTime'] = $resEndTime;
+            $result['reservate']['reservationInfo'] = $reservationInfo;
+
+            // 매장 정보 확인
+            if(!empty($storeInfo)) {
+                // due_day 에 있는 요일인가
+                if(!empty($storeInfo->due_day) && strpos($storeInfo->due_day, date('w', strtotime($reservateDate))) === false) {
+                    $result['ment'] = '해당 요일은 매장 업무 요일이 아닙니다. 다른 시간에 예약하여 주세요.';
+                    return $result;
+                }
+                // 업무 시간에 예약을 하는 것인가
+                if(!empty($storeInfo->start_dt) && !empty($storeInfo->end_dt)) {
+                    $due_start_dt = strtotime($reservateDate . ' '. $storeInfo->start_dt . ':00');
+                    $due_end_dt = strtotime($reservateDate . ' '. $storeInfo->end_dt . ':00');
+
+                    if($due_start_dt > $resStartTime || $resEndTime > $due_end_dt) {
+                        $result['ment'] = '예약하시려는 시간이 매장의 업무 시간을 초과합니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                }
+
+                // 점심 시간을 사용하는 매장의 경우
+                if($storeInfo->allow_lunch_reservate == 'N') {
+                    $lunch_start_dt = strtotime($reservateDate . ' '. $storeInfo->lunch_start_dt . ':00');
+                    $lunch_end_dt = strtotime($reservateDate . ' '. $storeInfo->lunch_end_dt . ':00');
+
+                    if($lunch_start_dt <= $resStartTime && $resStartTime <= $lunch_end_dt) {
+                        $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    if($lunch_start_dt <= $resEndTime && $resEndTime <= $lunch_end_dt) {
+                        $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    if(($lunch_start_dt >= $resStartTime && $resEndTime >= $lunch_end_dt)
+                        || ($resStartTime >= $lunch_start_dt && $lunch_end_dt >= $resEndTime)) {
+                            $result['ment'] = '해당 시간은 업체 점심시간입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                }
+                // 특수 휴무 사용할 경우
+                if(!empty($storeInfo->allow_ext_holiday) && $storeInfo->allow_ext_holiday == 'Y') {
+                    // 특수 요일 휴무일에 예약하는 경우
+                    if(!empty($storeInfo->ext_holiday_weekly) && $storeInfo->ext_holiday_weekly == date('w', strtotime($reservateDate))) {
+                        $result['ment'] = '해당 요일은 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                        return $result;
+                    }
+                    // 특수 주차 요일 휴무일에 예약하는 경우 
+                    if(!empty($storeInfo->ext_holiday_weekend_day)) {
+                        $holidayInfo = explode('-', $storeInfo->ext_holiday_weekend_day);
+                        $weeks = ['일','월','화','수','목','금','토'];
+                        if($holidayInfo[0] == get_week_number(strtotime($reservateDate)) && $holidayInfo[1] == date('w', strtotime($reservateDate))) {
+                            $result['ment'] = '해당 업체의 매월 '.$holidayInfo[0].'번째 '.$weeks[$holidayInfo[1]].'요일은 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                            return $result;
+                        }
+                    }
+                    // 지정일 휴무일에 예약하는 경우
+                    if(!empty($storeInfo->ext_holiday_montly)) {
+                        $holidays = explode(',', $storeInfo->ext_holiday_montly);
+                        for($inx = 0; $inx < count($holidays); $inx++){
+                            if(!empty($holidays[$inx]) && $holidays[$inx] == date('d', strtotime($reservateDate))) {
+                                $result['ment'] = '해당 날자는 업체 휴무일입니다. 다른 시간에 예약하여 주세요.';
+                                return $result;
+                            }
+                        }
+                    }
+                }
+            }
 
             for($inx = 0; $inx < count($reservationInfo); $inx++){
+                if($reservationInfo[$inx]->seqno == $id) {
+                    continue;
+                }
                 $targetStartTime = strtotime($reservationInfo[$inx]->start_dt);
                 $targetEndTime = strtotime($this->getEstimatedTimes($reservationInfo[$inx]->start_dt, $reservationInfo[$inx]->estimated_time));
 
                 // 1) 기존 14시 ~ x, 10~12. 11~13
-                if($targetStartTime <= $resStartTime && $resStartTime <= $targetStartTime) {
-                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                if($targetStartTime <= $resStartTime && $resStartTime <= $targetEndTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
                     return $result;
                 }
                 // 2) 기존 x ~ 13시
-                if($targetStartTime <= $resEndTime && $resEndTime <= $targetStartTime) {
-                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간을 예약하여 주세요.';
+                if($targetStartTime <= $resEndTime && $resEndTime <= $targetEndTime) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
                     return $result;
                 }
+                // 3) 10~12, 9~15
+                if(($targetStartTime >= $resStartTime && $resEndTime >= $targetEndTime)
+                    || ($resStartTime >= $targetStartTime && $targetEndTime >= $resEndTime)) {
+                    $result['ment'] = '이미 해당 시간에는 예약이 있습니다. 다른 시간에 예약하여 주세요.';
+                    return $result;
+                }
+            }
+        }
+        {
+            $reservationInfo = DB::table("reservation")->where([
+                ['seqno', '=', $id]
+            ])->first();
+            if(empty($user_name)) {
+                $user_name = $reservationInfo->user_name;
+            }
+            if(empty($user_phone)) {
+                $user_phone = $reservationInfo->user_phone;
             }
         }
 

@@ -902,7 +902,7 @@ alter table product add column date_use int default 14;
 
 alter table partner add column main_line_sentence varchar(300) default '';
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 치과 병원 구강관리 SPA 1:1<br>맞춤 관리 및 코칭 서비스' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 발몽 스파 스페셜 테라피' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬발몽스파 스페셜 테라피' WHERE (`seqno` = '2');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '1:1 관리 예약 우선제 / 전문적인 케어' WHERE (`seqno` = '3');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '기존 뉴욕스토리안경원의<br>프리미엄 검안 전문체' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '전문교육을 이수한 도수 치료사가 손을<br>이용하여 시행하는 프리미엄 물리치료' WHERE (`seqno` = '5');

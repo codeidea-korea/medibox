@@ -116,7 +116,8 @@ var bfCall = (function(){
                 mine: function (params, successThenFn, errorThenFn){ ajaxCall('user/points', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 history: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 use: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-
+                refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 shops: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
@@ -169,6 +170,16 @@ var bfCall = (function(){
             }
             ,toNumber: function(x){
                 return (x + '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }, share:function(info){
+                if(window.navigator && window.navigator.share) {
+                    window.navigator.share({
+                        title: info.title,
+                        text: info.text,
+                        url: info.url,
+                    });
+                } else {
+                    alert('공유 기능이 제한된 브라우저입니다.');
+                }
             }
         };
         this.validation = {

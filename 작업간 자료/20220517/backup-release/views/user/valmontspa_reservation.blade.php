@@ -19,7 +19,7 @@
         </button>
         <!-- page title -->
         <div class="title">
-            <span>미니쉬 발몽 스파</span>
+            <span>미니쉬발몽스파</span>
         </div>
     </header>
 
@@ -39,7 +39,7 @@
 
         <div class="reservation_des">
             <div class="title">
-                <h2>미니쉬 발몽 스파</h2>
+                <h2>미니쉬발몽스파</h2>
                 <a href="#!" class="share_btn">
                     <img src="/user/img/icon_share.svg" alt="공유하기">
                 </a>

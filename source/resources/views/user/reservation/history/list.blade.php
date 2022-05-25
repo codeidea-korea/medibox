@@ -1,8 +1,63 @@
 
-@include('user.header2')
+@include('user.header')
+
+    <!-- header -->
+    <header id="header">
+        <!-- 뒤로가기 버튼 -->
+        <button class="back" onclick="location.href='/profile';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
+                <g id="back_arrow" transform="translate(-22.295 -60)">
+                    <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
+                    <g id="그룹_389" data-name="그룹 389" transform="translate(-0.231)">
+                    <g id="그룹_388" data-name="그룹 388">
+                        <line id="선_29" data-name="선 29" x2="22.655" transform="translate(23.845 72)" fill="none" stroke="#1d1d1b" stroke-miterlimit="10" stroke-width="1"/>
+                        <path id="패스_174" data-name="패스 174" d="M3382.394,1143.563l-7.163,6.331" transform="translate(-3352 -1077.894)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                        <path id="패스_175" data-name="패스 175" d="M3375.231,1143.563l7.163,6.331" transform="translate(-3352 -1071.563)" fill="none" stroke="#000" stroke-linecap="square" stroke-width="1"/>
+                    </g>
+                    </g>
+                </g>
+                </svg>
+        </button>
+        <!-- page title -->
+        <div class="title">
+            <span>예약내역</span>
+        </div>
+    </header>
+
+    <nav id="reservation_lnb">
+        <ul class="lnb_inner">
+            @php
+            if(count($stores) > 0) {
+                for($inx = 0; $inx < count($stores); $inx++){
+                    if(empty($stores[$inx]->partnerInfo)) continue;
+                    echo '<li>'
+                        .'    <a href="/reservation/'.$stores[$inx]->seqno.'">'
+                        .'        <div class="menu_box">'
+                        .'            <img src="'.$stores[$inx]->partnerInfo->icon_reservation_store.'" alt="'.$stores[$inx]->partnerInfo->cop_name.'">'
+                        .'            <span>'.$stores[$inx]->name.'</span>'
+                        .'        </div>'
+                        .'    </a>'
+                        .'</li>';
+                }
+            } else {
+                echo '<li>매장이 없습니다.</li>';
+            }
+            @endphp
+            {{--
+            <li>
+                <a href="./minishspa_reservation.html">
+                    <div class="menu_box">
+                        <img src="./img/icon_minish_spa.svg" alt="미니쉬 스파">
+                        <span>포레스타 블랙 강남점</span>
+                    </div>
+                </a>
+            </li>
+            --}}
+        </ul>
+    </nav>
 
     <section id="reservation">
-        <h2>예약내역</h2>
+         <!-- <h2>예약내역</h2> -->
 
         <!-- 예약내역이 없을 때 -->
         <!-- <figure class="empty_reservation">
@@ -312,7 +367,8 @@
                     +'    <li>'
                     +'        <div class="top">'
                     +'            <span class="current '+ convertStyleForStatus(response.data[inx].status)+'">'+convertTitForStatus(response.data[inx].status)+'</span>'
-                    +'            <a href="#" onclick="gotoDetail('+response.data[inx].seqno+')" class="view_detail_btn">예약 상세보기</a>'
+                    +'            <a href="#" '
+                    + (response.data[inx].status == 'C' ? '></a>' : 'onclick="gotoDetail('+response.data[inx].seqno+')" class="view_detail_btn">예약 상세보기</a>')
                     +'        </div>'
                     +'        <div class="mid">'
                     +'            <div class="date">'
@@ -344,7 +400,7 @@
                     + (response.data[inx].status == 'R' 
                         ? 
                             '        <div class="bot">'
-                            +'            <a href="#!" onclick="shareUri()" class="share_btn">'
+                            +'            <a href="#!" onclick="shareUri('+response.data[inx].seqno+')" class="share_btn">'
                             +'                <img src="/user/img/icon_share.svg" alt="공유하기">'
                             +'            </a>'
                             +'            <a href="#!" onclick="gotoModify('+response.data[inx].seqno+')" class="change_btn">예약변경</a>'
@@ -402,8 +458,11 @@
     }
     // 공유하기
     function shareUri(seq){
-        wait();
-//        '/reservation-history/' + seq; // 이 링크를 쉐어
+        medibox.methods.share({
+            title: '[MEDIBOX 예약]',
+            text: '상세보기',
+            url: '/reservation-history/' + seq,
+        });
     }
     // 예약 취소
     function openRemove(seq, inx){

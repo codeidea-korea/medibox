@@ -13,7 +13,7 @@ $page_title = '쿠폰 관리';
 					<div class="wr-list-label">쿠폰 제휴사</div>
 					<div class="wr-list-con">
 						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
-							<option>검색가능 셀렉트</option>
+							<option value="">검색가능 셀렉트</option>
 						</select>
 					</div>
 				</div>
@@ -30,11 +30,11 @@ $page_title = '쿠폰 관리';
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setDay(this, 0)" class="btn _dayOption gray">오늘</a>
+						<a href="#" onclick="setDay(this, -7)" class="btn _dayOption gray">1주</a>
+						<a href="#" onclick="setDay(this, -30)" class="btn _dayOption gray">1개월</a>
+						<a href="#" onclick="setDay(this, -180)" class="btn _dayOption gray">6개월</a>
+						<a href="#" onclick="setDay(this, -365)" class="btn _dayOption gray">1년</a>
 						<input type="text" id="_start" class="datepick _start">			
 						~
 						<input type="text" id="_end" class="datepick _end">		
@@ -151,10 +151,13 @@ $page_title = '쿠폰 관리';
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
 	}
-	function setDay(date) {
+	function setDay(target, terms) {
 		var date = new Date();
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+		$("._dayOption").removeClass('gray');
+		$("._dayOption").addClass('gray');
+		$(target).removeClass('gray');
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}

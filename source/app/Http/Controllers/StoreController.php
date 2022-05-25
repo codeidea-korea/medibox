@@ -237,6 +237,24 @@ class StoreController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
+        if(!empty($allow_ext_holiday) && $allow_ext_holiday != '') {
+            if($allow_ext_holiday == 'N') {
+                // 지정 없음
+                $ext_holiday_weekly = '';
+                $ext_holiday_weekend_day = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'W') {
+                $ext_holiday_weekend_day = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'M') {
+                $ext_holiday_weekly = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'D') {
+                $ext_holiday_weekly = '';
+                $ext_holiday_weekend_day = '';
+            }
+        }
+
         DB::table('store')->where('seqno', '=', $id)->update(
             [
                 'admin_seqno' => $admin_seqno

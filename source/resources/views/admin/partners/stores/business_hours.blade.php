@@ -133,7 +133,7 @@ $page_title = '예약가능시간 관리';
 			$('#ext_holiday_weekend_week').val('');
 			$('#ext_holiday_weekend_day').val('');
 			$('#ext_holiday_montly').val('');
-			$('input[name=allow_ext_holiday]').val('N');
+			$('input[name=allow_ext_holiday][value=N]').prop('checked', true);
 		}
 		function updateDueTime(){
 			const start_dt = $('#start_dt').val();
@@ -165,7 +165,7 @@ $page_title = '예약가능시간 관리';
 		function updateLunchTime(){
 			const lunch_start_dt = $('#lunch_start_dt').val();
 			const lunch_end_dt = $('#lunch_end_dt').val();
-			const allow_lunch_reservate = $('input[name=allow_lunch_reservate]').val();
+			const allow_lunch_reservate = $('input[name=allow_lunch_reservate]:checked').val();
 
 			if(!lunch_start_dt || lunch_start_dt == '') {
 				alert('시작 시간을 입력해주세요.');
@@ -189,7 +189,7 @@ $page_title = '예약가능시간 관리';
 			const ext_holiday_weekend_week = $('#ext_holiday_weekend_week').val();
 			const ext_holiday_weekend_day = $('#ext_holiday_weekend_day').val();
 			const ext_holiday_montly = $('#ext_holiday_montly').val();
-			const allow_ext_holiday = $('input[name=allow_ext_holiday]').val();
+			const allow_ext_holiday = $('input[name=allow_ext_holiday]:checked').val();
 
 			if(!allow_ext_holiday || allow_ext_holiday == '') {
 				alert('휴일 설정을 선택해주세요.');
@@ -350,10 +350,10 @@ $page_title = '예약가능시간 관리';
 		if(data.due_day && data.due_day.indexOf(',') > 0) {
 			const targetDay = data.due_day.split(',');
 			for(var inx = 0; inx<7; inx++){
-				if(targetDay[inx].hasOwnProperty(inx)) $('input[name=due_day'+inx+']').prop('checked', true); 
+				if(targetDay.hasOwnProperty(inx)) $('input[name=due_day'+inx+']').prop('checked', true); 
 			}
 		}
-		$('input[name=allow_lunch_reservate]').prop('checked', data.allow_lunch_reservate == 'Y'); 
+		$('input[name=allow_lunch_reservate][value='+data.allow_lunch_reservate+']').prop('checked', true); 
 		$('#lunch_start_dt').val(data.lunch_start_dt);
 		$('#lunch_end_dt').val(data.lunch_end_dt);
 		
@@ -361,7 +361,7 @@ $page_title = '예약가능시간 관리';
 		$('#ext_holiday_weekend_week').val(data.end_dt);
 		$('#ext_holiday_weekend_day').val(data.end_dt);
 		$('#ext_holiday_montly').val(data.ext_holiday_montly);
-		$('input[name=allow_ext_holiday]').val(data.allow_ext_holiday);
+		$('input[name=allow_ext_holiday][value='+data.allow_ext_holiday+']').prop('checked', true); 
 	}
 	function generateTime(){
 		

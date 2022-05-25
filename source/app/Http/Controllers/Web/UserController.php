@@ -315,8 +315,18 @@ class UserController extends Controller
         }
         $userSeqno = $request->session()->get('user_seqno');
 
-        return view('user.reservation.history.list')
-            ->with('seqno', $userSeqno);
+        $stores = DB::table("store")->where([
+            ['deleted', '=', 'N']
+        ])->orderBy('create_dt', 'desc')->get();
+
+        for($inx = 0; $inx < count($stores); $inx++){
+            $partnerInfo = DB::table("partner")
+                ->where([['seqno', '=', $stores[$inx]->partner_seqno]])->first();
+                
+            $stores[$inx]->partnerInfo = $partnerInfo;
+        }
+
+        return view('user.reservation.history.list', ['stores' => $stores, 'seqno' => $userSeqno]);
     }
     public function reservationHistoryView(Request $request, $historyNo)
     {

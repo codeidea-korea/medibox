@@ -68,31 +68,31 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 							<li>
 								<div class="imgCon"><img id="imgView1" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(1)" class="del"></i>
+									<i onclick="removePicture(1)" class="del del1">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView2" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(2)" class="del"></i>
+									<i onclick="removePicture(2)" class="del del2">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView3" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(3)" class="del"></i>
+									<i onclick="removePicture(3)" class="del del3">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView4" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(4)" class="del"></i>
+									<i onclick="removePicture(4)" class="del del4">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView5" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(5)" class="del"></i>
+									<i onclick="removePicture(5)" class="del del5">삭제</i>
 								</div>
 							</li>
 						</ul>
@@ -170,6 +170,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			return false;
 		}
 		$('#img' + imgPoint).val(path);
+		$('.del' + imgPoint).show();
 		$('#imgView' + imgPoint).attr('src', path + '?v=' + (new Date().getTime()));
 		pictures[imgPoint] = path;
 		imgPoint = imgPoint + 1;
@@ -184,8 +185,10 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			return false;
 		}
 		pictures[idx - 1] = null;
+		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
 		for(var inx = (idx - 1); inx < maxLength; idx++){
 			$('#img' + (inx + 1)).val(pictures[inx]);
+			$('.del' + imgPoint).show();
 			$('#imgView' + (inx + 1)).attr('src', pictures[inx] + '?v=' + (new Date().getTime()));
 		}
 		imgPoint = imgPoint - 1;
@@ -333,6 +336,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			console.log(e);
 		});
 	}
+	$(document).ready(function(){
+		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
+	});
 	@php
 	}
 	@endphp
@@ -449,12 +455,14 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		});
 	}
 	$(document).ready(function(){
+		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
 		getInfo();
 	});
 	@php
 	}
 	@endphp
 
+	/*
 	function autoHypenPhone(str){
 		str = str.replace(/[^0-9]/g, '');
 		var tmp = '';
@@ -489,6 +497,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		var _val = this.value.trim();
 		this.value = autoHypenPhone(_val) ;
 	}
+	*/
 
 	function getPartners(){
 		var data = { pageNo: 1, pageSize: 300, adminSeqno:{{ $seqno }} };
