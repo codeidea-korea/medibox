@@ -391,6 +391,16 @@ class ReservationController extends Controller
         $result = [];
         $result['ment'] = '등록 실패';
         $result['result'] = false;
+        
+        if(empty($estimated_time) || $estimated_time == '') {
+            $estimatedService = DB::table("store_service")->where([
+                ['seqno', '=', $service_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            if(!empty($estimatedService)) {
+                $estimated_time = $estimatedService->estimated_time;
+            }
+        }
         // 같은 매장, 같은 디자이너, 시간 중복 확인
         {
             $result['reservate'] = [];

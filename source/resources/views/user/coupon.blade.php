@@ -28,34 +28,33 @@
         <nav id="history_lnb">
             <ul class="depth01">
                 <li>
-                    <a href="#!">전체 기간</a>
+                    <a href="#!" id="searchMonthTit">전체 기간</a>
                     <ul class="depth02">
                         <!-- 22.03.31 추가 -->
-                        <li><a href="#!">전체</a></li>
+                        <li><a href="#!" onclick="searchMonth(0)">전체</a></li>
                         <!------------------>
-
-                        <li><a href="#!">1개월</a></li>
-                        <li><a href="#!">3개월</a></li>
-                        <li><a href="#!">6개월</a></li>
-                        <li><a href="#!">1년</a></li>
+                        <li><a href="#!" onclick="searchMonth(1)">1개월</a></li>
+                        <li><a href="#!" onclick="searchMonth(3)">3개월</a></li>
+                        <li><a href="#!" onclick="searchMonth(6)">6개월</a></li>
+                        <li><a href="#!" onclick="searchMonth(12)">1년</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#!">전체 내역</a>
+                    <a href="#!" id="searchTypeTit">전체 내역</a>
 
                     <!-- 22.03.31 수정 -->
-                    <ul class="depth02">
+                    <ul class="depth02" id="partners">
                         <!-- <li><a href="#!">포인트</a></li>
                         <li><a href="#!">정액권</a></li> -->
 
-                        <li><a href="#!">전체</a></li>
-                        <li><a href="#!">발몽스파</a></li>
-                        <li><a href="#!">바라는네일</a></li>
-                        <li><a href="#!">딥포커스</a></li>
-                        <li><a href="#!">포레스타블랙</a></li>
-                        <li><a href="#!">미니쉬 스파</a></li>
-                        <li><a href="#!">미니쉬 도수</a></li>
-                        <li><a href="#!">기타</a></li>
+                        <li><a href="#!" onclick="searchType('')">전체</a></li>
+                        <li><a href="#!" onclick="searchType('')">발몽스파</a></li>
+                        <li><a href="#!" onclick="searchType('')">바라는네일</a></li>
+                        <li><a href="#!" onclick="searchType('')">딥포커스</a></li>
+                        <li><a href="#!" onclick="searchType('')">포레스타블랙</a></li>
+                        <li><a href="#!" onclick="searchType('')">미니쉬 스파</a></li>
+                        <li><a href="#!" onclick="searchType('')">미니쉬 도수</a></li>
+                        <li><a href="#!" onclick="searchType('')">기타</a></li>
                     </ul>
                 </li>
             </ul>
@@ -135,6 +134,128 @@
     
 @include('user.footer')
 
+<script>
+    var startDay = "";
+    var endDay = "{{ date('Y-m-d', strtotime('+1 day')) }}";
+    var pageNo = 1;
+    var pageSize = 70;
+    var partner_seqno;
+
+    function searchType(type, name){
+        partner_seqno = type;
+        $('#searchTypeTit').html(name);
+        getList();
+    }
+    function searchMonth(month){
+        var searchMonthTit = month + '개월';
+        var dd = new Date();
+        dd.setMonth(dd.getMonth() - month);
+        startDay = dd.getFullYear() + '-' + (dd.getMonth() < 9 ? '0' : '') + (dd.getMonth()+1) + '-' + (dd.getDate() < 10 ? '0' : '') + dd.getDate();
+        if(month == 0) {
+            searchMonthTit = '전체 기간';
+            startDay = '';
+        } else if(type == 12) {
+            searchMonthTit = '1년';
+        }
+        // 전체 기간
+        $('#searchMonthTit').html(searchMonthTit);
+        getList();
+    }
+	function getPartners(){
+		var data = { adminSeqno:0 };
+		medibox.methods.partner.findAll(data, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			var bodyData = '<li><a href="#!" onclick="searchType(\'\', \'전체\')">전체</a></li>';
+			for(var inx=0; inx<response.data.length; inx++){
+				bodyData = bodyData 
+                    +'<li><a href="#!" onclick="searchType('+response.data[inx].seqno+', \''+response.data[inx].cop_name+'\')">'+response.data[inx].cop_name+'</a></li>';
+			}
+			$('#partners').html(bodyData);
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+    function getList(){		
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0 };
+
+		if(partner_seqno && partner_seqno != '') {
+			data.partner_seqno = partner_seqno;
+		}
+		if(startDay && startDay != '') {
+			data.start_dt = startDay;
+		}
+		if(endDay && endDay != '') {
+			data.end_dt = endDay;
+		}
+
+		medibox.methods.point.coupon.history.list(data, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+//			$('#totalCnt').text( medibox.methods.toNumber(response.count) );
+
+			if(response.count == 0){
+				$('#point_payment').html('<figure class="empty_reservation">'
+                    +'<img src="/user/img/icon_empty_reservation.png" alt="쿠폰이 없습니다.">'
+                    +'<p>쿠폰이 없습니다.</p>'
+                    +'</figure>');
+				return;
+			}
+
+			var bodyData = '';
+			couponInfos = response.data;
+			for(var inx=0; inx<response.data.length; inx++){
+                var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
+				bodyData = bodyData 
+                        + (response.data[inx].used == 'N'
+                        ? 
+                            ('<div>'
+                            +'    <a href="/point/coupon/approval/S?id='+response.data[inx].seqno+'">'
+                            +'        <div class="left">'
+                            +'            <h3>'+response.data[inx].name+'</h3>'
+//                            +'            <strong>30,000P</strong>'
+                            +'            <p class="type">'+response.data[inx].partners.map(p => p.cop_name)+'</p>'
+                            +'            <p class="deadline">기한 : '+response.data[inx].end_dt+'</p>'
+                            +'        </div>'
+                            +'        <div class="right black">미사용</div>'
+                            +'    </a>'
+                            +'</div>')
+                        : 
+                            ('<div>'
+                            +'    <a href="#">'
+                            +'        <div class="left">'
+                            +'            <h3>'+response.data[inx].name+'</h3>'
+//                            +'            <strong>30,000P</strong>'
+                            +'            <p class="type">'+response.data[inx].partners.map(p => p.cop_name)+'</p>'
+                            +'            <p class="deadline">기한 : '+response.data[inx].end_dt+'</p>'
+                            +'        </div>'
+                            +'        <div class="right gray">사용</div>'
+                            +'    </a>'
+                            +'</div>')
+                        );
+            }
+            if(pageNo == 1) {
+                $('#point_payment').html('<div class="coupon_tab">'+bodyData+'</div>');
+            } else {
+                $('#point_payment > .coupon_tab').html($('#point_payment > .coupon_tab').html()+bodyData);
+            }
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+	$(document).ready(function(){
+		getPartners();
+		getList();
+	});
+</script>
 
 </body>
 </html>

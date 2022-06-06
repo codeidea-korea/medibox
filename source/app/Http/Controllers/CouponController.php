@@ -130,7 +130,7 @@ class CouponController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
-        $id = DB::table('coupon')->insertGetId(
+        $seqno = DB::table('coupon')->insertGetId(
             [
                 'coupon_partner_grp_seqno' => $coupon_partner_grp_seqno
                 , 'name' => $name
@@ -147,8 +147,41 @@ class CouponController extends Controller
                 , 'deleted' => 'N'
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
-            ]
+            ], 'seqno'
         );
+
+        // 전체 발급 전부 지급
+        if($issuance_condition_type == 'A' && $allowed_issuance_type == 'A') {
+
+            $users = DB::table("user_info")->where([
+                ['delete_yn', '=', 'N']
+            ])->get();
+
+            for($inx = 0; $inx < count($users); $inx++){
+                $mpg_seqno = DB::table('coupon_user')->insertGetId(
+                    [
+                        'coupon_seqno' => $seqno,
+                        'user_seqno' => $users[$inx]->user_seqno,
+                        'used' => 'N',
+                        'real_start_dt' => $start_dt,
+                        'real_end_dt' => $end_dt,
+                        'real_discount_price' => 0,
+                        'deleted' => 'N',
+                        'hst_type' => 'S'
+                    ], 'seqno'
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $mpg_seqno,
+                        'hst_type' => 'S',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰] 자동 지급',
+                        'create_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
 
         $result['ment'] = '성공';
         $result['result'] = true;
@@ -197,6 +230,41 @@ class CouponController extends Controller
             ]
         );
 
+        // 전체 발급 전부 지급
+        if($issuance_condition_type == 'A' && $allowed_issuance_type == 'A') {
+
+            $users = DB::table("user_info")->where([
+                ['delete_yn', '=', 'N']
+            ])->get();
+
+            for($inx = 0; $inx < count($users); $inx++){
+                $mpg_seqno = DB::table('coupon_user')->insertGetId(
+                    [
+                        'coupon_seqno' => $id,
+                        'user_seqno' => $users[$inx]->user_seqno,
+                        'real_start_dt' => $start_dt,
+                        'real_end_dt' => $end_dt,
+                        'real_discount_price' => 0,
+                        'used' => 'N',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'hst_type' => 'S',
+                        'deleted' => 'N'
+                    ], 'seqno'
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $mpg_seqno,
+                        'hst_type' => 'S',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰] 자동 지급',
+                        'create_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
+
         $result['ment'] = '성공';
         $result['result'] = true;
 
@@ -221,6 +289,53 @@ class CouponController extends Controller
 
         return $result;
     }
+    // 사용 승인 확인
+    public function checkApproved(Request $request)
+    {
+        $user_seqno = $request->get('user_seqno'); // 대상 고객
+        $hst_seqno = $request->get('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '쿠폰이 승인되지 않았습니다.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($user_seqno) || empty($hst_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '쿠폰이 승인되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("coupon_user")->where([
+            ['seqno', '=', $hst_seqno],
+            ['used', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '쿠폰이 승인되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->approved == 'Y') {
+            $result['ment'] = '승인되었습니다.';
+            $result['data'] = $user;
+            $result['code'] = 'S1';
+            $result['result'] = true;
+        } else {
+            $result['ment'] = '승인 대기중입니다. 잠시 기다려주세요.';
+            $result['data'] = $user;
+            $result['code'] = 'S2';
+            $result['result'] = true;
+        }
+
+        return $result;
+    }
 
     public function modifyStatus(Request $request, $id)
     {
@@ -241,6 +356,152 @@ class CouponController extends Controller
         );
 
         $result['ment'] = '성공';
+        $result['result'] = true;
+
+        return $result;
+    }
+
+    
+    public function cancel(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 취소 가능
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 취소 가능
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+
+        $hst_type = $request->post('hst_type', 'U'); // 사용 구분
+        $hst_seqno = $request->post('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '쿠폰이 취소되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($hst_type) || empty($hst_seqno) || $hst_type != 'U') {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '쿠폰이 취소되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("coupon_user")->where([
+            ['seqno', '=', $hst_seqno],
+            ['canceled', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '쿠폰이 취소되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->user_seqno != $user_seqno) {
+            $result['ment'] = '쿠폰이 취소되지 않았습니다.\r수정할 고객정보와 이력의 고객정보가 상이합니다.';
+            $result['code'] = 'HISTORY-UNMATCHED';
+            return $result;
+        }
+        DB::table('coupon_user')->where([
+            ['seqno', '=', $hst_seqno]
+        ])->update(
+            [
+                'canceled' => 'Y', 
+                'approved' => 'N',
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        DB::table('coupon_user_history')->insertGetId(
+            [
+                'coupon_user_seqno' => $hst_seqno,
+                'hst_type' => '',
+                'canceled' => 'Y',
+                'approved' => 'N',
+                'memo' => '[쿠폰] 사용 취소',
+                'create_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '취소되었습니다.';
+        $result['data'] = $user;
+        $result['code'] = 'S';
+        $result['result'] = true;
+
+        return $result;
+    }
+    public function approve(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno', 0); // 담당자 - 없이 고객도 취소 가능
+        $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 취소 가능
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $hst_seqno = $request->post('hst_seqno'); // 대상 히스토리 번호
+
+        $result = [];
+        $result['ment'] = '쿠폰이 승인되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['code'] = 'USER-INPUT';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($hst_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '쿠폰이 승인되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            $result['code'] = 'USER-NULL';
+            return $result;
+        }
+        $history = DB::table("coupon_user")->where([
+            ['seqno', '=', $hst_seqno],
+            ['approved', '=', 'N'],
+            ['canceled', '=', 'N']
+        ])->first();
+        if(empty($history)) {
+            $result['ment'] = '쿠폰이 승인되지 않았습니다.\r없는 사용 정보이거나 이미 취소된 정보입니다.';
+            $result['code'] = 'HISTORY-NULL';
+            return $result;
+        }
+        if($history->user_seqno != $user_seqno) {
+            $result['ment'] = '쿠폰이 승인되지 않았습니다.\r수정할 고객정보와 이력의 고객정보가 상이합니다.';
+            $result['code'] = 'HISTORY-UNMATCHED';
+            return $result;
+        }
+        DB::table('coupon_user')->where([
+            ['seqno', '=', $hst_seqno]
+        ])->update(
+            [
+                'approved' => 'Y', 
+                'canceled' => 'N',
+                'used' => 'Y', 
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        DB::table('coupon_user_history')->insertGetId(
+            [
+                'coupon_user_seqno' => $hst_seqno,
+                'hst_type' => '',
+                'canceled' => 'N',
+                'approved' => 'Y',
+                'memo' => '[쿠폰] 사용 승인',
+                'create_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '사용되었습니다.';
+        $result['data'] = $user;
+        $result['code'] = 'S';
         $result['result'] = true;
 
         return $result;

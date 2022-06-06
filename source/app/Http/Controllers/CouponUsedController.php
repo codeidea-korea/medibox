@@ -57,7 +57,7 @@ class CouponUsedController extends Controller
         }
 
         $whereUser = [];
-        if(! empty($search_field1) && $search_field1 != ''){
+        if(! empty($search_field2) && $search_field2 != ''){
             if($user_search_type == 'id') {
                 array_push($whereUser, ['user_phone', 'like', '%'.$search_field2.'%']);
             } else if($user_search_type == 'name') {

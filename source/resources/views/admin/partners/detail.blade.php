@@ -85,6 +85,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				</div>
 			</div>
 		</div>
+		<!--
 		<br>
 		<div class="wr-wrap line label160">
 			<div class="wr-head"> 제휴사 마이페이지 </div>
@@ -119,6 +120,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				</div>
 			</div>
 		</div>
+		-->
 	</div>
 	
 	<div class="btnSet">
@@ -196,10 +198,12 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 		var director_name = $('#director_name').val();
 		var director_phone = $('#director_phone').val();
 		var director_email = $('#director_email').val();
+		/*
 		var admin_id = $('#admin_id').val();
 		var admin_pw = $('#admin_pw').val();
 		var admin_new_pw = $('#admin_new_pw').val();
 		var admin_new_pw_confirm = $('#admin_new_pw_confirm').val();
+		*/
         
 		if(!cop_name || cop_name == '') {
 //			alert('제휴사명을 입력해주세요.');
@@ -237,6 +241,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 //			alert('담당자 이메일을 입력해주세요.');
 			return false;
 		}
+		/*
 		if (!admin_id || admin_id == '') {
 //			alert('제휴사 아이디를 입력해주세요.');
 			return false;
@@ -259,6 +264,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				return false;
 			}
 		}
+		*/
 
 		return true;
 	}
@@ -268,7 +274,8 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 	@endphp
 	function add(){
 		if(!checkValidation()) {
-			alert('제휴사 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
+//			alert('제휴사 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
+			alert('전체 항목을 입력해주세요 ');
 			return;
 		}
 		var cop_name = $('#cop_name').val();
@@ -280,10 +287,12 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 		var director_name = $('#director_name').val();
 		var director_phone = $('#director_phone').val();
 		var director_email = $('#director_email').val();
+		/*
 		var admin_id = $('#admin_id').val();
 		var admin_pw = $('#admin_pw').val();
 		var admin_new_pw = $('#admin_new_pw').val();
 		var admin_new_pw_confirm = $('#admin_new_pw_confirm').val();
+		*/
 
 		medibox.methods.partner.add({
 			cop_name: cop_name
@@ -295,9 +304,11 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 			, director_name: director_name
 			, director_phone: director_phone
 			, director_email: director_email
+			/*
 			, admin_id: admin_id
 			, admin_pw: admin_pw
 			, admin_new_pw: admin_new_pw
+			*/
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -334,10 +345,12 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 		var director_name = $('#director_name').val();
 		var director_phone = $('#director_phone').val();
 		var director_email = $('#director_email').val();
+		/*
 		var admin_id = $('#admin_id').val();
 		var admin_pw = $('#admin_pw').val();
 		var admin_new_pw = $('#admin_new_pw').val();
 		var admin_new_pw_confirm = $('#admin_new_pw_confirm').val();
+		*/
 
 		medibox.methods.partner.modify({
 			cop_name: cop_name
@@ -349,9 +362,11 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 			, director_name: director_name
 			, director_phone: director_phone
 			, director_email: director_email
+			/*
 			, admin_id: admin_id
 			, admin_pw: admin_pw
 			, admin_new_pw: admin_new_pw
+			*/
 			, admin_seqno: {{ $seqno }}
 		}, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
@@ -386,8 +401,10 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 			$('#director_name').val( response.data.director_name );
 			$('#director_phone').val( response.data.director_phone );
 			$('#director_email').val( response.data.director_email );
+			/*
 			$('#admin_id').val( response.data.adminInfo.admin_id );
 			$('#admin_id').prop('disabled', true);
+			*/
 //			$('#admin_pw').val( response.data.admin_pw );
 		
 		}, function(e){

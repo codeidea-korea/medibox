@@ -104,7 +104,8 @@ var bfCall = (function(){
                 login: function (params, successThenFn, errorThenFn){ ajaxCall('user/login', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 logout: function (params, successThenFn, errorThenFn){ ajaxCall('user/logout', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 isDupplicated: function (params, successThenFn, errorThenFn){ ajaxCall('user/check-dupplicate-id', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-
+                changePassword: function (params, successThenFn, errorThenFn){ ajaxCall('user/change-password', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('user/add', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 modify: function (params, successThenFn, errorThenFn){ ajaxCall('user/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -126,6 +127,25 @@ var bfCall = (function(){
                 
                 checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('point/check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
+                coupon: {
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                
+                    history:{
+                        one: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon-history/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    }
+                },
+                membership: {
+                    one: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('membership', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('voucher-check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+
+                    history:{
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('membership-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    }
+                },
             }, partner:{
                 one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                 findAll: function (params, successThenFn, errorThenFn){ ajaxCall('partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
@@ -164,6 +184,10 @@ var bfCall = (function(){
                     join: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/join', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     
                 }
+            }, sms:{
+
+                sendAuth: function (params, successThenFn, errorThenFn){ ajaxCall('auth/sms/send', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                checkAuth: function (params, successThenFn, errorThenFn){ ajaxCall('auth/sms/check', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },                            
             }
             ,toCurrency: function(x){
                 return '&#x20a9;'+(x + '').replace(/\B(?=(\d{3})+(?!\d))/g, ",");

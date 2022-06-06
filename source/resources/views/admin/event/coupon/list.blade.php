@@ -71,11 +71,11 @@ $page_title = '이벤트 쿠폰 관리';
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setCouponDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setCouponDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setCouponDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setCouponDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setCouponDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setCouponDay(this, 0)" class="btn _dayOption2 gray">오늘</a>
+						<a href="#" onclick="setCouponDay(this, -7)" class="btn _dayOption2 gray">1주</a>
+						<a href="#" onclick="setCouponDay(this, -30)" class="btn _dayOption2 gray">1개월</a>
+						<a href="#" onclick="setCouponDay(this, -180)" class="btn _dayOption2 gray">6개월</a>
+						<a href="#" onclick="setCouponDay(this, -365)" class="btn _dayOption2 gray">1년</a>
 						<input type="text" id="_coupon_start" class="datepick _coupon_start">			
 						~
 						<input type="text" id="_coupon_end" class="datepick _coupon_end">		
@@ -225,10 +225,15 @@ $page_title = '이벤트 쿠폰 관리';
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
-	function setCouponDay(date) {
+	function setCouponDay(target, terms) {
 		var date = new Date();
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+
+		$("._dayOption2").removeClass('gray');
+		$("._dayOption2").addClass('gray');
+		$(target).removeClass('gray');
+
 		$(".datepick._coupon_start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._coupon_end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}

@@ -52,19 +52,17 @@
             
             <!------------ 2차버전 추가 ------------>
             <!-- 아이디 찾기 & 비밀번호 찾기 & 회원가입 -->
-            <!-- 
             <ul class="find">
                 <li>
-                    <a href="#" onclick="wait()">아이디 찾기</a>
+                    <a href="/user/login/find-id">아이디 찾기</a>
                 </li>
                 <li>
-                    <a href="#" onclick="wait()">비밀번호 찾기</a>
+                    <a href="/user/login/find-password">비밀번호 찾기</a>
                 </li>
                 <li>
                     <a href="/user/signup">회원가입하기</a>
                 </li>
             </ul>
-            -->
             <!--
             <div class="social_login">
                 <h4>
@@ -92,13 +90,13 @@
             <!------------------------------------>
 
             <!--------------- 1차 ---------------->
-            <!-- sign up -->
+            <!-- sign up --><!--
             <div class="sign_up">
                 <span>
                     아직 메디박스 회원이 아니신가요?
                     <a href="/user/signup">회원가입하기</a>
                 </span>
-            </div> <!-- -->
+            </div>  -->
             <!------------------------------------>
             
         </div>

@@ -26,6 +26,9 @@ $page_title = '메인화면 디자인 선택';
 	}
 
 	function saveTemplate(seq){
+		event.stopPropagation();
+		event.preventDefault();
+
 		if(!confirm('선택한 디자인으로\n메인디자인을 변경하시겠습니까?')) {
 			return;
 		}

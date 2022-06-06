@@ -404,7 +404,9 @@ form input::placeholder {color:#b4b4b4;}
 .coupon_tab .left p.type {font-size:0.7rem;}
 .coupon_tab .left p.deadline {font-size:0.7rem;color:#716E6E;}
 
-.coupon_tab .right {flex:1;position:relative;background:#000000;border-radius:0 0.5rem 0.5rem 0;}
+.coupon_tab .right {flex:1;position:relative;border-radius:0 0.5rem 0.5rem 0;display: flex;justify-content: center;align-items: center;}
+.coupon_tab .right.black{background:#1C3750;;color:#fff;text-align: center;font-size:16px;}
+.coupon_tab .right.gray{background:#efefef;text-align: center;font-size:16px;color:#666;}
 .coupon_tab .right::before,
 .coupon_tab .right::after {content:"";position:absolute;left:0;display:block;width:1.1rem;height:1.1rem;background:#F7F7F7;border-radius:50%;z-index:9;}
 
@@ -549,8 +551,8 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     background-repeat:no-repeat;
 }
 
-#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
-
+#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0px;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
+#brand_intro .brand_item_num span{display: inline-block;width:73px;text-align: center;}
 #brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 1rem 7rem 1rem;overflow-y:scroll;}
 #brand_intro .brand_item_des h2 {font-size:1.25rem;font-weight:500;}
 #brand_intro .brand_item_des span {display:block;font-size:0.7rem;color:#716E6E;margin-bottom:1rem;}

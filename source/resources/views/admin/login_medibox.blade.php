@@ -46,7 +46,9 @@
 			</div>
 			<div class="flex flex-middle mb40">
 				<label class="checkbox-wrap" style="font-size:13px;font-weight:bold"><input type="checkbox" id="autologin" name="" value="" checked  /><span class="mr10"></span>로그인 유지</label>
-				<a href="#" onclick="wait()" class="btn small gray" style="margin-left:auto">비밀번호 찾기</a>
+				
+			<!--<a href="#" onclick="wait()" class="btn small gray" style="margin-left:auto">비밀번호 찾기</a>
+			-->
 			</div>
 			<p class="help-block">
 				아이디 및 비밀번호를 분실 하셨을 경우<br>

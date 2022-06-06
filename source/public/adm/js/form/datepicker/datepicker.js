@@ -109,6 +109,9 @@
     // Filter each date item (return `false` to disable a date item)
     filter: null,
 
+    // 2022-05-28 dev, botbinoo 민우 추가 - 휴무일 체크 함수 세팅
+    isHolyday: null,
+
     // Event shortcuts
     show: null,
     hide: null,
@@ -1060,6 +1063,11 @@
         var _picked = viewYear === year && viewMonth === month && i === day;
         var view = _picked ? 'day picked' : 'day';
 
+        // 2022-05-28 dev, botbinoo 민우 추가 - 휴무일 체크 함수 세팅
+        if(this.options.isHolyday && !this.options.isHolyday(_date)) {
+          _disabled2 = true;
+        }
+
         items.push(this.createItem({
           disabled: _disabled2,
           picked: _picked,
@@ -1452,6 +1460,14 @@
         if (item.disabled) {
           classes.push(options.disabledClass);
         }
+
+        // 2022-05-28 dev, botbinoo 민우 추가 - 휴무일 체크 함수 세팅
+        /*
+        new Date()
+        if(this.options.isHolyday && !this.options.isHolyday()) {
+          classes.push('_holiday');
+        }
+        */
 
         return '<' + itemTag + ' class="' + classes.join(' ') + '" data-view="' + item.view + '">' + item.text + '</' + itemTag + '>';
       }

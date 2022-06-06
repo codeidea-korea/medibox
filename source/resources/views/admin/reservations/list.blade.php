@@ -6,11 +6,11 @@ $page_title = '예약 내역';
 <section class="container">
 	<div class="page-title">예약 내역</div>
 	
-	<div class="data-search-wrap">
+	<div class="data-search-wrap"><!-- 
 		<div class="data-sel">
-			<!-- <input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="회사명">
-			<a href="#" onclick="loadList(1)" class="btn gray">검색</a> -->
-		</div>		
+			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="회사명">
+			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
+		</div>		 -->
 	</div>
 
 	<div class="tbl-basic cell td-h4 mt10">

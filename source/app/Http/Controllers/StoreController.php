@@ -290,7 +290,7 @@ class StoreController extends Controller
                 , 'ext_holiday_weekend_day' => $ext_holiday_weekend_day
                 , 'ext_holiday_montly' => $ext_holiday_montly
 
-                , 'create_dt' => date('Y-m-d H:i:s')
+                , 'update_dt' => date('Y-m-d H:i:s')
             ]
         );
 

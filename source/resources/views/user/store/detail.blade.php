@@ -271,6 +271,7 @@
                             $time = ($time[0] == '00' ? 0 : ((int)$time[0])*60) + ((int)$time[1]);
 
                             if($prevDept != $services[$inx]->dept) {
+                                $prevDept = $services[$inx]->dept;
                                 $docContents = $docContents . '<div class="menu"><h4>'.$services[$inx]->dept.'</h4><ul>';
                             }
 

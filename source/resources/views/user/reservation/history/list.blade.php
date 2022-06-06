@@ -496,7 +496,7 @@
         location.href = '/reservation-history/' + seq;
     }
     function gotoModify(seq){
-        location.href = '/reservation-history/'+seq+'/modify';
+        location.href = '/reservation-modify/cart/' + seq;
     }
 
     function clip(){

@@ -4,10 +4,10 @@
     <section id="res_detail" class="depth01 nail">
         <div class="top">
             <div class="container">
-                <div class="pic"></div>
+                <div class="pic" id="shopPic"></div>
                 <div class="des">
-                    <h3>바라는 네일</h3>
-                    <address>서울시 강남구 도산대로49길9 2층<br>바라는네일 in 미니쉬라운지 청담</address>
+                    <h3 id="shopName">바라는 네일</h3>
+                    <address id="shopAddress">서울시 강남구 도산대로49길9 2층<br>바라는네일 in 미니쉬라운지 청담</address>
                 </div>
             </div>
         </div>
@@ -235,6 +235,114 @@
     function openCalendar(){
         // 일자/시간 선택전에 데이터를 세팅한다.
     }
+
+    var stores = [];
+    var targetStoreSeqno = 0;
+	function disableAllTheseDays(date) {
+		var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
+		var toDay = new Date();
+		if(date.getTime() < toDay.getTime()){
+			return [false];
+		}
+
+		var targetStore = stores.filter(store => store.seqno == targetStoreSeqno);
+		if(targetStore.length != 1) {
+			return [true];
+		}
+		targetStore = targetStore[0];
+		// due_day 에 있는 요일인가?
+		if(targetStore.due_day && targetStore.due_day.indexOf(date.getDay()) < 0) {
+			return [false];
+		}
+		// 특수 휴무 사용할 경우 
+		if(targetStore.allow_ext_holiday) {
+			// 특수 요일 휴무일에 예약하는 경우
+			if(targetStore.ext_holiday_weekly && targetStore.ext_holiday_weekly == date.getDay()) {
+				return [false];
+			}
+			// 특수 주차 요일 휴무일에 예약하는 경우 
+			if(targetStore.ext_holiday_weekend_day) {
+				var holidayInfo = targetStore.ext_holiday_weekend_day.split('-');
+
+				if(holidayInfo[0] && holidayInfo[0] == getWeek(date)
+					&& holidayInfo[1] && holidayInfo[1] == date.getDay()) {
+					return [false];
+				}
+			}
+			// 지정일 휴무일에 예약하는 경우
+			if(targetStore.ext_holiday_montly) {
+				var holidays = targetStore.ext_holiday_montly.split(',');
+				if(holidays.length > 0 && holidays.includes(date.getDate()+'')) {
+					return [false];
+				}
+			}
+		}
+		return [true];
+    }
+    
+    $('#datepicker').datepicker({
+        dateFormat: 'yy-mm-dd',
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년',
+        beforeShowDay: disableAllTheseDays
+    });
+	function setDueTime(store_seqno){
+		var targetStore = stores.filter(store => store.seqno == store_seqno);
+		if(targetStore.length != 1) {
+			return false;
+        }
+        targetStore = targetStore[0];
+        targetStoreSeqno = targetStore.seqno;
+		var times = '';
+
+		var minTime = '08:00';
+		var maxTime = '18:00';
+
+		if(targetStore.start_dt && targetStore.start_dt != '') {
+			minTime = targetStore.start_dt;
+		}
+		if(targetStore.end_dt && targetStore.end_dt != '') {
+			maxTime = targetStore.end_dt;
+        }
+        
+		var targetTime = minTime;
+		var minArr = [];
+		while(targetTime <= maxTime){
+            var timeinfos = targetTime.split(':');
+            var isDueTime = true;
+			timeinfos[0] = Number(timeinfos[0]);
+            timeinfos[1] = Number(timeinfos[1]);
+            
+            // 점심 시간을 사용하는 매장의 경우
+            if(targetStore.allow_lunch_reservate == 'N') {
+                if(targetStore.lunch_start_dt && targetStore.lunch_start_dt <= targetTime
+                    && targetStore.lunch_end_dt && targetStore.lunch_end_dt > targetTime) {
+                        isDueTime = false;
+                }
+            }
+
+            times = times + '<li ' + (isDueTime ? 'class="active"' : '') + '>'
+                + '<a href="#" onclick="saveSearchDate(\''+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':' + (timeinfos[1] < 10 ? '00' : timeinfos[1])+'\', this)">'
+                + '    '+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':' + (timeinfos[1] < 10 ? '00' : timeinfos[1])
+                + '</a></li>';
+
+			timeinfos[1] = Number(timeinfos[1]) + 30;
+			if(timeinfos[1] >= 60) {
+				timeinfos[0] = Number(timeinfos[0]) + 1;
+				timeinfos[1] = '00';
+			}
+			targetTime = (timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0]) + ':' + (timeinfos[1] < 10 ? '00' : timeinfos[1]);
+		}
+		$('.time_inner > ul').html(times);
+	}
+    
     function saveSearchDate(time, target){
         searchDate = $('#datepicker').val();
         searchTime = time;
@@ -292,8 +400,10 @@
     function convertTimeFormat(format){
         return format;
     }
-    function loadTimes(){
-        // 
+    function setShopInfo(storeInfo){
+        $('#shopPic').attr('style', 'background-image:url(' + storeInfo.img1 + ')');
+        $('#shopName').text(storeInfo.name);
+        $('#shopAddress').html( storeInfo.address + '<br>' + storeInfo.address_detail );
     }
     function loadServices(){
         medibox.methods.store.serviceAll({
@@ -334,7 +444,11 @@
                 if(inx + 1 >= response.data.length || prevDeptName != response.data[inx + 1].dept) {
                     bodyData = bodyData + '</ul></div>';
                 }
-			}
+            }
+            
+            stores[0] = response.data[0].storeInfo;
+            setDueTime(response.data[0].storeInfo.seqno);
+            setShopInfo(stores[0]);
 			$('.service_inner').html($('.service_inner').html() + bodyData);
 		}, function(e){
 			console.log(e);
@@ -352,6 +466,7 @@
         ._choosed{
             color:red;
         }
-        .time_select_wrap .time_inner>ul>li.active>a:focus {background:none;color:none;}
+        .time_select_wrap .time_inner>ul>li.active>a:focus {background:none;color:black;}
+        .time_select_wrap .time_inner>ul>li.active.on>a {background:black;color:white;}
     </style>
 </body>

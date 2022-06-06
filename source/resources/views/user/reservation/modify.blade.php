@@ -72,6 +72,49 @@
     <script>
     var searchDate;
     var searchTime;
+    var stores = [];
+    var targetStoreSeqno = 0;
+	function disableAllTheseDays(date) {
+		var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
+		var toDay = new Date();
+		if(date.getTime() < toDay.getTime()){
+			return [false];
+		}
+
+		var targetStore = stores.filter(store => store.seqno == targetStoreSeqno);
+		if(targetStore.length != 1) {
+			return [true];
+		}
+		targetStore = targetStore[0];
+		// due_day 에 있는 요일인가?
+		if(targetStore.due_day && targetStore.due_day.indexOf(date.getDay()) < 0) {
+			return [false];
+		}
+		// 특수 휴무 사용할 경우 
+		if(targetStore.allow_ext_holiday) {
+			// 특수 요일 휴무일에 예약하는 경우
+			if(targetStore.ext_holiday_weekly && targetStore.ext_holiday_weekly == date.getDay()) {
+				return [false];
+			}
+			// 특수 주차 요일 휴무일에 예약하는 경우 
+			if(targetStore.ext_holiday_weekend_day) {
+				var holidayInfo = targetStore.ext_holiday_weekend_day.split('-');
+
+				if(holidayInfo[0] && holidayInfo[0] == getWeek(date)
+					&& holidayInfo[1] && holidayInfo[1] == date.getDay()) {
+					return [false];
+				}
+			}
+			// 지정일 휴무일에 예약하는 경우
+			if(targetStore.ext_holiday_montly) {
+				var holidays = targetStore.ext_holiday_montly.split(',');
+				if(holidays.length > 0 && holidays.includes(date.getDate()+'')) {
+					return [false];
+				}
+			}
+		}
+		return [true];
+    }
     function cancel(){
         $('#popup25').addClass('on');
     }
@@ -131,6 +174,20 @@
             $('.cancelDesigner').text('['+(response.data.managerInfo ? response.data.managerInfo.manager_type : '기본')+'] '
                                                     +(response.data.managerInfo ? response.data.managerInfo.name : '-'));
                                                     */
+            stores[0] = response.data.storeInfo;
+            $('#datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년',
+                beforeShowDay: disableAllTheseDays
+            });
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

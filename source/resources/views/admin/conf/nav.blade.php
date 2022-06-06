@@ -42,6 +42,8 @@ $navData['쿠폰/바우처/멤버쉽 사용내역'] = ['쿠폰/바우처/멤버�
 $navData['레벨 권한 설정'] = ['레벨 권한 설정', '관리자 아이디 권한 등록', '관리자 아이디 권한 수정'];
 $navData['관리자 history'] = ['관리자 history'];
 
+$navData['홈'] = ['공지사항', '공지사항 상세'];
+
 @endphp
 
 <header id="header">
@@ -50,7 +52,17 @@ $navData['관리자 history'] = ['관리자 history'];
 		<div class="logo"><a href="/admin/members"><img src="{{ asset('adm/img/medibox/logo.png') }}"><br/><small>관리자 페이지</small></a></div>
 		<nav id="nav">
 			<ul id="nav_ul">
+				@php
+				if(session()->get('admin_type') == 'A' || session()->get('admin_type') == 'B') {
+				@endphp
 				<li class=""><a href="/admin/members" class="mont">홈</a></li>
+				@php
+				} else {
+				@endphp
+				<li class="@if (in_array($page_title, $navData['홈'])) active @endif"><a href="/admin/main" class="mont">홈</a></li>
+				@php
+				} 
+				@endphp
 				<li class="@if (in_array($page_title, $navData['제휴사 관리'])) active @endif">
 					<a href="#" class="mont">제휴사 관리</a>
 					<ul>
@@ -64,12 +76,13 @@ $navData['관리자 history'] = ['관리자 history'];
 						<li class="@if (in_array($page_title, $navData['매장 정보'])) active @endif"><a href="/admin/stores">매장 정보</a></li>
 					</ul>
 				</li>
-				<li class="@if (in_array($page_title, $navData['예약 관리'])) active @endif">
+				<li class="@if (in_array($page_title, $navData['예약 관리']) 
+				|| in_array($page_title, $navData['예약가능시간 관리']) || in_array($page_title, $navData['디자이너 정보']) || in_array($page_title, $navData['서비스 정보'])) active @endif">
 					<a href="#" class="mont">예약 관리</a>
 					<ul>
 						<li class="@if ($page_title == '예약 현황') active @endif"><a href="/admin/reservations/condition">예약 현황</a></li>
 						<li class="@if ($page_title == '예약 내역') active @endif"><a href="/admin/reservations">예약 내역</a></li>
-						<li class="@if (in_array($page_title, $navData['예약 환경설정'])) active @endif">
+						<li class="@if (in_array($page_title, $navData['예약가능시간 관리']) || in_array($page_title, $navData['디자이너 정보']) || in_array($page_title, $navData['서비스 정보'])) active @endif">
 							<a href="#" class="mont">예약 환경설정</a>
 							<ul>
 								<li class="@if (in_array($page_title, $navData['예약가능시간 관리'])) active @endif"><a href="/admin/business-hours">(매장) 예약가능시간 관리</a></li>

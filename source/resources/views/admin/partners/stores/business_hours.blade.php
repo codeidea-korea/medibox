@@ -7,10 +7,11 @@ $page_title = '예약가능시간 관리';
 <section id="wrtie" class="container">
 
 	<div class="section-header">예약가능시간 관리</div>
-	<div class="wrtieContents">
+	<div class="wrtieContents" style="flex-direction: column;">
+
 		<div class="wr-wrap line label160">
 			<div class="wr-list">
-				<div class="wr-list-label">매장</div>
+				<div class="wr-list-label">선택된 매장</div>
 				<div class="wr-list-con">
 					<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
 						<option>검색가능 셀렉트</option>
@@ -20,50 +21,54 @@ $page_title = '예약가능시간 관리';
 					</select>
 				</div>
 			</div>
+		</div><br>
 			
+		<!-- 영업시간 수정 row -->
+		<div class="wr-wrap line label160 _conf">
+			<h3>영업시간 설정</h3>
 			<div class="wr-list">
-				<div class="wr-list-label">영업시간</div>
+				<div class="wr-list-label">시작시간</div>
 				<div class="wr-list-con">
-					<div class="wr-list">
-						<div class="wr-list-con">시작시간</div>
-						<div class="wr-list-con">종료시간</div>
-						<div class="wr-list-con">해당 요일</div>
-						<div class="wr-list-con">수정</div>
-					</div>
-					<div class="wr-list">
-						<div class="wr-list-con">
-							<select id="start_dt" class="default">
-								<option>일반 셀렉트</option>
-							</select>
-						</div>
-						<div class="wr-list-con">
-							<select id="end_dt" class="default">
-								<option>일반 셀렉트</option>
-							</select>
-						</div>
-						<div class="wr-list-con">
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day1" value=""><span></span>월</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day2" value=""><span></span>화</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day3" value=""><span></span>수</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day4" value=""><span></span>목</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day5" value=""><span></span>금</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day6" value=""><span></span>토</label>
-							<label class="checkbox-wrap"><input type="checkbox" name="due_day0" value=""><span></span>일</label>
-						</div>
-						<div class="wr-list-con">
-							<a href="#" class="btn black ml5" onclick="updateDueTime()">수정</a>
-						</div>
-					</div>
+					<select id="start_dt" class="default">
+						<option>일반 셀렉트</option>
+					</select>
 				</div>
 			</div>
 			<div class="wr-list">
-				<div class="wr-list-label">점심시간</div>
+				<div class="wr-list-label">종료시간</div>
+				<div class="wr-list-con">
+					<select id="end_dt" class="default">
+						<option>일반 셀렉트</option>
+					</select>
+				</div>
+			</div>
+			<div class="wr-list">
+				<div class="wr-list-label">해당 요일</div>
+				<div class="wr-list-con">
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day1" value=""><span></span>월</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day2" value=""><span></span>화</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day3" value=""><span></span>수</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day4" value=""><span></span>목</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day5" value=""><span></span>금</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day6" value=""><span></span>토</label>
+					<label class="checkbox-wrap"><input type="checkbox" name="due_day0" value=""><span></span>일</label>
+				</div>
+			</div>
+		</div><br>
+		<div class="wr-wrap line label160 _conf">
+			<h3>점심시간 설정</h3>
+			<div class="wr-list">
+				<div class="wr-list-label">점심시간 예약 접수 여부</div>
 				<div class="wr-list-con">
 					<div>
 						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="Y"><span></span>예약 받음</label>
 						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="N" checked="checked"><span></span>예약 받지 않음</label>
-						<a href="#" class="btn black ml5" onclick="updateLunchTime()">수정</a>
 					</div>
+				</div>
+			</div>
+			<div class="wr-list _launchSection">
+				<div class="wr-list-label">점심시간 시간</div>
+				<div class="wr-list-con">
 					<div>
 						<select id="lunch_start_dt" class="default">
 							<option>일반 셀렉트</option>
@@ -75,6 +80,10 @@ $page_title = '예약가능시간 관리';
 					</div>
 				</div>
 			</div>
+		</div><br>
+		<div class="wr-wrap line label160 _conf">
+			<h3>매장휴일 설정</h3>
+
 			<div class="wr-list">
 				<div class="wr-list-label">매장휴일</div>
 				<div class="wr-list-con">
@@ -100,14 +109,7 @@ $page_title = '예약가능시간 관리';
 						<label class="radio-wrap"><input type="radio" name="allow_ext_holiday" value="D"><span></span>매월</label>
 						<input type="text" id="ext_holiday_montly" name="" value="" class="span200" placeholder="1,10,20">
 						일 (입력 예 1,10,20)
-						<a href="#" class="btn black ml5" onclick="updateStoreHoliday()">수정</a>
 					</div>
-				</div>
-			</div>
-			<div class="wr-list">
-				<div class="wr-list-label">매장휴일 (날짜별 설정)</div>
-				<div class="wr-list-con">
-					<a href="#" class="btn black ml5">등록</a>
 				</div>
 			</div>
 		</div>
@@ -115,6 +117,7 @@ $page_title = '예약가능시간 관리';
 	
 	<div class="btnSet">
 		<a href="#" onclick="cancel()" class="btn gray">취소</a>
+		<a href="#" onclick="update()" class="btn green">저장</a>
 	</div>
 
 	<script>
@@ -146,11 +149,11 @@ $page_title = '예약가능시간 관리';
 				}
 			}
 			if(!start_dt || start_dt == '') {
-				alert('시작 시간을 입력해주세요.');
+				alert('업무 시작 시간을 입력해주세요.');
 				return false;
 			}
 			if(!end_dt || end_dt == '') {
-				alert('종료 시간을 입력해주세요.');
+				alert('업무 종료 시간을 입력해주세요.');
 				return false;
 			}
 			if(!dueDay || dueDay == '') {
@@ -160,29 +163,31 @@ $page_title = '예약가능시간 관리';
 			data.start_dt = start_dt;
 			data.end_dt = end_dt;
 			data.due_day = dueDay;
-			updateStore();
+			return true;
 		}
 		function updateLunchTime(){
 			const lunch_start_dt = $('#lunch_start_dt').val();
 			const lunch_end_dt = $('#lunch_end_dt').val();
 			const allow_lunch_reservate = $('input[name=allow_lunch_reservate]:checked').val();
 
-			if(!lunch_start_dt || lunch_start_dt == '') {
-				alert('시작 시간을 입력해주세요.');
-				return false;
-			}
-			if(!lunch_end_dt || lunch_end_dt == '') {
-				alert('종료 시간을 입력해주세요.');
-				return false;
-			}
 			if(!allow_lunch_reservate || allow_lunch_reservate == '') {
 				alert('점심시간에 예약을 받을지 선택해주세요.');
 				return false;
 			}
+			if(allow_lunch_reservate == 'N') {
+				if(!lunch_start_dt || lunch_start_dt == '') {
+					alert('시작 시간을 입력해주세요.');
+					return false;
+				}
+				if(!lunch_end_dt || lunch_end_dt == '') {
+					alert('종료 시간을 입력해주세요.');
+					return false;
+				}
+			}
 			data.lunch_start_dt = lunch_start_dt;
 			data.lunch_end_dt = lunch_end_dt;
 			data.allow_lunch_reservate = allow_lunch_reservate;
-			updateStore();
+			return true;
 		}
 		function updateStoreHoliday(){
 			const ext_holiday_weekly = $('#ext_holiday_weekly').val();
@@ -199,6 +204,7 @@ $page_title = '예약가능시간 관리';
 					alert('요일을 선택해주세요.');
 					return false;
 				}
+				data.ext_holiday_weekly = ext_holiday_weekly;
 			} else if(allow_ext_holiday == 'M'){
 				if(!ext_holiday_weekend_week || ext_holiday_weekend_week == '') {
 					alert('주차를 선택해주세요.');
@@ -208,17 +214,16 @@ $page_title = '예약가능시간 관리';
 					alert('요일을 선택해주세요.');
 					return false;
 				}
+				data.ext_holiday_weekend_day = ext_holiday_weekend_week + '-' + ext_holiday_weekend_day;
 			} else if(allow_ext_holiday == 'D'){
 				if(!ext_holiday_montly || ext_holiday_montly == '') {
 					alert('날짜를 입력해주세요.');
 					return false;
 				}
+				data.ext_holiday_montly = ext_holiday_montly;
 			}
-			data.ext_holiday_weekly = ext_holiday_weekly;
-			data.ext_holiday_weekend_day = ext_holiday_weekend_week + '-' + ext_holiday_weekend_day;
-			data.ext_holiday_montly = ext_holiday_montly;
 			data.allow_ext_holiday = allow_ext_holiday;
-			updateStore();
+			return true;
 		}
 		</script>
 	<script>
@@ -228,32 +233,14 @@ $page_title = '예약가능시간 관리';
 		window.location.href = '/admin/services';
 	}
 
+	function update(){
+		if(!updateDueTime() || !updateLunchTime() || !updateStoreHoliday()) {
+			return false;
+		}
+		updateStore();
+	}
 	function updateStore(){
-		medibox.methods.store.modify({
-			name: data.name
-			, phone: data.phone
-			, address: data.address
-			, address_detail: data.address_detail
-			, zipcode: data.zipcode
-			, partner_seqno: data.partner_seqno
-			, in_manager: data.in_manager
-			, manager_type: data.manager_type
-
-			, start_dt: data.start_dt
-			, end_dt: data.end_dt
-			, due_day: data.due_day
-			
-			, lunch_start_dt: data.lunch_start_dt
-			, lunch_end_dt: data.lunch_end_dt
-			, allow_lunch_reservate: data.allow_lunch_reservate
-			
-			, allow_ext_holiday: data.allow_ext_holiday
-			, ext_holiday_weekly: data.ext_holiday_weekly
-			, ext_holiday_weekend_day: data.ext_holiday_weekend_day
-			, ext_holiday_montly: data.ext_holiday_montly
-
-			, admin_seqno: {{ $seqno }}
-		}, data.seqno, function(request, response){
+		medibox.methods.store.modify(data, data.seqno, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -329,6 +316,7 @@ $page_title = '예약가능시간 관리';
 			}
 			store = response.data;
 			$('#storePop').html(bodyData);
+			$('._conf').hide();
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -338,6 +326,7 @@ $page_title = '예약가능시간 관리';
 		clearForm();
 		data = store.filter(s => s.seqno == idx)[0];
 		setInfo();
+		$('._conf').show();
 	}
 	function setInfo(){
 		// 
@@ -349,10 +338,12 @@ $page_title = '예약가능시간 관리';
 		}
 		if(data.due_day && data.due_day.indexOf(',') > 0) {
 			const targetDay = data.due_day.split(',');
-			for(var inx = 0; inx<7; inx++){
-				if(targetDay.hasOwnProperty(inx)) $('input[name=due_day'+inx+']').prop('checked', true); 
+			for(var inx = 0; inx<targetDay.length; inx++){
+				$('input[name=due_day'+targetDay[inx]+']').prop('checked', true); 
 			}
 		}
+		data.allow_lunch_reservate = data.allow_lunch_reservate == 'Y' ? 'Y' : 'N';
+		data.allow_ext_holiday = !data.allow_ext_holiday ? 'N' : data.allow_ext_holiday;
 		$('input[name=allow_lunch_reservate][value='+data.allow_lunch_reservate+']').prop('checked', true); 
 		$('#lunch_start_dt').val(data.lunch_start_dt);
 		$('#lunch_end_dt').val(data.lunch_end_dt);
@@ -397,6 +388,7 @@ $page_title = '예약가능시간 관리';
 	$(document).ready(function(){
 		generateTime();
 		getPartners();
+		$('._conf').hide();
 	});
 	</script>
 </section>

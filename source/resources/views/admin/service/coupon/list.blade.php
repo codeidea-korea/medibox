@@ -317,7 +317,7 @@ $page_title = '쿠폰 관리';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+ (response.data[inx].coupon_partner_grp_seqno == '0' ? '전체' : response.data[inx].partners.map(p => p.cop_name))+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
 							+'	<td>'+getAllowedIssuanceType(response.data[inx].allowed_issuance_type)+'</td>'

@@ -45,7 +45,7 @@ $page_title = $id == 0 ? '자주 묻는 질문 등록' : '자주 묻는 질문 �
 	<script>
 		var userId;
 	function cancel(){
-		window.location.href = '/admin/contents/usages';
+		window.location.href = '/admin/contents/faqs';
 	}
 	function checkValidation(){
 		var title = document.querySelector('#title').value;
@@ -73,7 +73,7 @@ $page_title = $id == 0 ? '자주 묻는 질문 등록' : '자주 묻는 질문 �
 		var title = document.querySelector('#title').value;
         var contents = document.querySelector('#contents').value;
 
-		medibox.methods.contents.usage.add({
+		medibox.methods.contents.faq.add({
 			title: title
 			, contents: contents
 			, admin_seqno: {{ $seqno }}
@@ -127,7 +127,7 @@ $page_title = $id == 0 ? '자주 묻는 질문 등록' : '자주 묻는 질문 �
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $id }}' };
 
-		medibox.methods.contents.usage.one(data, '{{ $id }}', function(request, response){
+		medibox.methods.contents.faq.one(data, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -146,7 +146,7 @@ $('#title').val( response.data.title );
 		if(!confirm('정말 삭제 하시겠습니까?')) {
 			return;
 		}
-		medibox.methods.contents.usage.remove({
+		medibox.methods.contents.faq.remove({
 			id: userId
 		}, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);

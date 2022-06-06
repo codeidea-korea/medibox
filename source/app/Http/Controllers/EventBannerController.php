@@ -281,7 +281,7 @@ class EventBannerController extends Controller
                     , 'discount_price' => $coupon_discount_price
                     , 'max_discount_price' => $coupon_max_discount_price
                     , 'limit_base_price' => $coupon_limit_base_price
-                    , 'allowed_issuance_type' => $allowed_issuance_type
+                    , 'allowed_issuance_type' => 'A'
                     , 'deleted' => 'N'
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
@@ -300,7 +300,6 @@ class EventBannerController extends Controller
                     , 'discount_price' => $coupon_discount_price
                     , 'max_discount_price' => $coupon_max_discount_price
                     , 'limit_base_price' => $coupon_limit_base_price
-                    , 'allowed_issuance_type' => $allowed_issuance_type
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );

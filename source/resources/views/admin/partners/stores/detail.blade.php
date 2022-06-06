@@ -43,7 +43,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">소속 제휴사</div>
 				<div class="wr-list-con">
-					<select id="partner_seqno">
+					<select id="partner_seqno" class="default">
 						<option value="1">바라는 네일</option>
 					</select>
 				</div>
@@ -172,7 +172,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		$('#img' + imgPoint).val(path);
 		$('.del' + imgPoint).show();
 		$('#imgView' + imgPoint).attr('src', path + '?v=' + (new Date().getTime()));
-		pictures[imgPoint] = path;
+		pictures[imgPoint - 1] = path;
 		imgPoint = imgPoint + 1;
 	}
 	function removePicture(idx){
@@ -185,10 +185,13 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			return false;
 		}
 		pictures[idx - 1] = null;
-		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
-		for(var inx = (idx - 1); inx < maxLength; idx++){
+		for(var inx=1; inx < 6; inx++) {
+			$('.del' + inx).hide();
+			if(idx-1 < inx) pictures[inx - 1] = pictures[inx];
+		}
+		for(var inx = 0; inx < maxLength; inx++){
 			$('#img' + (inx + 1)).val(pictures[inx]);
-			$('.del' + imgPoint).show();
+			if(pictures[inx]) $('.del' + (inx + 1)).show();
 			$('#imgView' + (inx + 1)).attr('src', pictures[inx] + '?v=' + (new Date().getTime()));
 		}
 		imgPoint = imgPoint - 1;
@@ -338,6 +341,10 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 	}
 	$(document).ready(function(){
 		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
+		getPartners();
+		setTimeout(() => {
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
+		}, 200);
 	});
 	@php
 	}
@@ -347,6 +354,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 	if($id != 0) {
 	@endphp
 	userId = {{$id}};
+	var storeInfo;
 	
 	function modify(){
 		if(!checkValidation()) {
@@ -367,23 +375,22 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var img4 = $('#img4').val();
         var img5 = $('#img5').val();
 
-		medibox.methods.store.modify({
-			name: name
-			, phone: phone
-			, address: address
-			, address_detail: address_detail
-			, zipcode: zipcode
-			, partner_seqno: partner_seqno
-			, in_manager: in_manager ? 'Y' : 'N'
-			, manager_type: manager_type
-			, info: info
-			, img1: img1
-			, img2: img2
-			, img3: img3
-			, img4: img4
-			, img5: img5
-			, admin_seqno: {{ $seqno }}
-		}, '{{ $id }}', function(request, response){
+		storeInfo.name = name;
+		storeInfo.phone = phone;
+		storeInfo.address = address;
+		storeInfo.address_detail = address_detail;
+		storeInfo.zipcode = zipcode;
+		storeInfo.partner_seqno = partner_seqno;
+		storeInfo.in_manager = in_manager ? 'Y' : 'N';
+		storeInfo.manager_type = manager_type;
+		storeInfo.info = info;
+		storeInfo.img1 = img1;
+		storeInfo.img2 = img2;
+		storeInfo.img3 = img3;
+		storeInfo.img4 = img4;
+		storeInfo.img5 = img5;
+
+		medibox.methods.store.modify(storeInfo, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -396,7 +403,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		});
 	}
 	
-	function getInfo(){
+	async function getInfo(){
+		await getPartners();
+
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $id }}' };
 
 		medibox.methods.store.one(data, '{{ $id }}', function(request, response){
@@ -415,6 +424,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			$('#partner_seqno').val( response.data.partner_seqno );
 
 			$('#info').val(response.data.info);
+			storeInfo = response.data;
 
 			for(var inx = 1; inx <= 5; inx++) {
 				if(!response.data['img' + inx]) continue;
@@ -455,8 +465,13 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		});
 	}
 	$(document).ready(function(){
+		
 		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
 		getInfo();
+
+		setTimeout(() => {
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
+		}, 200);
 	});
 	@php
 	}
@@ -521,14 +536,6 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			alert('서버 통신 에러');
 		});
 	}
-
-	$(document).ready(function(){
-		getPartners();
-
-		setTimeout(() => {
-			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
-		}, 200);
-	});
 	</script>
 </section>
 

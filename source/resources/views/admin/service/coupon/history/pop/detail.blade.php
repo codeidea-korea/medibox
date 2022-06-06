@@ -83,8 +83,8 @@
 		$('#coupon_issue_time').text(couponInfos[idx].create_dt);
 		$('#coupon_time').text(couponInfos[idx].start_dt + ' ~ ' + couponInfos[idx].end_dt);
 
-		$('#coupon_issue_condition').text(getConditionType(couponInfos[inx].issuance_condition_type));
-		$('#coupon_issue_type').text(getIssuanceType(couponInfos[inx].issuance_type));
+		$('#coupon_issue_condition').text(getConditionType(couponInfos[idx].issuance_condition_type));
+		$('#coupon_issue_type').text(getIssuanceType(couponInfos[idx].issuance_type));
 
 		$('#coupon_discount_price').text(medibox.methods.toNumber(couponInfos[idx].discount_price));
 		$('#coupon_limit_base_price').text(medibox.methods.toNumber(couponInfos[idx].limit_base_price));

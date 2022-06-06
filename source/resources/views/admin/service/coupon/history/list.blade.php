@@ -13,7 +13,7 @@ $page_title = '쿠폰 이용 현황';
 					<div class="wr-list-label">쿠폰 제휴사</div>
 					<div class="wr-list-con">
 						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
-							<option>검색가능 셀렉트</option>
+							<option value="">검색가능 셀렉트</option>
 						</select>
 					</div>
 				</div>
@@ -358,7 +358,7 @@ $page_title = '쿠폰 이용 현황';
 							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td>'+response.data[inx].user_name+'</td>'
 
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+response.data[inx].partners.map(p => p.cop_name)+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'
 							+'	<td>'+getTypeCouponTime(response.data[inx].used, response.data[inx].end_dt)+'</td>'

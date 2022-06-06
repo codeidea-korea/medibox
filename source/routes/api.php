@@ -29,6 +29,7 @@ use App\Http\Controllers\EventBannerController;
 use App\Http\Controllers\EvenBannerUsedController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminHistoryController;
+use App\Http\Controllers\AuthSmsController;
 
 
 /*
@@ -53,6 +54,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('user/logout', [UserController::class, 'logout']);
 
     Route::get('user/check-dupplicate-id', [UserController::class, 'isDupplicated']);
+    Route::post('user/change-password', [UserController::class, 'changePassword']);
 
     Route::post('user/add', [UserController::class, 'add']);
     Route::post('user/modify', [UserController::class, 'modify']);
@@ -72,6 +74,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('user/point-cancel', [PointController::class, 'cancel']);
     Route::post('user/point-approve', [PointController::class, 'approve']);
     Route::get('point/check-approve', [PointController::class, 'checkApproved']);
+    
+    Route::get('coupon-check-approve', [CouponController::class, 'checkApproved']);
+    Route::get('voucher-check-approve', [VoucherController::class, 'checkApproved']);
+
+    Route::post('user/coupon-cancel', [CouponController::class, 'cancel']);
+    Route::post('user/coupon-approve', [CouponController::class, 'approve']);
+    Route::post('user/voucher-cancel', [VoucherController::class, 'cancel']);
+    Route::post('user/voucher-approve', [VoucherController::class, 'approve']);
     
     
     Route::post('user/point-use-self', [PointController::class, 'useBySelf']);
@@ -228,5 +238,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
     // 파일 업로드
     Route::post('file/{type}', [FileController::class, 'add']);
+
+    // 문자 인증
+    Route::get('sms/result', [AuthSmsController::class, 'saveSmsHistory']);
+    Route::post('auth/sms/send', [AuthSmsController::class, 'send']);
+    Route::get('auth/sms/check', [AuthSmsController::class, 'check']);
+    Route::get('auth/sms/sends', [AuthSmsController::class, 'index']);
 //});
 

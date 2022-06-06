@@ -96,10 +96,10 @@ class EvenBannerUsedController extends Controller
             }
         }
         if(! empty($issued_start_dt) && $issued_start_dt != ''){
-            array_push($whereUser, ['user_info.start_dt', '>=', $issued_start_dt]);
+            array_push($whereUser, ['real_start_dt', '>=', $issued_start_dt]);
         }
         if(! empty($issued_end_dt) && $issued_end_dt != ''){
-            array_push($whereUser, ['user_info.start_dt', '<=', $issued_end_dt]);
+            array_push($whereUser, ['real_end_dt', '<=', $issued_end_dt]);
         }
         
         $contents = DB::table("even_banner_user")->where($where)

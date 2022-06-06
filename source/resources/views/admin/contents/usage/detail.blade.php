@@ -45,7 +45,7 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 	<script>
 		var userId;
 	function cancel(){
-		window.location.href = '/admin/contents/notices-partner';
+		window.location.href = '/admin/contents/usages';
 	}
 	function checkValidation(){
 		var title = document.querySelector('#title').value;
