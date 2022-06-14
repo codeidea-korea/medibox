@@ -61,9 +61,10 @@ $page_title = '예약가능시간 관리';
 				<div class="wr-list-label">점심시간 예약 접수 여부</div>
 				<div class="wr-list-con">
 					<div>
-						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="Y"><span></span>예약 받음</label>
-						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="N" checked="checked"><span></span>예약 받지 않음</label>
-					</div>
+						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="Y" checked="checked"><span></span>예약 받음</label>
+						<label class="radio-wrap"><input type="radio" name="allow_lunch_reservate" value="N"><span></span>예약 받지 않음</label>
+					</div><br>
+					*점심시간 예약 받지 않음일 경우에는 점심시간을 반드시 넣어주셔야 수정됩니다.
 				</div>
 			</div>
 			<div class="wr-list _launchSection">
@@ -128,7 +129,7 @@ $page_title = '예약가능시간 관리';
 			for(var inx = 0; inx<7; inx++){
 				$('input[name=due_day'+inx+']').prop('checked', false); 
 			}
-			$('input[name=allow_lunch_reservate]').prop('checked', false); 
+			$('input[name=allow_lunch_reservate][value=Y]').prop('checked', true); 
 			$('#lunch_start_dt').val('');
 			$('#lunch_end_dt').val('');
 			
@@ -176,11 +177,11 @@ $page_title = '예약가능시간 관리';
 			}
 			if(allow_lunch_reservate == 'N') {
 				if(!lunch_start_dt || lunch_start_dt == '') {
-					alert('시작 시간을 입력해주세요.');
+					alert('점심 시작 시간을 입력해주세요.');
 					return false;
 				}
 				if(!lunch_end_dt || lunch_end_dt == '') {
-					alert('종료 시간을 입력해주세요.');
+					alert('점심 종료 시간을 입력해주세요.');
 					return false;
 				}
 			}

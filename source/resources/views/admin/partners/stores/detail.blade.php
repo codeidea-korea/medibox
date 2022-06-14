@@ -109,6 +109,31 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 					</p>
 				</div>
 			</div>
+			
+			<div class="wr-list">
+				<div class="wr-list-label">매장 대표 아이콘</div>
+				<div class="wr-list-con">
+					<input type="hidden" id="icon">
+
+					<div class="gallery">
+						<ul>
+							<li>
+								<div class="imgCon"><img id="imgIcon" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="filebox">
+						<label for="upload_1" class="upload-btn">파일찾기
+						<input name="" type="file" multiple="" id="upload_1" class="upload-hidden" onchange="uploadIconFile()">
+					</label></div>
+					<p class="help-block">
+						※ 매장 대표 아이콘은 1개 등록이 가능합니다.<br>
+						※ 해상도 50 x 50 px에 최적화 되어 있습니다.<br>
+						※ svg 를 추천드립니다.
+					</p>
+				</div>
+			</div>
 		</div>
 		<br>
 		<div class="wr-wrap line label160">
@@ -230,6 +255,38 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			}
 		});
 	}
+	function uploadIconFile(){
+		if(!$("#upload_1") || !$("#upload_1")[0] || !$("#upload_1")[0].files[0]) {
+			return false;
+		}
+
+		var form = new FormData();
+		form.append( "upload", $("#upload_1")[0].files[0] );
+		
+		jQuery.ajax({
+			url : "/api/file/store"
+			, type : "POST"
+			, processData : false
+			, contentType : false
+			, data : form
+			, async: false
+			, success:function(response) {
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				const iconPath = '/storage/'+response.path;
+				$('#icon').val(iconPath);
+				$('#imgIcon').attr('src', iconPath + '?v=' + (new Date().getTime()));
+			}
+			,error: function (jqXHR) 
+			{ 
+				alert(jqXHR.responseText); 
+			}
+		});
+	}
+	
 	function addManagerType(){
 		var managerTypes = document.querySelector('#manager_type').value;
 		var managerTypeInput = document.querySelector('#managerTypeInput').value;
@@ -310,6 +367,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var img3 = $('#img3').val();
         var img4 = $('#img4').val();
         var img5 = $('#img5').val();
+        var icon = $('#icon').val();
 
 		medibox.methods.store.add({
 			name: name
@@ -326,6 +384,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			, img3: img3
 			, img4: img4
 			, img5: img5
+			, icon: icon
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -374,6 +433,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var img3 = $('#img3').val();
         var img4 = $('#img4').val();
         var img5 = $('#img5').val();
+        var icon = $('#icon').val();
 
 		storeInfo.name = name;
 		storeInfo.phone = phone;
@@ -389,6 +449,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		storeInfo.img3 = img3;
 		storeInfo.img4 = img4;
 		storeInfo.img5 = img5;
+		storeInfo.icon = icon;
 
 		medibox.methods.store.modify(storeInfo, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
@@ -424,6 +485,11 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			$('#partner_seqno').val( response.data.partner_seqno );
 
 			$('#info').val(response.data.info);
+
+			$('#icon').val(response.data.icon);
+			$('#imgIcon').attr('src', response.data.icon + '?v=' + (new Date().getTime()));
+			$('#imgIcon').show();
+
 			storeInfo = response.data;
 
 			for(var inx = 1; inx <= 5; inx++) {

@@ -73,19 +73,19 @@
                     <!-- 사용 포인트 결과 -->
                     <div class="holding_point_wrap point_wrap">
                         <h2>사용 포인트</h2>
-                        <span class="use_point">480,000</span> P
+                        <span class="use_point _use_point">480,000</span> P
                     </div>
     
                     <!-- 쿠폰 사용 -->
                     <div class="holding_point_wrap point_wrap">
                         <h2>쿠폰사용</h2>
-                        <span>0 P</span>
+                        <span class="coupon_point">0</span> P
                     </div>
         
                     <!-- 최종 결제 포인트 포인트 -->
                     <div class="use_point_wrap point_wrap">
                         <h2>최종 결제 포인트</h2>
-                        <span><strong class="use_point">480,000</strong> P</span>    
+                        <span><strong class="use_point total_point">480,000</strong> P</span>    
                     </div>
                 </div>
                 
@@ -359,7 +359,7 @@
                     <!-- 사용 포인트 결과 -->
                     <div class="holding_point_wrap point_wrap">
                         <h2>사용 포인트</h2>
-                        <span class="use_point">242,000</span> P
+                        <span class="use_point _use_point">242,000</span> P
                         <!-- 사용 포인트 없을 때 -->
                         <!-- <span class="empty">0 P</span> -->
                     </div>
@@ -367,7 +367,7 @@
                     <!-- 쿠폰 사용 -->
                     <div class="holding_point_wrap point_wrap">
                         <h2>쿠폰사용</h2>
-                        <span>0 P</span>
+                        <span class="coupon_point">0</span> P
                         <!-- 사용 포인트 없을 때 -->
                         <!-- <span class="empty">0 P</span> -->
                     </div>
@@ -375,7 +375,7 @@
                     <!-- 최종 결제 포인트 포인트 -->
                     <div class="use_point_wrap point_wrap">
                         <h2>최종 결제 포인트</h2>
-                        <span><strong class="use_point">242,000</strong> P</span>
+                        <span><strong class="use_point total_point">242,000</strong> P</span>
                         <!-- 사용 포인트 없을 때 -->
                         <!-- <span class="empty">0 P</span> -->
                     </div>
@@ -684,18 +684,65 @@
         return true;
     }
     async function refund(){
-		var point_type = 'P';
-        var price = {{$reservation_old_price}};
-		var memo = '사용자 예약 수정으로 인한 환불';
-		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0,
-            point_type:point_type, memo:memo, amount: price, admin_name: '' };
+    }
+
+    var coupons;
+    var selectedCoupon;
+    var discountPrice = 0;
+    function usedCoupon(target, seq){
+        var name = '사용가능한 쿠폰';
+        $(target).parent().removeClass('on');
+        if(seq > -1) {
+            name = coupons[seq].name;
+            selectedCoupon = '';
+        }
+        $(target).parent().parent().find('.select_box > span').text(name);
+
+        var price = $('._use_point').text().replaceAll(',', '');
+        var discount = 0;
+        var totalPrice = price;
+        if(seq > -1) {
+            selectedCoupon = coupons[seq].seqno;
+            // 정액의 경우 F
+            if(coupons[seq].type == 'F' && Number(price) > coupons[seq].limit_base_price) {
+                discount = coupons[seq].discount_price;
+            // 정률의 경우 P
+            } else if(coupons[seq].type == 'P' && Number(price) > coupons[seq].limit_base_price){
+                discount = Number(price) * (coupons[seq].discount_price / 100);
+                // 최대 할인금액을 초과하는 경우 최대 할인금액만큼만 설정됨
+                if(discount > coupons[seq].max_discount_price) {
+                    discount = coupons[seq].max_discount_price;
+                }
+            }
+            discountPrice = discount;
+            totalPrice = Number(price) - discount;
+        }
         
-        await medibox.methods.point.refund(data, function(request, response){
+        $('#use_point').text(medibox.methods.toNumber(price)); // 금액
+        $('.coupon_point').text(medibox.methods.toNumber(discount)); // 할인액
+        $('.total_point').text(medibox.methods.toNumber(totalPrice)); // 금액 - 할인액
+    }
+    function getMyCoupons(){
+        
+        medibox.methods.point.coupon.mine({
+            pageNo: 1, 
+            pageSize: 50, 
+            partner_seqno: {{$reservationInfo->partner_seqno}},
+            user_seqno: {{$seqno}}
+        }, function(request, response){
             console.log('output : ' + response);
             if(!response.result){
-                alert(response.ment);
+                alert(response.ment.replace('\\r', '\n'));
                 return false;
             }
+
+            var couponTag = '<li onclick="usedCoupon(this, -1)">쿠폰을 선택해주세요.</li>';
+            for(var inx = 0; inx < response.data.length; inx++){
+                couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' ' + response.data[inx].discount_price + '</li>';
+            }
+            coupons = response.data;
+
+            $('.use_coupon_wrap > .select_wrap > .option').html(couponTag);
         }, function(e){
             console.log(e);
             alert('서버 통신 에러');
@@ -707,57 +754,96 @@
             alert('예약자 정보를 입력해주세요.');
             return false;
         }
-        
-        await refund();
 
-		var point_type = 'P';
-        var memo = '사용자 예약';
-        
-		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: {{$serviceId}},
-            point_type:point_type, memo:memo, admin_name: '' };
-            
-		medibox.methods.point.use(data, function(request, response){
-			console.log('output : ' + response);
-            if(!response.result){
-				alert(response.ment.replace('\\r', '\n'));
+        medibox.methods.store.reservation.check({
+            estimated_time: '' // 상품 소요시간을 그대로 넣기
+            , partner_seqno: {{$reservationInfo->partner_seqno}}
+            , store_seqno: {{$reservationInfo->store_seqno}}
+            , start_dt: '{{$date}} {{$time}}:00'
+            , service_seqno: {{$serviceId}}
+            , manager_seqno: 0
+            , user_seqno: {{$seqno}}
+            , id: {{$reservationInfo->seqno}}
+        }, function(request5, response5){
+            console.log('output : ' + response5);
+            if(!response5.result){
+				alert(response5.ment.replace('\\r', '\n'));
                 return false;
             }
-            medibox.methods.store.reservation.modify({
-                status: 'R'
-                , use_icon_important: 'N'
-                , use_icon_phone: 'N'
-                , use_custom_color: 'N'			
-                , custom_color: '#000000'
-                , estimated_time: '' // 상품 소요시간을 그대로 넣기
-                , start_dt: '{{$date}} {{$time}}:00'
-                , memo: '[온라인] 고객 예약 변경'
-                , apply_on_mobile: 'Y'
-                , partner_seqno: {{$reservationInfo->partner_seqno}}
-                , store_seqno: {{$reservationInfo->store_seqno}}
-                , service_seqno: {{$serviceId}}
-                , manager_seqno: 0
-                , user_seqno: {{$seqno}}
-                , admin_seqno: 0
-                , user_name: $('#user_name').val()
-                , user_phone: $('#user_phone').val()
-            }, {{$reservationInfo->seqno}}, function(request, response){
-                console.log('output : ' + response);
-                if(!response.result){
-                    alert(response.ment);
+        
+            var point_type = 'P';
+            var price = {{$reservation_old_price}} - {{$reservationInfo->discount_price}};
+            var memo = '사용자 예약 수정으로 인한 사용 포인트 반환 (예약번호: [{{$reservationInfo->seqno}}])';
+            var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0, reIssueCoupon: {{$reservationInfo->coupon_seqno}},
+                point_type:point_type, memo:memo, amount: price, admin_name: '' };
+
+            medibox.methods.point.collect(data, function(request1, response1){
+                console.log('output : ' + response1);
+                if(!response1.result){
+                    alert(response1.ment.replace('\\r', '\n'));
                     return false;
                 }
-                $('#popup24').addClass('on');
+                var point_type2 = 'P';
+                var memo2 = '사용자 예약 수정 (반환된 서비스 포인트: '+medibox.methods.toNumber(price)+')';
+                
+                var data2 = { admin_seqno:1, user_seqno:{{ $seqno }}, service_seqno: {{$serviceId}}, coupon_seqno: selectedCoupon, discount: discountPrice,
+                    point_type:point_type2, memo:memo2, admin_name: '' };
+                    
+                medibox.methods.point.use(data2, function(request2, response2){
+                    console.log('output : ' + response2);
+                    if(!response2.result){
+                        alert(response2.ment.replace('\\r', '\n'));
+                        return false;
+                    }
+                    medibox.methods.store.reservation.modify({
+                        status: 'R'
+                        , use_icon_important: 'N'
+                        , use_icon_phone: 'N'
+                        , use_custom_color: 'N'			
+                        , custom_color: '#000000'
+                        , estimated_time: '' // 상품 소요시간을 그대로 넣기
+                        , start_dt: '{{$date}} {{$time}}:00'
+                        , memo: '[온라인] 고객 예약 변경'
+                        , apply_on_mobile: 'Y'
+                        , partner_seqno: {{$reservationInfo->partner_seqno}}
+                        , store_seqno: {{$reservationInfo->store_seqno}}
+                        , service_seqno: {{$serviceId}}
+                        , manager_seqno: 0
+                        , user_seqno: {{$seqno}}
+                        , admin_seqno: 0
+                        , user_name: $('#user_name').val()
+                        , user_phone: $('#user_phone').val()
+                        , coupon_seqno: selectedCoupon
+                        , discount: discountPrice
+                    }, {{$reservationInfo->seqno}}, function(request3, response3){
+                        console.log('output : ' + response3);
+                        if(!response3.result){
+                            alert(response3.ment);
+                            return false;
+                        }
+                        $('#popup24').addClass('on');
+                    }, function(e){
+                        console.log(e);
+                        alert('서버 통신 에러');
+                    });
+                }, function(e){
+                    console.log(e);
+                    alert('서버 통신 에러');
+                });
             }, function(e){
                 console.log(e);
                 alert('서버 통신 에러');
-            });
-		}, function(e){
-			console.log(e);
-			alert('서버 통신 에러');
-		});
+            });		
+        }, function(e){
+            console.log(e);
+            alert('서버 통신 에러');
+        });
+
+        
     }
     $(document).ready(function(){
         setup();
+        getMyCoupons();
         $('.popup a').off();
     });
     </script>

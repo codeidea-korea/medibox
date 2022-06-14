@@ -30,6 +30,7 @@ class ServiceController extends Controller
         }
 
         $contents = DB::table("store_service")->where($where)
+            ->orderBy('orders', 'asc')
             ->orderBy('create_dt', 'desc')
             ->get();
         $count = DB::table("store_service")->where($where)

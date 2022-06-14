@@ -289,6 +289,25 @@ $page_title = '쿠폰 이용 현황';
 		}
 	}
 	
+	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		
+		if(coupon_partner_grp_seqno == 0) {
+			return '전체';
+		} else {
+			var types = coupon_partner_grp_seqno.split('||');
+			var partnersName = '';
+			for(var inx=0; inx<types.length; inx++){
+				types[inx] = (types[inx] + '').replaceAll('|', '');
+				if(types[inx] == '0') {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + '전체';
+				} else {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + $('#partnersPop > option[value='+types[inx]+']').text();
+				}
+			}
+			return partnersName;
+		}
+	}
+
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
@@ -358,7 +377,7 @@ $page_title = '쿠폰 이용 현황';
 							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td>'+response.data[inx].user_name+'</td>'
 
-							+'	<td>'+response.data[inx].partners.map(p => p.cop_name)+'</td>'
+							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'
 							+'	<td>'+getTypeCouponTime(response.data[inx].used, response.data[inx].end_dt)+'</td>'

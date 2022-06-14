@@ -155,6 +155,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     // 예약 관리 (예약 현황, 예약 내역)
     Route::get('reservations', [ReservationController::class, 'list']);
     Route::get('reservations/day', [ReservationController::class, 'getListInStore']);
+    Route::get('reservations/check-available', [ReservationController::class, 'checkTime']);
     Route::get('reservations/{id}', [ReservationController::class, 'find']);
     Route::post('reservations', [ReservationController::class, 'add']);
     Route::post('reservations/{id}/modify', [ReservationController::class, 'modify']);
@@ -178,6 +179,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('manager-holiday', [HolidayController::class, 'add']);
     Route::post('manager-holiday/{id}/remove', [HolidayController::class, 'remove']);
 
+    
+
     // 상품 관리
     Route::get('products', [ProductController::class, 'list']);
     Route::get('products/{id}', [ProductController::class, 'find']);
@@ -194,6 +197,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     
     // 쿠폰 관리
     Route::get('coupon', [CouponController::class, 'list']);
+    Route::get('coupons/mine', [CouponUsedController::class, 'myEnabledCoupons']);
     Route::get('coupon/{id}', [CouponController::class, 'find']);
     Route::post('coupon', [CouponController::class, 'add']);
     Route::post('coupon/{id}/modify', [CouponController::class, 'modify']);

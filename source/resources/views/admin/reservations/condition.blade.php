@@ -89,6 +89,7 @@ $page_title = '예약 현황';
 			<span class="label-4">예약불이행</span>
 			<span class="label-5">고객입장</span>
 			<span class="label-6">서비스완료</span>
+			<span class="label-7">예약취소</span>
 		</div>
 	</div>
 	
@@ -157,12 +158,18 @@ $page_title = '예약 현황';
 	layer_select5 += '</ul>';
 
 // 서비스 완료
-	var layer_select6 = '<ul class="layerSelect">';
+var layer_select6 = '<ul class="layerSelect">';
 	layer_select6 += '<li><a href="#" class="active">서비스완료</a></li>';
 	layer_select6 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
 	layer_select6 += '<li><a href="#" onclick="changeStatus(\'E\')">완료취소</a></li>';
 	layer_select6 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select6 += '</ul>';
+// 예약 취소
+	var layer_select7 = '<ul class="layerSelect">';
+	layer_select7 += '<li><a href="#" class="active">예약취소</a></li>';
+	layer_select7 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
+	layer_select7 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
+	layer_select7 += '</ul>';
 
 
 	$('html').click(function(e) {
@@ -348,6 +355,8 @@ $page_title = '예약 현황';
 				$(this).html($(this).html() + layer_select5);
 			} else if($(this).hasClass("label-6")) {
 				$(this).html($(this).html() + layer_select6);
+			} else if($(this).hasClass("label-7")) {
+				$(this).html($(this).html() + layer_select7);
 			}
 		});
 	}
@@ -355,15 +364,15 @@ $page_title = '예약 현황';
 		// NOTICE: fake Time
 		stores.conf = {
 			dueDay: {
-				startTime: '10:00',
-				endTime: '15:00'
+				startTime: '05:00',
+				endTime: '21:30'
 			}
 		};
 		if(stores && stores[0]) {
 
 			// 2022-05-27, 시작-종료일 설정 (최소/최대)
-			var minTime = '10:00';
-			var maxTime = '15:00';
+			var minTime = '05:00';
+			var maxTime = '21:30';
 
 			for(var idx = 0; idx < stores.length; idx++){
 				if(stores[idx].start_dt && stores[idx].start_dt != '' && stores[idx].start_dt < minTime) {
@@ -411,15 +420,22 @@ $page_title = '예약 현황';
 			var isHoliday = !disableAllTheseDays(startTime);
 			var ment = '';
 			var isFisrt = false;
+			var isNotDueTime = true;
 
 			while(startTime.getTime() < endTime.getTime()){
 				var isLaunchTime = false;
 				var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
-				// 점심 시간을 사용하는 매장의 경우
-				if(!disableAllTheseTimes(targetTime)) {
-					isLaunchTime = true;
+				
+				// 업무 시간 체크
+				isNotDueTime = !isDueTime(targetTime);
+				if(!isNotDueTime) {
+					// 업무 시간인 경우
+					// 점심 시간을 사용하는 매장의 경우
+					if(!disableAllTheseTimes(targetTime)) {
+						isLaunchTime = true;
+					}
 				}
-				if(!isHoliday && !isLaunchTime){
+				if(!isHoliday && !isLaunchTime && !isNotDueTime){
 					ment = '';
 				}
 				if(ment != '점심시간' && (isLaunchTime)){
@@ -432,9 +448,14 @@ $page_title = '예약 현황';
 					isFisrt = true;
 				} else if(isHoliday){
 					isFisrt = false;
+				} else if(ment != '근무시간 외' && (isNotDueTime)){
+					ment = '근무시간 외';
+					isFisrt = true;
+				} else if(isNotDueTime){
+					isFisrt = false;
 				}
 
-				bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
+				bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 				startTime.setMinutes(startTime.getMinutes() + timeGap);
 			}
 			bodyData = bodyData + '</div>';
@@ -451,15 +472,22 @@ $page_title = '예약 현황';
 					var isHoliday = !disableAllTheseDays(startTime);
 					var ment = '';
 					var isFisrt = false;
+					var isNotDueTime = true;
 
 					while(startTime.getTime() < endTime.getTime()){
 						var isLaunchTime = false;
 						var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
-						// 점심 시간을 사용하는 매장의 경우
-						if(!disableAllTheseTimes(targetTime)) {
-							isLaunchTime = true;
+						
+						// 업무 시간 체크
+						isNotDueTime = !isDueTime(targetTime);
+						if(!isNotDueTime) {
+							// 업무 시간인 경우
+							// 점심 시간을 사용하는 매장의 경우
+							if(!disableAllTheseTimes(targetTime)) {
+								isLaunchTime = true;
+							}
 						}
-						if(!isHoliday && !isLaunchTime){
+						if(!isHoliday && !isLaunchTime && !isNotDueTime){
 							ment = '';
 						}
 						if(ment != '점심시간' && (isLaunchTime)){
@@ -472,8 +500,13 @@ $page_title = '예약 현황';
 							isFisrt = true;
 						} else if(isHoliday){
 							isFisrt = false;
+						} else if(ment != '근무시간 외' && (isNotDueTime)){
+							ment = '근무시간 외';
+							isFisrt = true;
+						} else if(isNotDueTime){
+							isFisrt = false;
 						}
-						bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
+						bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 						startTime.setMinutes(startTime.getMinutes() + timeGap);
 					}
 					bodyData = bodyData + '</div>';
@@ -488,15 +521,22 @@ $page_title = '예약 현황';
 				var isHoliday = !disableAllTheseDays(startTime);
 				var ment = '';
 				var isFisrt = false;
+				var isNotDueTime = true;
 
 				while(startTime.getTime() < endTime.getTime()){
 					var isLaunchTime = false;
 					var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
-					// 점심 시간을 사용하는 매장의 경우
-					if(!disableAllTheseTimes(targetTime)) {
-						isLaunchTime = true;
+					
+					// 업무 시간 체크
+					isNotDueTime = !isDueTime(targetTime);
+					if(!isNotDueTime) {
+						// 업무 시간인 경우
+						// 점심 시간을 사용하는 매장의 경우
+						if(!disableAllTheseTimes(targetTime)) {
+							isLaunchTime = true;
+						}
 					}
-					if(!isHoliday && !isLaunchTime){
+					if(!isHoliday && !isLaunchTime && !isNotDueTime){
 						ment = '';
 					}
 					if(ment != '점심시간' && (isLaunchTime)){
@@ -509,8 +549,13 @@ $page_title = '예약 현황';
 						isFisrt = true;
 					} else if(isHoliday){
 						isFisrt = false;
+					} else if(ment != '근무시간 외' && (isNotDueTime)){
+						ment = '근무시간 외';
+						isFisrt = true;
+					} else if(isNotDueTime){
+						isFisrt = false;
 					}
-					bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
+					bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 					startTime.setMinutes(startTime.getMinutes() + timeGap);
 				}
 				bodyData = bodyData + '</div>';
@@ -600,6 +645,9 @@ $page_title = '예약 현황';
 				else if(status == 'N'){
 					barCaption = 'label-4';
 				}
+				else if(status == 'C'){
+					barCaption = 'label-7';
+				}
 				reservationInfos = response.data;
 
 				for(var jnx=0; jnx < countColor; jnx++){
@@ -672,7 +720,7 @@ $page_title = '예약 현황';
 			}
 			stores = response.data;
 			if(stores.length) {
-				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null);
+				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null).reduce((a, b) => a.concat(b));
 			}
 			makeManagers();
 			dueDay();
@@ -689,20 +737,66 @@ $page_title = '예약 현황';
 			alert('상태 변경에 실패하였습니다.');
 			return false;
 		}
-		medibox.methods.store.reservation.status({
-			status: status
-		}, reservationseqno, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
+
+		if(status == 'C') {
+			// 
+			var res = reservationInfos.filter(r => r.seqno == reservationseqno);
+
+			if(!res || res.length == 0) {
+				alert('존재 하지 않는 예약입니다.');
 				return false;
 			}
-			alert('상태가 변경되었습니다.');
-			makeReservationBodyCeil();
-		}, function(e){
-			console.log(e);
-			alert('서버 통신 에러');
-		});
+			res = res[0];
+			reservation_old_price = res.serviceInfo.price - res.discount_price;
+			reIssueCoupon = res.coupon_seqno;
+
+			var point_type = 'P';
+			var price = reservation_old_price;
+			var memo = '관리자 예약 취소로 인한 사용 포인트 반환 (예약번호: ['+reservationseqno+'])';
+			var data = { admin_seqno:1, user_seqno:res.user_seqno, product_seqno: 0, reIssueCoupon: reIssueCoupon,
+				point_type:point_type, memo:memo, amount: price, admin_name: '' };
+
+			medibox.methods.point.collect(data, function(request1, response1){
+				console.log('output : ' + response1);
+				if(!response1.result){
+					alert(response1.ment.replace('\\r', '\n'));
+					return false;
+				}
+				
+				medibox.methods.store.reservation.status({
+					status: status
+				}, reservationseqno, function(request, response){
+					console.log('output : ' + response);
+					if(!response.result){
+						alert(response.ment);
+						return false;
+					}
+					alert('상태가 변경되었습니다.');
+					makeReservationBodyCeil();
+				}, function(e){
+					console.log(e);
+					alert('서버 통신 에러');
+				});
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		} else {
+			medibox.methods.store.reservation.status({
+				status: status
+			}, reservationseqno, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert('상태가 변경되었습니다.');
+				makeReservationBodyCeil();
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		}
 	}
 	// 3 선택된 매장의 모든 매니저 조회 -> list 생성
 	// 4 일자, 매장으로 선택된 모든 예약정보 조회 -> 매니저별 filter 로 ceil 생성
@@ -738,21 +832,47 @@ $page_title = '예약 현황';
 
 		popOpen();
 	}		
+    var reIssueCoupon = 0;
 	function remove(seq){
 		if(!confirm('정말 삭제 하시겠습니까?\n*기존 데이터는 모두 삭제됩니다.')) {
 			return;
 		}
-		medibox.methods.store.reservation.remove({}, seq, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
+		var res = reservationInfos.filter(r => r.seqno == reservationseqno);
+
+		if(!res || res.length == 0) {
+			alert('존재 하지 않는 예약입니다.');
+			return false;
+		}
+		res = res[0];
+
+		var point_type = 'P';
+        var price = reservation_old_price;
+		var memo = '관리자 예약 삭제로 인한 사용 포인트 반환 (예약번호: ['+reservationseqno+'])';
+		var data = { admin_seqno:1, user_seqno:res.user_seqno, product_seqno: 0, reIssueCoupon: reIssueCoupon,
+            point_type:point_type, memo:memo, amount: price, admin_name: '' };
+        
+        medibox.methods.point.collect(data, function(request1, response1){
+            console.log('output : ' + response1);
+            if(!response1.result){
+				alert(response1.ment.replace('\\r', '\n'));
+                return false;
 			}
-			alert('삭제 되었습니다.');
-			location.reload();
-		}, function(e){
-			console.log(e);
-		});
+			
+			medibox.methods.store.reservation.remove({}, seq, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert('삭제 되었습니다.');
+				location.reload();
+			}, function(e){
+				console.log(e);
+			});
+        }, function(e){
+            console.log(e);
+            alert('서버 통신 에러');
+        });	
 	}
 	function modifyItem(){
 		$('.pop-header').text(' 예약 수정 ');
@@ -784,6 +904,8 @@ $page_title = '예약 현황';
 		$('#_add').hide();
 		$('#_modify').show();
 
+		reservation_old_price = res.serviceInfo.price - res.discount_price;
+		reIssueCoupon = res.coupon_seqno;
 		
 		var bodyData = '<tr data-key="'+res.userInfo.user_seqno+'" onclick="chooseUser('+res.userInfo.user_seqno+')" style="cursor:pointer;">'
 							+'	<td>'+res.userInfo.user_name+'</td>'

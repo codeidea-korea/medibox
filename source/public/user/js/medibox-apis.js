@@ -118,6 +118,7 @@ var bfCall = (function(){
                 history: function (params, successThenFn, errorThenFn){ ajaxCall('user/payments', 'POST', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 use: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 refund: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                collect: function (params, successThenFn, errorThenFn){ ajaxCall('user/point-collect', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 shops: function (params, successThenFn, errorThenFn){ ajaxCall('point-types/shops', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
@@ -130,6 +131,7 @@ var bfCall = (function(){
                 coupon: {
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    mine: function (params, successThenFn, errorThenFn){ ajaxCall('coupons/mine', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                     history:{
@@ -162,6 +164,8 @@ var bfCall = (function(){
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('reservations/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                     day: function (params, successThenFn, errorThenFn){ ajaxCall('reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    check: function (params, successThenFn, errorThenFn){ ajaxCall('reservations/check-available', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
                 }
             }, contents:{
                 notice:{

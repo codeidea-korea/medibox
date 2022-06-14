@@ -603,6 +603,25 @@ class UserController extends Controller
             $pointUseHistoryCount = DB::table("user_point_hst")
                 ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
                 ->count();
+            // 상품이 아닌 서비스인 경우
+            for($inx = 0; $inx < count($pointUseHistory); $inx++){
+                if(empty($pointUseHistory[$inx]->service_seqno) || $pointUseHistory[$inx]->service_seqno == 0) {
+                    continue;
+                }
+                $detail = DB::table("store_service")
+                    ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
+                    ->select('store_service.*'
+                        , 'partner.cop_name')
+                    ->where([
+                        ['store_service.seqno', '=', $pointUseHistory[$inx]->service_seqno]
+                    ])->first();
+
+                $pointUseHistory[$inx]->service_name = $detail->cop_name; // 제휴사명
+                $pointUseHistory[$inx]->type_name = $detail->name; // 서비스명
+                $pointUseHistory[$inx]->service_sub_name = '(' . $detail->estimated_time . ')'; // 소요시간
+                $pointUseHistory[$inx]->price = $detail->price; // 가격
+            }
+
             $user->pointUseHistory = $pointUseHistory;
             $user->pointUseHistoryCount = $pointUseHistoryCount;
 

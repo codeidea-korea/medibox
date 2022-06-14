@@ -352,13 +352,19 @@ $page_title = '회원관리';
 						+'<tr>'
 						+'	<td>'+no+'</td>'
 						+'	<td>'+serviceName+'</td>'
-						+'	<td>'+(data[inx].canceled == 'N' ? (data[inx].approved == 'Y' ? '사용' : '승인중') : '사용취소')
-								+ (data[inx].hst_type == 'U' && data[inx].canceled == 'Y' ? ''
-								: '<div style="display: flex;">'+ (data[inx].approved == 'Y' 
-									? '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red">사용취소</button>'
-									:	('<button onclick="approveUsePoint('+data[inx].user_point_hst_seqno+')" class="btn black ml5">승인</button>'
-										+ '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red ml5">취소</button>')) + '</div>')
-							+'</td>'
+
+						// 일반 결제만 허용, 예약의 경우 제외
+						+ (
+							data[inx].service_seqno > 0
+								? ('<td>예약됨</td>')
+								: ('	<td>'+(data[inx].canceled == 'N' ? (data[inx].approved == 'Y' ? '사용' : '승인중') : '사용취소')
+									+ (data[inx].hst_type == 'U' && data[inx].canceled == 'Y' ? ''
+									: '<div style="display: flex;">'+ (data[inx].approved == 'Y' 
+										? '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red">사용취소</button>'
+										:	('<button onclick="approveUsePoint('+data[inx].user_point_hst_seqno+')" class="btn black ml5">승인</button>'
+											+ '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red ml5">취소</button>')) + '</div>')
+								+'</td>')
+						)
 
 						+'	<td>'+(data[inx].product_seqno == 0 ? data[inx].shop_name : data[inx].service_name)+'</td>'
 						+'	<td>'+(data[inx].product_seqno == 0 

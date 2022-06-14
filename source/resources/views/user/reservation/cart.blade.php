@@ -6,8 +6,8 @@
             <div class="container">
                 <div class="pic" id="shopPic"></div>
                 <div class="des">
-                    <h3 id="shopName">바라는 네일</h3>
-                    <address id="shopAddress">서울시 강남구 도산대로49길9 2층<br>바라는네일 in 미니쉬라운지 청담</address>
+                    <h3 id="shopName"></h3>
+                    <address id="shopAddress"></address>
                 </div>
             </div>
         </div>
@@ -279,20 +279,6 @@
 		}
 		return [true];
     }
-    
-    $('#datepicker').datepicker({
-        dateFormat: 'yy-mm-dd',
-        prevText: '이전 달',
-        nextText: '다음 달',
-        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
-        showMonthAfterYear: true,
-        yearSuffix: '년',
-        beforeShowDay: disableAllTheseDays
-    });
 	function setDueTime(store_seqno){
 		var targetStore = stores.filter(store => store.seqno == store_seqno);
 		if(targetStore.length != 1) {
@@ -449,6 +435,21 @@
             stores[0] = response.data[0].storeInfo;
             setDueTime(response.data[0].storeInfo.seqno);
             setShopInfo(stores[0]);
+            
+    
+            $('#datepicker').datepicker({
+                dateFormat: 'yy-mm-dd',
+                prevText: '이전 달',
+                nextText: '다음 달',
+                monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+                dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+                showMonthAfterYear: true,
+                yearSuffix: '년',
+                beforeShowDay: disableAllTheseDays
+            });
 			$('.service_inner').html($('.service_inner').html() + bodyData);
 		}, function(e){
 			console.log(e);

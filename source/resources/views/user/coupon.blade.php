@@ -179,7 +179,10 @@
 			console.log(e);
 			alert('서버 통신 에러');
 		});
-	}
+    }
+    function isAfter(targetDate){
+        return new Date(targetDate).getTime() > new Date().getTime();
+    }
     function getList(){		
 		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0 };
 
@@ -217,14 +220,14 @@
                         + (response.data[inx].used == 'N'
                         ? 
                             ('<div>'
-                            +'    <a href="/point/coupon/approval/S?id='+response.data[inx].seqno+'">'
+                            +'    <a href="'+(!isAfter(response.data[inx].end_dt) ? '#' : '/point/coupon/approval/S?id='+response.data[inx].seqno )+'">'
                             +'        <div class="left">'
                             +'            <h3>'+response.data[inx].name+'</h3>'
 //                            +'            <strong>30,000P</strong>'
                             +'            <p class="type">'+response.data[inx].partners.map(p => p.cop_name)+'</p>'
                             +'            <p class="deadline">기한 : '+response.data[inx].end_dt+'</p>'
                             +'        </div>'
-                            +'        <div class="right black">미사용</div>'
+                            +'        <div class="right '+(!isAfter(response.data[inx].end_dt) ? 'gray' : 'black')+'">'+(!isAfter(response.data[inx].end_dt) ? '사용 만료' : '미사용')+'</div>'
                             +'    </a>'
                             +'</div>')
                         : 

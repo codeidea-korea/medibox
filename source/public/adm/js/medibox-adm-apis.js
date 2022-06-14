@@ -292,6 +292,8 @@ var bfCall = (function(){
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'reservations/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                     day: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    check: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations/check-available', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
                 }
             }, 
             event:{

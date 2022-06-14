@@ -245,6 +245,8 @@ class PointController extends Controller
         $amount = $request->post('amount'); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
         $memo = $request->post('memo', '');
 
+        $reIssueCoupon = $request->post('reIssueCoupon', 0); // 쿠폰 되살릴 번호
+        
         $result = [];
         $result['ment'] = '포인트가 적립되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['result'] = false;
@@ -404,8 +406,7 @@ class PointController extends Controller
 
                 $prevPoint = DB::table('user_point')->where([
                     ['user_seqno', '=', $recommender->user_seqno],
-                    ['point_type', '=', 'P'],
-                    ['delete_yn', '=', 'N']
+                    ['point_type', '=', 'P']
                 ])->first();
 
                 DB::table('user_point_hst')->insertGetId(
@@ -424,12 +425,40 @@ class PointController extends Controller
                 );
                 DB::table('user_point')->where([
                     ['user_seqno', '=', $recommender->user_seqno],
-                    ['point_type', '=', 'P'],
-                    ['delete_yn', '=', 'N']
+                    ['point_type', '=', 'P']
                 ])->update(
                     [
                         'point' => $prevPoint->point + $etcPoint
                         , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
+        // 쿠폰 반환
+        if(!empty($reIssueCoupon) && $reIssueCoupon > 0) {
+            
+            $coupon = DB::table("coupon_user")->where([
+                ['seqno', '=', $reIssueCoupon]
+            ])->first();
+
+            if(!empty($coupon)) {
+                DB::table('coupon_user')->where([
+                    ['seqno', '=', $reIssueCoupon]
+                ])->update(
+                    [
+                        'used' => 'N', 
+                        'real_discount_price' => 0, 
+                        'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $reIssueCoupon,
+                        'hst_type' => 'S',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰 반환] 예약 수정/취소로 인한 쿠폰 반환',
+                        'create_dt' => date('Y-m-d H:i:s') 
                     ]
                 );
             }
@@ -618,6 +647,9 @@ class PointController extends Controller
         $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 구매 가능
         $user_seqno = $request->post('user_seqno'); // 대상 고객
         $product_seqno = $request->post('product_seqno'); // 대상 상품 식별번호
+        $coupon_seqno = $request->post('coupon_seqno'); // 사용 쿠폰 일련번호
+        $discount = $request->post('discount'); // 
+        $service_seqno = $request->post('service_seqno'); // 대상 서비스 식별번호
         $point_type = $request->post('point_type'); // 사용 구분
         $memo = $request->post('memo', '');
 
@@ -643,14 +675,55 @@ class PointController extends Controller
             $result['code'] = 'USER-NULL';
             return $result;
         }
-        $product = DB::table("product")->where([
-            ['product_seqno', '=', $product_seqno]
-        ])->first();
+        $product;
+        $service_name = '';
+        if(!empty($product_seqno)) {
+            $product = DB::table("product")->where([
+                ['product_seqno', '=', $product_seqno]
+            ])->first();
+        }
+        if(!empty($service_seqno)) {
+            $product = DB::table("store_service")->where([
+                ['seqno', '=', $service_seqno]
+            ])->first();
+            $service_name = $product->name;
+        }
         if(empty($product)) {
             $result['code'] = 'SERVICE-NULL';
             return $result;
         }
-        $amount = $product->price;
+
+        if(!empty($coupon_seqno) && $coupon_seqno > 0) {
+            $coupon = DB::table("coupon_user")->where([
+                ['seqno', '=', $coupon_seqno]
+            ])->first();
+
+            if(!empty($coupon)) {
+                DB::table('coupon_user')->where([
+                    ['seqno', '=', $coupon_seqno]
+                ])->update(
+                    [
+                        'used' => 'Y', 
+                        'real_discount_price' => $discount, 
+                        'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $coupon_seqno,
+                        'hst_type' => 'U',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰 사용] 예약',
+                        'create_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        } else {
+            $discount = 0;
+        }
+        
+        $amount = $product->price - $discount;
         // 내 포인트에 차감 처리
         $point = DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
@@ -671,6 +744,8 @@ class PointController extends Controller
                 , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
                 , 'point_type' => $point_type
                 , 'product_seqno' => $product_seqno
+                , 'product_name' => $service_name
+                , 'service_seqno' => $service_seqno
                 , 'hst_type' => 'U'
                 , 'point' => $amount
                 , 'memo' => $memo

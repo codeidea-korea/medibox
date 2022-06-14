@@ -33,7 +33,7 @@
                     echo '<li>'
                         .'    <a href="/reservation/'.$stores[$inx]->seqno.'">'
                         .'        <div class="menu_box">'
-                        .'            <img src="'.$stores[$inx]->partnerInfo->icon_reservation_store.'" alt="'.$stores[$inx]->partnerInfo->cop_name.'">'
+                        .'            <img src="'.$stores[$inx]->icon.'" alt="'.$stores[$inx]->name.'">'
                         .'            <span>'.$stores[$inx]->name.'</span>'
                         .'        </div>'
                         .'    </a>'
@@ -465,6 +465,7 @@
         });
     }
     // 예약 취소
+    var reservation_old_price = 0;
     function openRemove(seq, inx){
         prevReservationId = seq;
         // 세팅
@@ -474,18 +475,38 @@
         $('.cancelDesigner').text('['+(datas[inx].managerInfo ? datas[inx].managerInfo.manager_type : '기본')+'] '
                                                 +(datas[inx].managerInfo ? datas[inx].managerInfo.name : '-'));
         $('#popup22').addClass('on');
+        reservation_old_price = datas[inx].serviceInfo.price - datas[inx].discount_price;
+        reIssueCoupon = datas[inx].coupon_seqno;
     }
     
+    var reIssueCoupon = 0;
 	function remove(){
-		medibox.methods.store.reservation.status({
-			status: 'C'
-		}, prevReservationId, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
-			}
-            $('#popup23').addClass('on');
+        var point_type = 'P';
+        var price = reservation_old_price;
+        var memo = '관리자 예약 취소로 인한 사용 포인트 반환 (예약번호: ['+prevReservationId+'])';
+        var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0, reIssueCoupon: reIssueCoupon,
+            point_type:point_type, memo:memo, amount: price, admin_name: '' };
+
+        medibox.methods.point.collect(data, function(request1, response1){
+            console.log('output : ' + response1);
+            if(!response1.result){
+                alert(response1.ment.replace('\\r', '\n'));
+                return false;
+            }
+
+            medibox.methods.store.reservation.status({
+                status: 'C'
+            }, prevReservationId, function(request, response){
+                console.log('output : ' + response);
+                if(!response.result){
+                    alert(response.ment);
+                    return false;
+                }
+                $('#popup23').addClass('on');
+            }, function(e){
+                console.log(e);
+                alert('서버 통신 에러');
+            });
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

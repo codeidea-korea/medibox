@@ -860,6 +860,7 @@ ul.option-list li:not(:first-child){margin-top:7px;}
 #bookingContainer .bodyCon .tableChart .body .cell.label-4{background:#FFDDE0;}
 #bookingContainer .bodyCon .tableChart .body .cell.label-5{background:#DAE4FD;}
 #bookingContainer .bodyCon .tableChart .body .cell.label-6{background:#D1F0C2;}
+#bookingContainer .bodyCon .tableChart .body .cell.label-7{background:#EE336E;}
 
 #bookingContainer .bodyCon .tableChart .body .cell .layerSelect{position:absolute;top:50%;left:50%;z-index:9;width:160px;background:#fff;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
 #bookingContainer .bodyCon .tableChart .body .cell .layerSelect li{width:100%;height:45px;}
@@ -878,7 +879,7 @@ ul.option-list li:not(:first-child){margin-top:7px;}
 #bookingContainer .labelSet span.label-4:before{background:#FFDDE0;}
 #bookingContainer .labelSet span.label-5:before{background:#DAE4FD;}
 #bookingContainer .labelSet span.label-6:before{background:#D1F0C2;}
-
+#bookingContainer .labelSet span.label-7:before{background:#EE336E;}
 
 
 

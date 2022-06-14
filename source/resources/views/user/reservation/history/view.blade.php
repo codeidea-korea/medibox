@@ -451,7 +451,10 @@
             $('.cancelDesigner').text('['+(response.data.managerInfo ? response.data.managerInfo.manager_type : '기본')+'] '
                                                     +(response.data.managerInfo ? response.data.managerInfo.name : '-'));
 
-            
+
+            reservation_old_price = response.data.serviceInfo.price - response.data.discount_price;      
+            reIssueCoupon = response.data.coupon_seqno;
+
             $('#res_user_name').text(response.data.user_name);
             $('#res_user_phone').text(autoHypenPhone(response.data.user_phone));
 		}, function(e){
@@ -469,21 +472,22 @@
             url: '/reservation-history/' + {{$historyNo}},
         });
     }
-    
+    var reservation_old_price = 0;
+    var reIssueCoupon = 0;
 	function remove(){
-        // 예약금 환불후 취소 처리
         var point_type = 'P';
-		var memo = '사용자 예약 환불';
-		
-		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0,
+        var price = reservation_old_price;
+        var memo = '관리자 예약 취소로 인한 사용 포인트 반환 (예약번호: ['+{{$historyNo}}+'])';
+        var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: 0, reIssueCoupon: reIssueCoupon,
             point_type:point_type, memo:memo, amount: price, admin_name: '' };
-            
-		medibox.methods.point.refund(data, function(request, response){
-			console.log('output : ' + response);
-            if(!response.result){
-                alert(response.ment);
+
+        medibox.methods.point.collect(data, function(request1, response1){
+            console.log('output : ' + response1);
+            if(!response1.result){
+                alert(response1.ment.replace('\\r', '\n'));
                 return false;
             }
+            
             medibox.methods.store.reservation.status({
                 status: 'C'
             }, {{$historyNo}}, function(request, response){

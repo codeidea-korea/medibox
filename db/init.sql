@@ -940,6 +940,7 @@ alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리�
 alter table admin_info add column level_partner_grp_seqno varchar(200) null; -- 관리자 권한 제휴사 리스트
 
 
+alter table user_point_hst add column service_seqno bigint null;
 
 
 -- (쿠폰) 이벤트 쿠폰
@@ -1082,3 +1083,17 @@ create table if_send_sms_hst
     send_time    varchar(50)      null, -- 
     create_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
+
+alter table store add column icon varchar(200) default '/user/img/icon_minish_spa.svg';
+
+update store set icon = '/user/img/icon_minish_manul_therapy.svg' where seqno = 6;
+update store set icon = '/user/img/icon_foresta_black.svg' where seqno = 5;
+update store set icon = '/user/img/icon_deep_focus.svg' where seqno = 4;
+update store set icon = '/user/img/icon_minish_spa.svg' where seqno = 2;
+update store set icon = '/user/img/icon_valmont_spa.svg' where seqno = 3;
+update store set icon = '/user/img/icon_nail.svg' where seqno = 1;
+
+alter table store_service add column orders int default 1;
+
+alter table reservation add column coupon_seqno bigint default 0;
+alter table reservation add column discount_price int default 0;

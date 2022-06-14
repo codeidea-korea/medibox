@@ -1028,7 +1028,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 #reservation_lnb {position:sticky;top:2.6rem;left:0;background:#FFFFFF;width:100%;box-shadow:0px 3px 6px rgba(0,0,0,0.1);overflow-x:hidden;z-index:9;}
 #reservation_lnb .lnb_inner {display:flex;flex-wrap:wrap;padding:0.5rem 1rem;}
 #reservation_lnb .lnb_inner li {position:relative;width:calc(100% / 6);}
-#reservation_lnb .lnb_inner li a {display:flex;padding:0rem 0.5rem;height:110px;}
+#reservation_lnb .lnb_inner li a {display:flex;padding:0.5rem 1rem;height:110px;}
 
 #reservation_lnb .menu_box {margin:0 auto;text-align:center;}
 #reservation_lnb .menu_box span {display:block;font-size:0.65rem;word-break:keep-all;}
@@ -1253,15 +1253,6 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     /* ---------- main.html ---------- */
     /* 브랜드 시안4 */
     #brand .brand_menu4 .brand_wrap li a .txt_box img {width:2.5rem;}
-}
-/* 달력추가 220613*/
-.ui-datepicker td span, .ui-datepicker td a{
-    display: block!important;
-    font-size: 0.9rem!important;
-    line-height: 2rem!important;
-    text-align: center!important;
-    background: none !important;
-    border: none !important;
 }
 
 /* 220518추가 */
