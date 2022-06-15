@@ -18,6 +18,7 @@ class CouponUsedController extends Controller
         $pageSize = $request->get('pageSize', 10);
 
         $partner_seqno = $request->get('partner_seqno');
+        $user_seqno = $request->get('user_seqno');
 
         $coupon_search_type = $request->get('coupon_search_type', 'name');
         $search_field1 = $request->get('search_field1');
@@ -35,9 +36,6 @@ class CouponUsedController extends Controller
 
         $where = [];
         array_push($where, ['coupon_user.deleted', '=', 'N']);
-        if(! empty($type) && $type != ''){
-            array_push($where, ['type', '=', $type]);
-        }
         if(! empty($partner_seqno) && $partner_seqno != ''){
             array_push($where, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
         }
@@ -53,7 +51,13 @@ class CouponUsedController extends Controller
         if(! empty($start_dt) && $start_dt != ''){
             // NOTICE: 시작일 기준 검색이라고 기획서 71페이지 4번에 나와 있음
             array_push($whereCoupon, ['start_dt', '>=', $start_dt]);
+        }
+        if(! empty($end_dt) && $end_dt != ''){
+            // NOTICE: 시작일 기준 검색이라고 기획서 71페이지 4번에 나와 있음
             array_push($whereCoupon, ['start_dt', '<=', $end_dt]);
+        }
+        if(! empty($type) && $type != ''){
+            array_push($whereCoupon, ['type', '=', $type]);
         }
 
         $whereUser = [];
@@ -64,6 +68,10 @@ class CouponUsedController extends Controller
                 array_push($whereUser, ['user_name', 'like', '%'.$search_field2.'%']);
             }
         }
+        if(! empty($user_seqno) && $user_seqno != ''){
+            array_push($whereUser, ['user_info.user_seqno', '=', $user_seqno]);
+        }
+        
         
         $contents = DB::table("coupon_user")->where($where)
         /*
@@ -181,15 +189,22 @@ class CouponUsedController extends Controller
             array_push($whereCoupon, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
         }
         
-        $contents = DB::table("coupon_user")->where($where)
-            ->join('coupon', function ($join) {
-                $join->on('coupon_user.coupon_seqno', '=', 'coupon.seqno');
-            })
-            ->where(function($query) use ($whereCoupon) {
+        $contents = DB::table("coupon_user")
+            ->join('coupon', 'coupon_user.coupon_seqno', '=', 'coupon.seqno')
+            ->orWhere(function($query) use ($where, $whereCoupon) {
                 $query
-                    ->orWhere($whereCoupon)
-                    ->orWhere([['coupon_partner_grp_seqno', 'like', '%|0|%']])
-                    ->orWhere([['coupon_partner_grp_seqno', '=', '0']]);
+                    ->where($where)
+                    ->where($whereCoupon);
+            })
+            ->orWhere(function($query) use ($where) {
+                $query
+                    ->where($where)
+                    ->where([['coupon_partner_grp_seqno', 'like', '%|0|%']]);
+            })
+            ->orWhere(function($query) use ($where) {
+                $query
+                    ->where($where)
+                    ->where([['coupon_partner_grp_seqno', '=', '0']]);
             })
             ->select('coupon_user.*', 'coupon.type', 'coupon.name', 'coupon.discount_price', 'coupon.max_discount_price', 'coupon.limit_base_price')
             ->orderBy('coupon_user.create_dt', 'desc')
@@ -197,15 +212,22 @@ class CouponUsedController extends Controller
             ->distinct()
             ->get();
 
-        $count = DB::table("coupon_user")->distinct()->where($where)
-            ->leftJoin('coupon', function ($join) use ($whereCoupon) {
-                $join->on('coupon_user.coupon_seqno', '=', 'coupon.seqno');
-            })
-            ->where(function($query) use ($whereCoupon) {
+        $count = DB::table("coupon_user")
+            ->join('coupon', 'coupon_user.coupon_seqno', '=', 'coupon.seqno')
+            ->orWhere(function($query) use ($where, $whereCoupon) {
                 $query
-                    ->orWhere($whereCoupon)
-                    ->orWhere([['coupon_partner_grp_seqno', 'like', '%|0|%']])
-                    ->orWhere([['coupon_partner_grp_seqno', '=', '0']]);
+                    ->where($where)
+                    ->where($whereCoupon);
+            })
+            ->orWhere(function($query) use ($where) {
+                $query
+                    ->where($where)
+                    ->where([['coupon_partner_grp_seqno', 'like', '%|0|%']]);
+            })
+            ->orWhere(function($query) use ($where) {
+                $query
+                    ->where($where)
+                    ->where([['coupon_partner_grp_seqno', '=', '0']]);
             })
             ->select('coupon_user.*', 'coupon.type', 'coupon.name', 'coupon.discount_price', 'coupon.max_discount_price', 'coupon.limit_base_price')
             ->count();

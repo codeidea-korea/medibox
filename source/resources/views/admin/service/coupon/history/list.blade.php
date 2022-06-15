@@ -154,7 +154,7 @@ $page_title = '쿠폰 이용 현황';
 			language: 'ko-KR',
 			autoPick: true,
 			autoHide: true,
-			format: 'yyyy년 m월 d 일'
+			format: 'yyyy-mm-dd'
 		}).on('change', function(e) {
 			if(isStart) {
 				startDay = $(this).val();
@@ -335,7 +335,7 @@ $page_title = '쿠폰 이용 현황';
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
-		if(type && type != '') {
+		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
 		if(user_search_type && user_search_type != '') {
@@ -432,6 +432,9 @@ $page_title = '쿠폰 이용 현황';
 		getList();
 		getPartners();
 		popHide();
+
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

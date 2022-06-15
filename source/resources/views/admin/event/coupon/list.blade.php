@@ -380,7 +380,7 @@ $page_title = '이벤트 쿠폰 관리';
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
-		if(type && type != '') {
+		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
 		if(event_search_type && event_search_type != '') {
@@ -484,6 +484,11 @@ $page_title = '이벤트 쿠폰 관리';
 	$(document).ready(function(){
 		getList();
 		getPartners();
+		
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+		couponStartDay = toDateFormatt(new Date().getTime());
+		couponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

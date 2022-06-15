@@ -184,7 +184,7 @@
         return new Date(targetDate).getTime() > new Date().getTime();
     }
     function getList(){		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0 };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0, user_seqno: {{$userSeqno}} };
 
 		if(partner_seqno && partner_seqno != '') {
 			data.partner_seqno = partner_seqno;

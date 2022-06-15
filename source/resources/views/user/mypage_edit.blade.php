@@ -388,6 +388,9 @@
     function signoutConfirm(){
         $('#popup07').addClass('on');
     }
+    function closePop(){
+        $('.popup.select').removeClass('on');
+    }
     </script>
 
 
@@ -410,7 +413,7 @@
                 <!------------------------------------>
                     
                 <!------------ 2차버전 수정 ------------>
-                <a href="#!" class="close_btn">아니오</a>
+                <a href="#!" class="close_btn" onclick="closePop()">아니오</a>
                 <a href="#!" onclick="leave()">예</a>
                 <!------------------------------------>       
             </div>
@@ -460,7 +463,7 @@
                 <span>로그아웃하시겠습니까?</span>
             </div>
             <div class="bottom">
-                <a href="#!" class="close_btn">아니오</a>
+                <a href="#!" class="close_btn" onclick="closePop()">아니오</a>
                 <a href="#!" onclick="logout()">네</a>
             </div>
         </div>
@@ -470,7 +473,7 @@
     <script>
     function leave(){
         medibox.methods.user.delete({
-            id: {{session('user_seqno')}}
+            id: "{{$user->user_phone}}"
         }, function(request, response){
             console.log('output : ' + response);
             if(!response.result){

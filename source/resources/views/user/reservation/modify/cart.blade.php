@@ -423,11 +423,13 @@
                         + '    <ul>';
                     prevDeptName = response.data[inx].dept;
                 }
+                var timeinfos = response.data[inx].estimated_time.split(':');
+                var targetTime = (timeinfos[0] == '00' ? 0 : (Number(timeinfos[0])*60)) + (Number(timeinfos[1]));
 
                 bodyData = bodyData 
                         + '<li class="_serviceTag">'
                         + '    <a href="#" onclick="saveServiceId('+response.data[inx].seqno+', this)" '+(response.data[inx].seqno == serviceSeqno ? 'class="_choosed"' : '')+'>'
-                        + '        <span class="program">'+response.data[inx].name+' ('+convertTimeFormat(response.data[inx].estimated_time)+')</span>'
+                        + '        <span class="program">'+response.data[inx].name+' ('+targetTime+'분)</span>'
                         + '        <span class="price">'+medibox.methods.toNumber(response.data[inx].price)+'원</span>'
                         + '    </a>'
                         + '</li>';

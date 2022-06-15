@@ -118,7 +118,7 @@ class EvenBannerUsedController extends Controller
             })
             ->select(DB::raw('even_banner_user.*, even_coupon.name as coupon_name, even_coupon.context as coupon_context,'
                             .'even_coupon.coupon_partner_grp_seqno as coupon_partner_grp_seqno, even_coupon.start_dt as coupon_start_dt,'
-                            .'even_coupon.end_dt as coupon_end_dt, type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type,'
+                            .'even_coupon.end_dt as coupon_end_dt, even_coupon.type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type,'
                             .'user_info.user_phone as user_id, user_info.user_name as user_name'))
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)

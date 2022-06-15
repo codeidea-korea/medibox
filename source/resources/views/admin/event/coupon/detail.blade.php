@@ -139,7 +139,7 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 				<div class="wr-list-con">
 					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="" checked="checked"><span></span>제한없음</label>
 					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="F"><span></span>서비스 최소 결제금액</label>
-					<input type="number" id="limit_base_price" name="" value="" class="span200" placeholder="">원
+					<input type="number" id="limit_base_price" name="" value="0" class="span200" placeholder="">원
 				</div>
 			</div>
 		</div>
@@ -278,7 +278,7 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			$('#limit_base_price').val(0);
 			$('#limit_base_price').hide();
 		} else if(val == 'F'){
-			$('#limit_base_price').val('');
+			$('#limit_base_price').val('0');
 			$('#limit_base_price').show();
 		}
 	}

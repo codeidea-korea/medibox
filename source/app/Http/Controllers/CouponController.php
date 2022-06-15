@@ -51,6 +51,8 @@ class CouponController extends Controller
         }
         if(! empty($start_dt) && $start_dt != ''){
             array_push($where, ['start_dt', '>=', $start_dt]);
+        }
+        if(! empty($end_dt) && $end_dt != ''){
             array_push($where, ['start_dt', '<=', $end_dt]);
         }
         if(! empty($type) && $type != ''){

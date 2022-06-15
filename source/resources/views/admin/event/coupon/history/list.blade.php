@@ -566,6 +566,13 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 		getList();
 		getPartners();
 		popHide();
+
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+		couponStartDay = toDateFormatt(new Date().getTime());
+		couponEndDay = toDateFormatt(new Date().getTime());
+		userCouponStartDay = toDateFormatt(new Date().getTime());
+		userCouponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

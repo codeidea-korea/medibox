@@ -142,7 +142,7 @@ $page_title = '포인트 사용내역';
 			language: 'ko-KR',
 			autoPick: true,
 			autoHide: true,
-			format: 'yyyy년 m월 d 일'
+			format: 'yyyy-mm-dd'
 		}).on('change', function(e) {
 			if(isStart) {
 				startDay = $(this).val();
@@ -251,7 +251,7 @@ $page_title = '포인트 사용내역';
 		var searchField = $('input[name=searchField]').val();
 		
 		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }},
-				id:$('#id').val(), name:$('#name').val(), no:$('#no').val(), hst_type:$('input[name=hst_type]:checked').val(), startDay:startDay, endDay:endDay };
+				id:$('#id').val(), name:$('#name').val(), no:$('#no').val(), hst_type:$('input[name=hst_type]:checked').val(), startDt:startDay, endDt:endDay };
 
 		medibox.methods.point.history(data, function(request, response){
 			console.log('output : ' + response);
@@ -345,6 +345,9 @@ $page_title = '포인트 사용내역';
 	}
 	$(document).ready(function(){
 		getList();
+
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

@@ -138,7 +138,7 @@ $page_title = '쿠폰 관리';
 			language: 'ko-KR',
 			autoPick: true,
 			autoHide: true,
-			format: 'yyyy년 m월 d 일'
+			format: 'yyyy-mm-dd'
 		}).on('change', function(e) {
 			if(isStart) {
 				startDay = $(this).val();
@@ -304,7 +304,7 @@ $page_title = '쿠폰 관리';
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
-		if(type && type != '') {
+		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
 
@@ -386,6 +386,9 @@ $page_title = '쿠폰 관리';
 	$(document).ready(function(){
 		getList();
 		getPartners();
+
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

@@ -51,6 +51,12 @@ class PointController extends Controller
         if(! empty($user_name) && $user_name != ''){
             array_push($whereUser, ['user_info.user_name', '=', $user_name]);
         }
+        if(! empty($startDt) && $startDt != ''){
+            array_push($where, ['user_point_hst.create_dt', '>=', $startDt]);
+        }
+        if(! empty($endDt) && $endDt != ''){
+            array_push($where, ['user_point_hst.create_dt', '<=', $endDt]);
+        }
         
         if(! empty($point_type) && $point_type != ''){
             array_push($where, ['user_point_hst.point_type', '=', $point_type]);

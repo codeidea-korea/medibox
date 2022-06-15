@@ -463,7 +463,7 @@ class UserController extends Controller
         $services = DB::table("store_service")->where([
             ['store_seqno', '=', $storeNo],
             ['deleted', '=', 'N']
-        ])->orderBy('create_dt', 'desc')->get();
+        ])->orderBy('orders', 'asc')->orderBy('create_dt', 'desc')->get();
         $managers = DB::table("store_manager")->where([
             ['store_seqno', '=', $storeNo],
             ['deleted', '=', 'N']
@@ -498,7 +498,9 @@ class UserController extends Controller
     }
     public function coupon(Request $request)
     {
-        return view('user.coupon');
+        $userSeqno = $request->session()->get('user_seqno');
+
+        return view('user.coupon', ['userSeqno' => $userSeqno]);
     }
     
     public function login_main(Request $request)

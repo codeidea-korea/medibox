@@ -7,7 +7,7 @@
     <title>Medibox</title>
 
     <link rel="stylesheet" href="{{ asset('user/css/common.css') }}?v=202203171921">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}?v=202205211421">
+    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}?v=202206161221">
     <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}?v=202203171921">
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('user/js/slick.min.js') }}?v=202203171921"></script>

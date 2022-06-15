@@ -46,10 +46,10 @@ class EventBannerController extends Controller
             }
         }
         if(! empty($start_dt) && $start_dt != ''){
-            array_push($where, ['start_dt', '>=', $start_dt]);
+            array_push($where, ['even_banner.start_dt', '>=', $start_dt]);
         }
         if(! empty($end_dt) && $end_dt != ''){
-            array_push($where, ['start_dt', '<=', $end_dt]);
+            array_push($where, ['even_banner.start_dt', '<=', $end_dt]);
         }
         if(! empty($lend_dt) && $lend_dt != ''){
             array_push($where, ['even_banner.end_dt', '>', $lend_dt]);
@@ -84,7 +84,7 @@ class EventBannerController extends Controller
         }
         
         $contents = DB::table("even_banner")->where($where)
-            ->leftJoin('even_coupon', function ($join) use ($whereCoupon) {
+            ->join('even_coupon', function ($join) use ($whereCoupon) {
                 $join->on('even_banner.seqno', '=', 'even_coupon.event_banner_seqno')
                     ->where($whereCoupon);
             })
@@ -95,7 +95,7 @@ class EventBannerController extends Controller
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
         $count = DB::table("even_banner")->where($where)
-            ->leftJoin('even_coupon', function ($join) use ($whereCoupon) {
+            ->join('even_coupon', function ($join) use ($whereCoupon) {
                 $join->on('even_banner.seqno', '=', 'even_coupon.event_banner_seqno')
                     ->where($whereCoupon);
             })
