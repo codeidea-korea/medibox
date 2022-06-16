@@ -437,7 +437,7 @@ form input::placeholder {color:#b4b4b4;}
 #history_lnb .depth01>li:first-child {margin-right:0.9rem;}
 #history_lnb .depth01>li>a {display:block;padding-right:1rem;background:url(../img/arrow_bottom_small_b.svg) no-repeat right 0.5rem;}
 
-#history_lnb .depth02 {display:none;position:absolute;top:calc(100% + 0.25rem);left:0;width:200%;background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.16);padding:0.65rem 0.9rem;border-radius:0.5rem;}
+#history_lnb .depth02 {display:none;position:absolute;top:calc(100% + 0.25rem);left:0;width:200%;background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.16);padding:0.65rem 0.9rem;border-radius:0.5rem;z-index:9;}
 #history_lnb .depth02>li~li {margin-top:0.9rem;}
 
 

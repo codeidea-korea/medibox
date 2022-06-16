@@ -241,6 +241,7 @@
 	function disableAllTheseDays(date) {
 		var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
 		var toDay = new Date();
+        toDay.setHours(0); toDay.setMinutes(0); toDay.setMilliseconds(0); toDay.setSeconds(0);
 		if(date.getTime() < toDay.getTime()){
 			return [false];
 		}
@@ -332,6 +333,10 @@
     
     function saveSearchDate(time, target){
         searchDate = $('#datepicker').val();
+        if(searchDate == '') {
+            alert('날자를 선택해주세요.');
+            return;
+        }
         searchTime = time;
         $(target).parent().parent().find('li').removeClass('on');
         $(target).parent().addClass('on');
@@ -456,6 +461,8 @@
                 yearSuffix: '년',
                 beforeShowDay: disableAllTheseDays
             });
+            $('#datepicker').val('');
+            $('.ui-state-active').removeClass('ui-state-active');
         
 			$('.service_inner').html($('.service_inner').html() + bodyData);
 		}, function(e){

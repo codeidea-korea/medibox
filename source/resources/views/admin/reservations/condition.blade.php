@@ -914,6 +914,7 @@ var layer_select6 = '<ul class="layerSelect">';
 							+'	<td><a href="#" class="btn large blue span100" onclick="gotoInfoDetail(\''+res.userInfo.user_seqno+'\')">고객정보</a></td>'
 							+'</tr>';
 		$('#_reservationTargetUsers').html(bodyData);
+		array_push(userInfos, res.userInfo);
 		chooseUser(res.userInfo.user_seqno);
 
 		var startTimes = res.start_dt.split(' ');

@@ -52,10 +52,10 @@ class PointController extends Controller
             array_push($whereUser, ['user_info.user_name', '=', $user_name]);
         }
         if(! empty($startDt) && $startDt != ''){
-            array_push($where, ['user_point_hst.create_dt', '>=', $startDt]);
+            array_push($whereUser, ['user_point_hst.create_dt', '>=', $startDt . ' 00:00:00']);
         }
         if(! empty($endDt) && $endDt != ''){
-            array_push($where, ['user_point_hst.create_dt', '<=', $endDt]);
+            array_push($whereUser, ['user_point_hst.create_dt', '<=', $endDt . ' 00:00:00']);
         }
         
         if(! empty($point_type) && $point_type != ''){
@@ -80,12 +80,14 @@ class PointController extends Controller
             ->where($where)
             ->orderBy('user_point_hst.create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->select(DB::raw('user_point_hst.*, user_info.user_phone as user_phone, user_info.user_name as user_name, product.service_name as service_name, product.type_name as type_name'))
             ->get();
-        $count = DB::table("user_point_hst")->where($where)
+        $count = DB::table("user_point_hst")
             ->join('user_info', function ($join) use ($whereUser) {
                 $join->on('user_point_hst.user_seqno', '=', 'user_info.user_seqno')
                     ->where($whereUser);
             })
+            ->where($where)
             ->count();
 
         $result['ment'] = '성공';

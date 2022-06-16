@@ -33,7 +33,7 @@ $page_title = '이벤트 쿠폰 관리';
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">이벤트 기간</div>
+					<div class="wr-list-label">이벤트 상태</div>
 					<div class="wr-list-con">
 						<label class="radio-wrap"><input type="radio" name="status" value="" checked="checked"><span></span>전체</label>
 						<label class="radio-wrap"><input type="radio" name="status" value="A"><span></span>발급중</label>
@@ -217,6 +217,7 @@ $page_title = '이벤트 쿠폰 관리';
 	}
 	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
 		prevDate.setDate(prevDate.getDate() + terms);
 		$("._dayOption").removeClass('gray');
@@ -349,6 +350,25 @@ $page_title = '이벤트 쿠폰 관리';
 		return !str ? '-' : str;
 	}
 	
+	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		
+		if(coupon_partner_grp_seqno == 0) {
+			return '전체';
+		} else {
+			var types = coupon_partner_grp_seqno.split('||');
+			var partnersName = '';
+			for(var inx=0; inx<types.length; inx++){
+				types[inx] = (types[inx] + '').replaceAll('|', '');
+				if(types[inx] == '0') {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + '전체';
+				} else {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + $('#partnersPop > option[value='+types[inx]+']').text();
+				}
+			}
+			return partnersName;
+		}
+	}
+	
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
@@ -437,7 +457,7 @@ $page_title = '이벤트 쿠폰 관리';
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
 							+'	<td>'+getAllowedIssuanceType(response.data[inx].status)+'</td>'
 							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+safetyNull(response.data[inx].coupon_name)+'</td>'
 							+'	<td>'+safetyNull(response.data[inx].coupon_start_dt) + ' ~ ' + safetyNull(response.data[inx].coupon_end_dt)+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'

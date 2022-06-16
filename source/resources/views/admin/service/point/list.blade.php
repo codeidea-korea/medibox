@@ -157,6 +157,7 @@ $page_title = '포인트 사용내역';
 	}
 	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
 		prevDate.setDate(prevDate.getDate() + terms);
 		$("._dayOption").removeClass('gray');

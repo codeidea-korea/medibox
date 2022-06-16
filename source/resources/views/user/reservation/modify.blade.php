@@ -77,6 +77,7 @@
 	function disableAllTheseDays(date) {
 		var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
 		var toDay = new Date();
+        toDay.setHours(0); toDay.setMinutes(0); toDay.setMilliseconds(0); toDay.setSeconds(0);
 		if(date.getTime() < toDay.getTime()){
 			return [false];
 		}

@@ -311,6 +311,12 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="all_check_wrap">
+                        <p>
+                            <input type="checkbox" id="all_check">
+                            <label for="all_check">개인정보 수집·이용 동의</label>
+                        </p>
+                    </div>
                     <p class="des">예약 서비스 이용을 위한 개인정보 수집 및 제3자 제공, 취소/환불 규정을 확인하였으며 이에 동의합니다.</p>
                 </div>
             </div>
@@ -603,6 +609,12 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="all_check_wrap">
+                        <p>
+                            <input type="checkbox" id="all_check">
+                            <label for="all_check">개인정보 수집·이용 동의</label>
+                        </p>
+                    </div>
                     <p class="des">예약 서비스 이용을 위한 개인정보 수집 및 제3자 제공, 취소/환불 규정을 확인하였으며 이에 동의합니다.</p>
                 </div>
 
@@ -672,12 +684,16 @@
     function checkValidation(){
         const user_name = $('#user_name').val();
         const user_phone = $('#user_phone').val();
+        const checkAllowed = $('#all_check').is(':checked');
 
         $('#payment_btn').removeClass('on');
         if(!user_name || user_name == '') {
             return false;
         }
         if(!user_phone || user_phone == '' || user_phone.length < 10) {
+            return false;
+        }
+        if(!checkAllowed) {
             return false;
         }
         $('#payment_btn').addClass('on');
@@ -738,7 +754,7 @@
 
             var couponTag = '<li onclick="usedCoupon(this, -1)">쿠폰을 선택해주세요.</li>';
             for(var inx = 0; inx < response.data.length; inx++){
-                couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' ' + response.data[inx].discount_price + '</li>';
+                couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' (' + response.data[inx].discount_price + ')</li>';
             }
             coupons = response.data;
 
@@ -750,6 +766,12 @@
     }
 
     async function save(){
+        const checkAllowed = $('#all_check').is(':checked');
+        if(!checkAllowed){
+            alert('개인정보 제공에 동의해주세요.');
+            return false;
+        }
+
         if(!checkValidation()){
             alert('예약자 정보를 입력해주세요.');
             return false;

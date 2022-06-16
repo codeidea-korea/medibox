@@ -178,7 +178,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			var bodyData = '<option value="">선택해주세요.</option>';
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData + '<option value="'+response.data[inx].seqno+'" '
-					+(isFirst && voucherInfo.service_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].name+'</option>';
+					+(isFirst && voucherInfo.service_seqno == response.data[inx].seqno ? 'selected' : '')+'>['+response.data[inx].dept + '] ' +response.data[inx].name+'</option>';
 			}
 			isFirst = false;
 			$('#servicePop').html(bodyData);

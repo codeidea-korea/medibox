@@ -27,10 +27,12 @@
         <!-- 공지사항 -->
         <section id="announcement">
             <ul>
+            <!--
                 <li>
                     <h3>미니쉬 포인트 회원가입 적립 10,000메디</h3>
                     <span class="date">2021년 2월 17일</span>
                 </li>
+                -->
             </ul>
         </section>
 

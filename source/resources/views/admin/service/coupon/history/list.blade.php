@@ -169,6 +169,7 @@ $page_title = '쿠폰 이용 현황';
 	}
 	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
 		prevDate.setDate(prevDate.getDate() + terms);
 		$("._dayOption").removeClass('gray');

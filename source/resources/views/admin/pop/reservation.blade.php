@@ -235,6 +235,7 @@
 			}
 
 			var bodyData = '';
+			userInfos = [];
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData 
 							+'<tr data-key="'+response.data[inx].user_seqno+'" onclick="chooseUser('+response.data[inx].user_seqno+')" style="cursor:pointer;">'
@@ -243,6 +244,7 @@
 							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td><a href="#" class="btn large blue span100" onclick="gotoInfoDetail(\''+response.data[inx].user_seqno+'\')">고객정보</a></td>'
 							+'</tr>';
+				array_push(userInfos, response.data[inx]);
 			}
 			if(response.count > 0)
 			{
@@ -315,6 +317,7 @@
 	function disableAllTheseDays(date) {
 		var m = date.getMonth(), d = date.getDate(), y = date.getFullYear();
 		var toDay = new Date();
+        toDay.setHours(0); toDay.setMinutes(0); toDay.setMilliseconds(0); toDay.setSeconds(0);
 		if(date.getTime() < toDay.getTime()){
 			return false;
 		}
@@ -496,10 +499,16 @@
 			alert('서버 통신 에러');
 		});
 	}
+	var userInfos;
+	var user_name; var user_phone;
 	function chooseUser(seq){
 		user_seqno = seq;
 		$('#_reservationTargetUsers > tr > td').attr('style', '');
 		$('#_reservationTargetUsers > tr[data-key='+seq+'] > td').attr('style', 'background:green;color:#fff;');
+		var userInfo = userInfos.filter(user => user.user_seqno == seq);
+		userInfo = userInfo[0];
+		user_name = userInfo.user_name;
+		user_phone = userInfo.user_phone;
 	}
 	function getServicesPop(manager_type){
 		
@@ -531,7 +540,7 @@
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<option value="'+response.data[inx].seqno+'">'+response.data[inx].name +'</option>';
+							+'<option value="'+response.data[inx].seqno+'">['+response.data[inx].dept + '] ' +response.data[inx].name +'</option>';
 			}
 			$('#servicePop').html(bodyData);
 		}, function(e){
@@ -607,6 +616,8 @@
 					, service_seqno: service_seqno
 					, user_seqno: user_seqno
 					, admin_seqno: {{ $seqno }}
+					, user_name: user_name
+					, user_phone: user_phone
 				}, function(request, response){
 					console.log('output : ' + response);
 					if(!response.result){
@@ -706,6 +717,8 @@
 						, service_seqno: service_seqno
 						, user_seqno: user_seqno
 						, admin_seqno: {{ $seqno }}
+						, user_name: user_name
+						, user_phone: user_phone
 					}, reservationseqno, function(request, response){
 						console.log('output : ' + response);
 						if(!response.result){

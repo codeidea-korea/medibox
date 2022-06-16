@@ -349,6 +349,9 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		});
 	}
 	$(document).ready(function(){
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+		
 		getPartners();
 		toggleDiscountInfo('F');
 	});
@@ -491,6 +494,9 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		});
 	}
 	$(document).ready(function(){
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+
 		getPartners();
 		getInfo();
 	});
