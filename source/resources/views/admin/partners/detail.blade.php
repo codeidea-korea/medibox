@@ -6,7 +6,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 
 <section id="wrtie" class="container">
 
-	<div class="section-header">제휴사 정보 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
+	<div class="section-header">브랜드 정보 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
 	<div class="wrtieContents" style="flex-direction:column;">
 		<div class="wr-wrap line label160">
 			<div class="wr-head"> 기본 정보 </div>
@@ -274,7 +274,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 	@endphp
 	function add(){
 		if(!checkValidation()) {
-//			alert('제휴사 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
+//			alert('브랜드 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
 			alert('전체 항목을 입력해주세요 ');
 			return;
 		}
@@ -316,7 +316,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('제휴사 정보가 등록되었습니다.');
+			alert('브랜드 정보가 등록되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);
@@ -333,7 +333,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 	
 	function modify(){
 		if(!checkValidation()) {
-			alert('제휴사 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
+			alert('브랜드 정보가 정확하지 않습니다.\n정보를 다시 한번 확인해주세요.');
 			return;
 		}
 		var cop_name = $('#cop_name').val();
@@ -374,7 +374,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('제휴사 정보가 수정되었습니다.');
+			alert('브랜드 정보가 수정되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);
@@ -387,7 +387,7 @@ $page_title = $id == 0 ? '제휴사 등록' : '제휴사 수정';
 		medibox.methods.partner.one(data, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
-				alert('제휴사 정보가 정확하지 않습니다.\n다시 한번 확인해 주세요.');
+				alert('브랜드 정보가 정확하지 않습니다.\n다시 한번 확인해 주세요.');
 				cancel();
 				return false;
 			}

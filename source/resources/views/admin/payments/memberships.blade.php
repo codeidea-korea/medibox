@@ -150,20 +150,21 @@ $page_title = '쿠폰/바우처/멤버쉽 사용내역';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy년 m월 d 일'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);

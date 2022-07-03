@@ -407,7 +407,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
     }
 	function setStatus(status){
 		medibox.methods.point.coupon.status({
-			status: status
+			allowed_issuance_type: status
 		}, {{$couponNo}}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){

@@ -104,7 +104,7 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 						<option value="">전체 권한</option>
 						<option value="A">슈퍼 관리자</option>
 						<option value="B">본사 관리자</option>
-						<option value="P">제휴사 관리자</option>
+						<option value="P">브랜드 관리자</option>
 						<option value="S">매장 관리자</option>
 					</select>
 					<br>

@@ -83,6 +83,7 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					<input type="text" id="address_detail" name="" value="" class="span200" placeholder="">
 				</div>
 			</div>
+			{{--
 			<div class="wr-list">
 				<div class="wr-list-label">고객등급</div>
 				<div class="wr-list-con">
@@ -100,7 +101,8 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 						<option value="">선택해주세요.</option>
 					</select>
 				</div>
-			</div>
+			</div>	
+			--}}
 			<div class="wr-list">
 				<div class="wr-list-label">고객메모</div>
 				<div class="wr-list-con">
@@ -108,7 +110,7 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 				</div>
 			</div>
 			<div class="wr-list">
-				<div class="wr-list-label">추천인코드</div>
+				<div class="wr-list-label">추천인 아이디</div>
 				<div class="wr-list-con">
 					<input type="text" id="recommended_code" name="recommended_code" value="" class="span200" placeholder="">
 				</div>
@@ -139,6 +141,7 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					</select>
 				</div>
 			</div>
+			{{--
 			<div class="wr-list">
 				<div class="wr-list-label">가입경로</div>
 				<div class="wr-list-con">
@@ -148,6 +151,7 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					</select>
 				</div>
 			</div>			
+			--}}
 		</div>
 	</div>
 	
@@ -251,12 +255,14 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 		var userEmail = $('#userEmail').val();
 		var address = $('#address').val();
 		var address_detail = $('#address_detail').val();
+		/*
 		var grade = $('#grade').val();
 		var type = $('#type').val();
+		*/
 		var memo = $('#memo').val();
 		var recommended_code = $('#recommended_code').val();
 		var recommended_shop = $('#recommended_shop').val();
-		var join_path = $('#join_path').val();
+//		var join_path = $('#join_path').val();
 
 		medibox.methods.user.add({
 			id: id
@@ -267,12 +273,12 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			, email: userEmail
 			, address: address
 			, address_detail: address_detail
-			, grade: grade
-			, type: type
+			, grade: ''
+			, type: ''
 			, memo: memo
 			, recommended_code: recommended_code
 			, recommended_shop: recommended_shop
-			, join_path: join_path
+			, join_path: ''
 
 			, event_yn: 'Y'
 		}, function(request, response){
@@ -307,12 +313,12 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 		var userEmail = $('#userEmail').val();
 		var address = $('#address').val();
 		var address_detail = $('#address_detail').val();
-		var grade = $('#grade').val();
-		var type = $('#type').val();
+//		var grade = $('#grade').val();
+//		var type = $('#type').val();
 		var memo = $('#memo').val();
 		var recommended_code = $('#recommended_code').val();
 		var recommended_shop = $('#recommended_shop').val();
-		var join_path = $('#join_path').val();
+//		var join_path = $('#join_path').val();
 
 		medibox.methods.user.modify({
 			id: userId
@@ -324,12 +330,12 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			, email: userEmail
 			, address: address
 			, address_detail: address_detail
-			, grade: grade
-			, type: type
+			, grade: ''
+			, type: ''
 			, memo: memo
 			, recommended_code: recommended_code
 			, recommended_shop: recommended_shop
-			, join_path: join_path
+			, join_path: ''
 		}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){

@@ -180,7 +180,7 @@ $page_title = '이벤트 쿠폰 관리';
 	
 	$('._start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -196,7 +196,7 @@ $page_title = '이벤트 쿠폰 관리';
 	});
 	$('._coupon_start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -505,9 +505,7 @@ $page_title = '이벤트 쿠폰 관리';
 		getList();
 		getPartners();
 		
-		startDay = toDateFormatt(new Date().getTime());
 		endDay = toDateFormatt(new Date().getTime());
-		couponStartDay = toDateFormatt(new Date().getTime());
 		couponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>

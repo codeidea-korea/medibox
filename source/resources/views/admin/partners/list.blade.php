@@ -1,10 +1,10 @@
 @php 
-$page_title = '제휴사 정보';
+$page_title = '브랜드 정보';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">제휴사 정보</div>
+	<div class="page-title">브랜드 정보</div>
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">

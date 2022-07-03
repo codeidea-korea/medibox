@@ -139,7 +139,7 @@ form input::placeholder {color:#b4b4b4;}
 .bottom_menu ul li a {display:block;padding:1.2rem 0.5rem;}
 .bottom_menu ul li span {display:block;font-size:0.7rem;font-weight:500;color:#B4B4B4;}
 
-.bottom_menu ul li.on {border-top-color:#000;}
+/* .bottom_menu ul li.on {border-top-color:#000;} */
 .bottom_menu ul li.on span {color:#000;}
 
 /* 아이콘 색 */

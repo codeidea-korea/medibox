@@ -6,7 +6,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 
 <section id="wrtie" class="container">
 
-	<div class="section-header">매장 정보 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
+	<div class="section-header">매장 정보 관리 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
 	<div class="wrtieContents" style="flex-direction:column;">
 		<div class="wr-wrap line label160">
 			<div class="wr-head"> 기본 정보 </div>

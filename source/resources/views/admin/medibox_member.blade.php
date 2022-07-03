@@ -18,7 +18,10 @@ $page_title = '회원관리';
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
-			<div class="rightSet"><a href="#" onclick="excelDownload()" class="btn green small icon-excel">엑셀 다운로드</a></div>
+			<div class="rightSet">
+				<a href="#" onclick="excelDownload()" class="btn green small icon-excel">엑셀 다운로드</a>
+				<a href="/admin/point/conf" class="btn green small icon-add">포인트 자동 적립 관리</a>
+			</div>
 		</div>
 		<table>
 			<colgroup>

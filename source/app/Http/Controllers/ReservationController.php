@@ -52,11 +52,19 @@ class ReservationController extends Controller
             $serviceInfo = DB::table("store_service")
                 ->where([['seqno', '=', $contents[$inx]->service_seqno]])->first();
                 
+            // 추천인 정보
+            if(!empty($userInfo->recommended_code) && $userInfo->recommended_code != '') {
+                $recommendedUser = DB::table("user_info")->where([
+                    ['user_phone', '=', $userInfo->recommended_code]
+                ])->first();
+                $userInfo->recommendedUser = $recommendedUser;
+            }
             $contents[$inx]->userInfo = $userInfo;
             $contents[$inx]->partnerInfo = $partnerInfo;
             $contents[$inx]->storeInfo = $storeInfo;
             $contents[$inx]->managerInfo = $managerInfo;
             $contents[$inx]->serviceInfo = $serviceInfo;
+
         }
 
         $result['ment'] = '성공';
@@ -72,8 +80,16 @@ class ReservationController extends Controller
         $pageSize = $request->get('pageSize', 10);
         $user_seqno = $request->get('user_seqno');
         $partner_ids = $request->get('partner_ids');
-        $store_seqno = $request->get('store_seqno');
 
+        $store_seqno = $request->get('store_seqno');
+        $partner_seqno = $request->get('partner_seqno');
+        $res_status = $request->get('res_status');
+        $user_search_type = $request->get('user_search_type');
+        $searchField = $request->get('searchField');
+        $apply_on_mobile = $request->get('apply_on_mobile');
+        $start_time = $request->get('start_time');
+        $end_time = $request->get('end_time');
+        
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
@@ -85,6 +101,28 @@ class ReservationController extends Controller
         }
         if(! empty($store_seqno) && $store_seqno != ''){
             array_push($where, ['store_seqno', '=', $store_seqno]);
+        }
+        if(! empty($partner_seqno) && $partner_seqno != ''){
+            array_push($where, ['partner_seqno', '=', $partner_seqno]);
+        }
+        if(! empty($apply_on_mobile) && $apply_on_mobile != ''){
+            array_push($where, ['apply_on_mobile', '=', $apply_on_mobile]);
+        }
+        if(! empty($res_status) && $res_status != ''){
+            array_push($where, ['status', '=', $res_status]);
+        }
+        if(! empty($start_time) && $start_time != ''){
+            array_push($where, ['start_dt', '>=', $start_time. ' 00:00:00']);
+        }
+        if(! empty($end_time) && $end_time != ''){
+            array_push($where, ['start_dt', '<=', $end_time. ' 00:00:00']); 
+        }
+        if(! empty($searchField) && $searchField != ''){
+            if($user_search_type == 'phone'){
+                array_push($where, ['user_phone', 'like', '%'.$searchField.'%']);
+            } else if($user_search_type == 'name'){
+                array_push($where, ['user_name', 'like', '%'.$searchField.'%']);
+            }
         }
 
         $contents = DB::table("reservation")->where($where)
@@ -244,7 +282,7 @@ class ReservationController extends Controller
             $result['reservate']['resEndTime'] = $resEndTime;
             $result['reservate']['reservationInfo'] = $reservationInfo;
 
-            // 매장 정보 확인
+            // 매장 정보 관리 확인
             if(!empty($storeInfo)) {
                 // due_day 에 있는 요일인가
                 if(!empty($storeInfo->due_day) && strpos($storeInfo->due_day, date('w', strtotime($reservateDate))) === false) {
@@ -438,7 +476,7 @@ class ReservationController extends Controller
             $result['reservate']['resEndTime'] = $resEndTime;
             $result['reservate']['reservationInfo'] = $reservationInfo;
 
-            // 매장 정보 확인
+            // 매장 정보 관리 확인
             if(!empty($storeInfo)) {
                 // due_day 에 있는 요일인가
                 if(!empty($storeInfo->due_day) && strpos($storeInfo->due_day, date('w', strtotime($reservateDate))) === false) {
@@ -626,7 +664,7 @@ class ReservationController extends Controller
             $result['reservate']['resEndTime'] = $resEndTime;
             $result['reservate']['reservationInfo'] = $reservationInfo;
 
-            // 매장 정보 확인
+            // 매장 정보 관리 확인
             if(!empty($storeInfo)) {
                 // due_day 에 있는 요일인가
                 if(!empty($storeInfo->due_day) && strpos($storeInfo->due_day, date('w', strtotime($reservateDate))) === false) {

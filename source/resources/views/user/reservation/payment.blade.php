@@ -94,11 +94,11 @@
                     <form action="#" method="post">
                         <div>
                             <h3>이름</h3>
-                            <input type="text" id="user_name" placeholder="이름을 입력해주세요." required onkeyup="checkValidation()">
+                            <input type="text" id="user_name" placeholder="이름을 입력해주세요." value="{{$user->user_name}}" required onkeyup="checkValidation()">
                         </div>
                         <div>
                             <h3>연락처</h3>
-                            <input type="text" id="user_phone" placeholder="연락처를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required onkeyup="checkValidation()">
+                            <input type="text" id="user_phone" placeholder="연락처를 입력해주세요." value="{{$user->user_phone}}" pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required onkeyup="checkValidation()">
                         </div>
                     </form>
                 </div>
@@ -313,7 +313,7 @@
                     </div>
                     <div class="all_check_wrap">
                         <p>
-                            <input type="checkbox" id="all_check">
+                            <input type="checkbox" id="all_check" onchange="checkValidation()">
                             <label for="all_check">개인정보 수집·이용 동의</label>
                         </p>
                     </div>
@@ -611,7 +611,7 @@
                     </div>
                     <div class="all_check_wrap">
                         <p>
-                            <input type="checkbox" id="all_check">
+                            <input type="checkbox" id="all_check" onchange="checkValidation()">
                             <label for="all_check">개인정보 수집·이용 동의</label>
                         </p>
                     </div>
@@ -791,7 +791,7 @@
                 return false;
             }
 
-            var data = { admin_seqno:1, user_seqno:{{ $seqno }}, service_seqno: {{$serviceId}}, coupon_seqno: selectedCoupon, discount: discountPrice,
+            var data = { admin_seqno:0, user_seqno:{{ $seqno }}, service_seqno: {{$serviceId}}, coupon_seqno: selectedCoupon, discount: discountPrice,
                 point_type:point_type, memo:memo, admin_name: '' };
                 
             medibox.methods.point.use(data, function(request2, response2){

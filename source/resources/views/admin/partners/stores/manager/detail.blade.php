@@ -394,6 +394,47 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 				);
 			}
 		}
+		// start_dt end_dt
+		var times = '<option value="">선택해주세요.</option>';
+
+		var minTime = temp.start_dt;
+		var maxTime = temp.end_dt;
+
+		var targetTime = minTime;
+		var prevHour = 0;
+		var minArr = [];
+		while(targetTime <= maxTime){
+			var timeinfos = targetTime.split(':');
+			var isDueTime = true;
+			timeinfos[0] = Number(timeinfos[0]);
+			timeinfos[1] = Number(timeinfos[1]);
+            
+            // 점심 시간을 사용하는 매장의 경우
+            if(temp.allow_lunch_reservate == 'Y') {
+                if(temp.lunch_start_dt && temp.lunch_start_dt <= targetTime
+                    && temp.lunch_end_dt && temp.lunch_end_dt > targetTime) {
+                        isDueTime = false;
+                }
+            }
+
+			// 점심시간을 제외하고 넣기
+			if(isDueTime) {
+				if(prevHour != timeinfos[0]) {
+					prevHour = timeinfos[0];
+				}
+				times = times + '<option value="'+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':'+(timeinfos[1] < 10 ? '00' : timeinfos[1])+'">'
+					+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+'시 '+(timeinfos[1] < 10 ? '0' : timeinfos[1])+'분</option>';
+			}
+
+			timeinfos[1] = Number(timeinfos[1]) + 10;
+			if(timeinfos[1] >= 60) {
+				timeinfos[0] = Number(timeinfos[0]) + 1;
+				timeinfos[1] = '00';
+			}
+			targetTime = (timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0]) + ':' + (timeinfos[1] < 10 ? '00' : timeinfos[1]);
+		}
+		$('#start_dt').html(times);
+		$('#end_dt').html(times);
 	}
 
 	$(document).ready(function(){

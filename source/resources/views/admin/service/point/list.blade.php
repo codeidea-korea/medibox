@@ -1,10 +1,10 @@
 @php 
-$page_title = '포인트 사용내역';
+$page_title = '충전/결제내역';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">포인트 사용내역</div>
+	<div class="page-title">충전/결제내역</div>
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
@@ -68,7 +68,7 @@ $page_title = '포인트 사용내역';
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
 			<div class="rightSet">
-                <a href="#" onclick="addItem()" class="btn green small icon-add">포인트 자동 적립 관리</a>
+<!--                <a href="#" onclick="addItem()" class="btn green small icon-add">포인트 자동 적립 관리</a> -->
                 <!-- <a href="#" onclick="removeAll()" class="btn red small icon-del">삭제</a> -->
             </div>
 		</div>
@@ -136,20 +136,21 @@ $page_title = '포인트 사용내역';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy-mm-dd'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
@@ -347,7 +348,6 @@ $page_title = '포인트 사용내역';
 	$(document).ready(function(){
 		getList();
 
-		startDay = toDateFormatt(new Date().getTime());
 		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>

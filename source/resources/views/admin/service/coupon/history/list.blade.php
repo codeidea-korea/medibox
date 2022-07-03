@@ -148,20 +148,21 @@ $page_title = '쿠폰 이용 현황';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy-mm-dd'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
@@ -434,7 +435,6 @@ $page_title = '쿠폰 이용 현황';
 		getPartners();
 		popHide();
 
-		startDay = toDateFormatt(new Date().getTime());
 		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>

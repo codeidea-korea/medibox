@@ -66,12 +66,11 @@
         </figure> -->
 
         <!-- 예약내역이 있을 때 -->
+        <!--
         <ul class="history_wrap">
             <li>
                 <div class="top">
                     <span class="current check">예약 확인</span>
-                    <!-- 22.03.20 a 링크 수정 -->
-                    <!-- <a href="#!" class="view_detail_btn">예약 상세보기</a> -->
                     <a href="/user/reservation_check.html" class="view_detail_btn">예약 상세보기</a>
                 </div>
                 <div class="mid">
@@ -111,8 +110,6 @@
             <li>
                 <div class="top">
                     <span class="current cancel">예약 취소</span>
-                    <!-- 22.03.20 a 링크 수정 -->
-                    <!-- <a href="#!" class="view_detail_btn">예약 상세보기</a> -->
                     <a href="/user/reservation_check.html" class="view_detail_btn">예약 상세보기</a>
                 </div>
                 <div class="mid">
@@ -151,8 +148,6 @@
             <li>
                 <div class="top">
                     <span class="current completion">이용 완료</span>
-                    <!-- 22.03.20 a 링크 수정 -->
-                    <!-- <a href="#!" class="view_detail_btn">예약 상세보기</a> -->
                     <a href="/user/reservation_check.html" class="view_detail_btn">예약 상세보기</a>
                 </div>
                 <div class="mid">
@@ -192,8 +187,6 @@
             <li>
                 <div class="top">
                     <span class="current check">예약 확인</span>
-                    <!-- 22.03.20 a 링크 수정 -->
-                    <!-- <a href="#!" class="view_detail_btn">예약 상세보기</a> -->
                     <a href="/user/reservation_check.html" class="view_detail_btn">예약 상세보기</a>
                 </div>
                 <div class="mid">
@@ -226,6 +219,7 @@
                 </div>
             </li>
         </ul>
+        -->
     </section>
 
 

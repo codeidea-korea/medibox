@@ -220,7 +220,8 @@
                         + (response.data[inx].used == 'N'
                         ? 
                             ('<div>'
-                            +'    <a href="'+(!isAfter(response.data[inx].end_dt) ? '#' : '/point/coupon/approval/S?id='+response.data[inx].seqno )+'">'
+//                            +'    <a href="'+(!isAfter(response.data[inx].end_dt) ? '#' : '/point/coupon/approval/S?id='+response.data[inx].seqno )+'">'
+                            +'    <a>'
                             +'        <div class="left">'
                             +'            <h3>'+response.data[inx].name+'</h3>'
 //                            +'            <strong>30,000P</strong>'
@@ -232,7 +233,7 @@
                             +'</div>')
                         : 
                             ('<div>'
-                            +'    <a href="#">'
+                            +'    <a>'
                             +'        <div class="left">'
                             +'            <h3>'+response.data[inx].name+'</h3>'
 //                            +'            <strong>30,000P</strong>'

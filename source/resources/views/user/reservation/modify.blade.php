@@ -152,6 +152,56 @@
             $('#next_btn').addClass('on');
         }
     }
+    
+	function setDueTime(store_seqno){
+		var targetStore = stores.filter(store => store.seqno == store_seqno);
+		if(targetStore.length != 1) {
+			return false;
+        }
+        targetStore = targetStore[0];
+        targetStoreSeqno = targetStore.seqno;
+		var times = '';
+
+		var minTime = '08:00';
+		var maxTime = '18:00';
+
+		if(targetStore.start_dt && targetStore.start_dt != '') {
+			minTime = targetStore.start_dt;
+		}
+		if(targetStore.end_dt && targetStore.end_dt != '') {
+			maxTime = targetStore.end_dt;
+        }
+        
+		var targetTime = minTime;
+		var minArr = [];
+		while(targetTime <= maxTime){
+            var timeinfos = targetTime.split(':');
+            var isDueTime = true;
+			timeinfos[0] = Number(timeinfos[0]);
+            timeinfos[1] = Number(timeinfos[1]);
+            
+            // 점심 시간을 사용하는 매장의 경우
+            if(targetStore.allow_lunch_reservate == 'N') {
+                if(targetStore.lunch_start_dt && targetStore.lunch_start_dt <= targetTime
+                    && targetStore.lunch_end_dt && targetStore.lunch_end_dt > targetTime) {
+                        isDueTime = false;
+                }
+            }
+
+            times = times + '<li ' + (isDueTime ? 'class="active"' : '') + '>'
+                + '<a href="#" onclick="saveSearchDate(\''+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':' + (timeinfos[1] < 10 ? '00' : timeinfos[1])+'\', this)">'
+                + '    '+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':' + (timeinfos[1] < 10 ? '00' : timeinfos[1])
+                + '</a></li>';
+
+			timeinfos[1] = Number(timeinfos[1]) + 30;
+			if(timeinfos[1] >= 60) {
+				timeinfos[0] = Number(timeinfos[0]) + 1;
+				timeinfos[1] = '00';
+			}
+			targetTime = (timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0]) + ':' + (timeinfos[1] < 10 ? '00' : timeinfos[1]);
+		}
+		$('.time_inner > ul').html(times);
+	}
     var data;
     function loadHistory(){
         var param = { user_seqno:{{ $seqno }}, id: {{$historyNo}} };
@@ -176,6 +226,8 @@
                                                     +(response.data.managerInfo ? response.data.managerInfo.name : '-'));
                                                     */
             stores[0] = response.data.storeInfo;
+            setDueTime(response.data.storeInfo.seqno);
+
             $('#datepicker').datepicker({
                 dateFormat: 'yy-mm-dd',
                 prevText: '이전 달',
@@ -200,26 +252,11 @@
         }
 		var point_type = 'P';
         var memo = '사용자 예약';
+
+        data.start_dt = $('#datepicker').val() + ' ' + searchTime;
+        data.memo = data.memo + '\n[온라인] 고객 예약 수정됨';
 		
-		medibox.methods.store.reservation.modify({
-            status: data.status
-            , use_icon_important: data.use_icon_important
-            , use_icon_phone: data.use_icon_phone
-            , use_custom_color: data.use_custom_color
-            , custom_color: data.custom_color
-            , estimated_time: data.estimated_time
-            , start_dt: $('#datepicker').val() + ' ' + searchTime
-            , memo: data.memo + '\n[온라인] 고객 예약 수정됨'
-            , apply_on_mobile: data.apply_on_mobile
-            , partner_seqno: data.partner_seqno
-            , store_seqno: data.store_seqno
-            , service_seqno: data.service_seqno
-            , manager_seqno: data.manager_seqno
-            , user_seqno: {{$seqno}}
-            , admin_seqno: 0
-//                , user_name: $('#user_name').val()
-//                , user_phone: $('#user_phone').val()
-        }, {{$historyNo}}, function(request, response){
+		medibox.methods.store.reservation.modify(data, {{$historyNo}}, function(request, response){
             console.log('output : ' + response);
             if(!response.result){
                 alert(response.ment);

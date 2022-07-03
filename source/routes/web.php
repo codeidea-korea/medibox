@@ -131,7 +131,7 @@ Route::prefix('admin')->group(function () {
     // 메인화면 디자인 선택
     Route::get('/contents/template', [AdminController::class, 'template']);
 
-    // 제휴사 관리
+    // 브랜드 관리
     Route::get('/partners', [AdminController::class, 'partners']);
     Route::get('/partners/{id}', [AdminController::class, 'partner']);
     // 매장 관리

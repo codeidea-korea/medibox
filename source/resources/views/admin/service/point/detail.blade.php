@@ -1,12 +1,12 @@
 
 @php 
-$page_title = '포인트 사용내역';
+$page_title = '충전/결제내역';
 @endphp
 @include('admin.header')
 
 <section id="wrtie" class="container">
 
-	<div class="section-header">포인트 사용내역</div>
+	<div class="section-header">충전/결제내역</div>
 	<div class="wrtieContents">
 		<div class="flexbox">
 			<div class="view-wrap label160">

@@ -40,9 +40,9 @@ class EventBannerController extends Controller
         array_push($where, ['even_banner.deleted', '=', 'N']);
         if(! empty($search_field1) && $search_field1 != ''){
             if($event_search_type == 'name') {
-                array_push($where, ['name', 'like', '%'.$search_field1.'%']);
+                array_push($where, ['even_banner.name', 'like', '%'.$search_field1.'%']);
             } else if($event_search_type == 'context') {
-                array_push($where, ['context', 'like', '%'.$search_field1.'%']);
+                array_push($where, ['even_banner.context', 'like', '%'.$search_field1.'%']);
             }
         }
         if(! empty($start_dt) && $start_dt != ''){
@@ -67,9 +67,11 @@ class EventBannerController extends Controller
             array_push($whereCoupon, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
         }
         if(! empty($search_field2) && $search_field2 != ''){
-            if($coupon_search_type == 'even_coupon.name') {
+            if($coupon_search_type == 'name') {
+                array_push($where, ['even_coupon.name', 'like', '%'.$search_field2.'%']);
                 array_push($whereCoupon, ['even_coupon.name', 'like', '%'.$search_field2.'%']);
             } else if($coupon_search_type == 'seqno') {
+                array_push($where, ['even_coupon.seqno', '=', $search_field2]);
                 array_push($whereCoupon, ['even_coupon.seqno', '=', $search_field2]);
             }
         }

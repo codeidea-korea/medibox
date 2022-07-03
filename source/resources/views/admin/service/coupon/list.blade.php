@@ -132,20 +132,21 @@ $page_title = '쿠폰 관리';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy-mm-dd'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
@@ -344,8 +345,8 @@ $page_title = '쿠폰 관리';
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
 							+'	<td>'+getIssuanceType(response.data[inx].issuance_type)+'</td>'
 							+'	<td>'+getConditionType(response.data[inx].issuance_condition_type)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
 							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
@@ -388,7 +389,6 @@ $page_title = '쿠폰 관리';
 		getList();
 		getPartners();
 
-		startDay = toDateFormatt(new Date().getTime());
 		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>

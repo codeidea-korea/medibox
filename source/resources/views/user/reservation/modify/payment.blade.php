@@ -313,7 +313,7 @@
                     </div>
                     <div class="all_check_wrap">
                         <p>
-                            <input type="checkbox" id="all_check">
+                            <input type="checkbox" id="all_check" onchange="checkValidation()">
                             <label for="all_check">개인정보 수집·이용 동의</label>
                         </p>
                     </div>
@@ -611,7 +611,7 @@
                     </div>
                     <div class="all_check_wrap">
                         <p>
-                            <input type="checkbox" id="all_check">
+                            <input type="checkbox" id="all_check" onchange="checkValidation()">
                             <label for="all_check">개인정보 수집·이용 동의</label>
                         </p>
                     </div>

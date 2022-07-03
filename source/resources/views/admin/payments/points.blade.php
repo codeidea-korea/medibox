@@ -1,10 +1,10 @@
 @php 
-$page_title = '포인트 사용내역';
+$page_title = '충전/결제내역';
 @endphp
 @include('admin.header')
 
 <section class="container">
-	<div class="page-title">포인트 사용내역</div>
+	<div class="page-title">충전/결제내역</div>
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
@@ -21,12 +21,14 @@ $page_title = '포인트 사용내역';
 						<input type="text" name="user_name" id="name" value="" class="span250" onkeyup="enterkey()" placeholder="회원 이름을 입력하세요">
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">회원 번호</div> 
 					<div class="wr-list-con">
 						<input type="text" name="user_seqno" id="no" value="" class="span250" onkeyup="enterkey()" placeholder="회원 번호를 입력하세요">
 					</div>
 				</div>
+				-->
 				<div class="wr-list">
 					<div class="wr-list-label">기간</div>
 					<div class="wr-list-con">
@@ -47,6 +49,8 @@ $page_title = '포인트 사용내역';
 							<option value="">선택해주세요.</option>
 							<option value="P">포인트</option>
 							<option value="K">패키지</option>
+							<option value="S">정액권</option>
+							<!--
 							<option value="S1">통합</option>
 							<option value="S2">바라는 네일</option>
 							<option value="S3">발몽스파</option>
@@ -54,6 +58,7 @@ $page_title = '포인트 사용내역';
 							<option value="S5">딥포커스 검안센터</option>
 							<option value="S6">미니쉬 스파</option>
 							<option value="S7">미니쉬 도수</option>
+							-->
 						</select>
 					</div>
 				</div>
@@ -66,6 +71,7 @@ $page_title = '포인트 사용내역';
 						<label class="radio-wrap"><input type="radio" name="hst_type" value="R"><span></span>환불</label>
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">포인트</div> 
 					<div class="wr-list-con">
@@ -80,6 +86,7 @@ $page_title = '포인트 사용내역';
 						<input type="text" name="admin_name" id="admin_name" value="" class="span250" onkeyup="enterkey()" placeholder="담당자명를 입력하세요">
 					</div>
 				</div>
+				-->
 			</div>
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>	
@@ -161,20 +168,21 @@ $page_title = '포인트 사용내역';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy년 m월 d 일'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);

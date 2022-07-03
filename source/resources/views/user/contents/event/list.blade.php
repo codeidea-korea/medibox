@@ -29,28 +29,9 @@
             <div class="event_wrap">
                 <a href="/profile/events/1">
                     <figure>
-                        <img src="/user/img/img_event_banner01.jpg" alt="미니쉬 치과 리얼 모델 모집 이벤트 연장">
                     </figure>
-                    <h3>미니쉬 치과 리얼 모델 모집 이벤트 연장</h3>
-                    <p>이벤트기간 : 11.01 ~ 11.27</p>
-                </a>
-            </div>
-            <div class="event_wrap">
-                <a href="/profile/events/2">
-                    <figure>
-                        <img src="/user/img/img_event_banner02.jpg" alt="미니쉬 치과 리얼 모델 모집 이벤트 연장">
-                    </figure>
-                    <h3>미니쉬 치과 리얼 모델 모집 이벤트 연장</h3>
-                    <p>이벤트기간 : 11.01 ~ 11.27</p>
-                </a>
-            </div>
-            <div class="event_wrap">
-                <a href="/profile/events/3">
-                    <figure>
-                        <img src="/user/img/img_event_banner03.jpg" alt="미니쉬 치과 리얼 모델 모집 이벤트 연장">
-                    </figure>
-                    <h3>미니쉬 치과 리얼 모델 모집 이벤트 연장</h3>
-                    <p>이벤트기간 : 11.01 ~ 11.27</p>
+                    <h3></h3>
+                    <p></p>
                 </a>
             </div>
         </section>

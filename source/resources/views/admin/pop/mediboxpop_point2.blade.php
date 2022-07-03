@@ -3,13 +3,13 @@
 	<div class="popContainer">
 		
 		<header class="pop-header">
-			포인트 적립
+			포인트 충전
 		</header>
 
 		<form name="fboardlist" action="" method="post">
 		<div class="tbl-basic cell td-h1">
 			<div class="tbl-header">
-				<div class="caption">포인트 적립 유저 정보</div>
+				<div class="caption">포인트 충전 유저 정보</div>
 			</div>
 			<table id="resident_list">
 				<colgroup>
@@ -48,6 +48,19 @@
 						<th>포인트</th>
 						<td class="tright _userPoint">100,000 P</td>
 					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
+				<div class="caption">보유 정액권</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
 					<tr>
 						<th rowspan="3">정액권</th>
 						<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
@@ -74,7 +87,7 @@
 		<div class="wrtieContents">
 			<div class="wr-wrap line label130">
 				<div class="wr-list">
-					<div class="wr-list-label required">포인트 적립 종류 선택</div>
+					<div class="wr-list-label required">포인트 충전 종류 선택</div>
 					<div class="wr-list-con flex">					
 						<select id="collect_point_type" class="default _pointTypes">
 							<option>포인트</option>
@@ -83,7 +96,7 @@
 							<option>포레스타정액권</option>
 						</select>
 						<select id="collect_point_detail_type" class="default _collectItem">
-							<option>포인트 적립</option>
+							<option>포인트 충전</option>
 							<option>포인트 <포인트선택시 기재></option>
 							<option>통합정액권 300</option>
 							<option>통합정액권 500</option>
@@ -250,6 +263,10 @@ function checkCollectPoint(){
 		var memo = $('#collect_memo').val();
 		var amount = $('#collect_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
 		var admin_name = ''; // $('#calculator_name').val();
+
+		if(!confirm('[('+userInfo.user_phone+') '+userInfo.user_name+' ] 회원님의 ['+$('#collect_point').val()+'] point를 충전하시겠습니까?')) {
+			return;
+		}
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
 			point_type:point_type, memo:memo, amount:replacePoint(amount), admin_name: admin_name };

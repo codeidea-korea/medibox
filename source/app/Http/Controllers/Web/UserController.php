@@ -275,9 +275,15 @@ class UserController extends Controller
             return redirect('/index');
         }
 
+        /*
         return view('user.reservation.modify.cart')
             ->with('seqno', $userSeqno)
             ->with('reservationInfo', $reservationInfo);
+            */
+
+        return view('user.reservation.modify')
+            ->with('seqno', $userSeqno)
+            ->with('historyNo', $historyNo);
     }
     public function reservationModifyPayment(Request $request, $historyNo)
     {
@@ -286,6 +292,10 @@ class UserController extends Controller
             return redirect('/index');
         }
         $userSeqno = $request->session()->get('user_seqno');
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno]
+        ])->first();
         
         $reservationInfo = DB::table("reservation")->where([
             ['seqno', '=', $historyNo],
@@ -328,6 +338,7 @@ class UserController extends Controller
 
         return view('user.reservation.modify.payment')
             ->with('seqno', $userSeqno)
+            ->with('user', $user) 
             ->with('date', $date)
             ->with('time', $time)
             ->with('serviceId', $serviceId)
@@ -350,6 +361,9 @@ class UserController extends Controller
         $time = $request->get('time', '');
         $serviceId = $request->get('serviceId', '');
 
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno]
+        ])->first();
         $shopInfo = DB::table("store")->where([
             ['seqno', '=', $shopNo],
             ['deleted', '=', 'N']
@@ -373,6 +387,7 @@ class UserController extends Controller
 
         return view('user.reservation.payment')
             ->with('seqno', $userSeqno)
+            ->with('user', $user) 
             ->with('brandNo', $brandNo)
             ->with('shopNo', $shopNo)
             ->with('date', $date)
@@ -394,7 +409,7 @@ class UserController extends Controller
 
         $stores = DB::table("store")->where([
             ['deleted', '=', 'N']
-        ])->orderBy('seqno', 'desc')->get();
+        ])->orderBy('orders', 'asc')->get();
 
         for($inx = 0; $inx < count($stores); $inx++){
             $partnerInfo = DB::table("partner")

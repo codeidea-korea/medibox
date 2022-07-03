@@ -244,7 +244,7 @@
 							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td><a href="#" class="btn large blue span100" onclick="gotoInfoDetail(\''+response.data[inx].user_seqno+'\')">고객정보</a></td>'
 							+'</tr>';
-				array_push(userInfos, response.data[inx]);
+				userInfos.push(response.data[inx]);
 			}
 			if(response.count > 0)
 			{
@@ -499,7 +499,6 @@
 			alert('서버 통신 에러');
 		});
 	}
-	var userInfos;
 	var user_name; var user_phone;
 	function chooseUser(seq){
 		user_seqno = seq;

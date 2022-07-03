@@ -309,7 +309,7 @@ commit;
 
 
 alter table admin_info add column admin_type varchar(1) default 'A'; -- A 최고관리자, P 제휴사
--- 제휴사 관리
+-- 브랜드 관리
 drop table partner;
 create table partner
 (
@@ -332,7 +332,7 @@ create table partner
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
--- 매장 정보
+-- 매장 정보 관리
 drop table store;
 create table store
 (
@@ -936,7 +936,7 @@ update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox
 
 -- 레벨권한 설정 (나중에)
 alter table admin_info add column store_seqno bigint null; -- 소속 지점
-alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:제휴사 관리자, S:숍(매장별)관리자
+alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:브랜드 관리자, S:숍(매장별)관리자
 alter table admin_info add column level_partner_grp_seqno varchar(200) null; -- 관리자 권한 제휴사 리스트
 
 
@@ -1097,3 +1097,6 @@ alter table store_service add column orders int default 1;
 
 alter table reservation add column coupon_seqno bigint default 0;
 alter table reservation add column discount_price int default 0;
+
+alter table user_info add column memo2    varchar(500);
+alter table store add column orders int default 9999;

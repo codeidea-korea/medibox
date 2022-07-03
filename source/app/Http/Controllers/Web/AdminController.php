@@ -274,7 +274,7 @@ class AdminController extends Controller
         return view('admin.contents.template.main')->with('seqno', $userSeqno);
     }
     
-    // 제휴사 관리
+    // 브랜드 관리
     public function partners(Request $request)
     {
         if ($this->checkInvalidSession($request)) {

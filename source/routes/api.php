@@ -136,7 +136,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('contents/template/choosen', [TemplateController::class, 'choosen']);
     Route::post('contents/template/choose', [TemplateController::class, 'choose']);
     
-    // 제휴사 관리
+    // 브랜드 관리
     Route::get('partners', [PartnerController::class, 'list']);
     Route::get('partners-all', [PartnerController::class, 'getAll']);
     Route::get('partners/{id}', [PartnerController::class, 'find']);

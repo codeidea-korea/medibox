@@ -139,6 +139,7 @@ class UserController extends Controller
         $grade = $request->post('grade', '');
         $type = $request->post('type', '');
         $memo = $request->post('memo', '');
+        $memo2 = $request->post('memo2', '');
         $join_path = $request->post('join_path', '');
 
         $approve_yn = 'Y';
@@ -309,6 +310,7 @@ class UserController extends Controller
         $grade = $request->post('grade', '');
         $type = $request->post('type', '');
         $memo = $request->post('memo', '');
+        $memo2 = $request->post('memo2', '');
         $join_path = $request->post('join_path', '');
 
         $result = [];
@@ -359,6 +361,7 @@ class UserController extends Controller
                 , 'grade' => $grade
                 , 'type' => $type
                 , 'memo' => $memo
+                , 'memo2' => $memo2
                 , 'join_path' => $join_path
 
                 , 'update_dt' => date('Y-m-d H:i:s') 
@@ -375,16 +378,19 @@ class UserController extends Controller
     {
         $user_seqno = $request->post('user_seqno');
         $memo = $request->post('memo');
+        $type = $request->post('type', 1);
 
         $result = [];
         $result['ment'] = '실패';
         $result['result'] = false;
 
         DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
-            [
-                'memo' => $memo
-                , 'update_dt' => date('Y-m-d H:i:s') 
-            ]
+            (
+                $type != 1 
+                ? ['memo2' => $memo, 'update_dt' => date('Y-m-d H:i:s')]
+                : ['memo' => $memo, 'update_dt' => date('Y-m-d H:i:s')]
+            )
+            
         );
 
         $result['ment'] = '성공';
@@ -646,6 +652,31 @@ class UserController extends Controller
                 ['deleted', '=', 'N']
             ])->first();
             $user->packageHistory = $packageHistory;
+
+
+            // 무슨 멤버쉽을 사용중인지
+            $today = date("Y-m-d", time());
+            $membershipHistory = DB::table("membership_user")->where([
+                ['user_seqno', '=', $user->user_seqno],
+                ['used', '=', 'N'],
+                ['real_start_dt', '<=', $today . ' 00:00:00'],
+                ['real_end_dt', '>=', $today . ' 00:00:00'],
+                ['deleted', '=', 'N']
+            ])->first();
+            if(!empty($membershipHistory)) {
+                $membership = DB::table("product_membership")->where([
+                    ['seqno', '=', $membershipHistory->membership_seqno]
+                ])->first();
+                $membershipHistory->membership = $membership;
+            }
+            $user->membershipHistory = $membershipHistory;
+            // 추천인 정보
+            if(!empty($user->recommended_code) && $user->recommended_code != '') {
+                $recommendedUser = DB::table("user_info")->where([
+                    ['user_phone', '=', $user->recommended_code]
+                ])->first();
+                $user->recommendedUser = $recommendedUser;
+            }
         }
 
         $result['ment'] = '성공';
