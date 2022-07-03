@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\AdminController;
+use App\Http\Controllers\Web\ExcelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,10 +23,16 @@ Route::get('/user/signup-step1', [UserController::class, 'signup1'])->name('user
 Route::get('/user/signup-step2', [UserController::class, 'signup2'])->name('user.signup2');
 Route::get('/user/signup-step3', [UserController::class, 'signup3'])->name('user.signup3');
 
+Route::post('/user/login/change-password', [UserController::class, 'changePassword'])->name('user.login.change.password'); 
+Route::get('/user/login/find-id', [UserController::class, 'findId'])->name('user.login.find.id'); 
+Route::get('/user/login/find-password', [UserController::class, 'findPassword'])->name('user.login.find.password'); 
+
 Route::get('/point', [UserController::class, 'pointhome']) ->name('user.pointhome');
 Route::get('/point/payment/{type}', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
 Route::get('/point/history', [UserController::class, 'payhistory']) ->name('user.payhistory');
 Route::get('/point/approval/{result_code}', [UserController::class, 'approval']) ->name('user.approval');
+Route::get('/point/coupon/approval/{result_code}', [UserController::class, 'approvalCoupon']) ->name('user.approval.coupon');
+Route::get('/point/voucher/approval/{result_code}', [UserController::class, 'approvalVoucher']) ->name('user.approval.voucher');
 
 Route::get('/brand', [UserController::class, 'brand']) ->name('user.brand');
 Route::get('/brand/{partnerNo}', [UserController::class, 'brandDetail']) ->name('user.brand.detail');
@@ -65,9 +72,13 @@ Route::get('/reservation/valmontspa', [UserController::class, 'valmontspa_reserv
 
 Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/cart', [UserController::class, 'reservationCart']) ->name('user.reservation.cart');
 Route::get('/brands/{brandNo}/shops/{shopNo}/reservation/payment', [UserController::class, 'reservationPayment']) ->name('user.reservation.payment');
+
 Route::get('/reservation-history', [UserController::class, 'reservationHistory']) ->name('user.reservation.history.list');
 Route::get('/reservation-history/{historyNo}', [UserController::class, 'reservationHistoryView']) ->name('user.reservation.history.view');
 Route::get('/reservation-history/{historyNo}/modify', [UserController::class, 'reservationModify']) ->name('user.reservation.modify');
+
+Route::get('/reservation-modify/cart/{historyNo}', [UserController::class, 'reservationModifyCart']) ->name('user.reservation.modify.cart');
+Route::get('/reservation-modify/payment/{historyNo}', [UserController::class, 'reservationModifyPayment']) ->name('user.reservation.modify.payment');
 
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
 Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
@@ -93,6 +104,8 @@ Route::get('/admin/index', [AdminController::class, 'index']);
 
 Route::prefix('admin')->group(function () {
     Route::get('/members', [AdminController::class, 'medibox_member']);
+    Route::get('/members-download/excel', [ExcelController::class, 'getUsers']);
+    
     Route::get('/members/{id}/infos', [AdminController::class, 'medibox_member_view'])->name('admin.medibox_member_view');
     Route::get('/members/{id}', [AdminController::class, 'medibox_member_detail'])->name('admin.medibox_member_detail');
     Route::get('/login', [AdminController::class, 'login_medibox'])->name('admin.login_medibox');
@@ -118,7 +131,7 @@ Route::prefix('admin')->group(function () {
     // 메인화면 디자인 선택
     Route::get('/contents/template', [AdminController::class, 'template']);
 
-    // 제휴사 관리
+    // 브랜드 관리
     Route::get('/partners', [AdminController::class, 'partners']);
     Route::get('/partners/{id}', [AdminController::class, 'partner']);
     // 매장 관리
@@ -177,4 +190,7 @@ Route::prefix('admin')->group(function () {
 
     Route::post('/login/proccess', [AdminController::class, 'login_proccess']);
     Route::get('/logout/proccess', [AdminController::class, 'logout_proccess']);
+
+    Route::get('/main', [AdminController::class, 'partnerHome']);
+    Route::get('/notice/{id}', [AdminController::class, 'partnerNoticeDetail']);
 });

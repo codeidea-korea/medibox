@@ -145,7 +145,7 @@ $page_title = '멤버쉽 관리';
 			var bodyData = '';
 			for(var inx=0; inx<response.data.length; inx++){
 				var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
-				var rowspan = response.data[inx].services ? response.data[inx].services.length : 1;
+				var rowspan = response.data[inx].services && response.data[inx].services.length > 0 ? response.data[inx].services.length : 1;
 
 				bodyData = bodyData 
 							+'<tr>'
@@ -156,7 +156,7 @@ $page_title = '멤버쉽 관리';
 							+'	<td rowspan="'+rowspan+'">'+medibox.methods.toNumber(response.data[inx].point)+'</td>'
 
 							// 메인
-							+ (response.data[inx].services
+							+ (response.data[inx].services && response.data[inx].services.length > 0
 								? ('<td>'+response.data[inx].services[0].partnerInfo.cop_name+'</td>'
 									+ '<td>'+response.data[inx].services[0].storeInfo.name+'</td>'
 									+ '<td>'+response.data[inx].services[0].name+'</td>'

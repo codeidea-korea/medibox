@@ -13,7 +13,7 @@ $page_title = '쿠폰 관리';
 					<div class="wr-list-label">쿠폰 제휴사</div>
 					<div class="wr-list-con">
 						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
-							<option>검색가능 셀렉트</option>
+							<option value="">검색가능 셀렉트</option>
 						</select>
 					</div>
 				</div>
@@ -30,11 +30,11 @@ $page_title = '쿠폰 관리';
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setDay(this, 0)" class="btn _dayOption gray">오늘</a>
+						<a href="#" onclick="setDay(this, -7)" class="btn _dayOption gray">1주</a>
+						<a href="#" onclick="setDay(this, -30)" class="btn _dayOption gray">1개월</a>
+						<a href="#" onclick="setDay(this, -180)" class="btn _dayOption gray">6개월</a>
+						<a href="#" onclick="setDay(this, -365)" class="btn _dayOption gray">1년</a>
 						<input type="text" id="_start" class="datepick _start">			
 						~
 						<input type="text" id="_end" class="datepick _end">		
@@ -132,29 +132,34 @@ $page_title = '쿠폰 관리';
 	var startDay = '';
 	var endDay = '';
 
-	$('.datepick').each(function() {
-		const isStart = $(this).hasClass('_start');
-		$(this).datepicker({
-			language: 'ko-KR',
-			autoPick: true,
-			autoHide: true,
-			format: 'yyyy년 m월 d 일'
-		}).on('change', function(e) {
-			if(isStart) {
-				startDay = $(this).val();
-			} else {
-				endDay = $(this).val();
-			}
-		});
+	$('._start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		startDay = $(this).val();
+	});
+	$('._end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy년 m월 d 일'
+	}).on('change', function(e) {
+		endDay = $(this).val();
 	});
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
 	}
-	function setDay(date) {
+	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+		$("._dayOption").removeClass('gray');
+		$("._dayOption").addClass('gray');
+		$(target).removeClass('gray');
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
@@ -257,6 +262,25 @@ $page_title = '쿠폰 관리';
 		}
 	}
 	
+	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		
+		if(coupon_partner_grp_seqno == 0) {
+			return '전체';
+		} else {
+			var types = coupon_partner_grp_seqno.split('||');
+			var partnersName = '';
+			for(var inx=0; inx<types.length; inx++){
+				types[inx] = (types[inx] + '').replaceAll('|', '');
+				if(types[inx] == '0') {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + '전체';
+				} else {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + $('#partnersPop > option[value='+types[inx]+']').text();
+				}
+			}
+			return partnersName;
+		}
+	}
+	
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
@@ -282,7 +306,7 @@ $page_title = '쿠폰 관리';
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
-		if(type && type != '') {
+		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
 
@@ -314,15 +338,15 @@ $page_title = '쿠폰 관리';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
 							+'	<td>'+getAllowedIssuanceType(response.data[inx].allowed_issuance_type)+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
 							+'	<td>'+getIssuanceType(response.data[inx].issuance_type)+'</td>'
 							+'	<td>'+getConditionType(response.data[inx].issuance_condition_type)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
 							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'</tr>';
 			}
@@ -364,6 +388,8 @@ $page_title = '쿠폰 관리';
 	$(document).ready(function(){
 		getList();
 		getPartners();
+
+		endDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

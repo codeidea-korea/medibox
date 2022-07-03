@@ -71,6 +71,25 @@ class UserController extends Controller
     {
         return view('user.login');
     }
+    public function changePassword(Request $request)
+    {
+        $userID = $request->get('userID', '');
+
+        $userInfo = DB::table("user_info")->where([
+            ['user_phone', '=', $userID],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        return view('user.login.change_pw', ['userInfo' => $userInfo]);
+    }
+    public function findId(Request $request)
+    {
+        return view('user.login.find_id');
+    }
+    public function findPassword(Request $request)
+    {
+        return view('user.login.find_pw');
+    }
     
     public function main(Request $request)
     {
@@ -154,9 +173,7 @@ class UserController extends Controller
 
         $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
 
-        return view('user.profile_edit')->with('id', $user->user_phone)
-            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn)
-            ->with('gender', $user->gender)->with('recommended_shop', $user->recommended_shop)->with('recommended_code', $user->recommended_code);
+        return view('user.profile_edit', ['user' => $user, 'seqno' => $userSeqno]);
     }
     public function mypage_edit(Request $request)
     {
@@ -178,9 +195,7 @@ class UserController extends Controller
 
         $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
 
-        return view('user.mypage_edit')->with('id', $user->user_phone)
-            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn)
-            ->with('gender', $user->gender)->with('recommended_shop', $user->recommended_shop)->with('recommended_code', $user->recommended_code);
+        return view('user.mypage_edit', ['user' => $user, 'seqno' => $userSeqno]);
     }
     public function mypage_privacy(Request $request)
     {
@@ -242,7 +257,7 @@ class UserController extends Controller
             ->with('brandNo', $brandNo)
             ->with('shopNo', $shopNo);
     }
-    public function reservationModify(Request $request, $historyNo)
+    public function reservationModifyCart(Request $request, $historyNo)
     {
         if ($this->checkInvalidSession($request)) {
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
@@ -254,13 +269,86 @@ class UserController extends Controller
             ['seqno', '=', $historyNo],
             ['deleted', '=', 'N']
         ])->first();
-        $targetTime = explode(' ', $reservationInfo->start_dt);
+
+        if (empty($reservationInfo)) {
+            $request->session()->put('error', '존재하지 않는 예약정보입니다.');
+            return redirect('/index');
+        }
+
+        /*
+        return view('user.reservation.modify.cart')
+            ->with('seqno', $userSeqno)
+            ->with('reservationInfo', $reservationInfo);
+            */
 
         return view('user.reservation.modify')
             ->with('seqno', $userSeqno)
-            ->with('date', $targetTime[0])
-            ->with('time', $targetTime[1])
             ->with('historyNo', $historyNo);
+    }
+    public function reservationModifyPayment(Request $request, $historyNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno]
+        ])->first();
+        
+        $reservationInfo = DB::table("reservation")->where([
+            ['seqno', '=', $historyNo],
+            ['deleted', '=', 'N']
+        ])->first();
+
+        if (empty($reservationInfo)) {
+            $request->session()->put('error', '존재하지 않는 예약정보입니다.');
+            return redirect('/index');
+        }
+        $date = $request->get('date', '');
+        $time = $request->get('time', '');
+        $serviceId = $request->get('serviceId', '');
+
+        $oldServiceInfo = DB::table("store_service")->where([
+            ['seqno', '=', $reservationInfo->service_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        $reservation_old_price = $oldServiceInfo->price;
+
+        $shopInfo = DB::table("store")->where([
+            ['seqno', '=', $reservationInfo->store_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        $serviceInfo = DB::table("store_service")->where([
+            ['seqno', '=', $serviceId],
+            ['deleted', '=', 'N']
+        ])->first();
+        $pointInfo = DB::table("user_point")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        
+        $reservation_shop = $shopInfo->name; 
+        $reservation_service = $serviceInfo->name;
+        $reservation_price = $serviceInfo->price;
+
+        $remain_point = $pointInfo->point;
+        $remain_point2 = 0;
+
+        return view('user.reservation.modify.payment')
+            ->with('seqno', $userSeqno)
+            ->with('user', $user) 
+            ->with('date', $date)
+            ->with('time', $time)
+            ->with('serviceId', $serviceId)
+            ->with('reservation_shop', $reservation_shop)
+            ->with('reservation_service', $reservation_service)
+            ->with('reservation_price', $reservation_price)
+            ->with('reservation_old_price', $reservation_old_price)
+            ->with('remain_point', $remain_point)
+            ->with('remain_point2', $remain_point2)
+            ->with('reservationInfo', $reservationInfo);
     }
     public function reservationPayment(Request $request, $brandNo, $shopNo)
     {
@@ -273,6 +361,9 @@ class UserController extends Controller
         $time = $request->get('time', '');
         $serviceId = $request->get('serviceId', '');
 
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno]
+        ])->first();
         $shopInfo = DB::table("store")->where([
             ['seqno', '=', $shopNo],
             ['deleted', '=', 'N']
@@ -296,6 +387,7 @@ class UserController extends Controller
 
         return view('user.reservation.payment')
             ->with('seqno', $userSeqno)
+            ->with('user', $user) 
             ->with('brandNo', $brandNo)
             ->with('shopNo', $shopNo)
             ->with('date', $date)
@@ -315,8 +407,18 @@ class UserController extends Controller
         }
         $userSeqno = $request->session()->get('user_seqno');
 
-        return view('user.reservation.history.list')
-            ->with('seqno', $userSeqno);
+        $stores = DB::table("store")->where([
+            ['deleted', '=', 'N']
+        ])->orderBy('orders', 'asc')->get();
+
+        for($inx = 0; $inx < count($stores); $inx++){
+            $partnerInfo = DB::table("partner")
+                ->where([['seqno', '=', $stores[$inx]->partner_seqno]])->first();
+                
+            $stores[$inx]->partnerInfo = $partnerInfo;
+        }
+
+        return view('user.reservation.history.list', ['stores' => $stores, 'seqno' => $userSeqno]);
     }
     public function reservationHistoryView(Request $request, $historyNo)
     {
@@ -376,7 +478,7 @@ class UserController extends Controller
         $services = DB::table("store_service")->where([
             ['store_seqno', '=', $storeNo],
             ['deleted', '=', 'N']
-        ])->orderBy('create_dt', 'desc')->get();
+        ])->orderBy('orders', 'asc')->orderBy('create_dt', 'desc')->get();
         $managers = DB::table("store_manager")->where([
             ['store_seqno', '=', $storeNo],
             ['deleted', '=', 'N']
@@ -411,7 +513,9 @@ class UserController extends Controller
     }
     public function coupon(Request $request)
     {
-        return view('user.coupon');
+        $userSeqno = $request->session()->get('user_seqno');
+
+        return view('user.coupon', ['userSeqno' => $userSeqno]);
     }
     
     public function login_main(Request $request)
@@ -512,5 +616,20 @@ class UserController extends Controller
     public function version(Request $request)
     {
         return view('user.contents.version');
+    }
+    
+    public function approvalCoupon(Request $request, $result_code)
+    {
+        $userSeqno = $request->session()->get('user_seqno');
+        $id = $request->get('id', '');
+
+        return view('user.approval.coupon')->with('code', $result_code)->with('id', $id)->with('userSeqno', $userSeqno);
+    }
+    public function approvalVoucher(Request $request, $result_code)
+    {
+        $userSeqno = $request->session()->get('user_seqno');
+        $id = $request->get('id', '');
+
+        return view('user.approval.voucher')->with('code', $result_code)->with('id', $id)->with('userSeqno', $userSeqno);
     }
 }

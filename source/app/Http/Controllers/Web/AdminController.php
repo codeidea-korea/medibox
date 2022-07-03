@@ -157,6 +157,27 @@ class AdminController extends Controller
 
         return view('admin.contents.partnernotice.detail')->with('seqno', $userSeqno)->with('id', $id);
     }
+    // 공지사항 파트너 메인
+    public function partnerHome(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.main.partner.list')->with('seqno', $userSeqno);
+    }
+    public function partnerNoticeDetail(Request $request, $id)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.main.partner.detail')->with('seqno', $userSeqno)->with('id', $id);
+    }
     // 자주묻는질문
     public function faqs(Request $request)
     {
@@ -253,7 +274,7 @@ class AdminController extends Controller
         return view('admin.contents.template.main')->with('seqno', $userSeqno);
     }
     
-    // 제휴사 관리
+    // 브랜드 관리
     public function partners(Request $request)
     {
         if ($this->checkInvalidSession($request)) {
@@ -616,7 +637,7 @@ class AdminController extends Controller
             ['deleted', '=', 'N']
         ])->get();
 
-        return view('admin.payments.memberships', ['seqno' => $userSeqno]);
+        return view('admin.payments.memberships', ['seqno' => $userSeqno, 'contents' => $contents]);
     }
     public function paymentsPoints(Request $request)
     {

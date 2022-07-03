@@ -137,9 +137,9 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			<div class="wr-list _type_discount">
 				<div class="wr-list-label">최소 기준 금액</div>
 				<div class="wr-list-con">
-					<label class="radio-wrap"><input type="radio" name="limit_type" value="" checked="checked"><span></span>제한없음</label>
-					<label class="radio-wrap"><input type="radio" name="limit_type" value="F"><span></span>서비스 최소 결제금액</label>
-					<input type="number" id="limit_base_price" name="" value="" class="span200" placeholder="">원
+					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="" checked="checked"><span></span>제한없음</label>
+					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="F"><span></span>서비스 최소 결제금액</label>
+					<input type="number" id="limit_base_price" name="" value="0" class="span200" placeholder="">원
 				</div>
 			</div>
 		</div>
@@ -273,6 +273,15 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			$('._type_discount').hide();
 		} 
 	}
+	function toggleLimitType(val){
+		if(val == '') {
+			$('#limit_base_price').val(0);
+			$('#limit_base_price').hide();
+		} else if(val == 'F'){
+			$('#limit_base_price').val('0');
+			$('#limit_base_price').show();
+		}
+	}
 	
 	function toggleView(){
 		if($('#used_coupon').is(':checked')) {
@@ -321,12 +330,12 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			$('#coupon_partner_grp_seqno').val('0');
 			$('._partners').html('');
 			$('#partnersPop').val('');
-			$('#partnersPop').attr('disabled');
+			$('#partnersPop').prop('disabled', true);
 		} else {
-			$('#coupon_partner_grp_seqno').val('0');
+			$('#coupon_partner_grp_seqno').val('');
 			$('._partners').html('');
 			$('#partnersPop').val('');
-			$('#partnersPop').removeAttr('disabled');
+			$('#partnersPop').prop('disabled', false);
 		}
 	}
 	
@@ -507,9 +516,11 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 		couponStartDay = toDateFormatt(new Date().getTime());
 		couponEndDay = toDateFormatt(new Date().getTime());
 
+		togglePartners();
 		toggleView();
 		getPartners();
 		toggleDiscountInfo('F');
+		toggleView();
 	});
 	@php
 	}
@@ -576,7 +587,22 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 		}, function(e){
 			console.log(e);
 		});
-    }
+	}
+	function setStatus(status){
+		medibox.methods.event.coupon.status({
+			status: status
+		}, {{$couponNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('발급 상태가 수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $couponNo }}' };
 
@@ -591,23 +617,25 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			$('#context').val( response.data.context );
 			$('#thumbnail').val( response.data.thumbnail );
 			$('#img').val( response.data.img );
-			$('#_start').val( response.data.start_dt );
-			$('#_end').val( response.data.end_dt );
-			startDay = response.data.start_dt;
-			endDay = response.data.end_dt;
+			$('#_start').val( response.data.start_dt.split(' ')[0] );
+			$('#_end').val( response.data.end_dt.split(' ')[0] );
+			startDay = response.data.start_dt.split(' ')[0];
+			endDay = response.data.end_dt.split(' ')[0];
 			if(response.data.used_coupon == 'Y') {
 				$('#used_coupon').prop('checked', true);
 
 				if(response.data.coupon) {
 					// 쿠폰 정보
-					$('#name').val( response.data.coupon.name );
-					$('#context').val( response.data.coupon.context );
+					$('#coupon_name').val( response.data.coupon.name );
+					$('#coupon_context').val( response.data.coupon.context );
 					$('input[name=type][value='+response.data.coupon.type+']').prop('checked', true);
-					$('#_coupon_start').val( response.data.coupon.start_dt );
-					$('#_coupon_end').val( response.data.coupon.end_dt );
+					$('#_coupon_start').val( response.data.coupon.start_dt.split(' ')[0] );
+					$('#_coupon_end').val( response.data.coupon.end_dt.split(' ')[0] );
 
-					couponStartDay = response.data.coupon.start_dt;
-					couponEndDay = response.data.coupon.end_dt;
+					couponStartDay = response.data.coupon.start_dt.split(' ')[0];
+					couponEndDay = response.data.coupon.end_dt.split(' ')[0];
+
+					$('input[name=coupon_type][value='+response.data.coupon.type+']').prop('checked', true);
 
 					if(response.data.coupon.use_partner == 'Y') {
 						$('#use_partner').prop('checked', true);
@@ -618,25 +646,29 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 					$('#discount_price').val( response.data.coupon.discount_price );
 					$('#max_discount_price').val( response.data.coupon.max_discount_price );
 					$('#limit_base_price').val( response.data.coupon.limit_base_price );
+					if(response.data.coupon.limit_base_price > 0) {
+						$($('input[name=limit_type]')[1]).attr('checked');
+					}
 
 					$('#coupon_partner_grp_seqno').val( response.data.coupon.coupon_partner_grp_seqno );
 
-					if(response.data.coupon_partner_grp_seqno && response.data.coupon_partner_grp_seqno != '') {
+					if(response.data.coupon.coupon_partner_grp_seqno && response.data.coupon.coupon_partner_grp_seqno != '') {
 						if(response.data.coupon_partner_grp_seqno == 0) {
 							// 전체 선택
 							togglePartners();
 						} else {
-							var types = response.data.coupon_partner_grp_seqno.split('||');
+							var types = response.data.coupon.coupon_partner_grp_seqno.split('||');
 							for(var inx=0; inx<types.length; inx++){
-								types[inx] = (types[inx] + '').replace('|', '');
+								types[inx] = (types[inx] + '').replaceAll('|', '');
 								$('._partners').html(
-									$('._partners').html() + '<span class="srtag">'+types[inx]+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
+									$('._partners').html() + '<span class="srtag">'+$('#partnersPop > option[value='+types[inx]+']').text()+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
 								);
 							}
 						}
 					}
 					toggleDiscountInfo(response.data.coupon.type);
 				}
+				toggleView();
 			} else {
 				$('._usedCoupon').hide();
 			}
@@ -671,8 +703,8 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 		couponEndDay = toDateFormatt(new Date().getTime());
 
 		toggleView();
-		getInfo();
 		getPartners();
+		getInfo();
 	});
 	@php
 	}

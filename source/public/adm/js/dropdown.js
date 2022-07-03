@@ -19,6 +19,10 @@ $.sidebarMenu = function(menu) {
 	$(subMenuSelector).children("li.active").parent("ul").slideDown(animationSpeed); 
 	$(subMenuSelector).children("li.active").parent("ul").addClass("menu-open");	
 
+	$(subMenuSelector).children("li.active").parent('ul').parent('li').parent().parent("li").addClass("open");
+	$(subMenuSelector).children("li.active").parent('ul').parent('li').parent('ul').slideDown(animationSpeed); 
+	$(subMenuSelector).children("li.active").parent('ul').parent('li').parent('ul').addClass("menu-open");	
+
 	$(menu).on('click', 'li a', function(e) {
 		var $this = $(this);
 		var checkElement = $this.next();

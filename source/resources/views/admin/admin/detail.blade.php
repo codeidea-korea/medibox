@@ -104,7 +104,7 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 						<option value="">전체 권한</option>
 						<option value="A">슈퍼 관리자</option>
 						<option value="B">본사 관리자</option>
-						<option value="P">제휴사 관리자</option>
+						<option value="P">브랜드 관리자</option>
 						<option value="S">매장 관리자</option>
 					</select>
 					<br>
@@ -189,7 +189,7 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 			$('#partnersPop2').val('');
 			$('#partnersPop2').attr('disabled');
 		} else {
-			$('#level_partner_grp_seqno').val('0');
+			$('#level_partner_grp_seqno').val('');
 			$('._partners').html('');
 			$('#partnersPop2').val('');
 			$('#partnersPop2').removeAttr('disabled');
@@ -426,6 +426,9 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 			$('#store_seqno').val( response.data.store_seqno );
 			$('#level_partner_grp_seqno').val( response.data.level_partner_grp_seqno );
 			userInfo = response.data;
+			$('#partnersPop').val(response.data.partner_seqno);
+			getStoresPop(response.data.partner_seqno);
+			$('#storePop').val(response.data.store_seqno);
 
 			if(response.data.level_partner_grp_seqno && response.data.level_partner_grp_seqno != '') {
 				if(response.data.level_partner_grp_seqno == 0) {
@@ -436,12 +439,11 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 					for(var inx=0; inx<types.length; inx++){
 						types[inx] = (types[inx] + '').replace('|', '');
 						$('._partners').html(
-							$('._partners').html() + '<span class="srtag">'+types[inx]+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
+							$('._partners').html() + '<span class="srtag">'+$('#partnersPop > option[value='+types[inx]+']').text()+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
 						);
 					}
 				}
 			}
-			getPartners();
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -465,6 +467,7 @@ $page_title = $id == 0 ? '관리자 아이디 권한 등록' : '관리자 아이
 		});
 	}
 	$(document).ready(function(){
+		getPartners();
 		getInfo();
 	});
 	@php

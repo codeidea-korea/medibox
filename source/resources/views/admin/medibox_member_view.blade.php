@@ -20,24 +20,33 @@ $page_title = '회원관리';
 				<div class="view-list">
 					<div class="view-list-label">아이디</div>
 					<div class="view-list-con _userId">010-0000-0000</div>
+					<div class="view-list-label">멤버쉽</div>
+					<div class="view-list-con _userMembership"></div>
+				</div>
+				<div class="view-list">
+					<div class="view-list-label">비밀번호</div>
+					<div class="view-list-con">
+						<span class="_userPassword">****</span>&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" onclick="resetPassword()" class="btn red small">비밀번호 초기화</a>
+					</div>
 					<div class="view-list-label">패키지</div>
 					<div class="view-list-con _userPackage"></div>
 				</div>
 				<div class="view-list">
-					<div class="view-list-label">비밀번호</div>
-					<div class="view-list-con _userPassword">****</div>
+					<div class="view-list-label">이름</div>
+					<div class="view-list-con _userName">관리자</div>
 					<div class="view-list-label">포인트</div>
 					<div class="view-list-con _userPoint">100,000 P</div>
 				</div>
 				<div class="view-list">
-					<div class="view-list-label">이름</div>
-					<div class="view-list-con _userName">관리자</div>
+					<div class="view-list-label">가입일시</div>
+					<div class="view-list-con _createAt">2021.01128</div>
 					<div class="view-list-label">정액권</div>
 					<div class="view-list-con _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
 				</div>
 				<div class="view-list">
-					<div class="view-list-label">가입일시</div>
-					<div class="view-list-con _createAt">2021.01128</div>
+					<div class="view-list-label">추천인 아이디/이름</div>
+					<div class="view-list-con _recommandedUser"></div>
 					<div class="view-list-label"></div>
 					<div class="view-list-con _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
 				</div>
@@ -55,18 +64,37 @@ $page_title = '회원관리';
 						<textarea type="text" id="usermemo" name="usermemo" value="" style="height: 60px; resize: none;min-height: 60px;"></textarea>
 						<button onclick="modifyMemo()" class="btn black ml5" style="height: 60px;width: 60px;">수정</button> 
 					</div>
-					<div class="view-list-con" style="flex: none;"></div><div class="view-list-label">&nbsp;</div>
-					<div class="view-list-con">&nbsp;</div>
+					<div class="view-list-label">메모2</div>
+					<div class="view-list-con" style="display: flex;padding-right: 60px;">
+						<textarea type="text" id="usermemo2" name="usermemo2" value="" style="height: 60px; resize: none;min-height: 60px;"></textarea>
+						<button onclick="modifyMemo2()" class="btn black ml5" style="height: 60px;width: 60px;">수정</button> 
+					</div>
 				</div>
 
 			</div>
 		</div>
 
+
+		<!--
+			멤버쉽, (적립/환불)
+			멤버쉽 - 메인 바우처 (사용/환불 승인/취소)
+			멤버쉽 - 서브 바우처 (--)
+			쿠폰 적립
+
+			( -- 기존 --
+			포인트 충전/환불 - 기존
+			포인트 사용 - 기존
+			정액권 적립/환불
+			정액권 사용
+			패키지 적립/환불
+			)
+		 -->
+
 		<div class="flexbox">
 			<div class="tbl-basic bold td-h4">
 				<div class="tbl-header">
-					<div class="caption flexbox-header">포인트 적립/환불</div>
-					<div class="rightSet"><a href="#mediboxpop-point2" onclick="openPopCollect()" class="btn green small popup-inline">포인트 적립</a>&nbsp;&nbsp;<a href="#mediboxpop-point3" onclick="openPopRefund()" class="btn red small popup-inline">포인트 환불</a></div>
+					<div class="caption flexbox-header">포인트 충전/환불</div>
+					<div class="rightSet"><a href="#mediboxpop-point2" onclick="openPopCollect()" class="btn green small popup-inline">포인트 충전</a>&nbsp;&nbsp;<a href="#mediboxpop-point3" onclick="openPopRefund()" class="btn red small popup-inline">포인트 환불</a></div>
 				</div>
 				<table>
 					<colgroup>
@@ -148,7 +176,7 @@ $page_title = '회원관리';
 		<div class="flexbox">
 			<div class="tbl-basic bold td-h4">
 				<div class="tbl-header">
-					<div class="caption flexbox-header">포인트 사용</div>
+					<div class="caption flexbox-header">결제/취소 내역</div>
 					<div class="rightSet"><a href="#mediboxpop-point1" onclick="openPopUse()" class="btn blue small popup-inline">포인트 사용</a></div>
 				</div>
 				<table>
@@ -236,7 +264,7 @@ $page_title = '회원관리';
 	
 	<script>	
 	// 사용자 정보 로드 adminSeqno:{{ $seqno }}, 파람 id
-	// 포인트 적립 / 환불
+	// 포인트 충전 / 환불
 	// 포인트 사용
 	var rpageNo = 1;
 	var rpageSize = 10;
@@ -336,13 +364,21 @@ $page_title = '회원관리';
 						+'<tr>'
 						+'	<td>'+no+'</td>'
 						+'	<td>'+serviceName+'</td>'
-						+'	<td>'+(data[inx].canceled == 'N' ? (data[inx].approved == 'Y' ? '사용' : '승인중') : '사용취소')
-								+ (data[inx].hst_type == 'U' && data[inx].canceled == 'Y' ? ''
-								: '<div style="display: flex;">'+ (data[inx].approved == 'Y' 
-									? '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red">사용취소</button>'
-									:	('<button onclick="approveUsePoint('+data[inx].user_point_hst_seqno+')" class="btn black ml5">승인</button>'
-										+ '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red ml5">취소</button>')) + '</div>')
-							+'</td>'
+
+						// 일반 결제만 허용, 예약의 경우 제외
+						+ (
+							data[inx].service_seqno > 0
+								? ('<td>예약됨</td>')
+								: (data[inx].admin_seqno > 0 ? '<td>사용됨</td>' : 
+								('	<td>'+(data[inx].canceled == 'N' ? (data[inx].approved == 'Y' ? '사용' : '승인중') : '사용취소')
+									+ (data[inx].hst_type == 'U' && data[inx].canceled == 'Y' ? ''
+									: '<div style="display: flex;">'+ (data[inx].approved == 'Y' 
+										? '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red">사용취소</button>'
+										:	('<button onclick="approveUsePoint('+data[inx].user_point_hst_seqno+')" class="btn black ml5">승인</button>'
+											+ '<button onclick="cancelUsePoint('+data[inx].user_point_hst_seqno+')" class="btn red ml5">취소</button>')) + '</div>')
+								+'</td>')
+								)
+						)
 
 						+'	<td>'+(data[inx].product_seqno == 0 ? data[inx].shop_name : data[inx].service_name)+'</td>'
 						+'	<td>'+(data[inx].product_seqno == 0 
@@ -392,12 +428,26 @@ $page_title = '회원관리';
 				alert(response.ment);
 				return false;
 			}
+			userInfo = response.data;
+			
 			$('._userId').text( response.data.user_phone );
-			$('._userPassword').text( response.data.user_pw );
+			var password_mask = '';
+			for(var inx = 0; inx < response.data.user_pw.length; inx++){
+				password_mask = password_mask + '*';
+			}
+			$('._userPassword').text( password_mask );
 			$('._userName').text( response.data.user_name );
 			$('#usermemo').val( response.data.memo );
+			$('#usermemo2').val( response.data.memo2 );
 			$('._createAt').text( response.data.create_dt );
 			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );
+			
+			if(response.data.membershipHistory && response.data.membershipHistory.membership) {
+				$('._userMembership').text( response.data.membershipHistory.membership.name );
+			}
+			if(response.data.recommendedUser) {
+				$('._recommandedUser').text( response.data.recommendedUser.user_phone + ' / ' + response.data.recommendedUser.user_name );
+			}
 
 			// TODO: 매핑 테이블 추가 필요
 			pointDetails.point = response.data.points.filter(a => a.point_type == 'P')[0];
@@ -528,6 +578,7 @@ $page_title = '회원관리';
 		medibox.methods.user.memoModify({
 			user_seqno:{{ $id }}
 			, memo: memo
+			, type: 1
 		}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -538,6 +589,62 @@ $page_title = '회원관리';
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
+		});
+	}
+	function modifyMemo2(){
+		var memo = $('#usermemo2').val();
+		if(!memo || memo.length < 1) {
+			alert('메모 내용을 입력해주세요.');
+			return false;
+		}
+		
+		medibox.methods.user.memoModify({
+			user_seqno:{{ $id }}
+			, memo: memo
+			, type: 2
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('메모가 저장되었습니다.');
+		}, function(e){
+			console.log(e);
+			alert('서버 통신 에러');
+		});
+	}
+	var userInfo;
+	function resetPassword(){
+		if(!confirm('비밀번호 초기화를 하시겠습니까? \n이 작업은 되돌릴 수 없습니다.\n비밀번호는 [1234]로 초기화 됩니다.')){
+			return false;
+		}
+		userInfo.pw2 = '1234';
+
+		medibox.methods.user.modify({
+			id: userInfo.user_phone
+			, pw: userInfo.user_pw
+			, pw2: '1234'
+			, name: userInfo.user_name
+			, gender: userInfo.gender
+			, email: userInfo.email
+			, address: userInfo.address
+			, address_detail: userInfo.address_detail
+			, type: userInfo.type
+			, memo: userInfo.memo
+			, recommended_code: userInfo.recommended_code
+			, recommended_shop: userInfo.recommended_shop
+			, join_path: userInfo.join_path
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('비밀번호가 초기화 되었습니다.');
+			location.reload();
+		}, function(e){
+			console.log(e);
 		});
 	}
 	

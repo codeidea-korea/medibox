@@ -8,15 +8,17 @@
 
     <link rel="stylesheet" href="{{ asset('user/css/common.css') }}?v=202203171921">
     <link rel="stylesheet" href="{{ asset('user/css/jquery-ui.min.css') }}?v=202204011821">
-    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}?v=202204011821">
+    <link rel="stylesheet" href="{{ asset('user/css/medibox.css') }}?v=202206161221">
     <link rel="stylesheet" href="{{ asset('user/css/slick.css') }}?v=202203171921">
     <script src="{{ asset('user/js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset('user/js/jquery-ui.min.js') }}"></script>    
     <script src="{{ asset('user/js/slick.min.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/tabmenu.js') }}?v=202203171921"></script>
     <script src="{{ asset('user/js/medibox.js') }}?v=202204011421"></script>
-    <script src="{{ asset('user/js/medibox-apis.js') }}?v=202205150300"></script>
+    <script src="{{ asset('user/js/medibox-apis.js') }}?v=202206142308"></script>
+    <!--
     <script src="{{ asset('user/js/datepicker.js') }}?v=202205062259"></script>
+    -->
     
     <link rel="stylesheet" href="{{ asset('user/css/footbar.css') }}?v=202203231321">
 

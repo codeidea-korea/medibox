@@ -173,15 +173,22 @@ var bfCall = (function(){
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('바우처 삭제', 'vouchers/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'vouchers/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'vouchers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+
+                    cancel: function (params, successThenFn, errorThenFn){ ajaxCall('회원 바우처 결제 서비스 사용취소', 'user/voucher-cancel', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    approve: function (params, successThenFn, errorThenFn){ ajaxCall('회원 바우처 결제 서비스 승인취소', 'user/voucher-approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
                 },
                 coupon: {
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('쿠폰 등록', 'coupon', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('쿠폰 수정', 'coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('쿠폰 발급상태 변경', 'coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('쿠폰 발급상태 변경', 'coupon/'+id+'/status', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('쿠폰 삭제', 'coupon/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
 
+                    cancel: function (params, successThenFn, errorThenFn){ ajaxCall('회원 쿠폰 서비스 사용취소', 'user/coupon-cancel', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    approve: function (params, successThenFn, errorThenFn){ ajaxCall('회원 쿠폰 서비스 승인취소', 'user/coupon-approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
                     history:{
                         one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'coupon-history/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                         list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
@@ -246,29 +253,30 @@ var bfCall = (function(){
                 remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('제휴사 삭제', 'partners/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('제휴사 수정', 'partners/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'partners', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
-                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('', 'partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },            
+                list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'partners', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, false); },            
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('', 'partners-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, false); },            
             }, store:{
                 add: function (params, successThenFn, errorThenFn){ ajaxCall('매장 등록', 'stores', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장 수정', 'stores/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                modifyTime: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장별 예약가능시간 수정', 'stores/'+id+'/modifyTime', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장 삭제', 'stores/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'stores/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'stores', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
-                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('', 'stores-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                findAll: function (params, successThenFn, errorThenFn){ ajaxCall('', 'stores-all', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, false); },  
 
                 manager:{
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('매장에 소속된 디자이너 등록', 'managers', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장에 소속된 디자이너 수정', 'managers/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장에 소속된 디자이너 삭제', 'managers/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'managers/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                    list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'managers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'managers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, false); },  
 
                     services:{
                         add: function (params, successThenFn, errorThenFn){ ajaxCall('매장 서비스 등록', 'manager-services', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                         modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장 서비스 수정', 'manager-services/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                         remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('매장 서비스 삭제', 'manager-services/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                         one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'manager-services/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                        list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'manager-services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                        list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'manager-services', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, false); },  
 
                     }
                 }, holiday:{
@@ -284,6 +292,8 @@ var bfCall = (function(){
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'reservations/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
                     day: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations/day', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+                    check: function (params, successThenFn, errorThenFn){ ajaxCall('', 'reservations/check-available', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
+
                 }
             }, 
             event:{
@@ -291,7 +301,7 @@ var bfCall = (function(){
                 coupon: {
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('이벤트 쿠폰 등록', 'event-coupon', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('이벤트 쿠폰 수정', 'event-coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('이벤트 쿠폰 발급 상태 수정', 'event-coupon/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    status: function (params, id, successThenFn, errorThenFn){ ajaxCall('이벤트 쿠폰 발급 상태 수정', 'event-coupon/'+id+'/status', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('이벤트 쿠폰 삭제', 'event-coupon/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'event-coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'event-coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },

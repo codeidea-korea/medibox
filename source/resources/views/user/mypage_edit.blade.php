@@ -59,7 +59,7 @@
             <!------------ 2차버전 수정 [ p태그 -> div태그, label태그 -> h2태그 ] ------------>
             <div>
                 <h2>아이디(휴대폰 번호)</h2>
-                <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." value="{{$id}}" required>
+                <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." value="{{$user->user_phone}}" required>
             </div>
             <!------------------------------------>                
 
@@ -69,19 +69,19 @@
             <!-- 이름 -->
             <div>
                 <h2>이름</h2>
-                <input type="text" name="user_name" id="user_name" value="{{$name}}" placeholder="이름을 입력해주세요.">
+                <input type="text" name="user_name" id="user_name" value="{{$user->user_name}}" placeholder="이름을 입력해주세요.">
             </div>
             
             <!-- 성별 -->
             <div class="sex_select">
                 <h2>성별</h2>
                 <input type="radio" name="sex" value="W" id="w" 
-                @if ($gender == 'W') 
+                @if ($user->gender == 'W') 
                 checked
                 @endif >
                 <label for="w">여자</label>
                 <input type="radio" name="sex" value="M" id="m"
-                @if ($gender == 'M') 
+                @if ($user->gender == 'M') 
                 checked
                 @endif>
                 <label for="m">남자</label>
@@ -93,10 +93,10 @@
                 <div class="select_wrap">
                     <div class="select_box">
                         <span>
-                @if ($recommended_shop == '') 
+                @if ($user->recommended_shop == '') 
                 최초추천샵 선택하기
                 @else
-                {{$recommended_shop}}
+                {{$user->recommended_shop}}
                 @endif</span>
                         <img src="/user/img/arrow_bottom.svg" alt="">
                     </div>
@@ -112,12 +112,12 @@
                     </ul>
                 </div>
             </div>
-            <input type="hidden" name="recommended_shop" id="recommended_shop" value="{{$recommended_shop}}">
+            <input type="hidden" name="recommended_shop" id="recommended_shop" value="{{$user->recommended_shop}}">
             
             <!-- 추천인코드 -->
             <div>
                 <h2>추천인코드(선택)</h2>
-                <input type="tel" name="recommended_code" id="recommended_code" placeholder="추천인 휴대폰번호를 입력해주세요." value="{{$recommended_code}}">
+                <input type="tel" name="recommended_code" id="recommended_code" placeholder="추천인 휴대폰번호를 입력해주세요." value="{{$user->recommended_code}}">
             </div>
             <!------------------------------------>
 
@@ -134,7 +134,7 @@
             <!------------ 2차버전 수정 [ p태그 -> div태그, label태그 -> h2태그(+내용변경) ] ------------>
             <div>
                 <h2>기존 비밀번호</h2>
-                <input type="password" name="pw" id="pw_1" placeholder="비밀번호를 입력해주세요." pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" value="{{$pw}}" required>
+                <input type="password" name="pw" id="pw_1" placeholder="비밀번호를 입력해주세요." pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" value="{{$user->user_pw}}" required>
             </div>
             <!------------------------------------>
             
@@ -210,11 +210,11 @@
             <!------------ 2차버전 수정,추가 [ p태그 -> div태그, label태그 -> h2태그(+내용변경) ] ------------>
             <div class="receive_check">
                 <h2>이벤트 정보 수신 동의(선택)</h2>
-                <input type="checkbox" name="push_check" id="push_check" value="{{$receive}}">
+                <input type="checkbox" name="push_check" id="push_check" @if ($user->push_yn == 'Y') checked @endif>
                 <label for="push_check">PUSH 알림</label>
-                <input type="checkbox" name="email_check" id="email_check">
+                <input type="checkbox" name="email_check" id="email_check" @if ($user->email_yn == 'Y') checked @endif>
                 <label for="email_check">이메일</label>
-                <input type="checkbox" name="sns_check" id="sns_check">
+                <input type="checkbox" name="sns_check" id="sns_check" @if ($user->sns_yn == 'Y') checked @endif>
                 <label for="sns_check">SNS</label>
             </div>
             <!------------------------------------>
@@ -309,6 +309,11 @@
         var isAllow04 = $('#receive_check').is(":checked");
         var recommended_shop = document.querySelector('#recommended_shop').value;
         var recommended_code = document.querySelector('#recommended_code').value;
+            
+        var push_check = $('#push_check').is(":checked");
+        var email_check = $('#email_check').is(":checked");
+        var sns_check = $('#sns_check').is(":checked");
+        var gender = $('input[name=sex]:checked').val();
 
         medibox.methods.user.modify({
             id: id
@@ -318,6 +323,10 @@
             , recommended_shop: recommended_shop
             , recommended_code: recommended_code
             , event_yn: isAllow04 ? 'Y' : 'N'
+            , gender: gender
+            , push_yn: push_check ? 'Y' : 'N'
+            , email_yn: email_check ? 'Y' : 'N'
+            , sns_yn: sns_check ? 'Y' : 'N'
         }, function(request, response){
             console.log('output : ' + response);
             if(!response.result){
@@ -379,6 +388,9 @@
     function signoutConfirm(){
         $('#popup07').addClass('on');
     }
+    function closePop(){
+        $('.popup.select').removeClass('on');
+    }
     </script>
 
 
@@ -401,7 +413,7 @@
                 <!------------------------------------>
                     
                 <!------------ 2차버전 수정 ------------>
-                <a href="#!" class="close_btn">아니오</a>
+                <a href="#!" class="close_btn" onclick="closePop()">아니오</a>
                 <a href="#!" onclick="leave()">예</a>
                 <!------------------------------------>       
             </div>
@@ -451,7 +463,7 @@
                 <span>로그아웃하시겠습니까?</span>
             </div>
             <div class="bottom">
-                <a href="#!" class="close_btn">아니오</a>
+                <a href="#!" class="close_btn" onclick="closePop()">아니오</a>
                 <a href="#!" onclick="logout()">네</a>
             </div>
         </div>
@@ -461,7 +473,7 @@
     <script>
     function leave(){
         medibox.methods.user.delete({
-            id: {{session('user_seqno')}}
+            id: "{{$user->user_phone}}"
         }, function(request, response){
             console.log('output : ' + response);
             if(!response.result){

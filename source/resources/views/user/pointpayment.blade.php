@@ -4,7 +4,7 @@
         <!-- header -->
         <header id="header">
             <!-- 뒤로가기 버튼 -->
-            <button class="back" onclick="location.href='/point';">
+            <button class="back" onclick="history.back();">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                     <g id="back_arrow" transform="translate(-22.295 -60)">
                       <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -193,7 +193,7 @@
 		var point_type = '{{ $type }}';
 		var memo = '사용자 구매 신청';
 		
-		var data = { admin_seqno:1, user_seqno:{{ $seqno }}, product_seqno: product_seqno,
+		var data = { admin_seqno:0, user_seqno:{{ $seqno }}, product_seqno: product_seqno,
 			point_type:point_type, memo:memo };
 
 		medibox.methods.point.use(data, function(request, response){

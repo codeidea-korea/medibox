@@ -18,7 +18,10 @@ $page_title = '회원관리';
 	<div class="tbl-basic cell td-h4 mt10">
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
-			<div class="rightSet"><a href="#" onclick="wait()" class="btn green small icon-excel">엑셀 다운로드</a></div>
+			<div class="rightSet">
+				<a href="#" onclick="excelDownload()" class="btn green small icon-excel">엑셀 다운로드</a>
+				<a href="/admin/point/conf" class="btn green small icon-add">포인트 자동 적립 관리</a>
+			</div>
 		</div>
 		<table>
 			<colgroup>
@@ -34,7 +37,7 @@ $page_title = '회원관리';
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#" class="sort">회원번호</a></th>
+					<th><a href="#" class="sort">번호</a></th>
 					<th><a href="#" class="sort asc">아이디</a></th>
 					<th><a href="#" class="sort desc">이름</a></th>
 					<th><a href="#" class="sort desc">회원가입일</a></th>
@@ -246,7 +249,26 @@ $page_title = '회원관리';
 	}		
 	function addUser(){
 		location.href = '/admin/members/0';
-	}		
+	}
+	function excelDownload(){
+		var startDay = $('input[name=startDay]').val();
+		var endDay = $('input[name=endDay]').val();
+		var searchField = $('input[name=searchField]').val();
+		
+		var url = '/admin/members-download/excel?';
+
+		if(startDay && startDay != '') {
+			url = url + 'start_day=' + startDay.replace('.', '-').replace('.', '-') + '&';
+		}
+		if(endDay && endDay != '') {
+			url = url + 'end_day=' + endDay.replace('.', '-').replace('.', '-') + '&';
+		}
+		if(searchField && searchField != '') {
+			url = url + 'search=' + searchField + '&';
+		}
+
+		window.open(url);
+	}
 	
 	$(document).ready(function(){
 		getList();

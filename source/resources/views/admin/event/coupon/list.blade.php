@@ -22,18 +22,18 @@ $page_title = '이벤트 쿠폰 관리';
 				<div class="wr-list">
 					<div class="wr-list-label">이벤트 기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setDay(this, 0)" class="btn _dayOption gray">오늘</a>
+						<a href="#" onclick="setDay(this, -7)" class="btn _dayOption gray">1주</a>
+						<a href="#" onclick="setDay(this, -30)" class="btn _dayOption gray">1개월</a>
+						<a href="#" onclick="setDay(this, -180)" class="btn _dayOption gray">6개월</a>
+						<a href="#" onclick="setDay(this, -365)" class="btn _dayOption gray">1년</a>
 						<input type="text" id="_start" class="datepick _start">			
 						~
 						<input type="text" id="_end" class="datepick _end">		
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">이벤트 기간</div>
+					<div class="wr-list-label">이벤트 상태</div>
 					<div class="wr-list-con">
 						<label class="radio-wrap"><input type="radio" name="status" value="" checked="checked"><span></span>전체</label>
 						<label class="radio-wrap"><input type="radio" name="status" value="A"><span></span>발급중</label>
@@ -71,11 +71,11 @@ $page_title = '이벤트 쿠폰 관리';
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setCouponDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setCouponDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setCouponDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setCouponDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setCouponDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setCouponDay(this, 0)" class="btn _dayOption2 gray">오늘</a>
+						<a href="#" onclick="setCouponDay(this, -7)" class="btn _dayOption2 gray">1주</a>
+						<a href="#" onclick="setCouponDay(this, -30)" class="btn _dayOption2 gray">1개월</a>
+						<a href="#" onclick="setCouponDay(this, -180)" class="btn _dayOption2 gray">6개월</a>
+						<a href="#" onclick="setCouponDay(this, -365)" class="btn _dayOption2 gray">1년</a>
 						<input type="text" id="_coupon_start" class="datepick _coupon_start">			
 						~
 						<input type="text" id="_coupon_end" class="datepick _coupon_end">		
@@ -180,7 +180,7 @@ $page_title = '이벤트 쿠폰 관리';
 	
 	$('._start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -196,7 +196,7 @@ $page_title = '이벤트 쿠폰 관리';
 	});
 	$('._coupon_start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -215,17 +215,26 @@ $page_title = '이벤트 쿠폰 관리';
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
 	}
-	function setDay(date) {
+	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+		$("._dayOption").removeClass('gray');
+		$("._dayOption").addClass('gray');
+		$(target).removeClass('gray');
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
-	function setCouponDay(date) {
+	function setCouponDay(target, terms) {
 		var date = new Date();
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+
+		$("._dayOption2").removeClass('gray');
+		$("._dayOption2").addClass('gray');
+		$(target).removeClass('gray');
+
 		$(".datepick._coupon_start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._coupon_end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
@@ -341,6 +350,25 @@ $page_title = '이벤트 쿠폰 관리';
 		return !str ? '-' : str;
 	}
 	
+	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		
+		if(coupon_partner_grp_seqno == 0) {
+			return '전체';
+		} else {
+			var types = coupon_partner_grp_seqno.split('||');
+			var partnersName = '';
+			for(var inx=0; inx<types.length; inx++){
+				types[inx] = (types[inx] + '').replaceAll('|', '');
+				if(types[inx] == '0') {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + '전체';
+				} else {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + $('#partnersPop > option[value='+types[inx]+']').text();
+				}
+			}
+			return partnersName;
+		}
+	}
+	
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
@@ -372,7 +400,7 @@ $page_title = '이벤트 쿠폰 관리';
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
-		if(type && type != '') {
+		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
 		if(event_search_type && event_search_type != '') {
@@ -429,7 +457,7 @@ $page_title = '이벤트 쿠폰 관리';
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
 							+'	<td>'+getAllowedIssuanceType(response.data[inx].status)+'</td>'
 							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+safetyNull(response.data[inx].coupon_name)+'</td>'
 							+'	<td>'+safetyNull(response.data[inx].coupon_start_dt) + ' ~ ' + safetyNull(response.data[inx].coupon_end_dt)+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
@@ -476,6 +504,9 @@ $page_title = '이벤트 쿠폰 관리';
 	$(document).ready(function(){
 		getList();
 		getPartners();
+		
+		endDay = toDateFormatt(new Date().getTime());
+		couponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

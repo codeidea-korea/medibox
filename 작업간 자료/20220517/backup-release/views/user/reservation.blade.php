@@ -32,7 +32,7 @@
                     <a href="/reservation/minishspa">
                         <div class="menu_box">
                             <img src="/user/img/icon_minish_spa.svg" alt="미니쉬 스파">
-                            <span>미니쉬스파</span>
+                            <span>미니쉬구강스파</span>
                         </div>
                     </a>
                 </li>
@@ -40,7 +40,7 @@
                     <a href="/reservation/valmontspa">
                         <div class="menu_box">
                             <img src="/user/img/icon_valmont_spa.svg" alt="발몽스파">
-                            <span>발몽스파</span>
+                            <span>미니쉬발몽스파</span>
                         </div>
                     </a>
                 </li>
@@ -56,7 +56,7 @@
                     <a href="/reservation/deepfocus">
                         <div class="menu_box">
                             <img src="/user/img/icon_deep_focus.svg" alt="딥 포커스">
-                            <span>딥포커스</span>
+                            <span>딥포커스 검안센터</span>
                         </div>
                     </a>
                 </li>

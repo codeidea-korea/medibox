@@ -27,7 +27,7 @@
               
             <span>브랜드</span>
         </a></li>
-        <li><a href="/reservation">
+        <li><a href="/reservation-history">
             <svg xmlns="http://www.w3.org/2000/svg" width="19.5" height="22.999" viewBox="0 0 19.5 22.999">
                 <g id="icon_reservation" data-name="그룹 1073" transform="translate(-113.25 -818.251)">
                   <rect id="Rectangle-4" width="18" height="18" rx="2" transform="translate(114 822.5)" fill="none" stroke-linecap="square" stroke-width="1.5"/>

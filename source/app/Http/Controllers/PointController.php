@@ -51,10 +51,13 @@ class PointController extends Controller
         if(! empty($user_name) && $user_name != ''){
             array_push($whereUser, ['user_info.user_name', '=', $user_name]);
         }
-        
-        if(! empty($point_type) && $point_type != ''){
-            array_push($where, ['user_point_hst.point_type', '=', $point_type]);
+        if(! empty($startDt) && $startDt != ''){
+            array_push($whereUser, ['user_point_hst.create_dt', '>=', $startDt . ' 00:00:00']);
         }
+        if(! empty($endDt) && $endDt != ''){
+            array_push($whereUser, ['user_point_hst.create_dt', '<=', $endDt . ' 00:00:00']);
+        }
+        
         if(! empty($startPoint) && $startPoint != ''){
             array_push($where, ['user_point_hst.point', '>=', $startPoint]);
         }
@@ -64,22 +67,35 @@ class PointController extends Controller
         if(! empty($admin_name) && $admin_name != ''){
             array_push($where, ['user_point_hst.admin_name', 'like', '%'.$admin_name.'%']);
         }
-
+        
         $contents = DB::table("user_point_hst")
             ->join('user_info', function ($join) use ($whereUser) {
                 $join->on('user_point_hst.user_seqno', '=', 'user_info.user_seqno')
                      ->where($whereUser);
             })
-            ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno')
-            ->where($where)
-            ->orderBy('user_point_hst.create_dt', 'desc')
-            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
-            ->get();
-        $count = DB::table("user_point_hst")->where($where)
+            ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno');
+        $count = DB::table("user_point_hst")
             ->join('user_info', function ($join) use ($whereUser) {
                 $join->on('user_point_hst.user_seqno', '=', 'user_info.user_seqno')
                     ->where($whereUser);
-            })
+            });
+
+        if(! empty($point_type) && $point_type != ''){
+            if($point_type == 'S') {
+                $contents = $contents->whereNotIn('user_point_hst.point_type', ['P','K']);
+                $count = $count->whereNotIn('user_point_hst.point_type', ['P','K']);
+            } else {
+                array_push($where, ['user_point_hst.point_type', '=', $point_type]);
+            }
+        }
+        $contents = $contents
+            ->where($where)
+            ->orderBy('user_point_hst.create_dt', 'desc')
+            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->select(DB::raw('user_point_hst.*, user_info.user_phone as user_phone, user_info.user_name as user_name, product.service_name as service_name, product.type_name as type_name'))
+            ->get();
+        $count = $count
+            ->where($where)
             ->count();
 
         $result['ment'] = '성공';
@@ -234,7 +250,7 @@ class PointController extends Controller
         return $result;
     }
 
-    // 포인트 적립
+    // 포인트 충전
     public function collect(Request $request)
     {
         $admin_seqno = $request->post('admin_seqno'); // 담당자 식별자
@@ -245,6 +261,8 @@ class PointController extends Controller
         $amount = $request->post('amount'); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
         $memo = $request->post('memo', '');
 
+        $reIssueCoupon = $request->post('reIssueCoupon', 0); // 쿠폰 되살릴 번호
+        
         $result = [];
         $result['ment'] = '포인트가 적립되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['result'] = false;
@@ -387,7 +405,7 @@ class PointController extends Controller
                         , 'product_seqno' => 0
                         , 'hst_type' => 'S'
                         , 'point' => $etcPoint
-                        , 'memo' => '추천인 자동 적립 (최초 추천을 한 회원)'
+                        , 'memo' => '추천인 자동 적립 [추천한 고객: '.$recommender->user_name.' / '.$recommender->user_phone.', 사용금액: '.$price.']'
                         , 'create_dt' => date('Y-m-d H:i:s')
                         , 'update_dt' => date('Y-m-d H:i:s') 
                     ], 'user_point_hst_seqno'
@@ -404,8 +422,7 @@ class PointController extends Controller
 
                 $prevPoint = DB::table('user_point')->where([
                     ['user_seqno', '=', $recommender->user_seqno],
-                    ['point_type', '=', 'P'],
-                    ['delete_yn', '=', 'N']
+                    ['point_type', '=', 'P']
                 ])->first();
 
                 DB::table('user_point_hst')->insertGetId(
@@ -417,19 +434,47 @@ class PointController extends Controller
                         , 'product_seqno' => 0
                         , 'hst_type' => 'S'
                         , 'point' => $etcPoint
-                        , 'memo' => '추천인 자동 적립 (최초 추천을 받은 회원)'
+                        , 'memo' => '추천인 자동 적립 [추천받은(가입) 고객: '.$user->user_name.' / '.$user->user_phone.', 사용금액: '.$price.']'
                         , 'create_dt' => date('Y-m-d H:i:s')
                         , 'update_dt' => date('Y-m-d H:i:s') 
                     ], 'user_point_hst_seqno'
                 );
                 DB::table('user_point')->where([
                     ['user_seqno', '=', $recommender->user_seqno],
-                    ['point_type', '=', 'P'],
-                    ['delete_yn', '=', 'N']
+                    ['point_type', '=', 'P']
                 ])->update(
                     [
                         'point' => $prevPoint->point + $etcPoint
                         , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
+        // 쿠폰 반환
+        if(!empty($reIssueCoupon) && $reIssueCoupon > 0) {
+            
+            $coupon = DB::table("coupon_user")->where([
+                ['seqno', '=', $reIssueCoupon]
+            ])->first();
+
+            if(!empty($coupon)) {
+                DB::table('coupon_user')->where([
+                    ['seqno', '=', $reIssueCoupon]
+                ])->update(
+                    [
+                        'used' => 'N', 
+                        'real_discount_price' => 0, 
+                        'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $reIssueCoupon,
+                        'hst_type' => 'S',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰 반환] 예약 수정/취소로 인한 쿠폰 반환',
+                        'create_dt' => date('Y-m-d H:i:s') 
                     ]
                 );
             }
@@ -495,7 +540,7 @@ class PointController extends Controller
                 ['create_dt', '>', $pointHistory->create_dt]
             ])->count();
             if($countCollectPackageAfterUsed > 0) {
-                $result['ment'] = '포인트가 환불되지 않았습니다.\r패키지 포인트 적립후 사용한 내역이 있습니다.';
+                $result['ment'] = '포인트가 환불되지 않았습니다.\r패키지 포인트 충전후 사용한 내역이 있습니다.';
                 return $result;
             }            
             // 전액 환불이 아니면 환불 안됨
@@ -618,8 +663,12 @@ class PointController extends Controller
         $admin_name = $request->post('admin_name', ''); // 담당자 - 없이 고객도 구매 가능
         $user_seqno = $request->post('user_seqno'); // 대상 고객
         $product_seqno = $request->post('product_seqno'); // 대상 상품 식별번호
+        $coupon_seqno = $request->post('coupon_seqno'); // 사용 쿠폰 일련번호
+        $discount = $request->post('discount'); // 
+        $service_seqno = $request->post('service_seqno'); // 대상 서비스 식별번호
         $point_type = $request->post('point_type'); // 사용 구분
         $memo = $request->post('memo', '');
+        $approved = $request->post('approved', 'N');
 
         $result = [];
         $result['ment'] = '포인트가 사용되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
@@ -643,14 +692,55 @@ class PointController extends Controller
             $result['code'] = 'USER-NULL';
             return $result;
         }
-        $product = DB::table("product")->where([
-            ['product_seqno', '=', $product_seqno]
-        ])->first();
+        $product;
+        $service_name = '';
+        if(!empty($product_seqno)) {
+            $product = DB::table("product")->where([
+                ['product_seqno', '=', $product_seqno]
+            ])->first();
+        }
+        if(!empty($service_seqno)) {
+            $product = DB::table("store_service")->where([
+                ['seqno', '=', $service_seqno]
+            ])->first();
+            $service_name = $product->name;
+        }
         if(empty($product)) {
             $result['code'] = 'SERVICE-NULL';
             return $result;
         }
-        $amount = $product->price;
+
+        if(!empty($coupon_seqno) && $coupon_seqno > 0) {
+            $coupon = DB::table("coupon_user")->where([
+                ['seqno', '=', $coupon_seqno]
+            ])->first();
+
+            if(!empty($coupon)) {
+                DB::table('coupon_user')->where([
+                    ['seqno', '=', $coupon_seqno]
+                ])->update(
+                    [
+                        'used' => 'Y', 
+                        'real_discount_price' => $discount, 
+                        'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $coupon_seqno,
+                        'hst_type' => 'U',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰 사용] 예약',
+                        'create_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        } else {
+            $discount = 0;
+        }
+        
+        $amount = $product->price - $discount;
         // 내 포인트에 차감 처리
         $point = DB::table('user_point')->where([
             ['user_seqno', '=', $user_seqno],
@@ -671,12 +761,15 @@ class PointController extends Controller
                 , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
                 , 'point_type' => $point_type
                 , 'product_seqno' => $product_seqno
+                , 'product_name' => $service_name
+                , 'service_seqno' => $service_seqno
                 , 'hst_type' => 'U'
                 , 'point' => $amount
                 , 'memo' => $memo
+                , 'approved' => $approved
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
-            ], 'user_point_hst_seqno'
+            ], 'user_point_hst_seqno' 
         );
 
         DB::table('user_point')->where([

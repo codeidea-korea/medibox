@@ -170,7 +170,7 @@ $page_title = '서비스 정보';
 							+'	<td>'+no+'</td>'
 							+'	<td>'+response.data[inx].partnerInfo.cop_name+'</td>'
 							+'	<td>'+response.data[inx].storeInfo.name+'</td>'
-							+'	<td>'+response.data[inx].name+'</td>'
+							+'	<td>['+response.data[inx].dept + '] ' +response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].estimated_time+'</td>'
 							+'	<td>'+response.data[inx].price+'</td>'
 							+'	<td>'+response.data[inx].manager_type+'</td>'

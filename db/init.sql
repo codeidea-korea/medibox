@@ -55,6 +55,12 @@ alter table user_info add column naver_id    varchar(300);
 alter table user_info add column kakao_id    varchar(300);
 alter table user_info add column google_id    varchar(300);
 
+alter table user_info add column email    varchar(300);
+alter table user_info add column address    varchar(300);
+alter table user_info add column address_detail    varchar(300);
+alter table user_info add column grade    varchar(100);
+alter table user_info add column type    varchar(100);
+alter table user_info add column join_path    varchar(100);
 
 -- 포인트(종류) 마스터 테이블
 create table point_info
@@ -303,7 +309,7 @@ commit;
 
 
 alter table admin_info add column admin_type varchar(1) default 'A'; -- A 최고관리자, P 제휴사
--- 제휴사 관리
+-- 브랜드 관리
 drop table partner;
 create table partner
 (
@@ -326,7 +332,7 @@ create table partner
     create_dt        datetime         default CURRENT_TIMESTAMP null,
     update_dt        datetime         default CURRENT_TIMESTAMP null
 ) character set utf16;
--- 매장 정보
+-- 매장 정보 관리
 drop table store;
 create table store
 (
@@ -902,7 +908,7 @@ alter table product add column date_use int default 14;
 
 alter table partner add column main_line_sentence varchar(300) default '';
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 치과 병원 구강관리 SPA 1:1<br>맞춤 관리 및 코칭 서비스' WHERE (`seqno` = '1');
-UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬 발몽 스파 스페셜 테라피' WHERE (`seqno` = '2');
+UPDATE `medibox`.`partner` SET `main_line_sentence` = '미니쉬발몽스파 스페셜 테라피' WHERE (`seqno` = '2');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '1:1 관리 예약 우선제 / 전문적인 케어' WHERE (`seqno` = '3');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '기존 뉴욕스토리안경원의<br>프리미엄 검안 전문체' WHERE (`seqno` = '4');
 UPDATE `medibox`.`partner` SET `main_line_sentence` = '전문교육을 이수한 도수 치료사가 손을<br>이용하여 시행하는 프리미엄 물리치료' WHERE (`seqno` = '5');
@@ -930,10 +936,11 @@ update product set point_type = 'SX', partner_seqno = (SELECT seqno FROM medibox
 
 -- 레벨권한 설정 (나중에)
 alter table admin_info add column store_seqno bigint null; -- 소속 지점
-alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:제휴사 관리자, S:숍(매장별)관리자
+alter table admin_info add column admin_type varchar(1) null; -- A:슈퍼관리자, B:본사관리자, P:브랜드 관리자, S:숍(매장별)관리자
 alter table admin_info add column level_partner_grp_seqno varchar(200) null; -- 관리자 권한 제휴사 리스트
 
 
+alter table user_point_hst add column service_seqno bigint null;
 
 
 -- (쿠폰) 이벤트 쿠폰
@@ -1018,3 +1025,78 @@ create table admin_action_history
     params text null -- 상세 데이터
 ) character set utf16;
 
+
+-- (쿠폰) 쿠폰-사용자 발급 이력
+drop table coupon_user_history;
+create table coupon_user_history
+(
+    seqno bigint auto_increment
+        primary key,
+    coupon_user_seqno bigint not null, 
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    canceled varchar(1) default 'N',
+    approved varchar(1) default 'N',
+    memo varchar(500) null,
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- (바우처) 바우처-사용자 발급 이력
+drop table voucher_user_history;
+create table voucher_user_history
+(
+    seqno bigint auto_increment
+        primary key,
+    voucher_user_seqno bigint not null, 
+    hst_type   varchar(1)      not null, -- U: 사용, R: 환불, S: 충전
+    canceled varchar(1) default 'N',
+    approved varchar(1) default 'N',
+    memo varchar(500) null,
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+-- 휴대폰 인증 이력, 번호
+create table send_sms_auth_hst
+(
+    hst_seqno bigint auto_increment
+        primary key,
+    sender_phone    varchar(100)        null, -- 전송 전화번호
+    receive_phone    varchar(100)        null, -- 수신 전화번호
+    user_seqno    bigint not null,
+    auth_code    varchar(50)      null, -- 인증번호
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+)character set utf16;
+
+create index send_sms_auth_hst__index_1
+    on send_sms_auth_hst (receive_phone, user_seqno);
+
+-- 문자 연동 이력
+create table if_send_sms_hst
+(
+    hst_seqno bigint auto_increment
+        primary key,
+    sms_id          int(11)        not null, -- 
+    callee    varchar(15)        null, -- 
+    result_code    varchar(10)        null, -- 
+    result    varchar(10)        null, -- 
+    success_code    int(11)      null,
+    failed_code    int(11)      null,
+    send_time    varchar(50)      null, -- 
+    create_dt        datetime         default CURRENT_TIMESTAMP null
+) character set utf16;
+
+alter table store add column icon varchar(200) default '/user/img/icon_minish_spa.svg';
+
+update store set icon = '/user/img/icon_minish_manul_therapy.svg' where seqno = 6;
+update store set icon = '/user/img/icon_foresta_black.svg' where seqno = 5;
+update store set icon = '/user/img/icon_deep_focus.svg' where seqno = 4;
+update store set icon = '/user/img/icon_minish_spa.svg' where seqno = 2;
+update store set icon = '/user/img/icon_valmont_spa.svg' where seqno = 3;
+update store set icon = '/user/img/icon_nail.svg' where seqno = 1;
+
+alter table store_service add column orders int default 1;
+
+alter table reservation add column coupon_seqno bigint default 0;
+alter table reservation add column discount_price int default 0;
+
+alter table user_info add column memo2    varchar(500);
+alter table store add column orders int default 9999;

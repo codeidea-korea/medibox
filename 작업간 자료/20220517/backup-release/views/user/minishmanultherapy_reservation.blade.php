@@ -19,7 +19,7 @@
         </button>
         <!-- page title -->
         <div class="title">
-            <span>미니쉬 도수</span>
+            <span>미니쉬도수</span>
         </div>
     </header>
 
@@ -28,10 +28,10 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_manul_therapy01"></figure>
-            <!-- <figure class="minish_manul_therapy02"></figure>
+            <figure class="minish_manul_therapy02"></figure>
             <figure class="minish_manul_therapy03"></figure>
             <figure class="minish_manul_therapy04"></figure>
-            <figure class="minish_manul_therapy05"></figure> -->
+            <!-- <figure class="minish_manul_therapy05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -39,7 +39,7 @@
 
         <div class="reservation_des">
             <div class="title">
-                <h2>미니쉬 도수</h2>
+                <h2>미니쉬도수</h2>
                 <a href="#!" class="share_btn">
                     <img src="/user/img/icon_share.svg" alt="공유하기">
                 </a>

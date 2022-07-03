@@ -4,7 +4,7 @@
     <!-- header -->
     <header id="header">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="location.href='/profile';">
+        <button class="back" onclick="history.back();">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                     <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -104,6 +104,14 @@
 				alert(response.ment);
 				return false;
 			}
+			if(response.data.length == 0 && pageNo == 1){
+                $('._history_items').html(
+                    '<figure class="empty_reservation">'
+                        +'<img src="/user/img/icon_empty_reservation.png" alt="결제내역이 없습니다.">'
+                        +'<p>결제내역이 없습니다.</p>'
+                    +'</figure>');
+                return;
+            }
             var tmpHtml = '';
             for(var inx = 0; inx < response.data.length; inx++){
                 var productName = getProductName(response.data[inx]);

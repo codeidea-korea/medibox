@@ -126,7 +126,7 @@ class PartnerController extends Controller
 
     public function add(Request $request)
     {
-        $admin_seqno = $request->post('admin_seqno');
+        $admin_seqno = $request->post('admin_seqno', 0);
 
         // 회사명 cop_name
         $cop_name = $request->post('cop_name', '');
@@ -147,6 +147,7 @@ class PartnerController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
+        /*
         $adminInfo = DB::table('admin_info')->where('admin_id', '=', $admin_id)->first();
         if(!empty($adminInfo)) {
             $result['ment'] = '이미 존재하는 관리자 아이디입니다. 다른 아이디로 다시 시도해주세요.';
@@ -159,12 +160,12 @@ class PartnerController extends Controller
                 'admin_id' => $admin_id
                 , 'admin_pw' => $admin_pw
                 , 'admin_name' => $director_name
-                , 'partner_seqno' => $partner_seqno
                 , 'delete_yn' => 'N'
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ], 'admin_seqno'
         );
+        */
 
         $partner_seqno = DB::table('partner')->insertGetId(
             [
@@ -187,12 +188,13 @@ class PartnerController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ], 'seqno'
         );
-
+        /*
         DB::table('admin_info')->where('admin_seqno', '=', $director_seqno)->update(
             [
                 'partner_seqno' => $partner_seqno
             ]
         );
+        */
 
         $result['ment'] = '성공';
         $result['result'] = true;
@@ -202,7 +204,7 @@ class PartnerController extends Controller
 
     public function modify(Request $request, $id)
     {
-        $admin_seqno = $request->post('admin_seqno');
+        $admin_seqno = $request->post('admin_seqno', 0);
 
         // 회사명 cop_name
         $cop_name = $request->post('cop_name', '');
@@ -224,6 +226,7 @@ class PartnerController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
+        /*
         $adminInfo = DB::table('admin_info')->where([
             ['admin_id', '=', $admin_id],
             ['partner_seqno', '=', $id]
@@ -252,6 +255,7 @@ class PartnerController extends Controller
                 );
             }
         }
+        */
 
         DB::table('partner')->where('seqno', '=', $id)->update(
             [
@@ -271,11 +275,13 @@ class PartnerController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        /*
         DB::table('admin_info')->where('admin_id', '=', $admin_id)->update(
             [
                 'partner_seqno' => $id
             ]
         );
+        */
 
         $result['ment'] = '성공';
         $result['result'] = true;

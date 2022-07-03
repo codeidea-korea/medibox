@@ -104,7 +104,7 @@ $page_title = '자주 묻는 질문';
 			data.title = searchField;
 		}
 
-		medibox.methods.contents.usage.list(data, function(request, response){
+		medibox.methods.contents.faq.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -169,10 +169,10 @@ $page_title = '자주 묻는 질문';
 		});
 	}
 	function gotoDetail(seq){
-		location.href = '/admin/contents/usages/'+seq;
+		location.href = '/admin/contents/faqs/'+seq;
 	}
 	function addItem(){
-		location.href = '/admin/contents/usages/0';
+		location.href = '/admin/contents/faqs/0';
 	}		
 	
 	$(document).ready(function(){

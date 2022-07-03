@@ -3,7 +3,7 @@
 
     <header id="header">
         <!-- 뒤로가기 버튼 -->
-        <button class="back" onclick="location.href='/reservation';">
+        <button class="back" onclick="location.href='/reservation-history';">
             <svg xmlns="http://www.w3.org/2000/svg" width="24.705" height="24" viewBox="0 0 24.705 24">
                 <g id="back_arrow" transform="translate(-22.295 -60)">
                   <rect id="사각형_207" data-name="사각형 207" width="24" height="24" transform="translate(23 60)" fill="none"/>
@@ -66,7 +66,13 @@
             <ul class="tab_menu">
                 <li class="on">정보</li>
                 <li>서비스</li>
+                @php
+                if($storeInfo->in_manager == 'Y') {
+                @endphp
                 <li>디자이너</li>
+                @php
+                }
+                @endphp
 
                 <!-- 22.03.28 삭제 -->
                 <!-- <li>문의</li> -->
@@ -271,6 +277,7 @@
                             $time = ($time[0] == '00' ? 0 : ((int)$time[0])*60) + ((int)$time[1]);
 
                             if($prevDept != $services[$inx]->dept) {
+                                $prevDept = $services[$inx]->dept;
                                 $docContents = $docContents . '<div class="menu"><h4>'.$services[$inx]->dept.'</h4><ul>';
                             }
 
@@ -403,7 +410,7 @@
 
                     
             @php
-            if(count($managers) > 0) {
+            if($storeInfo->in_manager == 'Y' && count($managers) > 0) {
                 echo '<div class="tab_content"><div class="service_inner menu_inner">';
 
                 echo '<h3>디자이너(<span class="designer_num">'.count($managers).'</span>)</h3>';

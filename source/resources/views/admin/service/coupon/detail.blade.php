@@ -51,7 +51,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 				<div class="wr-list-label">지급 조건</div>
 				<div class="wr-list-con">
 					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="A" checked="checked"><span></span>전체발급</label>
-					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="F"><span></span>회원가입시</label>
+					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="J"><span></span>회원가입시</label>
 					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="M"><span></span>멤버쉽</label>
 				</div>
 			</div>
@@ -88,8 +88,8 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			<div class="wr-list _type_discount">
 				<div class="wr-list-label">최소 기준 금액</div>
 				<div class="wr-list-con">
-					<label class="radio-wrap"><input type="radio" name="limit_type" value="" checked="checked"><span></span>제한없음</label>
-					<label class="radio-wrap"><input type="radio" name="limit_type" value="F"><span></span>서비스 최소 결제금액</label>
+					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="" checked="checked"><span></span>제한없음</label>
+					<label class="radio-wrap"><input type="radio" name="limit_type" onclick="toggleLimitType(this.value)" value="F"><span></span>서비스 최소 결제금액</label>
 					<input type="number" id="limit_base_price" name="" value="" class="span200" placeholder="">원
 				</div>
 			</div>
@@ -175,6 +175,15 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			$('._type_discount').hide();
 		} 
 	}
+	function toggleLimitType(val){
+		if(val == '') {
+			$('#limit_base_price').val(0);
+			$('#limit_base_price').hide();
+		} else if(val == 'F'){
+			$('#limit_base_price').val('');
+			$('#limit_base_price').show();
+		}
+	}
 	function addPartner(){
 		var types = document.querySelector('#coupon_partner_grp_seqno').value;
 		var typeInput = document.querySelector('#partnersPop').value;
@@ -214,12 +223,12 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			$('#coupon_partner_grp_seqno').val('0');
 			$('._partners').html('');
 			$('#partnersPop').val('');
-			$('#partnersPop').attr('disabled');
+			$('#partnersPop').prop('disabled', true);
 		} else {
-			$('#coupon_partner_grp_seqno').val('0');
+			$('#coupon_partner_grp_seqno').val('');
 			$('._partners').html('');
 			$('#partnersPop').val('');
-			$('#partnersPop').removeAttr('disabled');
+			$('#partnersPop').prop('disabled', false);
 		}
 	}
 	
@@ -340,6 +349,9 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		});
 	}
 	$(document).ready(function(){
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+		
 		getPartners();
 		toggleDiscountInfo('F');
 	});
@@ -393,6 +405,21 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			console.log(e);
 		});
     }
+	function setStatus(status){
+		medibox.methods.point.coupon.status({
+			allowed_issuance_type: status
+		}, {{$couponNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('발급 상태가 수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $couponNo }}' };
 
@@ -418,9 +445,13 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 				voucherInfo.store_seqno = response.data.store_seqno;
 				voucherInfo.service_seqno = response.data.service_seqno;
 			}
+			toggleDiscountInfo(response.data.type);
 			$('#discount_price').val( response.data.discount_price );
 			$('#max_discount_price').val( response.data.max_discount_price );
 			$('#limit_base_price').val( response.data.limit_base_price );
+			if(response.data.limit_base_price > 0) {
+				$($('input[name=limit_type]')[1]).attr('checked');
+			}
 
 			$('#coupon_partner_grp_seqno').val( response.data.coupon_partner_grp_seqno );
 
@@ -433,12 +464,11 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 					for(var inx=0; inx<types.length; inx++){
 						types[inx] = (types[inx] + '').replace('|', '');
 						$('._partners').html(
-							$('._partners').html() + '<span class="srtag">'+types[inx]+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
+							$('._partners').html() + '<span class="srtag">'+$('#partnersPop > option[value='+types[inx]+']').text()+'<i onclick="deleteTypes(this, \''+types[inx]+'\')" class="del"></i></span>'
 						);
 					}
 				}
 			}
-			toggleDiscountInfo(response.data.type);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -464,8 +494,11 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		});
 	}
 	$(document).ready(function(){
-		getInfo();
+		startDay = toDateFormatt(new Date().getTime());
+		endDay = toDateFormatt(new Date().getTime());
+
 		getPartners();
+		getInfo();
 	});
 	@php
 	}

@@ -169,10 +169,10 @@ $page_title = '이용약관';
 		});
 	}
 	function gotoDetail(seq){
-		location.href = '/admin/contents/notices-partner/'+seq;
+		location.href = '/admin/contents/usages/'+seq;
 	}
 	function addItem(){
-		location.href = '/admin/contents/notices-partner/0';
+		location.href = '/admin/contents/usages/0';
 	}		
 	
 	$(document).ready(function(){

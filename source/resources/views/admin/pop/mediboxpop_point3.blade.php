@@ -48,6 +48,19 @@
 						<th>포인트</th>
 						<td class="tright _userPoint">100,000 P</td>
 					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
+				<div class="caption">보유 정액권</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
 					<tr>
 						<th rowspan="3">정액권</th>
 						<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
@@ -208,6 +221,10 @@ function checkRefundPoint(){
 		var memo = $('#refund_memo').val();
 		var amount = $('#refund_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
 		var admin_name = ''; // $('#calculator_name').val();
+
+		if(!confirm('[('+userInfo.user_phone+') '+userInfo.user_name+' ] 회원님의 ['+$('#refund_point').val()+'] point를 환불하시겠습니까?')) {
+			return;
+		}
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: 0,
 			point_type:point_type, memo:memo, amount:replacePoint(amount), admin_name: admin_name };
@@ -215,7 +232,7 @@ function checkRefundPoint(){
 		medibox.methods.point.refund(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
-				alert(response.ment);
+				alert(response.ment.replace('\\r', '\n'));
 				return false;
 			}
 			alert(response.ment.replace('\\r', '\n'));

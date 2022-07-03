@@ -50,9 +50,9 @@ class StoreController extends Controller
         // 매장에 소속된 디자이너 데이터
         for($inx = 0; $inx < count($contents); $inx++){
             $managerInfo = DB::table("store_manager")
-                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->first();
+                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->get();
             $serviceInfo = DB::table("store_service")
-                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->first();
+                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->get();
                 
             $contents[$inx]->managerInfo = $managerInfo;
             $contents[$inx]->serviceInfo = $serviceInfo;
@@ -156,6 +156,7 @@ class StoreController extends Controller
         $img3 = $request->post('img3', '');
         $img4 = $request->post('img4', '');
         $img5 = $request->post('img5', '');
+        $icon = $request->post('icon', '');
         
         $in_manager = $request->post('in_manager', 'N');
         $manager_type = $request->post('manager_type', '');
@@ -163,6 +164,12 @@ class StoreController extends Controller
         $result = [];
         $result['ment'] = '등록 실패';
         $result['result'] = false;
+        if(!empty($start_dt) && !empty($end_dt)) {
+            if($end_dt < $start_dt) {
+                $result['ment'] = '시작시간이 종료시간보다 나중일 수 없습니다.';
+                return $result;
+            }
+        }
 
         $id = DB::table('store')->insertGetId(
             [
@@ -182,6 +189,7 @@ class StoreController extends Controller
                 , 'img3' => $img3
                 , 'img4' => $img4
                 , 'img5' => $img5
+                , 'icon' => $icon
                 
                 , 'in_manager' => $in_manager
                 , 'manager_type' => $manager_type
@@ -216,6 +224,7 @@ class StoreController extends Controller
         $img3 = $request->post('img3', '');
         $img4 = $request->post('img4', '');
         $img5 = $request->post('img5', '');
+        $icon = $request->post('icon', '');
         
         $in_manager = $request->post('in_manager', 'N');
         $manager_type = $request->post('manager_type', '');
@@ -237,6 +246,30 @@ class StoreController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
+        if(!empty($allow_ext_holiday) && $allow_ext_holiday != '') {
+            if($allow_ext_holiday == 'N') {
+                // 지정 없음
+                $ext_holiday_weekly = '';
+                $ext_holiday_weekend_day = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'W') {
+                $ext_holiday_weekend_day = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'M') {
+                $ext_holiday_weekly = '';
+                $ext_holiday_montly = '';
+            } else if($allow_ext_holiday == 'D') {
+                $ext_holiday_weekly = '';
+                $ext_holiday_weekend_day = '';
+            }
+        }
+        if(!empty($start_dt) && !empty($end_dt)) {
+            if($end_dt < $start_dt) {
+                $result['ment'] = '시작시간이 종료시간보다 나중일 수 없습니다.';
+                return $result;
+            }
+        }
+
         DB::table('store')->where('seqno', '=', $id)->update(
             [
                 'admin_seqno' => $admin_seqno
@@ -255,6 +288,7 @@ class StoreController extends Controller
                 , 'img3' => $img3
                 , 'img4' => $img4
                 , 'img5' => $img5
+                , 'icon' => $icon
                 
                 , 'in_manager' => $in_manager
                 , 'manager_type' => $manager_type
@@ -272,7 +306,7 @@ class StoreController extends Controller
                 , 'ext_holiday_weekend_day' => $ext_holiday_weekend_day
                 , 'ext_holiday_montly' => $ext_holiday_montly
 
-                , 'create_dt' => date('Y-m-d H:i:s')
+                , 'update_dt' => date('Y-m-d H:i:s')
             ]
         );
 

@@ -291,7 +291,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 			}
 			var bodyData = '<option value="">선택해주세요.</option>';
 			for(var inx=0; inx<response.data.length; inx++){
-				bodyData = bodyData + '<option value="'+response.data[inx].seqno+'">'+response.data[inx].name+'</option>';
+				bodyData = bodyData + '<option value="'+response.data[inx].seqno+'">['+response.data[inx].dept + '] ' +response.data[inx].name+'</option>';
 			}
 			$('#servicePop').html(bodyData);
 		}, function(e){

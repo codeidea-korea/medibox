@@ -326,7 +326,7 @@
 			medibox.methods.point.useSelf(data, function(request, response){
 				console.log('output : ' + response);
 				if(!response.result){
-					alert(response.ment);
+					alert(response.ment.replace('\\r', '\n'));
 					return false;
 				}
 				alert(response.ment.replace('\\r', '\n'));
@@ -341,12 +341,12 @@
 			var admin_name = $('#calculator_name').val();
 			
 			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-				point_type:point_type, memo:memo, admin_name: admin_name };
+				point_type:point_type, memo:memo, admin_name: admin_name, approved: 'Y' };
 
 			medibox.methods.point.use(data, function(request, response){
 				console.log('output : ' + response);
 				if(!response.result){
-					alert(response.ment);
+					alert(response.ment.replace('\\r', '\n'));
 					return false;
 				}
 				alert(response.ment.replace('\\r', '\n'));

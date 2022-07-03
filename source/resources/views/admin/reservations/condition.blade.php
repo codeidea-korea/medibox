@@ -42,13 +42,13 @@ $page_title = '예약 현황';
 
 		<section class="bodyCon">
 			<div class="leftCon">
-				<a href="#" class="btn-day _reservationSearchDate">일<br>3/6</a>
-				<a href="#" class="btn-day _reservationSearchDate">월<br>3/7</a>
-				<a href="#" class="btn-day _reservationSearchDate active">화<br>3/8</a>
-				<a href="#" class="btn-day _reservationSearchDate">수<br>3/9</a>
-				<a href="#" class="btn-day _reservationSearchDate">목<br>3/10</a>
-				<a href="#" class="btn-day _reservationSearchDate">금<br>3/11</a>
-				<a href="#" class="btn-day _reservationSearchDate">토<br>3/12</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">일<br>3/6</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">월<br>3/7</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate active">화<br>3/8</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">수<br>3/9</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">목<br>3/10</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">금<br>3/11</a>
+				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">토<br>3/12</a>
 				<div class="navigation">
 					<button class="prev" onclick="findNextDate(-7)"></button>
 					<button class="next" onclick="findNextDate(7)"></button>
@@ -89,6 +89,7 @@ $page_title = '예약 현황';
 			<span class="label-4">예약불이행</span>
 			<span class="label-5">고객입장</span>
 			<span class="label-6">서비스완료</span>
+			<!-- <span class="label-7">예약취소</span> -->
 		</div>
 	</div>
 	
@@ -130,6 +131,7 @@ $page_title = '예약 현황';
 		$(".tableChart .body").scrollTop($(this).scrollTop());
 	});
 
+// 예약 완료
 	var layer_select3 = '<ul class="layerSelect">';
 	layer_select3 += '<li><a href="#" class="active">예약완료</a></li>';
 	layer_select3 += '<li><a href="#" onclick="changeStatus(\'E\')">고객입장</a></li>';
@@ -139,30 +141,40 @@ $page_title = '예약 현황';
 	layer_select3 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select3 += '</ul>';
 
+// 예약 불이행
 	var layer_select4 = '<ul class="layerSelect">';
-	layer_select4 += '<li><a href="#" class="active">고객입장</a></li>';
-	layer_select4 += '<li><a href="#" onclick="changeStatus(\'D\')">서비스완료</a></li>';
-	layer_select4 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
-	layer_select4 += '<li><a href="#" onclick="changeStatus(\'R\')">입장취소</a></li>';
+	layer_select4 += '<li><a href="#" class="active">예약불이행</a></li>';
+	layer_select4 += '<li><a href="#" onclick="changeStatus(\'R\')">불이행취소</a></li>';
 	layer_select4 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select4 += '</ul>';
 
+// 고객 입장
 	var layer_select5 = '<ul class="layerSelect">';
-	layer_select5 += '<li><a href="#" class="active">서비스완료</a></li>';
+	layer_select5 += '<li><a href="#" class="active">고객입장</a></li>';
+	layer_select5 += '<li><a href="#" onclick="changeStatus(\'D\')">서비스완료</a></li>';
 	layer_select5 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
-	layer_select5 += '<li><a href="#" onclick="changeStatus(\'E\')">완료취소</a></li>';
+	layer_select5 += '<li><a href="#" onclick="changeStatus(\'R\')">입장취소</a></li>';
 	layer_select5 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select5 += '</ul>';
 
-	var layer_select6 = '<ul class="layerSelect">';
-	layer_select6 += '<li><a href="#" class="active">예약불이행</a></li>';
-	layer_select6 += '<li><a href="#" onclick="changeStatus(\'R\')">불이행취소</a></li>';
+// 서비스 완료
+var layer_select6 = '<ul class="layerSelect">';
+	layer_select6 += '<li><a href="#" class="active">서비스완료</a></li>';
+	layer_select6 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
+	layer_select6 += '<li><a href="#" onclick="changeStatus(\'E\')">완료취소</a></li>';
 	layer_select6 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
 	layer_select6 += '</ul>';
+// 예약 취소
+	var layer_select7 = '<ul class="layerSelect">';
+	layer_select7 += '<li><a href="#" class="active">예약취소</a></li>';
+	layer_select7 += '<li><a href="#" onclick="modifyItem()">예약수정</a></li>';
+	layer_select7 += '<li><a href="#" onclick="gotoMemberDetail()">고객정보</a></li>';
+	layer_select7 += '</ul>';
+
 
 	$('html').click(function(e) {
 		if(!$(e.target).hasClass("cell")) {
-			$('.cell .layerSelect').remove();
+			$('.layerSelect').remove();
 		}
 	});
 
@@ -281,6 +293,7 @@ $page_title = '예약 현황';
 			var targetDate = new Date(toDate);
 			var targetDay = targetDate.setDate(targetDate.getDate() - (code - inx));
 			$($('._reservationSearchDate')[inx]).html(convert2Day(targetDate.getDay()) + '<br>' + toDateFormatt2(targetDay));
+			$($('._reservationSearchDate')[inx]).attr('data-key', toDateFormatt(targetDate.getTime()));
 			if(code == inx) {
 				$($('._reservationSearchDate')[inx]).addClass('active');
 			}
@@ -292,6 +305,12 @@ $page_title = '예약 현황';
 	function findNextDate(pt){
 		var targetDay = new Date(searchDate);
 		targetDay.setDate(targetDay.getDate() + pt);
+		searchDate = toDateFormatt(targetDay.getTime());
+		makeThisWeek(searchDate);
+	}
+	function findTargetDate(target){
+		var targetDay = $(target).attr('data-key');
+		targetDay = new Date(targetDay);
 		searchDate = toDateFormatt(targetDay.getTime());
 		makeThisWeek(searchDate);
 	}
@@ -308,7 +327,12 @@ $page_title = '예약 현황';
 			alert('해당 매장에는 예약 가능한 직원이 없습니다. 먼저 예약 가능한 직원을 등록해주세요.');
 			return false;
 		}
-		var bodyData = '<span class="cell">미지정</span>';
+		var bodyData = ''; // '<span class="cell">미지정</span>';
+		// 2022-05-27, 기본값 매장별 추가
+		for(var idx = 0; idx < stores.length; idx++)
+		{
+			bodyData = bodyData + '<span class="cell">'+stores[idx].name+' (미지정)</span>';
+		}
 		if(stores.managerInfo.length){
 			for(var inx=0; inx<stores.managerInfo.length; inx++){
 				bodyData = bodyData + '<span class="cell">'+stores.managerInfo[inx].manager_type + ' ' + stores.managerInfo[inx].name+'</span>';
@@ -321,33 +345,47 @@ $page_title = '예약 현황';
 	}
 	function addEventCeil(){
 		$('.tableChart .body .cell').click(function() {
-			$('.cell .layerSelect').remove();
+			$('.layerSelect').remove();
 			
 			if($(this).hasClass("label-3")) {
-				$(this).html(layer_select3);
+				$(this).html($(this).html() + layer_select3);
 			} else if($(this).hasClass("label-4")) {
-				$(this).html(layer_select4);
+				$(this).html($(this).html() + layer_select4);
 			} else if($(this).hasClass("label-5")) {
-				$(this).html(layer_select5);
+				$(this).html($(this).html() + layer_select5);
 			} else if($(this).hasClass("label-6")) {
-				$(this).html(layer_select6);
-			}
+				$(this).html($(this).html() + layer_select6);
+			} /* else if($(this).hasClass("label-7")) {
+				$(this).html($(this).html() + layer_select7);
+			} */
 		});
 	}
 	function dueDay(){
 		// NOTICE: fake Time
 		stores.conf = {
 			dueDay: {
-				startTime: '10:00',
-				endTime: '15:00'
+				startTime: '05:00',
+				endTime: '21:30'
 			}
 		};
 		if(stores && stores[0]) {
-			
+
+			// 2022-05-27, 시작-종료일 설정 (최소/최대)
+			var minTime = '11:00';
+			var maxTime = '15:30';
+
+			for(var idx = 0; idx < stores.length; idx++){
+				if(stores[idx].start_dt && stores[idx].start_dt != '' && stores[idx].start_dt < minTime) {
+					minTime = stores[idx].start_dt;
+				}
+				if(stores[idx].end_dt && stores[idx].end_dt != '' && stores[idx].end_dt > maxTime) {
+					maxTime = stores[idx].end_dt;
+				}
+			}
 			stores.conf = {
 				dueDay: {
-					startTime: stores[0].start_dt,
-					endTime: stores[0].end_dt
+					startTime: minTime,
+					endTime: maxTime
 				}
 			};
 		}
@@ -362,21 +400,62 @@ $page_title = '예약 현황';
 
 		var bodyData = '';
 		while(startTime.getTime() < endTime.getTime()){
-			bodyData = bodyData + '<span class="cell">'+startTime.getHours()+':'+(startTime.getMinutes() < 10 ? '0'+startTime.getMinutes() : startTime.getMinutes())+'</span>';
+			bodyData = bodyData + '<span class="cell">'+(startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes())+'</span>';
 			startTime.setMinutes(startTime.getMinutes() + timeGap);
 		}
 		$('#storeOpendTime').html(bodyData);
 		
 		bodyData = '';
 		// 기본 값 추가
+		// 2022-05-27, 기본값 매장별 추가
+		prevtargetStoreSeqno = targetStoreSeqno;
+		for(var idx = 0; idx < stores.length; idx++)
 		{
-			bodyData = bodyData + '<div class="col _timeRow" data-alt="미지정" data-key="0">';
+			bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores[idx].name+' (미지정)" data-key="0" data-store-key="'+stores[idx].seqno+'">';
 			var startTime = new Date(searchDate);
 			startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
 			startTime.setMinutes(stores.conf.dueDay.startTime.split(':')[1]);
 
+			targetStoreSeqno = stores[idx].seqno;
+			var isHoliday = !disableAllTheseDays(startTime);
+			var ment = '';
+			var isFisrt = false;
+			var isNotDueTime = true;
+
 			while(startTime.getTime() < endTime.getTime()){
-				bodyData = bodyData + '<span class="cell " data-start="'+startTime.getHours()+':'+startTime.getMinutes()+'"></span>'; // 예약이 없는 시간에는 기본값 세팅
+				var isLaunchTime = false;
+				var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
+				
+				// 업무 시간 체크
+				isNotDueTime = !isDueTime(targetTime);
+				if(!isNotDueTime) {
+					// 업무 시간인 경우
+					// 점심 시간을 사용하는 매장의 경우
+					if(!disableAllTheseTimes(targetTime)) {
+						isLaunchTime = true;
+					}
+				}
+				if(!isHoliday && !isLaunchTime && !isNotDueTime){
+					ment = '';
+				}
+				if(ment != '점심시간' && (isLaunchTime)){
+					ment = '점심시간';
+					isFisrt = true;
+				} else if(isLaunchTime){
+					isFisrt = false;
+				} else if(ment != '휴일' && (isHoliday)){
+					ment = '휴일';
+					isFisrt = true;
+				} else if(isHoliday){
+					isFisrt = false;
+				} else if(ment != '근무시간 외' && (isNotDueTime)){
+					ment = '근무시간 외';
+					isFisrt = true;
+				} else if(isNotDueTime){
+					isFisrt = false;
+				}
+
+				bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 				startTime.setMinutes(startTime.getMinutes() + timeGap);
 			}
 			bodyData = bodyData + '</div>';
@@ -384,32 +463,105 @@ $page_title = '예약 현황';
 		if(stores.managerInfo) {
 			if(stores.managerInfo.length){
 				for(var inx=0; inx<stores.managerInfo.length; inx++){
-					bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo[inx].name+'" data-key="'+stores.managerInfo[inx].seqno+'">';
+					bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo[inx].name+'" data-key="'+stores.managerInfo[inx].seqno+'" data-store-key="'+stores.managerInfo[inx].store_seqno+'">';
 
 					var startTime = new Date(searchDate);
 					startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
 					startTime.setMinutes(stores.conf.dueDay.startTime.split(':')[1]);
+					targetStoreSeqno = stores.managerInfo[inx].store_seqno;
+					var isHoliday = !disableAllTheseDays(startTime);
+					var ment = '';
+					var isFisrt = false;
+					var isNotDueTime = true;
 
 					while(startTime.getTime() < endTime.getTime()){
-						bodyData = bodyData + '<span class="cell " data-start="'+startTime.getHours()+':'+startTime.getMinutes()+'"></span>'; // 예약이 없는 시간에는 기본값 세팅
+						var isLaunchTime = false;
+						var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
+						
+						// 업무 시간 체크
+						isNotDueTime = !isDueTime(targetTime);
+						if(!isNotDueTime) {
+							// 업무 시간인 경우
+							// 점심 시간을 사용하는 매장의 경우
+							if(!disableAllTheseTimes(targetTime)) {
+								isLaunchTime = true;
+							}
+						}
+						if(!isHoliday && !isLaunchTime && !isNotDueTime){
+							ment = '';
+						}
+						if(ment != '점심시간' && (isLaunchTime)){
+							ment = '점심시간';
+							isFisrt = true;
+						} else if(isLaunchTime){
+							isFisrt = false;
+						} else if(ment != '휴일' && (isHoliday)){
+							ment = '휴일';
+							isFisrt = true;
+						} else if(isHoliday){
+							isFisrt = false;
+						} else if(ment != '근무시간 외' && (isNotDueTime)){
+							ment = '근무시간 외';
+							isFisrt = true;
+						} else if(isNotDueTime){
+							isFisrt = false;
+						}
+						bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 						startTime.setMinutes(startTime.getMinutes() + timeGap);
 					}
 					bodyData = bodyData + '</div>';
 				}
 			} else {
-				bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo.name+'" data-key="'+stores.managerInfo.seqno+'">';
+				bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo.name+'" data-key="'+stores.managerInfo.seqno+'" data-store-key="'+stores.managerInfo[inx].store_seqno+'">';
 
 				var startTime = new Date(searchDate);
 				startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
 				startTime.setMinutes(stores.conf.dueDay.startTime.split(':')[1]);
+				targetStoreSeqno = stores.managerInfo[inx].store_seqno;
+				var isHoliday = !disableAllTheseDays(startTime);
+				var ment = '';
+				var isFisrt = false;
+				var isNotDueTime = true;
 
 				while(startTime.getTime() < endTime.getTime()){
-					bodyData = bodyData + '<span class="cell " data-start="'+startTime.getHours()+':'+startTime.getMinutes()+'"></span>'; // 예약이 없는 시간에는 기본값 세팅
+					var isLaunchTime = false;
+					var targetTime = (startTime.getHours() < 10 ? '0'+startTime.getHours() : startTime.getHours())+':'+(startTime.getMinutes() < 10 ? '00' : startTime.getMinutes());
+					
+					// 업무 시간 체크
+					isNotDueTime = !isDueTime(targetTime);
+					if(!isNotDueTime) {
+						// 업무 시간인 경우
+						// 점심 시간을 사용하는 매장의 경우
+						if(!disableAllTheseTimes(targetTime)) {
+							isLaunchTime = true;
+						}
+					}
+					if(!isHoliday && !isLaunchTime && !isNotDueTime){
+						ment = '';
+					}
+					if(ment != '점심시간' && (isLaunchTime)){
+						ment = '점심시간';
+						isFisrt = true;
+					} else if(isLaunchTime){
+						isFisrt = false;
+					} else if(ment != '휴일' && (isHoliday)){
+						ment = '휴일';
+						isFisrt = true;
+					} else if(isHoliday){
+						isFisrt = false;
+					} else if(ment != '근무시간 외' && (isNotDueTime)){
+						ment = '근무시간 외';
+						isFisrt = true;
+					} else if(isNotDueTime){
+						isFisrt = false;
+					}
+					bodyData = bodyData + '<span class="cell '+(isHoliday || isLaunchTime || isNotDueTime ? 'label-2' : '')+'" data-start="'+targetTime+'">'+(isFisrt ? ment : '')+'</span>'; // 예약이 없는 시간에는 기본값 세팅
 					startTime.setMinutes(startTime.getMinutes() + timeGap);
 				}
 				bodyData = bodyData + '</div>';
 			}
 		}
+		targetStoreSeqno = prevtargetStoreSeqno;
 		$('#_reservateTime').html(bodyData);
 	}
 	let partnerseqno;
@@ -436,14 +588,15 @@ $page_title = '예약 현황';
 			if(!stores) {
 				return;
 			}
-					$('._timeRow[data-key=0] > span').removeClass('label-1');
-					$('._timeRow[data-key=0] > span').removeClass('label-2');
-					$('._timeRow[data-key=0] > span').removeClass('label-3');
-					$('._timeRow[data-key=0] > span').removeClass('label-4');
-					$('._timeRow[data-key=0] > span').removeClass('label-5');
-					$('._timeRow[data-key=0] > span').removeClass('label-6');
-					$('._timeRow[data-key=0] > span').removeClass('label-7');
-					$('._timeRow[data-key=0] > span').text('');
+			$('._timeRow[data-key=0] > span').removeClass('label-1');
+			$('._timeRow[data-key=0] > span').removeClass('label-2');
+			$('._timeRow[data-key=0] > span').removeClass('label-3');
+			$('._timeRow[data-key=0] > span').removeClass('label-4');
+			$('._timeRow[data-key=0] > span').removeClass('label-5');
+			$('._timeRow[data-key=0] > span').removeClass('label-6');
+//			$('._timeRow[data-key=0] > span').removeClass('label-7');
+			$('._timeRow[data-key=0] > span').text('');
+
 			if(stores.managerInfo && stores.managerInfo.length > 0) {
 				
 				for(var inx=0; inx<stores.managerInfo.length; inx++){
@@ -453,20 +606,24 @@ $page_title = '예약 현황';
 					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-4');
 					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-5');
 					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-6');
-					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-7');
+//					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').removeClass('label-7');
 					$('._timeRow[data-key='+stores.managerInfo[inx].seqno+'] > span').text('');
 				}
 			}
+			dueDay();
+			addEventCeil();
 
 			for(var inx=0; inx<response.data.length; inx++){
 				var manager_seqno = 0;
+				var store_seqno = 0;
 				if(stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno).length > 0) {
 					manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
 				}
+				store_seqno = response.data[inx].store_seqno;
 				// custom_color
 				var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
 				var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
-				var timeCeils = $('._timeRow[data-key='+manager_seqno+'] > span');
+				var timeCeils = $('._timeRow[data-key='+manager_seqno+'][data-store-key='+store_seqno+'] > span');
 
 				var targetIdx = 0;
 				for(var jnx=0; jnx<timeCeils.length; jnx++){
@@ -480,18 +637,22 @@ $page_title = '예약 현황';
 				var barCaption = 'label-3';
 				if(status == 'R') {}
 				else if(status == 'E'){
-					barCaption = 'label-4';
-				}
-				else if(status == 'D'){
 					barCaption = 'label-5';
 				}
-				else if(status == 'N'){
+				else if(status == 'D'){
 					barCaption = 'label-6';
+				}
+				else if(status == 'N'){
+					barCaption = 'label-4';
+				}
+				else if(status == 'C'){
+					barCaption = 'label-7';
+					continue;
 				}
 				reservationInfos = response.data;
 
-				for(var jnx=1; jnx <= countColor; jnx++){
-					if(jnx == 1) {
+				for(var jnx=0; jnx < countColor; jnx++){
+					if(jnx == 0) {
 						// 첫행에는 이모티콘 옵션 부여
 						let reservationBoxText = '';
 						if(response.data[inx].use_icon_important == 'Y') {
@@ -500,10 +661,19 @@ $page_title = '예약 현황';
 						if(response.data[inx].use_icon_phone == 'Y') {
 							reservationBoxText = reservationBoxText + ' ☏';
 						} 
-						$(timeCeils[targetIdx + jnx]).text(reservationBoxText + ' ' + response.data[inx].userInfo.user_name + ' 고객님');
+						$(timeCeils[targetIdx + jnx]).html(reservationBoxText + ' ' + response.data[inx].userInfo.user_name + ' 고객님 <br>'
+							+ response.data[inx].serviceInfo.dept + ' ' + response.data[inx].serviceInfo.name + ' <br>'
+							+ response.data[inx].estimated_time
+						);
 					}
+					$(timeCeils[targetIdx + jnx]).removeClass('label-2');
 					$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
 					$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
+					$(timeCeils[targetIdx + jnx]).attr('title', 
+						'이름 : ' + response.data[inx].userInfo.user_name + '\n'
+						+ '전화번호 : ' + response.data[inx].userInfo.user_phone + '\n'
+						+ '추천인 : ' + (response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
+						+ '메모 : ' + response.data[inx].memo + '');
 					$(timeCeils[targetIdx + jnx]).addClass(barCaption);
 					$(timeCeils[targetIdx + jnx]).on('click', function(){
 						userseqno = $(this).attr('data-user-id');
@@ -522,10 +692,6 @@ $page_title = '예약 현황';
 			console.log(e);
 			alert('서버 통신 에러');
 		});
-		// 2. 결과를 바탕으로 세팅정보의 근무시간내 예약을 표로 생성
-		// 3. 상태별 알럿이 다르게 노출
-		// 4. 
-		addEventCeil();
 	}
 	var isOnce = false;
 	function getStores(partner_seqno, id){
@@ -563,7 +729,7 @@ $page_title = '예약 현황';
 			}
 			stores = response.data;
 			if(stores.length) {
-				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null);
+				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null).reduce((a, b) => a.concat(b));
 			}
 			makeManagers();
 			dueDay();
@@ -580,20 +746,66 @@ $page_title = '예약 현황';
 			alert('상태 변경에 실패하였습니다.');
 			return false;
 		}
-		medibox.methods.store.reservation.status({
-			status: status
-		}, reservationseqno, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
+
+		if(status == 'C') {
+			// 
+			var res = reservationInfos.filter(r => r.seqno == reservationseqno);
+
+			if(!res || res.length == 0) {
+				alert('존재 하지 않는 예약입니다.');
 				return false;
 			}
-			alert('상태가 변경되었습니다.');
-			makeReservationBodyCeil();
-		}, function(e){
-			console.log(e);
-			alert('서버 통신 에러');
-		});
+			res = res[0];
+			reservation_old_price = res.serviceInfo.price - res.discount_price;
+			reIssueCoupon = res.coupon_seqno;
+
+			var point_type = 'P';
+			var price = reservation_old_price;
+			var memo = '관리자 예약 취소로 인한 사용 포인트 반환 (예약번호: ['+reservationseqno+'])';
+			var data = { admin_seqno:1, user_seqno:res.user_seqno, product_seqno: 0, reIssueCoupon: reIssueCoupon,
+				point_type:point_type, memo:memo, amount: price, admin_name: '' };
+
+			medibox.methods.point.collect(data, function(request1, response1){
+				console.log('output : ' + response1);
+				if(!response1.result){
+					alert(response1.ment.replace('\\r', '\n'));
+					return false;
+				}
+				
+				medibox.methods.store.reservation.status({
+					status: status
+				}, reservationseqno, function(request, response){
+					console.log('output : ' + response);
+					if(!response.result){
+						alert(response.ment);
+						return false;
+					}
+					alert('상태가 변경되었습니다.');
+					makeReservationBodyCeil();
+				}, function(e){
+					console.log(e);
+					alert('서버 통신 에러');
+				});
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		} else {
+			medibox.methods.store.reservation.status({
+				status: status
+			}, reservationseqno, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert('상태가 변경되었습니다.');
+				makeReservationBodyCeil();
+			}, function(e){
+				console.log(e);
+				alert('서버 통신 에러');
+			});
+		}
 	}
 	// 3 선택된 매장의 모든 매니저 조회 -> list 생성
 	// 4 일자, 매장으로 선택된 모든 예약정보 조회 -> 매니저별 filter 로 ceil 생성
@@ -625,28 +837,55 @@ $page_title = '예약 현황';
 		$('#startTime1').val('');
 		$('#startTime2').val('');
 		$('#memo').val('');
+		$('#status_select').hide();
 
 		popOpen();
 	}		
+    var reIssueCoupon = 0;
 	function remove(seq){
 		if(!confirm('정말 삭제 하시겠습니까?\n*기존 데이터는 모두 삭제됩니다.')) {
 			return;
 		}
-		medibox.methods.store.reservation.remove({}, seq, function(request, response){
-			console.log('output : ' + response);
-			if(!response.result){
-				alert(response.ment);
-				return false;
+		var res = reservationInfos.filter(r => r.seqno == reservationseqno);
+
+		if(!res || res.length == 0) {
+			alert('존재 하지 않는 예약입니다.');
+			return false;
+		}
+		res = res[0];
+
+		var point_type = 'P';
+        var price = reservation_old_price;
+		var memo = '관리자 예약 삭제로 인한 사용 포인트 반환 (예약번호: ['+reservationseqno+'])';
+		var data = { admin_seqno:1, user_seqno:res.user_seqno, product_seqno: 0, reIssueCoupon: reIssueCoupon,
+            point_type:point_type, memo:memo, amount: price, admin_name: '' };
+        
+        medibox.methods.point.collect(data, function(request1, response1){
+            console.log('output : ' + response1);
+            if(!response1.result){
+				alert(response1.ment.replace('\\r', '\n'));
+                return false;
 			}
-			alert('삭제 되었습니다.');
-			location.reload();
-		}, function(e){
-			console.log(e);
-		});
+			
+			medibox.methods.store.reservation.remove({}, seq, function(request, response){
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				alert('삭제 되었습니다.');
+				location.reload();
+			}, function(e){
+				console.log(e);
+			});
+        }, function(e){
+            console.log(e);
+            alert('서버 통신 에러');
+        });	
 	}
+	var userInfos;
+	userInfos = [];
 	function modifyItem(){
-		// reservationseqno
-		// 
 		$('.pop-header').text(' 예약 수정 ');
 		$('#_reservationTargetUsers').html('');
 		$('input[name=searchUserId]').val('');
@@ -659,10 +898,16 @@ $page_title = '예약 현황';
 		}
 		res = res[0];
 
+		// syncronized
 		$('#partnersPop').val(res.partner_seqno);
+		getManagersPop();
 		$('#storePop').val(res.store_seqno);
+		getManagersPop();
 		$('#managerPop').val(res.manager_seqno);
+		getServicesPop();
 		$('#servicePop').val(res.service_seqno);
+		// end syncronized
+
 		$('#use_icon_important').prop('checked', res.use_icon_important == 'Y');
 		$('#use_icon_phone').prop('checked', res.use_icon_phone == 'Y');
 		$('#use_custom_color').prop('checked', res.use_custom_color == 'Y');
@@ -670,6 +915,8 @@ $page_title = '예약 현황';
 		$('#_add').hide();
 		$('#_modify').show();
 
+		reservation_old_price = res.serviceInfo.price - res.discount_price;
+		reIssueCoupon = res.coupon_seqno;
 		
 		var bodyData = '<tr data-key="'+res.userInfo.user_seqno+'" onclick="chooseUser('+res.userInfo.user_seqno+')" style="cursor:pointer;">'
 							+'	<td>'+res.userInfo.user_name+'</td>'
@@ -678,6 +925,7 @@ $page_title = '예약 현황';
 							+'	<td><a href="#" class="btn large blue span100" onclick="gotoInfoDetail(\''+res.userInfo.user_seqno+'\')">고객정보</a></td>'
 							+'</tr>';
 		$('#_reservationTargetUsers').html(bodyData);
+		userInfos.push(res.userInfo);
 		chooseUser(res.userInfo.user_seqno);
 
 		var startTimes = res.start_dt.split(' ');
@@ -686,6 +934,9 @@ $page_title = '예약 현황';
 		$('#startTime1').val(startDetailTimes[0]);
 		$('#startTime2').val(startDetailTimes[1]);
 		$('#memo').val(res.memo);
+
+		$('#status_select').show();
+		$('#res_status').val(res.status);
 
 		popOpen();
 	}

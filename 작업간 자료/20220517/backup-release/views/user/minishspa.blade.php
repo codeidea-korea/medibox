@@ -37,7 +37,7 @@
             <span class="snum"></span>
         </div>
         <div class="brand_item_des">
-            <h2>미니쉬 구강 스파</h2>
+            <h2>미니쉬구강스파</h2>
 
             <!-- 22.03.30 수정 -->
             <!-- <span>Minsh Spa</span> -->

@@ -82,6 +82,46 @@ class UserController extends Controller
 
         return $result;
     }
+    // 비밀번호 변경
+    public function changePassword(Request $request)
+    {
+        $seqno = $request->post('seqno');
+        $user_phone = $request->post('user_phone');
+        $user_password = $request->post('user_password');
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        $user = DB::table("user_info")
+        ->where([
+            ['user_seqno', '=', $seqno],
+            ['user_phone', '=', $user_phone],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $result['ment'] = '가입되지 않은 계정입니다.';
+            return $result;
+        }
+        if ($user->user_pw == $user_password) {
+            $result['ment'] = '기존 비밀번호와 같은 비밀번호입니다.';
+            return $result;
+        }
+
+        DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
+            [
+                'user_pw' => $user_password, 
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '성공';
+        $result['result'] = true;
+
+        return $result;
+    }
+    
     // 가입 신청
     public function add(Request $request)
     {
@@ -91,6 +131,17 @@ class UserController extends Controller
         $recommended_code = $request->post('recommended_code', '');
         $recommended_shop = $request->post('recommended_shop');
         $event_yn = $request->post('event_yn', 'N');
+        
+        $gender = $request->post('gender', '');
+        $email = $request->post('email', '');
+        $address = $request->post('address', '');
+        $address_detail = $request->post('address_detail', '');
+        $grade = $request->post('grade', '');
+        $type = $request->post('type', '');
+        $memo = $request->post('memo', '');
+        $memo2 = $request->post('memo2', '');
+        $join_path = $request->post('join_path', '');
+
         $approve_yn = 'Y';
         $delete_yn = 'N';
 
@@ -106,6 +157,7 @@ class UserController extends Controller
             $result['ment'] = '비밀번호를 입력해주세요.';
             return $result;
         }
+        $user_phone = str_replace('-', '', $user_phone);
 
         $user = DB::table("user_info")->where([
             ['user_phone', '=', $user_phone],
@@ -127,6 +179,16 @@ class UserController extends Controller
                 , 'delete_yn' => $delete_yn
                 , 'recommended_shop' => $recommended_shop
                 , 'recommended_code' => $recommended_code
+                
+                , 'gender' => $gender
+                , 'email' => $email
+                , 'address' => $address
+                , 'address_detail' => $address_detail
+                , 'grade' => $grade
+                , 'type' => $type
+                , 'memo' => $memo
+                , 'join_path' => $join_path
+
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
@@ -159,14 +221,63 @@ class UserController extends Controller
         if(!empty($conf) && $conf->join_bonus == 'Y') {
             DB::table('user_point')->where([
                 ['user_seqno', '=', $user->user_seqno],
-                ['point_type', '=', 'P'],
-                ['delete_yn', '=', 'N']
+                ['point_type', '=', 'P']
             ])->update(
                 [
                     'point' => $conf->join_bonus_point
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );
+            // 지급을 했으면 이력을 남기자.
+            DB::table('user_point_hst')->insertGetId(
+                [
+                    'admin_seqno' => 0
+                    , 'user_seqno' => $user->user_seqno
+                    , 'admin_name' => ''
+                    , 'point_type' => 'P'
+                    , 'product_seqno' => 0
+                    , 'hst_type' => 'S'
+                    , 'point' => $conf->join_bonus_point
+                    , 'memo' => '회원가입 포인트 자동 지급'
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+
+        // 회원 가입시 쿠폰 발급 전부 지급
+        {
+            $coupons = DB::table("coupon")->where([
+                ['issuance_type', '=', 'A'],
+                ['issuance_condition_type', '=', 'J'],
+                ['allowed_issuance_type', '=', 'A'],
+                ['deleted', '=', 'N']
+            ])->get();
+
+            for($inx = 0; $inx < count($coupons); $inx++){
+                $hst_seqno = DB::table('coupon_user')->insertGetId(
+                    [
+                        'coupon_seqno' => $coupons[$inx]->seqno,
+                        'user_seqno' => $user->user_seqno,
+                        'used' => 'N',
+                        'real_start_dt' => $coupons[$inx]->start_dt,
+                        'real_end_dt' => $coupons[$inx]->end_dt,
+                        'real_discount_price' => 0,
+                        'deleted' => 'N',
+                        'hst_type' => 'S'
+                    ], 'seqno'
+                );
+                DB::table('coupon_user_history')->insertGetId(
+                    [
+                        'coupon_user_seqno' => $hst_seqno,
+                        'hst_type' => 'S',
+                        'canceled' => 'N',
+                        'approved' => 'N',
+                        'memo' => '[쿠폰] 자동 지급 - 회원 가입 쿠폰',
+                        'create_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
         }
 
         $result['ment'] = '성공';
@@ -188,6 +299,19 @@ class UserController extends Controller
         $recommended_shop = $request->post('recommended_shop');
         $approve_yn = 'N';
         $delete_yn = 'N';
+        $push_yn = $request->post('push_yn', 'N');
+        $email_yn = $request->post('email_yn', 'N');
+        $sns_yn = $request->post('sns_yn', 'N');
+        
+        $gender = $request->post('gender', '');
+        $email = $request->post('email', '');
+        $address = $request->post('address', '');
+        $address_detail = $request->post('address_detail', '');
+        $grade = $request->post('grade', '');
+        $type = $request->post('type', '');
+        $memo = $request->post('memo', '');
+        $memo2 = $request->post('memo2', '');
+        $join_path = $request->post('join_path', '');
 
         $result = [];
         $result['ment'] = '실패';
@@ -225,6 +349,21 @@ class UserController extends Controller
                 , 'event_yn' => $event_yn
                 , 'recommended_shop' => $recommended_shop
                 , 'recommended_code' => $recommended_code
+                , 'gender' => $gender
+                , 'push_yn' => $push_yn
+                , 'email_yn' => $email_yn
+                , 'sns_yn' => $sns_yn
+                
+                , 'gender' => $gender
+                , 'email' => $email
+                , 'address' => $address
+                , 'address_detail' => $address_detail
+                , 'grade' => $grade
+                , 'type' => $type
+                , 'memo' => $memo
+                , 'memo2' => $memo2
+                , 'join_path' => $join_path
+
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
@@ -239,16 +378,19 @@ class UserController extends Controller
     {
         $user_seqno = $request->post('user_seqno');
         $memo = $request->post('memo');
+        $type = $request->post('type', 1);
 
         $result = [];
         $result['ment'] = '실패';
         $result['result'] = false;
 
         DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
-            [
-                'memo' => $memo
-                , 'update_dt' => date('Y-m-d H:i:s') 
-            ]
+            (
+                $type != 1 
+                ? ['memo2' => $memo, 'update_dt' => date('Y-m-d H:i:s')]
+                : ['memo' => $memo, 'update_dt' => date('Y-m-d H:i:s')]
+            )
+            
         );
 
         $result['ment'] = '성공';
@@ -467,6 +609,25 @@ class UserController extends Controller
             $pointUseHistoryCount = DB::table("user_point_hst")
                 ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
                 ->count();
+            // 상품이 아닌 서비스인 경우
+            for($inx = 0; $inx < count($pointUseHistory); $inx++){
+                if(empty($pointUseHistory[$inx]->service_seqno) || $pointUseHistory[$inx]->service_seqno == 0) {
+                    continue;
+                }
+                $detail = DB::table("store_service")
+                    ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
+                    ->select('store_service.*'
+                        , 'partner.cop_name')
+                    ->where([
+                        ['store_service.seqno', '=', $pointUseHistory[$inx]->service_seqno]
+                    ])->first();
+
+                $pointUseHistory[$inx]->service_name = $detail->cop_name; // 제휴사명
+                $pointUseHistory[$inx]->type_name = $detail->name; // 서비스명
+                $pointUseHistory[$inx]->service_sub_name = '(' . $detail->estimated_time . ')'; // 소요시간
+                $pointUseHistory[$inx]->price = $detail->price; // 가격
+            }
+
             $user->pointUseHistory = $pointUseHistory;
             $user->pointUseHistoryCount = $pointUseHistoryCount;
 
@@ -491,6 +652,31 @@ class UserController extends Controller
                 ['deleted', '=', 'N']
             ])->first();
             $user->packageHistory = $packageHistory;
+
+
+            // 무슨 멤버쉽을 사용중인지
+            $today = date("Y-m-d", time());
+            $membershipHistory = DB::table("membership_user")->where([
+                ['user_seqno', '=', $user->user_seqno],
+                ['used', '=', 'N'],
+                ['real_start_dt', '<=', $today . ' 00:00:00'],
+                ['real_end_dt', '>=', $today . ' 00:00:00'],
+                ['deleted', '=', 'N']
+            ])->first();
+            if(!empty($membershipHistory)) {
+                $membership = DB::table("product_membership")->where([
+                    ['seqno', '=', $membershipHistory->membership_seqno]
+                ])->first();
+                $membershipHistory->membership = $membership;
+            }
+            $user->membershipHistory = $membershipHistory;
+            // 추천인 정보
+            if(!empty($user->recommended_code) && $user->recommended_code != '') {
+                $recommendedUser = DB::table("user_info")->where([
+                    ['user_phone', '=', $user->recommended_code]
+                ])->first();
+                $user->recommendedUser = $recommendedUser;
+            }
         }
 
         $result['ment'] = '성공';

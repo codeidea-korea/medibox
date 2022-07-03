@@ -22,18 +22,18 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 				<div class="wr-list">
 					<div class="wr-list-label">이벤트 기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setDay(this, 0)" class="btn _dayOption gray">오늘</a>
+						<a href="#" onclick="setDay(this, -7)" class="btn _dayOption gray">1주</a>
+						<a href="#" onclick="setDay(this, -30)" class="btn _dayOption gray">1개월</a>
+						<a href="#" onclick="setDay(this, -180)" class="btn _dayOption gray">6개월</a>
+						<a href="#" onclick="setDay(this, -365)" class="btn _dayOption gray">1년</a>
 						<input type="text" id="_start" class="datepick _start">			
 						~
 						<input type="text" id="_end" class="datepick _end">		
 					</div>
 				</div>
 				<div class="wr-list">
-					<div class="wr-list-label">이벤트 기간</div>
+					<div class="wr-list-label">이벤트 상태</div>
 					<div class="wr-list-con">
 						<label class="radio-wrap"><input type="radio" name="status" value="" checked="checked"><span></span>전체</label>
 						<label class="radio-wrap"><input type="radio" name="status" value="A"><span></span>발급중</label>
@@ -71,11 +71,11 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setCouponDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setCouponDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setCouponDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setCouponDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setCouponDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setCouponDay(this, 0)" class="btn _dayOption2 gray">오늘</a>
+						<a href="#" onclick="setCouponDay(this, -7)" class="btn _dayOption2 gray">1주</a>
+						<a href="#" onclick="setCouponDay(this, -30)" class="btn _dayOption2 gray">1개월</a>
+						<a href="#" onclick="setCouponDay(this, -180)" class="btn _dayOption2 gray">6개월</a>
+						<a href="#" onclick="setCouponDay(this, -365)" class="btn _dayOption2 gray">1년</a>
 						<input type="text" id="_coupon_start" class="datepick _coupon_start">			
 						~
 						<input type="text" id="_coupon_end" class="datepick _coupon_end">		
@@ -104,11 +104,11 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 				<div class="wr-list">
 					<div class="wr-list-label">유저 쿠폰 발급일</div>
 					<div class="wr-list-con">
-						<a href="#" onclick="setUserCouponDay(0)" class="btn">오늘</a>
-						<a href="#" onclick="setUserCouponDay(-7)" class="btn">1주</a>
-						<a href="#" onclick="setUserCouponDay(-30)" class="btn">1개월</a>
-						<a href="#" onclick="setUserCouponDay(-180)" class="btn">6개월</a>
-						<a href="#" onclick="setUserCouponDay(-365)" class="btn">1년</a>
+						<a href="#" onclick="setUserCouponDay(this, 0)" class="btn _dayOption3 gray">오늘</a>
+						<a href="#" onclick="setUserCouponDay(this, -7)" class="btn _dayOption3 gray">1주</a>
+						<a href="#" onclick="setUserCouponDay(this, -30)" class="btn _dayOption3 gray">1개월</a>
+						<a href="#" onclick="setUserCouponDay(this, -180)" class="btn _dayOption3 gray">6개월</a>
+						<a href="#" onclick="setUserCouponDay(this, -365)" class="btn _dayOption3 gray">1년</a>
 						<input type="text" id="_user_coupon_start" class="datepick _user_coupon_start">			
 						~
 						<input type="text" id="_user_coupon_end" class="datepick _user_coupon_end">		
@@ -216,11 +216,13 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	var endDay = '';
 	var couponStartDay = '';
 	var couponEndDay = '';
+	var userCouponStartDay = '';
+	var userCouponEndDay = '';
 
 	
 	$('._start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -236,7 +238,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	});
 	$('._coupon_start').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -250,25 +252,63 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	}).on('change', function(e) {
 		couponEndDay = $(this).val();
 	});
+	$('._user_coupon_start').datepicker({
+		language: 'ko-KR',
+		autoPick: false,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		userCouponStartDay = $(this).val();
+	});
+	$('._user_coupon_end').datepicker({
+		language: 'ko-KR',
+		autoPick: true,
+		autoHide: true,
+		format: 'yyyy-mm-dd'
+	}).on('change', function(e) {
+		userCouponEndDay = $(this).val();
+	});
+	
 
 	function toDateFormatt(times){
 		var thisDay = new Date(times);
 		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
 	}
-	function setDay(date) {
+	function setDay(target, terms) {
 		var date = new Date();
+		date.setDate(date.getDate() + 1);
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+		$("._dayOption").removeClass('gray');
+		$("._dayOption").addClass('gray');
+		$(target).removeClass('gray');
 		$(".datepick._start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
-	function setCouponDay(date) {
+	function setCouponDay(target, terms) {
 		var date = new Date();
 		var prevDate = new Date();
-		prevDate.setDate(prevDate.getDate() + date);
+		prevDate.setDate(prevDate.getDate() + terms);
+
+		$("._dayOption2").removeClass('gray');
+		$("._dayOption2").addClass('gray');
+		$(target).removeClass('gray');
+
 		$(".datepick._coupon_start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
 		$(".datepick._coupon_end").datepicker('setDate', toDateFormatt(date.getTime()));
 	}
+	function setUserCouponDay(target, terms) {
+		var date = new Date();
+		var prevDate = new Date();
+		prevDate.setDate(prevDate.getDate() + terms);
+
+		$("._dayOption3").removeClass('gray');
+		$("._dayOption3").addClass('gray');
+		$(target).removeClass('gray');
+
+		$(".datepick._user_coupon_start").datepicker('setDate', toDateFormatt(prevDate.getTime()));
+		$(".datepick._user_coupon_end").datepicker('setDate', toDateFormatt(date.getTime()));
+	}	
 	
 	function getPartners(){
 		// TODO: 제휴사 로그인시에는 해당 값에 할당
@@ -391,6 +431,25 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 		}
 	}
 	
+	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		
+		if(coupon_partner_grp_seqno == 0) {
+			return '전체';
+		} else {
+			var types = coupon_partner_grp_seqno.split('||');
+			var partnersName = '';
+			for(var inx=0; inx<types.length; inx++){
+				types[inx] = (types[inx] + '').replaceAll('|', '');
+				if(types[inx] == '0') {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + '전체';
+				} else {
+					partnersName = partnersName + (partnersName == '' ? '' : ', ') + $('#partnersPop > option[value='+types[inx]+']').text();
+				}
+			}
+			return partnersName;
+		}
+	}
+	
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
@@ -440,6 +499,12 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 		if(used_coupon && used_coupon != '') {
 			data.used_coupon = used_coupon;
 		}
+		if(userCouponStartDay && userCouponStartDay != '') {
+			data.issued_start_dt = userCouponStartDay;
+		}
+		if(userCouponEndDay && userCouponEndDay != '') {
+			data.issued_end_dt = userCouponEndDay;
+		}
 
 		medibox.methods.event.coupon.history.list(data, function(request, response){
 			console.log('output : ' + response);
@@ -479,7 +544,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
 							+'	<td>'+getIssuanceType(response.data[inx].status)+'</td>'
 							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
-							+'	<td>'+response.data[inx].partners.map(p => p.name)+'</td>'
+							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+response.data[inx].coupon_name+'</td>'
 							+'	<td>'+response.data[inx].coupon_start_dt + ' ~ ' + response.data[inx].coupon_end_dt+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
@@ -521,6 +586,10 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 		getList();
 		getPartners();
 		popHide();
+
+		endDay = toDateFormatt(new Date().getTime());
+		couponEndDay = toDateFormatt(new Date().getTime());
+		userCouponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

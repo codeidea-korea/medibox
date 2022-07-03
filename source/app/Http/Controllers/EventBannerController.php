@@ -40,16 +40,16 @@ class EventBannerController extends Controller
         array_push($where, ['even_banner.deleted', '=', 'N']);
         if(! empty($search_field1) && $search_field1 != ''){
             if($event_search_type == 'name') {
-                array_push($where, ['name', 'like', '%'.$search_field1.'%']);
+                array_push($where, ['even_banner.name', 'like', '%'.$search_field1.'%']);
             } else if($event_search_type == 'context') {
-                array_push($where, ['context', 'like', '%'.$search_field1.'%']);
+                array_push($where, ['even_banner.context', 'like', '%'.$search_field1.'%']);
             }
         }
         if(! empty($start_dt) && $start_dt != ''){
-            array_push($where, ['start_dt', '>=', $start_dt]);
+            array_push($where, ['even_banner.start_dt', '>=', $start_dt]);
         }
         if(! empty($end_dt) && $end_dt != ''){
-            array_push($where, ['start_dt', '<=', $end_dt]);
+            array_push($where, ['even_banner.start_dt', '<=', $end_dt]);
         }
         if(! empty($lend_dt) && $lend_dt != ''){
             array_push($where, ['even_banner.end_dt', '>', $lend_dt]);
@@ -67,9 +67,11 @@ class EventBannerController extends Controller
             array_push($whereCoupon, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
         }
         if(! empty($search_field2) && $search_field2 != ''){
-            if($coupon_search_type == 'even_coupon.name') {
+            if($coupon_search_type == 'name') {
+                array_push($where, ['even_coupon.name', 'like', '%'.$search_field2.'%']);
                 array_push($whereCoupon, ['even_coupon.name', 'like', '%'.$search_field2.'%']);
             } else if($coupon_search_type == 'seqno') {
+                array_push($where, ['even_coupon.seqno', '=', $search_field2]);
                 array_push($whereCoupon, ['even_coupon.seqno', '=', $search_field2]);
             }
         }
@@ -84,7 +86,7 @@ class EventBannerController extends Controller
         }
         
         $contents = DB::table("even_banner")->where($where)
-            ->leftJoin('even_coupon', function ($join) use ($whereCoupon) {
+            ->join('even_coupon', function ($join) use ($whereCoupon) {
                 $join->on('even_banner.seqno', '=', 'even_coupon.event_banner_seqno')
                     ->where($whereCoupon);
             })
@@ -95,7 +97,7 @@ class EventBannerController extends Controller
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
         $count = DB::table("even_banner")->where($where)
-            ->leftJoin('even_coupon', function ($join) use ($whereCoupon) {
+            ->join('even_coupon', function ($join) use ($whereCoupon) {
                 $join->on('even_banner.seqno', '=', 'even_coupon.event_banner_seqno')
                     ->where($whereCoupon);
             })
@@ -281,7 +283,7 @@ class EventBannerController extends Controller
                     , 'discount_price' => $coupon_discount_price
                     , 'max_discount_price' => $coupon_max_discount_price
                     , 'limit_base_price' => $coupon_limit_base_price
-                    , 'allowed_issuance_type' => $allowed_issuance_type
+                    , 'allowed_issuance_type' => 'A'
                     , 'deleted' => 'N'
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
@@ -300,7 +302,6 @@ class EventBannerController extends Controller
                     , 'discount_price' => $coupon_discount_price
                     , 'max_discount_price' => $coupon_max_discount_price
                     , 'limit_base_price' => $coupon_limit_base_price
-                    , 'allowed_issuance_type' => $allowed_issuance_type
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );

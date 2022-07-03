@@ -6,7 +6,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 
 <section id="wrtie" class="container">
 
-	<div class="section-header">매장 정보 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
+	<div class="section-header">매장 정보 관리 @php echo $id == 0 ? '등록' : '수정'; @endphp</div>
 	<div class="wrtieContents" style="flex-direction:column;">
 		<div class="wr-wrap line label160">
 			<div class="wr-head"> 기본 정보 </div>
@@ -43,7 +43,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">소속 제휴사</div>
 				<div class="wr-list-con">
-					<select id="partner_seqno">
+					<select id="partner_seqno" class="default">
 						<option value="1">바라는 네일</option>
 					</select>
 				</div>
@@ -68,31 +68,31 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 							<li>
 								<div class="imgCon"><img id="imgView1" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(1)" class="del"></i>
+									<i onclick="removePicture(1)" class="del del1">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView2" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(2)" class="del"></i>
+									<i onclick="removePicture(2)" class="del del2">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView3" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(3)" class="del"></i>
+									<i onclick="removePicture(3)" class="del del3">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView4" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(4)" class="del"></i>
+									<i onclick="removePicture(4)" class="del del4">삭제</i>
 								</div>
 							</li>
 							<li>
 								<div class="imgCon"><img id="imgView5" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
 								<div class="txtCon">
-									<i onclick="removePicture(5)" class="del"></i>
+									<i onclick="removePicture(5)" class="del del5">삭제</i>
 								</div>
 							</li>
 						</ul>
@@ -106,6 +106,31 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 						※ 매장 사진은 최대 5장 등록이 가능합니다.<br>
 						※ 해상도 0000 x 000 px에 최적화 되어 있습니다.<br>
 						※ 메디박스의 운영정책을 위반하거나 관련없는 사진은 노출 제외 처리 됩니다.
+					</p>
+				</div>
+			</div>
+			
+			<div class="wr-list">
+				<div class="wr-list-label">매장 대표 아이콘</div>
+				<div class="wr-list-con">
+					<input type="hidden" id="icon">
+
+					<div class="gallery">
+						<ul>
+							<li>
+								<div class="imgCon"><img id="imgIcon" src="#" onerror="this.src='/adm/img/no-image-found-360x250-1-300x208.png'"></div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="filebox">
+						<label for="upload_1" class="upload-btn">파일찾기
+						<input name="" type="file" multiple="" id="upload_1" class="upload-hidden" onchange="uploadIconFile()">
+					</label></div>
+					<p class="help-block">
+						※ 매장 대표 아이콘은 1개 등록이 가능합니다.<br>
+						※ 해상도 50 x 50 px에 최적화 되어 있습니다.<br>
+						※ svg 를 추천드립니다.
 					</p>
 				</div>
 			</div>
@@ -170,8 +195,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			return false;
 		}
 		$('#img' + imgPoint).val(path);
+		$('.del' + imgPoint).show();
 		$('#imgView' + imgPoint).attr('src', path + '?v=' + (new Date().getTime()));
-		pictures[imgPoint] = path;
+		pictures[imgPoint - 1] = path;
 		imgPoint = imgPoint + 1;
 	}
 	function removePicture(idx){
@@ -184,8 +210,13 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			return false;
 		}
 		pictures[idx - 1] = null;
-		for(var inx = (idx - 1); inx < maxLength; idx++){
+		for(var inx=1; inx < 6; inx++) {
+			$('.del' + inx).hide();
+			if(idx-1 < inx) pictures[inx - 1] = pictures[inx];
+		}
+		for(var inx = 0; inx < maxLength; inx++){
 			$('#img' + (inx + 1)).val(pictures[inx]);
+			if(pictures[inx]) $('.del' + (inx + 1)).show();
 			$('#imgView' + (inx + 1)).attr('src', pictures[inx] + '?v=' + (new Date().getTime()));
 		}
 		imgPoint = imgPoint - 1;
@@ -224,6 +255,38 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			}
 		});
 	}
+	function uploadIconFile(){
+		if(!$("#upload_1") || !$("#upload_1")[0] || !$("#upload_1")[0].files[0]) {
+			return false;
+		}
+
+		var form = new FormData();
+		form.append( "upload", $("#upload_1")[0].files[0] );
+		
+		jQuery.ajax({
+			url : "/api/file/store"
+			, type : "POST"
+			, processData : false
+			, contentType : false
+			, data : form
+			, async: false
+			, success:function(response) {
+				console.log('output : ' + response);
+				if(!response.result){
+					alert(response.ment);
+					return false;
+				}
+				const iconPath = '/storage/'+response.path;
+				$('#icon').val(iconPath);
+				$('#imgIcon').attr('src', iconPath + '?v=' + (new Date().getTime()));
+			}
+			,error: function (jqXHR) 
+			{ 
+				alert(jqXHR.responseText); 
+			}
+		});
+	}
+	
 	function addManagerType(){
 		var managerTypes = document.querySelector('#manager_type').value;
 		var managerTypeInput = document.querySelector('#managerTypeInput').value;
@@ -304,6 +367,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var img3 = $('#img3').val();
         var img4 = $('#img4').val();
         var img5 = $('#img5').val();
+        var icon = $('#icon').val();
 
 		medibox.methods.store.add({
 			name: name
@@ -320,6 +384,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			, img3: img3
 			, img4: img4
 			, img5: img5
+			, icon: icon
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -333,6 +398,13 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			console.log(e);
 		});
 	}
+	$(document).ready(function(){
+		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
+		getPartners();
+		setTimeout(() => {
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
+		}, 200);
+	});
 	@php
 	}
 	@endphp
@@ -341,6 +413,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 	if($id != 0) {
 	@endphp
 	userId = {{$id}};
+	var storeInfo;
 	
 	function modify(){
 		if(!checkValidation()) {
@@ -360,24 +433,25 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
         var img3 = $('#img3').val();
         var img4 = $('#img4').val();
         var img5 = $('#img5').val();
+        var icon = $('#icon').val();
 
-		medibox.methods.store.modify({
-			name: name
-			, phone: phone
-			, address: address
-			, address_detail: address_detail
-			, zipcode: zipcode
-			, partner_seqno: partner_seqno
-			, in_manager: in_manager ? 'Y' : 'N'
-			, manager_type: manager_type
-			, info: info
-			, img1: img1
-			, img2: img2
-			, img3: img3
-			, img4: img4
-			, img5: img5
-			, admin_seqno: {{ $seqno }}
-		}, '{{ $id }}', function(request, response){
+		storeInfo.name = name;
+		storeInfo.phone = phone;
+		storeInfo.address = address;
+		storeInfo.address_detail = address_detail;
+		storeInfo.zipcode = zipcode;
+		storeInfo.partner_seqno = partner_seqno;
+		storeInfo.in_manager = in_manager ? 'Y' : 'N';
+		storeInfo.manager_type = manager_type;
+		storeInfo.info = info;
+		storeInfo.img1 = img1;
+		storeInfo.img2 = img2;
+		storeInfo.img3 = img3;
+		storeInfo.img4 = img4;
+		storeInfo.img5 = img5;
+		storeInfo.icon = icon;
+
+		medibox.methods.store.modify(storeInfo, '{{ $id }}', function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
@@ -390,7 +464,9 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		});
 	}
 	
-	function getInfo(){
+	async function getInfo(){
+		await getPartners();
+
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $id }}' };
 
 		medibox.methods.store.one(data, '{{ $id }}', function(request, response){
@@ -409,6 +485,12 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			$('#partner_seqno').val( response.data.partner_seqno );
 
 			$('#info').val(response.data.info);
+
+			$('#icon').val(response.data.icon);
+			$('#imgIcon').attr('src', response.data.icon + '?v=' + (new Date().getTime()));
+			$('#imgIcon').show();
+
+			storeInfo = response.data;
 
 			for(var inx = 1; inx <= 5; inx++) {
 				if(!response.data['img' + inx]) continue;
@@ -449,12 +531,19 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		});
 	}
 	$(document).ready(function(){
+		
+		for(var inx=1; inx < 6; inx++) $('.del' + inx).hide();
 		getInfo();
+
+		setTimeout(() => {
+			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
+		}, 200);
 	});
 	@php
 	}
 	@endphp
 
+	/*
 	function autoHypenPhone(str){
 		str = str.replace(/[^0-9]/g, '');
 		var tmp = '';
@@ -489,6 +578,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		var _val = this.value.trim();
 		this.value = autoHypenPhone(_val) ;
 	}
+	*/
 
 	function getPartners(){
 		var data = { pageNo: 1, pageSize: 300, adminSeqno:{{ $seqno }} };
@@ -512,14 +602,6 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 			alert('서버 통신 에러');
 		});
 	}
-
-	$(document).ready(function(){
-		getPartners();
-
-		setTimeout(() => {
-			for(var inx = 1; inx <=5; inx++) $('#imgView'+inx).show();
-		}, 200);
-	});
 	</script>
 </section>
 
