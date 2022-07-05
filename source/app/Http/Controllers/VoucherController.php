@@ -17,13 +17,17 @@ class VoucherController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
+        $include_discontinued = $request->get('include_discontinued', 'N');
         
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['deleted', '=', 'N']);
+        }
+
         if(! empty($name) && $name != ''){
             array_push($where, ['name', 'like', '%'.$name.'%']);
         }
@@ -50,8 +54,7 @@ class VoucherController extends Controller
         $result['result'] = false;
 
         $contents = DB::table("product_voucher")->where([
-            ['seqno', '=', $id],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $id]
         ])->first();
 
         $result['ment'] = '성공';
@@ -120,6 +123,7 @@ class VoucherController extends Controller
         $partner_seqno = $request->post('partner_seqno');
         $store_seqno = $request->post('store_seqno');
         $service_seqno = $request->post('service_seqno');
+        $deleted = $request->post('deleted', 'N');
 
         if($use_partner == 'Y') {
             if(empty($partner_seqno) || empty($store_seqno) || empty($service_seqno)) {
@@ -144,7 +148,8 @@ class VoucherController extends Controller
                 , 'use_partner' => $use_partner
                 , 'partner_seqno' => $partner_seqno
                 , 'store_seqno' => $store_seqno
-                , 'service_seqno' => $service_seqno
+                , 'service_seqno' => $service_seqno    
+                , 'deleted' => $deleted
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );

@@ -44,7 +44,7 @@ $page_title = '멤버쉽 관리';
 					<th rowspan="2">부여 포인트</th>
 					<th colspan="4">메인 바우처</th>
 					<th rowspan="2">서브 바우처/쿠폰</th>
-					<th rowspan="2">수정/삭제</th>
+					<th rowspan="2">단종/판매</th>
 				</tr>
 				<tr>
 					<th>제휴사</th>
@@ -114,7 +114,7 @@ $page_title = '멤버쉽 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		if(searchField && searchField != '') {
 			data.name = searchField;
@@ -148,7 +148,7 @@ $page_title = '멤버쉽 관리';
 				var rowspan = response.data[inx].services && response.data[inx].services.length > 0 ? response.data[inx].services.length : 1;
 
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].seqno+'\')" style="cursor: pointer;">'
 							+'	<td rowspan="'+rowspan+'">'+no+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+response.data[inx].name+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+medibox.methods.toNumber(response.data[inx].price)+'</td>'
@@ -182,7 +182,8 @@ $page_title = '멤버쉽 관리';
 								: ('')) + '</td>'
 							)
 
-							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td rowspan="'+rowspan+'">'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>'
 							
 							// 메인 바우처 2행부터

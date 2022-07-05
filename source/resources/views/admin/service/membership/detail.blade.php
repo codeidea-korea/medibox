@@ -128,8 +128,9 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		@php
 		if($membershipNo != 0) {
 		@endphp
-		<a href="#" onclick="remove()" class="btn red">삭제</a>
-		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
+		<!-- <a href="#" onclick="modify()" class="btn blue">수정</a> -->
 		@php 
 		}
 		@endphp
@@ -417,6 +418,30 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 			console.log(e);
 		});
     }
+	function sellsStatusModify(){
+		medibox.methods.point.membership.modify({
+			name: info.name
+			, price: info.price
+			, date_use: info.date_use
+			, point: info.point
+			, services: info.services
+			, vouchers: info.vouchers
+			, coupons: info.coupons
+			, admin_seqno: {{ $seqno }}
+			, deleted: 'N'
+		}, {{$membershipNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $membershipNo }}' };
 
@@ -426,6 +451,16 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				alert(response.ment);
 				return false;
 			}
+
+			info = response.data;
+			if(response.data.deleted == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
+			}
+
 			$('#name').val( response.data.name );
 			$('#price').val( response.data.price );
 
@@ -452,6 +487,10 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					addCoupon(response.data.coupons[idx].name, response.data.coupons[idx].seqno);
 				}
 			}
+			info.services = $('#services').val();
+			info.vouchers = $('#vouchers').val();
+			info.coupons = $('#coupons').val();
+
 			getPartners();
 		}, function(e){
 			console.log(e);

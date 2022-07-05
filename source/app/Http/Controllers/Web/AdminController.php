@@ -453,8 +453,7 @@ class AdminController extends Controller
         $product = DB::table("product")->where([
             ['product_seqno', '=', $tiketNo],
             ['offline_type', '=', 'N'],
-            ['point_type', '!=', 'K'],
-            ['delete_yn', '=', 'N']
+            ['point_type', '!=', 'K']
         ])->first();
 
         if ($tiketNo > 0 && empty($product)) {
@@ -486,8 +485,7 @@ class AdminController extends Controller
         $product = DB::table("product")->where([
             ['product_seqno', '=', $packageNo],
             ['offline_type', '=', 'N'],
-            ['point_type', '=', 'K'],
-            ['delete_yn', '=', 'N']
+            ['point_type', '=', 'K']
         ])->first();
 
         if ($packageNo > 0 && empty($product)) {
@@ -517,8 +515,7 @@ class AdminController extends Controller
         $userSeqno = $request->session()->get('admin_seqno');
 
         $product = DB::table("product_voucher")->where([
-            ['seqno', '=', $voucherNo],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $voucherNo]
         ])->first();
 
         if ($voucherNo > 0 && empty($product)) {

@@ -69,8 +69,12 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 		@php
 		if($voucherNo != 0) {
 		@endphp
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
+		<!--
 		<a href="#" onclick="remove()" class="btn red">삭제</a>
 		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		-->
 		@php 
 		}
 		@endphp
@@ -316,6 +320,31 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			console.log(e);
 		});
     }
+	function sellsStatusModify(){
+		medibox.methods.point.vouchers.modify({
+			name: info.name
+			, context: info.context
+			, unit_count: info.unit_count
+			, date_use: info.date_use
+			, use_partner: info.use_partner
+			, partner_seqno: info.partner_seqno
+			, store_seqno: info.store_seqno
+			, service_seqno: info.service_seqno
+			, admin_seqno: {{ $seqno }}
+			, deleted: 'N'
+		}, {{$voucherNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $voucherNo }}' };
 
@@ -325,6 +354,16 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 				alert(response.ment);
 				return false;
 			}
+
+			info = response.data;
+			if(response.data.deleted == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
+			}
+
 			$('#name').val( response.data.name );
 			$('#context').val( response.data.context );
 			$('#unit_count').val( response.data.unit_count );

@@ -17,13 +17,16 @@ class MembershipController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
+        $include_discontinued = $request->get('include_discontinued', 'N');
         
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['deleted', '=', 'N']);
+        }
         if(! empty($name) && $name != ''){
             array_push($where, ['name', 'like', '%'.$name.'%']);
         }
@@ -99,8 +102,7 @@ class MembershipController extends Controller
         $result['result'] = false;
 
         $contents = DB::table("product_membership")->where([
-            ['seqno', '=', $id],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $id]
         ])->first();
         
         $services = DB::table("membership_service_grp")
@@ -295,6 +297,7 @@ class MembershipController extends Controller
         $services = $request->post('services'); // |2-1||3-1|11-5|
         $vouchers = $request->post('vouchers'); // 1,2,3,4,
         $coupons = $request->post('coupons'); // 1,2,3,4,
+        $deleted = $request->post('deleted', 'N');
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -309,6 +312,7 @@ class MembershipController extends Controller
                 , 'price' => $price
                 , 'date_use' => $date_use
                 , 'point' => $point                
+                , 'deleted' => $deleted                
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );

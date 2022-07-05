@@ -35,7 +35,7 @@ $page_title = '바우처 관리';
 					<th><a href="#">바우처 이름</a></th>
 					<th><a href="#">사용기간</a></th>
 					<th><a href="#">발급수량</a></th>
-					<th><a href="#">수정/삭제</a></th>
+					<th><a href="#">단종/판매</a></th>
 				</tr>
 			</thead>
 
@@ -111,7 +111,7 @@ $page_title = '바우처 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		if(searchField && searchField != '') {
 			data.name = searchField;
@@ -143,12 +143,13 @@ $page_title = '바우처 관리';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].seqno+'\')" style="cursor: pointer;">'
 							+'	<td>'+no+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+getDateType(response.data[inx].date_use)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td>'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);
