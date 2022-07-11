@@ -42,11 +42,22 @@
                         <h2>보유 포인트</h2>
                         <span><em id="holding_point" class="remain_point">6,000,000</em>P</span>
                     </div>
+                    <!-- 보유 정액권 -->
+                    <div class="holding_point_wrap point_wrap">
+                        <h2>보유 정액권</h2>
+                        <span><em id="remain_pass_point" class="remain_pass_point">0</em>P</span>
+                    </div>
         
                     <!-- 사용 포인트 -->
                     <div class="use_point_wrap point_wrap">
                         <h2>사용 포인트</h2>
                         <span><em id="use_point" class="use_point">480,000</em>P</span>
+                    </div>
+                    
+                    <!-- 사용 정액권 -->
+                    <div class="use_point_wrap point_wrap">
+                        <h2>사용 정액권</h2>
+                        <span><em id="use_pass_point" contenteditable="true" class="use_pass_point" onkeyup="convertComma(this)">0</em>P</span>
                     </div>
     
                     <!-- 쿠폰 선택 -->
@@ -669,14 +680,47 @@
         var date = '{{$date}}'.split('-');
         return date[0] + '년 ' + date[1] + '월 ' + date[2] + '일 ' + convert2Day(targetDate.getDay()) + ' {{$time}}';
     }
+    var remainPassPoint = 0;
     function setup(){
         var price = {{$reservation_price}};
-        var remainPoint = {{$remain_point}};
-        var remainPoint2 = {{$remain_point2}};
+        var remainPoint = {{$pointInfo->point}};
         $('.use_point').text(medibox.methods.toNumber(price));
         $('.remain_point').text(medibox.methods.toNumber(remainPoint));
-        $('.remain_point2').text(medibox.methods.toNumber(remainPoint2));
+        $('.remain_point2').text(medibox.methods.toNumber(0));
+        $('.remain_pass_point').text(medibox.methods.toNumber(@php echo !empty($passInfo) ? $passInfo->point : '0'; @endphp));
         $('#reservation_date').text(reservationDate());
+    }
+    function convertComma(target) {
+        // 숫자 체크
+        const check = /^[0-9]+$/;
+        var val = $(target).text();
+        val = val.replaceAll(',','');
+        if(!check.test(val)) {
+            alert('숫자만 입력해주세요.');
+            $(target).text('');
+            return false;
+        }
+        if(@php echo !empty($passInfo) ? $passInfo->point : '0'; @endphp < val) {
+            $(target).text(medibox.methods.toNumber(@php echo !empty($passInfo) ? $passInfo->point : '0'; @endphp));
+            val = @php echo !empty($passInfo) ? $passInfo->point : '0'; @endphp;
+        }
+        if({{$reservation_price}} < val) {
+            $(target).text(medibox.methods.toNumber({{$reservation_price}}));
+            val = {{$reservation_price}};
+        }
+        remainPassPoint = val;
+        // 계산 다시
+        calculatePrice();
+    }
+    function calculatePrice(){
+        var totalPrice = {{$reservation_price}} - remainPassPoint - discountPrice;
+        if(totalPrice < 0) {
+            totalPrice = 0;
+        }
+        
+        $('#use_point').text(medibox.methods.toNumber({{$reservation_price}})); // 금액
+        $('.coupon_point').text(medibox.methods.toNumber(discountPrice)); // 할인액
+        $('.total_point').text(medibox.methods.toNumber(totalPrice)); // 금액 - 정액권 사용액 - 할인액
     }
     function checkValidation(){
         const user_name = $('#user_name').val();
@@ -728,10 +772,7 @@
             discountPrice = discount;
             totalPrice = Number(price) - discount;
         }
-        
-        $('#use_point').text(medibox.methods.toNumber(price)); // 금액
-        $('.coupon_point').text(medibox.methods.toNumber(discount)); // 할인액
-        $('.total_point').text(medibox.methods.toNumber(totalPrice)); // 금액 - 할인액
+        calculatePrice();
     }
     function getMyCoupons(){
         
@@ -748,8 +789,11 @@
             }
 
             var couponTag = '<li onclick="usedCoupon(this, -1)">쿠폰을 선택해주세요.</li>';
+            var price = $('._use_point').text().replaceAll(',', '');
             for(var inx = 0; inx < response.data.length; inx++){
-                couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' (' + response.data[inx].discount_price + ')</li>';
+                if(price >= response.data[inx].limit_base_price && (response.data[inx].type == 'P' || response.data[inx].type == 'F')) {
+                    couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' (' + response.data[inx].discount_price + ')</li>';
+                }
             }
             coupons = response.data;
 
@@ -791,8 +835,9 @@
                 return false;
             }
 
+            // 정액권 사용 후 잔량 포인트 사용
             var data = { admin_seqno:0, user_seqno:{{ $seqno }}, service_seqno: {{$serviceId}}, coupon_seqno: selectedCoupon, discount: discountPrice,
-                point_type:point_type, memo:memo, admin_name: '' };
+                point_type:point_type, memo:memo, admin_name: '', point_type2:"{{$point_type}}", amount:remainPassPoint };
                 
             medibox.methods.point.use(data, function(request2, response2){
                 console.log('output : ' + response2);
@@ -813,7 +858,7 @@
                     , partner_seqno: {{$brandNo}}
                     , store_seqno: {{$shopNo}}
                     , service_seqno: {{$serviceId}}
-                    , manager_seqno: 0
+                    , manager_seqno: response5.manager_seqno
                     , user_seqno: {{$seqno}}
                     , admin_seqno: 0
                     , user_name: $('#user_name').val()

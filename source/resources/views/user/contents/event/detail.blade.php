@@ -45,7 +45,7 @@
             
             @php
             // used_coupon 와 관계없이 사용자가 신청이 가능할 수 있음
-                echo '<button onclick="joinEvent()">이벤트 신청</button>';
+                echo '<a href="#!" onclick="joinEvent()" id="apply_btn">쿠폰 다운로드</a>';
             @endphp
             
         </div>
@@ -53,25 +53,33 @@
 
     <script>
             var userNo = '{{$userSeqno}}';
+            var issued = @php echo empty($even_banner_user) ? 'false' : 'true'; @endphp;
             
             function toDateFormatt(){
                 var thisDay = new Date();
                 return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate();
             }
+            if(issued) {
+                $('#apply_btn').attr('style', 'background: gray;');
+            }
             @php
             if(!empty($userSeqno) && $userSeqno > 0) {
                 @endphp
                     function joinEvent(){                
-                        var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0, user_seqno: userNo };
+                        var data = { user_id: userNo };
+                        if(issued) {
+                            return false;
+                        }
 
-                        medibox.methods.event.coupon.jon(data, {{$id}}, function(request, response){
+                        medibox.methods.event.coupon.join(data, {{$id}}, function(request, response){
                             console.log('output : ' + response);
                             if(!response.result){
                                 alert(response.ment);
                                 return false;
                             }
-                            alert('이벤트 신청이 되었습니다.');
-                            location.href= '/profile/events';
+                            alert('쿠폰이 발급되었습니다.');
+                            $('#apply_btn').attr('style', 'background: gray;');
+                            issued = true;
                         }, function(e){
                             console.log(e);
                             blocked = false;

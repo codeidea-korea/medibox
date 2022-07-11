@@ -63,7 +63,7 @@
                     <!-- <div class="payment"> -->
                     <div class="payment_btn_wrap">
                         <a href="/point/payment/P">결제하기</a>
-                        <a href="/point/history">결제내역</a>
+                        <a href="/point/history/P">결제내역</a>
                     </div>
                 </div>
             </div>
@@ -127,6 +127,7 @@
                     +'    </div>'
                     +'    <div class="payment_btn_wrap">'
                     +'        <a href="/point/payment/'+response.data[inx].point_type+'">결제하기</a>'
+                    +'        <a href="/point/history/'+response.data[inx].point_type+'">결제내역</a>'
                     +'    </div>'
                     +'</div>';
             }

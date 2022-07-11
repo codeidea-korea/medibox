@@ -8,8 +8,10 @@ $page_title = '회원관리';
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
+		<!--
 			<input type="text" name="startDay" id="startDay" value="2022-02-09" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">&nbsp;&nbsp;~
 			<input type="text" name="endDay" id="endDay" value="{{ date('Y-m-d', strtotime('+1 day')) }}" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">
+			-->
 			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="전화번호/이름">
 			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		

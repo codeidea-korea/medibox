@@ -53,6 +53,40 @@
 		</div>
 		<div class="tbl-basic cell td-h1">
 			<div class="tbl-header">
+				<div class="caption">보유 멤버쉽</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>멤버쉽</th>
+						<td class="tright _userMembership">100,000 P</td>
+					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
+				<div class="caption">보유 패키지</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>패키지</th>
+						<td class="tright _userPackage">100,000 P</td>
+					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
 				<div class="caption">보유 정액권</div>
 			</div>
 			<table id="resident_list">
@@ -226,7 +260,8 @@ function checkCollectPoint(){
 				tmpCollects = tmpCollects + '<option value="0" price="0" type="P" return="0">포인트 <포인트선택시 기재></option>';
 			}
 			for(var inx = 0; inx < response.data.length; inx++){
-				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+response.data[inx].type_name+'-'+response.data[inx].service_sub_name+'</option>';
+				var name = (response.data[inx].point_type == 'K' ? response.data[inx].type_name : response.data[inx].type_name+'-'+response.data[inx].service_sub_name);
+				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+name+'</option>';
 			}
 			$('._collectItem').html(tmpCollects);
 			

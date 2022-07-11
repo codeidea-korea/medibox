@@ -34,7 +34,7 @@
                 </div>
                 <div class="quick_menu_wrap">
                     <ul>
-                        <li><a href="/point">
+                        <li><a href="/profile/services">
                             <img src="/user/img/icon_service.svg" alt="Medibox service">
                             서비스
                         </a></li>
@@ -52,7 +52,7 @@
             <div class="bottom_wrap">
                 <div class="menu_wrap">
                     <ul class="history_menu menu">
-                        <li><a href="/point/history">결제내역</a></li>
+                        <li><a href="/point/history/P">결제내역</a></li>
                         <li><a href="/reservation-history">예약내역</a></li>
                     </ul>
                     <ul class="profile_menu menu">

@@ -49,13 +49,13 @@ $navData['홈'] = ['공지사항', '공지사항 상세'];
 <header id="header">
 	<div class="header_container">
 		<!--<div class="logo bg"><a href="./index.php">마이 <span>관리자</span></a></div> (텍스트만..)-->
-		<div class="logo"><a href="/admin/members"><img src="{{ asset('adm/img/medibox/logo.png') }}"><br/><small>관리자 페이지</small></a></div>
+		<div class="logo"><a href="/admin/main"><img src="{{ asset('adm/img/medibox/logo.png') }}"><br/><small>관리자 페이지</small></a></div>
 		<nav id="nav">
 			<ul id="nav_ul">
 				@php
 				if(session()->get('admin_type') == 'A' || session()->get('admin_type') == 'B') {
 				@endphp
-				<li class=""><a href="/admin/members" class="mont">홈</a></li>
+				<li class=""><a href="/admin/main" class="mont">홈</a></li>
 				@php
 				} else {
 				@endphp

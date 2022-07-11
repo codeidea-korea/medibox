@@ -1100,3 +1100,19 @@ alter table reservation add column discount_price int default 0;
 
 alter table user_info add column memo2    varchar(500);
 alter table store add column orders int default 9999;
+
+alter table reservation add column user_memo varchar(500);
+
+alter table partner add column type_code   varchar(2) default ''; -- 파트너 타입 매핑 (구 1차 결제 관련 매핑 정보)
+alter table reservation add column reservation_key    varchar(10) default ''; -- 실제 키는 아니고 요청에 따라 예약번호
+
+
+alter table product_voucher add column price int default 0;
+alter table product_membership add column price int default 0;
+
+alter table membership_user_hst add column memo    varchar(500);
+
+alter table coupon add column event_coupon_seqno bigint null;
+alter table coupon add column date_use int null;
+
+alter table membership_etc_voucher_grp add column unit_count int default 1;

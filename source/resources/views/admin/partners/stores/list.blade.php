@@ -32,8 +32,9 @@ $page_title = '매장 정보 관리';
 			<thead>
 				<tr>
 					<th><a href="#" class="sort">번호</a></th>
-					<th><a href="#" class="sort asc">대표 이미지</a></th>
-					<th><a href="#" class="sort desc">매장명/주소</a></th>
+					<!-- <th><a href="#" class="sort asc">대표 이미지</a></th> -->
+					<th><a href="#" class="sort desc">매장명</a></th>
+					<th><a href="#" class="sort desc">주소</a></th>
 					<th><a href="#" class="sort desc">매장 전화번호</a></th>
 					<th><a href="#" class="sort desc"></a></th>
 				</tr>
@@ -143,8 +144,9 @@ $page_title = '매장 정보 관리';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td><img src="'+response.data[inx].img1+'"></td>'
-							+'	<td><h3>'+response.data[inx].name+'</h3><br>'+response.data[inx].address +' '+response.data[inx].address_detail+'</td>'
+//							+'	<td><img src="'+response.data[inx].img1+'"></td>'
+							+'	<td>'+response.data[inx].name+'</td>'
+							+'	<td>'+response.data[inx].address +' '+response.data[inx].address_detail+'</td>'
 							+'	<td>'+response.data[inx].phone+'</td>'
 							+'	<td><a href="#" onclick="remove(\''+response.data[inx].name + '\',\'' + response.data[inx].seqno+'\')" class="btnDel">삭제</a>'
 							+'      <a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정하기</a></td>'

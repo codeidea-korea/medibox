@@ -8,6 +8,7 @@ $page_title = '디자이너 정보';
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
+			<!--
 			<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
 				<option>검색가능 셀렉트</option>
 				<option>옵션A</option>
@@ -20,6 +21,7 @@ $page_title = '디자이너 정보';
 				<option>옵션H</option>
 				<option>옵션I</option>
 			</select>
+-->
 			<select class="default" id="storePop" onchange="getManagersPop(this.value)">
 				<option>검색가능 셀렉트</option>
 				<option>옵션A</option>
@@ -258,8 +260,8 @@ $page_title = '디자이너 정보';
 			alert('서버 통신 에러');
 		});
 	}
-	function getStoresPop(partner_seqno){
-		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+	function getStoresPop(){
+		var data = { adminSeqno:{{ $seqno }} };
 // {{session()->get('admin_type')}}
 		@php
 		if(session()->get('admin_type') == 'P') {
@@ -316,7 +318,7 @@ $page_title = '디자이너 정보';
 	
 	$(document).ready(function(){
 		getList();
-		getPartners();
+		getStoresPop();
 	});
 	</script>
 

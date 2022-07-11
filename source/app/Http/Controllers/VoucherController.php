@@ -17,6 +17,7 @@ class VoucherController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
+        $store_seqno = $request->get('store_seqno');
         $include_discontinued = $request->get('include_discontinued', 'N');
         
         $result = [];
@@ -31,11 +32,20 @@ class VoucherController extends Controller
         if(! empty($name) && $name != ''){
             array_push($where, ['name', 'like', '%'.$name.'%']);
         }
+        if(! empty($store_seqno) && $store_seqno != ''){
+            array_push($where, ['store_seqno', '=', $store_seqno]);
+        }
         
         $contents = DB::table("product_voucher")->where($where)
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
+        for($inx = 0; $inx < count($contents); $inx++){
+            $storeInfo = DB::table("store")
+                ->where([['seqno', '=', $contents[$inx]->store_seqno]])
+                ->first();
+            $contents[$inx]->storeInfo = $storeInfo;
+        }
         $count = DB::table("product_voucher")->where($where)
             ->count();
 
@@ -76,6 +86,7 @@ class VoucherController extends Controller
         $partner_seqno = $request->post('partner_seqno');
         $store_seqno = $request->post('store_seqno');
         $service_seqno = $request->post('service_seqno');
+        $price = $request->post('price', 0);
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -99,6 +110,7 @@ class VoucherController extends Controller
                 , 'partner_seqno' => $partner_seqno
                 , 'store_seqno' => $store_seqno
                 , 'service_seqno' => $service_seqno
+                , 'price' => $price
                 , 'deleted' => 'N'
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
@@ -124,6 +136,7 @@ class VoucherController extends Controller
         $store_seqno = $request->post('store_seqno');
         $service_seqno = $request->post('service_seqno');
         $deleted = $request->post('deleted', 'N');
+        $price = $request->post('price', 0);
 
         if($use_partner == 'Y') {
             if(empty($partner_seqno) || empty($store_seqno) || empty($service_seqno)) {
@@ -149,6 +162,7 @@ class VoucherController extends Controller
                 , 'partner_seqno' => $partner_seqno
                 , 'store_seqno' => $store_seqno
                 , 'service_seqno' => $service_seqno    
+                , 'price' => $price
                 , 'deleted' => $deleted
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
@@ -366,6 +380,350 @@ class VoucherController extends Controller
         );
 
         $result['ment'] = '성공';
+        $result['result'] = true;
+
+        return $result;
+    }
+
+    // 나의 바우처 목록
+    public function myVouchers(Request $request)
+    {
+        $pageNo = $request->get('pageNo', 1);
+        $pageSize = $request->get('pageSize', 10);
+        // 기간
+        $start_dt = $request->get('start_dt');
+        $end_dt = $request->get('end_dt');
+        // 
+        $user_seqno = $request->get('user_seqno');
+        $voucher_seqno = $request->get('voucher_seqno');
+        
+        $result = [];
+        $result['ment'] = '조회 실패';
+        $result['result'] = false;
+
+        $where = [];
+        if(! empty($voucher_seqno) && $voucher_seqno != ''){
+            array_push($where, ['voucher_user.voucher_seqno', '=', $voucher_seqno]);
+        }
+        if(! empty($user_seqno) && $user_seqno != ''){
+            array_push($where, ['voucher_user.user_seqno', '=', $user_seqno]);
+        }
+        if(! empty($start_dt) && $start_dt != ''){
+            array_push($where, ['voucher_user.create_dt', '>=', $start_dt]);
+        }
+        if(! empty($end_dt) && $end_dt != ''){
+            array_push($where, ['voucher_user.create_dt', '<=', $end_dt]);
+        }
+        
+        $contents = DB::table("voucher_user")
+            ->leftJoin('product_membership', 'product_membership.seqno', '=', 'voucher_user.membership_seqno')
+            ->join('product_voucher', 'product_voucher.seqno', '=', 'voucher_user.voucher_seqno')
+            ->join('user_info', 'user_info.user_seqno', '=', 'voucher_user.user_seqno')
+            ->where($where)
+            ->orderBy('voucher_user.create_dt', 'desc')
+            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->select(DB::raw('voucher_user.*, product_membership.name as membership_name, '
+                .' product_voucher.seqno as product_seqno, product_voucher.name as voucher_name, product_voucher.price as voucher_price, product_voucher.date_use as date_use,'
+                .' user_info.user_phone as user_phone, user_info.user_name as user_name, user_info.memo as memo, user_info.memo as memo'))->get();
+        $count = DB::table("voucher_user")
+            ->leftJoin('product_membership', 'product_membership.seqno', '=', 'voucher_user.membership_seqno')
+            ->join('product_voucher', 'product_voucher.seqno', '=', 'voucher_user.voucher_seqno')
+            ->join('user_info', 'user_info.user_seqno', '=', 'voucher_user.user_seqno')
+            ->where($where)
+            ->select(DB::raw('voucher_user.*, product_membership.name as membership_name, '
+                .' product_voucher.seqno as product_seqno, product_voucher.name as voucher_name, product_voucher.date_use as date_use,'
+                .' user_info.user_phone as user_phone, user_info.user_name as user_name, user_info.memo as memo, user_info.memo as memo'))
+            ->count();
+
+        $result['ment'] = '성공';
+        $result['data'] = $contents;
+        $result['count'] = $count;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 바우처 적립
+    public function collect(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno'); // 담당자 식별자
+        $admin_name = $request->post('admin_name', ''); // 담당자 식별자
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $voucher_seqno = $request->post('voucher_seqno'); // 대상 바우처
+        $memo = $request->post('memo', '');
+        
+        $result = [];
+        $result['ment'] = '바우처가 적립되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($voucher_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '바우처가 적립되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            return $result;
+        }
+        $voucher = DB::table("product_voucher")->where([
+            ['seqno', '=', $voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        
+        if(empty($voucher)) {
+            $result['ment'] = '바우처가 적립되지 않았습니다.\r없는 바우처 정보입니다.';
+            return $result;
+        }
+        // 구매 가능한지
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        if($point->point - $voucher->price < 0){
+            $result['ment'] = '바우처가 적립되지 않았습니다.\r구매에 사용할 포인트가 부족합니다.';
+            return $result;
+        }
+
+        // 히스토리에 포인트 이력 추가
+        $id = DB::table('user_point_hst')->insertGetId(
+            [
+                'admin_seqno' => $admin_seqno
+                , 'user_seqno' => $user_seqno
+                , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                , 'point_type' => 'P'
+                , 'hst_type' => 'U'
+                , 'point' => $voucher->price
+                , 'memo' => '[바우처 구매] ' . $voucher->name
+                , 'create_dt' => date('Y-m-d H:i:s')
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        $voucher_user_seqno = DB::table('voucher_user')->insertGetId(
+            [
+                'membership_seqno' => 0 // 멤버쉽 아님
+                , 'voucher_seqno' => $voucher_seqno
+                , 'user_seqno' => $user_seqno
+                , 'used' => 'N'
+                , 'approved' => 'Y'
+                , 'hst_type' => 'S'
+                , 'deleted' => 'N'
+                , 'create_dt' => date('Y-m-d H:i:s')
+                , 'update_dt' => date('Y-m-d H:i:s')
+            ], 'seqno'
+        );
+        DB::table('voucher_user_history')->insertGetId(
+            [
+                'voucher_user_seqno' => $voucher_user_seqno
+                , 'hst_type' => 'S'
+                , 'canceled' => 'N'
+                , 'approved' => 'Y'
+                , 'memo' => '바우처 구매로 인한 충전'
+                , 'create_dt' => date('Y-m-d H:i:s')
+            ], 'seqno'
+        );
+        DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->update(
+            [
+                'point' => $point->point - $voucher->price
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        $price = $voucher->price;
+        
+        // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        $countUsed = DB::table("user_point_hst")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['hst_type', '=', 'U']
+        ])->count();
+        if($countUsed < 2 && $user->recommended_code && $user->recommended_code != '') {
+            $recommender = DB::table("user_info")->where([
+                ['user_phone', '=', $user->recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
+
+            $conf = DB::table("conf_auto_point")->first();
+            if(!empty($conf) && $conf->recommand_bonus == 'Y'
+                && !empty($recommender)) {
+                
+                $etcPoint = ($price / 100) * $conf->recommand_bonus_rate;
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => $admin_seqno
+                        , 'user_seqno' => $user_seqno
+                        , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 [추천한 고객: '.$recommender->user_name.' / '.$recommender->user_phone.', 사용금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $point->point + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+
+                $prevPoint = DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->first();
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => $admin_seqno
+                        , 'user_seqno' => $recommender->user_seqno
+                        , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 [추천받은(가입) 고객: '.$user->user_name.' / '.$user->user_phone.', 사용금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $prevPoint->point + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
+
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원에게 ['.$voucher->name.'] 바우처가 추가되었습니다.';
+        $result['data'] = $user;
+        $result['result'] = true;
+
+        return $result;
+    }
+    // 바우처 환불
+    public function refund(Request $request)
+    {
+        $admin_seqno = $request->post('admin_seqno'); // 담당자 식별자
+        $admin_name = $request->post('admin_name', ''); // 담당자 식별자
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $voucher_seqno = $request->post('voucher_seqno'); // 대상 바우처
+        $memo = $request->post('memo', '');
+        
+        $result = [];
+        $result['ment'] = '바우처가 환불되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['result'] = false;
+
+        if(empty($admin_seqno) || empty($user_seqno) || empty($voucher_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '바우처가 환불되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            return $result;
+        }
+        $voucher = DB::table("voucher_user")->where([
+            ['seqno', '=', $voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        
+        if(empty($voucher)) {
+            $result['ment'] = '바우처가 환불되지 않았습니다.\r없는 바우처 정보입니다.';
+            return $result;
+        }
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->first();
+
+        // 3. 바우처를 사용한 경우
+        $voucherHistoryCount = DB::table("voucher_user_history")
+        ->where([
+            ['voucher_user_history.voucher_user_seqno', '=', $voucher->seqno],
+//            ['membership_etc_voucher_grp.membership_seqno', '=', 0],
+            ['voucher_user_history.hst_type', '=', 'U'],
+            ['voucher_user_history.create_dt', '>', $voucher->create_dt]
+        ])->count();
+        if($voucherHistoryCount > 0) {
+            $result['ment'] = '바우처가 환불되지 않았습니다.\r이미 바우처를 사용하였습니다.';
+            return $result;
+        }
+        // 바우처를 모두 삭제
+        $voucherInfo = DB::table("product_voucher")->where([
+            ['seqno', '=', $voucher->voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        {
+            DB::table('voucher_user')->where('seqno', '=', $voucher_seqno)->update(
+                [
+                    'deleted' => 'Y', 
+                    'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+
+            DB::table('voucher_user_history')->insertGetId(
+                [
+                    'voucher_user_seqno' => $voucher_seqno
+                    , 'hst_type' => 'R'
+                    , 'canceled' => 'N'
+                    , 'approved' => 'Y'
+                    , 'memo' => '바우처 환불로 인한 삭제'
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                ], 'seqno'
+            );
+        }
+        // 포인트를 반환 처리
+        {
+            DB::table('user_point_hst')->insertGetId(
+                [
+                    'admin_seqno' => $admin_seqno
+                    , 'user_seqno' => $user_seqno
+                    , 'admin_name' => $admin_name
+                    , 'point_type' => 'P'
+                    , 'product_seqno' => 0
+                    , 'hst_type' => 'R'
+                    , 'point' => $voucherInfo->price
+                    , 'memo' => '바우처 환불로 인한 포인트 반환'
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ], 'user_point_hst_seqno'
+            );
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', 'P']
+            ])->update(
+                [
+                    'point' => $point->point - $voucherInfo->price
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$voucherInfo->name.'] 바우처가 환불되었습니다.';
+        $result['data'] = $user;
         $result['result'] = true;
 
         return $result;

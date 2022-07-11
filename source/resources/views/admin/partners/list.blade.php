@@ -23,17 +23,19 @@ $page_title = '브랜드 정보';
 		</div>
 		<table>
 			<colgroup>
-				<col width="50">
+				<col width="20">
+				<col width="90">
 				<col width="90">
 				<col width="60">
 				<col width="60">
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#" class="sort">번호</a></th>
-					<th><a href="#" class="sort asc">회사명/대표</a></th>
-					<th><a href="#" class="sort desc">사업자 번호</a></th>
-					<th><a href="#" class="sort desc"></a></th>
+					<th><a href="#">번호</a></th>
+					<th><a href="#">회사명</a></th>
+					<th><a href="#">대표</a></th>
+					<th><a href="#">사업자 번호</a></th>
+					<th><a href="#"></a></th>
 				</tr>
 			</thead>
 
@@ -121,7 +123,7 @@ $page_title = '브랜드 정보';
 
 			if(response.count == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="4" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="5" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('.pg_wrap').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -139,7 +141,8 @@ $page_title = '브랜드 정보';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td><h3>'+response.data[inx].cop_name+'</h3><br>'+response.data[inx].director_name+'</td>'
+							+'	<td><h3>'+response.data[inx].cop_name+'</td>'
+							+'	<td>'+response.data[inx].director_name+'</td>'
 							+'	<td>'+response.data[inx].cop_no+'</td>'
 							+'	<td><a href="#" onclick="remove(\''+response.data[inx].seqno+'\')" class="btn red btnDel">삭제</a>'
 							+'      <a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정하기</a></td>'

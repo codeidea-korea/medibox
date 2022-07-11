@@ -139,7 +139,7 @@ form input::placeholder {color:#b4b4b4;}
 .bottom_menu ul li a {display:block;padding:1.2rem 0.5rem;}
 .bottom_menu ul li span {display:block;font-size:0.7rem;font-weight:500;color:#B4B4B4;}
 
-/* .bottom_menu ul li.on {border-top-color:#000;} */
+.bottom_menu ul li.on {border-top-color:#000;}
 .bottom_menu ul li.on span {color:#000;}
 
 /* 아이콘 색 */
@@ -398,13 +398,13 @@ form input::placeholder {color:#b4b4b4;}
 .coupon_tab>div {position:relative;margin-bottom:1rem;background:#FFFFFF;box-shadow:0 3px 4px rgba(0,0,0,0.16);border-radius:0.5rem;}
 .coupon_tab>div>a {display:flex;min-height:7rem;}
 
-.coupon_tab .left {flex:3;position:relative;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 5%;line-height:1.6;}
+.coupon_tab .left {flex:2;position:relative;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 5%;line-height:1.6;}
 .coupon_tab .left h3 {font-weight:500;}
 .coupon_tab .left strong {display:block;font-size:1.1rem;font-weight:700;}
 .coupon_tab .left p.type {font-size:0.7rem;}
 .coupon_tab .left p.deadline {font-size:0.7rem;color:#716E6E;}
 
-.coupon_tab .right {flex:1;position:relative;border-radius:0 0.5rem 0.5rem 0;display: flex;justify-content: center;align-items: center;}
+.coupon_tab .right {flex:1;position:relative;border-radius:0 0.5rem 0.5rem 0;display: flex;flex-direction: column;justify-content: center;align-items: center;}
 .coupon_tab .right.black{background:#1C3750;;color:#fff;text-align: center;font-size:16px;}
 .coupon_tab .right.gray{background:#efefef;text-align: center;font-size:16px;color:#666;}
 .coupon_tab .right::before,
@@ -412,7 +412,6 @@ form input::placeholder {color:#b4b4b4;}
 
 .coupon_tab .right::before {top:0;transform:translate(-50%, -50%);box-shadow:0 -2px 2px rgba(0,0,0,0.03) inset;}
 .coupon_tab .right::after {bottom:0;transform:translate(-50%, 50%);box-shadow:0 2px 2px rgba(0,0,0,0.1) inset;}
-
 
 
 /* 포인트 결제 페이지 */
@@ -1302,6 +1301,18 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     #footer .copyright_wrap br {display:none;}
 }
 
-
-
-
+/* 20220706 바우처 레이아웃 변겨경 */
+.voucher_area .type{font-size:12px!important;width:98px;padding:4px 8px;background:#1C3750;font-weight:600;color:#fff;display:inline-block;border-radius: 30px;text-align:center;margin-bottom:6px;}
+.voucher_area .right.black p:last-child{font-size:14px;margin-top:8px;width:80px;background:#fff;color:#1C3750;border-radius: 20px;font-weight: 500;}
+.voucher_area .platinum {background:#34bf7e;}
+.voucher_area .gold{background:#dfb600;}
+.voucher_area .coupon_service{font-size:12px!important;font-weight:500;}
+.voucher_area .store_title {font-size:15px;font-weight:500;}
+.voucher_area .flex_layout{display: flex;align-items: center;justify-content: space-between;}
+.voucher_area .left{padding:0.6rem 3%!important;}
+.voucher_area strong{font-size:17px!important;margin-top:6px!important;color:#007bff!important;}
+.voucher_area strong span{font-size:17px;}
+.voucher_area .hr_line {border-top:1px dashed #cecece;margin-top:3px;padding-top:3px;}
+.confirm_btn{position: fixed;bottom: 4.8rem;left: 50%;transform: translateX(-50%);width: 100%;max-width: 780px;text-align: center;background: #000;color: #fff;padding: 1.5rem 0;}
+.coupon_down_btn{display:block;width: 100%;max-width: 780px;text-align: center;background: #000;color: #fff;padding: 1rem 0;margin-bottom:16px;border-radius: 4px;}
+.coupon_down_btn svg{fill:#fff;}

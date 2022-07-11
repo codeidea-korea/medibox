@@ -33,6 +33,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					<label class="radio-btn"><input type="radio" name="date_use" value="0" class="" data-label="제한없음"><span>제한없음</span></label>
 				</div>
 			</div>
+			<!--
 			<div class="wr-list">
 				<div class="wr-list-label">멤버쉽 메인 바우처 (매장 서비스)</div>
 				<div class="wr-list-con">
@@ -67,6 +68,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					</div>
 				</div>
 			</div>
+			-->
 			<div class="wr-list">
 				<div class="wr-list-label">부여 포인트</div>
 				<div class="wr-list-con">
@@ -74,7 +76,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				</div>
 			</div>
 			<div class="wr-list">
-				<div class="wr-list-label">멤버쉽 서브 바우처</div>
+				<div class="wr-list-label">멤버쉽 바우처</div>
 				<div class="wr-list-con">
 					바우처 검색 
 					<input type="text" id="voucherName" name="" value="" class="span200" placeholder="바우처명을 입력해주세요.">
@@ -216,12 +218,21 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 	}
 
 	function addSubVoucher(voucherName, countVoucher, id){
+		/*
 		$('#vouchers').val($('#vouchers').val() + '|' + id + '|');
 		$('#voucherDetail').html(
 			$('#voucherDetail').html() 
 				+ '<tr><td>' + voucherName + '</td>'
 				+ '<td>' + countVoucher + '</td>'
 				+ '<td><a href="#" onclick="deleteSubVoucher(this, \''+('|' + id + '|')+'\')" class="btnEdit">삭제</a></td></tr>'
+		);
+		*/
+		$('#vouchers').val($('#vouchers').val() + '|' + id + '-' + countVoucher + '|');
+		$('#voucherDetail').html(
+			$('#voucherDetail').html() 
+				+ '<tr><td>' + voucherName + '</td>'
+				+ '<td><input type="text" id="voucher_'+id+'" class="_vouchers" data-key="'+id+'" value="1"></td>'
+				+ '<td><a href="#" onclick="deleteSubVoucher(this, \''+('|' + id + '-' + countVoucher + '|')+'\')" class="btnEdit">삭제</a></td></tr>'
 		);
 	}
 
@@ -345,6 +356,13 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		var date_use = $('input[name=date_use]:checked').val();
 		var point = document.querySelector('#point').value;
 
+		$('#vouchers').val('');
+		for(var inx= 0; inx<$('._vouchers').length; inx++){
+			var seqno = $($('._vouchers')[inx]).attr('data-key');
+			var count = $($('._vouchers')[inx]).val();
+			$('#vouchers').val($('#vouchers').val() + '' + ('|' + seqno + '-' + count + '|'));
+		}
+
 		var services = $('#services').val();
 		var vouchers = $('#vouchers').val();
 		var coupons = $('#coupons').val();
@@ -392,6 +410,13 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 
 		var date_use = $('input[name=date_use]:checked').val();
 		var point = document.querySelector('#point').value;
+
+		$('#vouchers').val('');
+		for(var inx= 0; inx<$('._vouchers').length; inx++){
+			var seqno = $($('._vouchers')[inx]).attr('data-key');
+			var count = $($('._vouchers')[inx]).val();
+			$('#vouchers').val($('#vouchers').val() + '' + ('|' + seqno + '-' + count + '|'));
+		}
 
 		var services = $('#services').val();
 		var vouchers = $('#vouchers').val();

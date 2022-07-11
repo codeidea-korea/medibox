@@ -111,7 +111,7 @@ $page_title = '예약 내역';
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#" class="sort">번호</a></th>
+					<th><a href="#" class="sort">예약번호</a></th>
 					<th><a href="#" class="sort asc">예약구분</a></th>
 					<th><a href="#" class="sort desc">예약일시</a></th>
 					<th><a href="#" class="sort desc">고객명</a></th>
@@ -364,12 +364,13 @@ $page_title = '예약 내역';
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
 							+'<tr>'
-							+'	<td>'+no+'</td>'
+//							+'	<td>'+no+'</td>'
+							+'	<td>'+response.data[inx].reservation_key+'</td>'
 							+'	<td><h3>'+ (response.data[inx].apply_on_mobile == 'Y' ? '모바일' : '현장등록') +'</td>'
 							+'	<td>'+response.data[inx].start_dt+'</td>'
 
-							+'	<td>'+response.data[inx].userInfo.user_name+'</td>'
-							+'	<td>'+response.data[inx].userInfo.user_phone+'</td>'
+							+'	<td>'+response.data[inx].user_name+'</td>'
+							+'	<td>'+response.data[inx].user_phone+'</td>'
 
 							+'	<td>'+response.data[inx].partnerInfo.cop_name+'</td>'
 

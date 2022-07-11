@@ -101,8 +101,26 @@ class AdminController extends Controller
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/admin/login');
         }
+        // 포인트 사용에 권한자 추가 (관리자 권한 그룹에 따라 권한이 다름)
+        $admin_type = $request->session()->get('admin_type');
+        $point_type = '';
+        if($admin_type == 'P') {
+            // all
+        } else if($admin_type == 'S') {
+            $partner_seqno = $request->session()->get('partner_seqno');
+            $store_seqno = $request->session()->get('store_seqno');
+            $store = DB::table("store")
+            ->join('partner', 'partner.seqno', '=', 'store.partner_seqno')
+            ->where([
+                ['store.seqno', '=', $store_seqno]
+            ])
+            ->select('store.*', 'partner.type_code')
+            ->first();
 
-        return view('admin.medibox_member_view')->with('seqno', $userSeqno)->with('id', $id)->with('name', $user->admin_name);
+            $point_type = $store->type_code;
+        }
+
+        return view('admin.medibox_member_view')->with('seqno', $userSeqno)->with('id', $id)->with('name', $user->admin_name)->with('point_type', $point_type);
     }
     public function medibox_member_detail(Request $request, $id)
     {

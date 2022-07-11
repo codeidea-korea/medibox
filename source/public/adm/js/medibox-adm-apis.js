@@ -176,7 +176,11 @@ var bfCall = (function(){
 
                     cancel: function (params, successThenFn, errorThenFn){ ajaxCall('회원 바우처 결제 서비스 사용취소', 'user/voucher-cancel', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     approve: function (params, successThenFn, errorThenFn){ ajaxCall('회원 바우처 결제 서비스 승인취소', 'user/voucher-approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
-                
+                    
+                    collect: function (params, successThenFn, errorThenFn){ ajaxCall('바우처 적립', 'user/voucher-collect', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    refund: function (params, successThenFn, errorThenFn){ ajaxCall('바우처 환불', 'user/voucher-refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    own: function (params, successThenFn, errorThenFn){ ajaxCall('', 'my-voucher', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    
                 },
                 coupon: {
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('쿠폰 등록', 'coupon', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -199,6 +203,9 @@ var bfCall = (function(){
                     modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('멤버쉽 수정', 'membership/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     status: function (params, id, successThenFn, errorThenFn){ ajaxCall('멤버쉽 발급 상태 변경', 'membership/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('멤버쉽 삭제', 'membership/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    collect: function (params, successThenFn, errorThenFn){ ajaxCall('멤버쉽 적립', 'membership-user/collect', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    refund: function (params, successThenFn, errorThenFn){ ajaxCall('멤버쉽 환불', 'membership-user/refund', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    own: function (params, successThenFn, errorThenFn){ ajaxCall('', 'membership-history/user', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'membership/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'membership', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
 
@@ -233,12 +240,14 @@ var bfCall = (function(){
                 },
                 usage:{
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('이용방침 등록', 'contents/usage', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('이용방침 수정', 'contents/usage/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('이용방침 삭제', 'contents/usage/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'contents/usage/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'contents/usage', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 },
                 privacy:{
                     add: function (params, successThenFn, errorThenFn){ ajaxCall('개인정보처리방침 등록', 'contents/privacies', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    modify: function (params, id, successThenFn, errorThenFn){ ajaxCall('개인정보처리방침 수정', 'contents/privacies/'+id+'/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     remove: function (params, id, successThenFn, errorThenFn){ ajaxCall('개인정보처리방침 삭제', 'contents/privacies/'+id+'/remove', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('', 'contents/privacies/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'contents/privacies', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },

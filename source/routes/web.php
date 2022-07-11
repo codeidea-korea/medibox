@@ -30,6 +30,7 @@ Route::get('/user/login/find-password', [UserController::class, 'findPassword'])
 Route::get('/point', [UserController::class, 'pointhome']) ->name('user.pointhome');
 Route::get('/point/payment/{type}', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
 Route::get('/point/history', [UserController::class, 'payhistory']) ->name('user.payhistory');
+Route::get('/point/history/{type}', [UserController::class, 'payhistoryType']) ->name('user.payhistory.type');
 Route::get('/point/approval/{result_code}', [UserController::class, 'approval']) ->name('user.approval');
 Route::get('/point/coupon/approval/{result_code}', [UserController::class, 'approvalCoupon']) ->name('user.approval.coupon');
 Route::get('/point/voucher/approval/{result_code}', [UserController::class, 'approvalVoucher']) ->name('user.approval.voucher');
@@ -50,6 +51,7 @@ Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name(
 
 Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.voucher');
 Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
+Route::get('/profile/services', [UserController::class, 'services']) ->name('user.services');
 
 Route::get('/profile/notices', [UserController::class, 'notices']) ->name('user.notices');
 Route::get('/profile/notices/{id}', [UserController::class, 'notice']) ->name('user.notice');

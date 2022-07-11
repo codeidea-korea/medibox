@@ -82,6 +82,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('user/coupon-approve', [CouponController::class, 'approve']);
     Route::post('user/voucher-cancel', [VoucherController::class, 'cancel']);
     Route::post('user/voucher-approve', [VoucherController::class, 'approve']);
+    Route::get('my-voucher', [VoucherController::class, 'myVouchers']);
+
+    Route::post('user/voucher-collect', [VoucherController::class, 'collect']);
+    Route::post('user/voucher-refund', [VoucherController::class, 'refund']);
+    
     
     
     Route::post('user/point-use-self', [PointController::class, 'useBySelf']);
@@ -124,11 +129,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::get('contents/usage', [UsageController::class, 'list']);
     Route::get('contents/usage/{id}', [UsageController::class, 'find']);
     Route::post('contents/usage', [UsageController::class, 'add']);
+    Route::post('contents/usage/{id}/modify', [UsageController::class, 'modify']);
     Route::post('contents/usage/{id}/remove', [UsageController::class, 'remove']);
     // 개인정보처리약관
     Route::get('contents/privacies', [PrivacyController::class, 'list']);
     Route::get('contents/privacies/{id}', [PrivacyController::class, 'find']);
     Route::post('contents/privacies', [PrivacyController::class, 'add']);
+    Route::post('contents/privacies/{id}/modify', [PrivacyController::class, 'modify']);
     Route::post('contents/privacies/{id}/remove', [PrivacyController::class, 'remove']);
 
     // 메인화면 템플릿 선택
@@ -214,10 +221,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('event-coupon/{id}/modify', [EventBannerController::class, 'modify']);
     Route::post('event-coupon/{id}/remove', [EventBannerController::class, 'remove']);
     Route::post('event-coupon/{id}/status', [EventBannerController::class, 'modifyStatus']);
-    Route::post('event-coupon/{id}/join', [EventBannerController::class, 'join']);
+    // 이벤트 배너 -> 이벤트 배너의 쿠폰으로 controller 책임 변경
+//    Route::post('event-coupon/{id}/join', [EventBannerController::class, 'join']);
     
     // 이벤트 쿠폰 사용 내역
     Route::get('event-coupon-history', [EvenBannerUsedController::class, 'list']);
+    Route::get('event-coupon/{couponId}/check', [EvenBannerUsedController::class, 'confirmIssuedEventCoupon']);
+    Route::post('event-coupon/{couponId}/join', [EvenBannerUsedController::class, 'addEventCoupon']);
 
     // 멤버쉽 관리
     Route::get('membership', [MembershipController::class, 'list']);
@@ -227,6 +237,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('membership/{id}/remove', [MembershipController::class, 'remove']);
     // 멤버쉽 사용 내역
     Route::get('membership-history', [MembershipUsedController::class, 'list']);
+    // 
+    Route::get('membership-history/user', [MembershipUsedController::class, 'myMemberships']);
+    Route::post('membership-user/collect', [MembershipUsedController::class, 'collect']);
+    Route::post('membership-user/refund', [MembershipUsedController::class, 'refund']);
 
     // 관리자 레벨
     Route::get('admin/level', [AdminController::class, 'list']);

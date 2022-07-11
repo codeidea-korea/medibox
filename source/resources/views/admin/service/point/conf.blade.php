@@ -36,7 +36,7 @@ $page_title = '포인트 자동 적립관리';
 			<div class="wr-list">
 				<div class="wr-list-label">추천인 적립 퍼센트</div>
 				<div class="wr-list-con">
-					<input type="number" id="recommand_bonus_rate" name="" value="{{$conf->recommand_bonus_rate}}" class="span200" placeholder="%"> %
+					<input type="text" id="recommand_bonus_rate" name="" value="{{$conf->recommand_bonus_rate}}" onkeyup="percent(this)" class="span200" placeholder="%"> %
 					<p>
 					**추천받은 사람이 최초 1회 결제시 추천한 회원/추천받은 회원 1회 적립. (최초세팅)결제 금액의 2%
 					</p>
@@ -55,6 +55,19 @@ $page_title = '포인트 자동 적립관리';
 	function cancel(){
 		window.location.href = '/admin/point/history';
 	}	
+	function percent(target) {
+		let check = /^[0-9]*.[0-9]*$/;
+		const val = $(target).val().replace('.', '');
+		if(!check.test(val)) {
+			alert('숫자만 입력해주세요.');
+			return false;
+		}
+		if(val < 0 || val > 100) {
+			alert('수수료율은 0 ~ 100 의 실수만 가능합니다.');
+			return false;
+		}
+		return true;
+	}
 	function modify(){
 		var join_bonus = $('input[name=join_bonus]:checked').val();
 		var join_bonus_point = document.querySelector('#join_bonus_point').value;

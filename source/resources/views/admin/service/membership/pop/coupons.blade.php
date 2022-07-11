@@ -146,7 +146,7 @@
 	function getCoupons(){
 		var couponName = $('#couponName').val();
 
-		var data = { pageNo: cPageNo, pageSize: cPageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: cPageNo, pageSize: cPageSize, adminSeqno:{{ $seqno }}, issuance_condition_type: 'M' };
 
 		if(couponName && couponName != '') {
 			data.name = couponName;

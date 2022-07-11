@@ -90,7 +90,7 @@ $page_title = '쿠폰 관리';
 					<th><a href="#">지급 조건</a></th>
 					<th><a href="#">할인 금액</a></th>
 					<th><a href="#">최소 기준금액</a></th>
-					<th><a href="#">수정/삭제</a></th>
+					<th>단종/판매</th>
 				</tr>
 			</thead>
 
@@ -284,7 +284,7 @@ $page_title = '쿠폰 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		var partner_seqno = $('#partnersPop').val();
 		var coupon_search_type = $('#coupon_search_type').val();
@@ -336,18 +336,19 @@ $page_title = '쿠폰 관리';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].seqno+'\')" style="cursor: pointer;">'
 							+'	<td>'+no+'</td>'
 							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
-							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
+							+'	<td>'+(response.data[inx].date_use ? '발급일로부터 '+response.data[inx].date_use+'일' : response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt)+'</td>'
 							+'	<td>'+getAllowedIssuanceType(response.data[inx].allowed_issuance_type)+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
 							+'	<td>'+getIssuanceType(response.data[inx].issuance_type)+'</td>'
 							+'	<td>'+getConditionType(response.data[inx].issuance_condition_type)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td>'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);

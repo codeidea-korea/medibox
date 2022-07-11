@@ -187,7 +187,7 @@ class EventBannerController extends Controller
         $coupon_seqno = 0;
         if(!empty($used_coupon) && $used_coupon == 'Y') {
             // 쿠폰 생성
-            $coupon_seqno = DB::table('even_coupon')->insertGetId(
+            $coupon_seqno = DB::table('coupon')->insertGetId(
                 [
                     'coupon_partner_grp_seqno' => $coupon_partner_grp_seqno
                     , 'name' => $coupon_name
@@ -264,7 +264,7 @@ class EventBannerController extends Controller
         $result['ment'] = '등록 실패';
         $result['result'] = false;
 
-        $event_coupon = DB::table('even_coupon')->where([
+        $event_coupon = DB::table('coupon')->where([
             ['event_banner_seqno', '=', $id],
             ['deleted', '=', 'N']
         ])->first();
@@ -272,7 +272,7 @@ class EventBannerController extends Controller
         $coupon_seqno = 0;
         if(empty($event_coupon) && $used_coupon == 'Y') {
             // 쿠폰 생성
-            $coupon_seqno = DB::table('even_coupon')->insertGetId(
+            $coupon_seqno = DB::table('coupon')->insertGetId(
                 [
                     'coupon_partner_grp_seqno' => $coupon_partner_grp_seqno
                     , 'name' => $coupon_name
@@ -291,7 +291,7 @@ class EventBannerController extends Controller
             );
         } else if(!empty($event_coupon) && $used_coupon == 'Y') {
             // 쿠폰 수정
-            DB::table('even_coupon')->where('seqno', '=', $event_coupon->seqno)->update(
+            DB::table('coupon')->where('seqno', '=', $event_coupon->seqno)->update(
                 [
                     'coupon_partner_grp_seqno' => $coupon_partner_grp_seqno
                     , 'name' => $coupon_name
@@ -308,7 +308,7 @@ class EventBannerController extends Controller
             $coupon_seqno = $event_coupon->seqno;
         } else if(!empty($event_coupon) && $used_coupon == 'N') {
             // 쿠폰 삭제
-            DB::table('even_coupon')->where('seqno', '=', $event_coupon->seqno)->update(
+            DB::table('coupon')->where('seqno', '=', $event_coupon->seqno)->update(
                 [
                     'deleted' => 'Y', 
                     'update_dt' => date('Y-m-d H:i:s') 
@@ -330,7 +330,7 @@ class EventBannerController extends Controller
             ]
         );
         if($coupon_seqno > 0) {
-            DB::table('even_coupon')->where([
+            DB::table('coupon')->where([
                 ['seqno', '=', $coupon_seqno]
             ])->update(
                 [

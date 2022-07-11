@@ -21,6 +21,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 					<textarea id="context" name="" value="" class="" placeholder="내용을 작성해주세요."></textarea>
 				</div>
 			</div>
+			<!--
 			<div class="wr-list">
 				<div class="wr-list-label">바우처 발급 수량</div>
 				<div class="wr-list-con">
@@ -39,6 +40,16 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 					<label class="radio-btn"><input type="radio" name="date_use" value="0" class="" data-label="제한없음"><span>제한없음</span></label>
 				</div>
 			</div>
+			-->
+			<div class="wr-list">
+				<div class="wr-list-label">바우처 금액</div>
+				<div class="wr-list-con">
+					<input type="number" id="price" name="" value="" class="span200" placeholder="0">
+				</div> 
+			</div>
+			<input type="hidden" id="unit_count" name="" value="1">
+			<input type="hidden" id="date_use" name="date_use" value="0">
+
 			<div class="wr-list">
 				<div class="wr-list-label">제휴사 연결 (선택사항)</div>
 				<div class="wr-list-con">
@@ -197,13 +208,15 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 		var context = document.querySelector('#context').value;
 		var unit_count = document.querySelector('#unit_count').value;
 
-		var date_use = $('input[name=date_use]:checked').val();
+//		var date_use = $('input[name=date_use]:checked').val();
+		var date_use = document.querySelector('#date_use').value;
 
 		var use_partner = $('#use_partner').is(":checked") ? 'Y' : 'N';
 		var partner_seqno = $('#partnersPop').val();
 		var store_seqno = $('#storePop').val();
 		var service_seqno = $('#servicePop').val();
-
+		var price = $('#price').val();
+		
 		if(!name || name == '') {
 			alert('바우처 이름을 입력해주세요.');
 			return false;
@@ -212,12 +225,18 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			alert('바우처 내용을 입력해주세요.');
 			return false;
 		}
+		/*
 		if (!unit_count || unit_count == '') {
 			alert('바우처 발급 수량을 선택해주세요.');
 			return false;
 		}
 		if (!date_use || date_use == '') {
 			alert('바우처 기간을 선택해주세요.');
+			return false;
+		}
+		*/
+		if (!price || price == '') {
+			alert('바우처 금액을 입력해주세요.');
 			return false;
 		}
 		if (use_partner == 'Y') {
@@ -241,12 +260,14 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 		var context = document.querySelector('#context').value;
 		var unit_count = document.querySelector('#unit_count').value;
 
-		var date_use = $('input[name=date_use]:checked').val();
+//		var date_use = $('input[name=date_use]:checked').val();
+		var date_use = document.querySelector('#date_use').value;
 
 		var use_partner = $('#use_partner').is(":checked") ? 'Y' : 'N';
 		var partner_seqno = $('#partnersPop').val();
 		var store_seqno = $('#storePop').val();
 		var service_seqno = $('#servicePop').val();
+		var price = $('#price').val();
 
 		medibox.methods.point.vouchers.add({
 			name: name
@@ -257,6 +278,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			, partner_seqno: partner_seqno
 			, store_seqno: store_seqno
 			, service_seqno: service_seqno
+			, price: price
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -291,12 +313,14 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 		var context = document.querySelector('#context').value;
 		var unit_count = document.querySelector('#unit_count').value;
 
-		var date_use = $('input[name=date_use]:checked').val();
+//		var date_use = $('input[name=date_use]:checked').val();
+		var date_use = document.querySelector('#date_use').value;
 
 		var use_partner = $('#use_partner').is(":checked") ? 'Y' : 'N';
 		var partner_seqno = $('#partnersPop').val();
 		var store_seqno = $('#storePop').val();
 		var service_seqno = $('#servicePop').val();
+		var price = $('#price').val();
 
 		medibox.methods.point.vouchers.modify({
 			name: name
@@ -307,6 +331,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			, partner_seqno: partner_seqno
 			, store_seqno: store_seqno
 			, service_seqno: service_seqno
+			, price: price
 			, admin_seqno: {{ $seqno }}
 		}, {{$voucherNo}}, function(request, response){
 			console.log('output : ' + response);
@@ -330,6 +355,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			, partner_seqno: info.partner_seqno
 			, store_seqno: info.store_seqno
 			, service_seqno: info.service_seqno
+			, price: info.price
 			, admin_seqno: {{ $seqno }}
 			, deleted: 'N'
 		}, {{$voucherNo}}, function(request, response){
@@ -368,7 +394,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			$('#context').val( response.data.context );
 			$('#unit_count').val( response.data.unit_count );
 
-			$('input[name=date_use][value='+response.data.date_use+']').prop('checked', true);
+//			$('input[name=date_use][value='+response.data.date_use+']').prop('checked', true);
 
 			if(response.data.use_partner == 'Y') {
 				$('#use_partner').prop('checked', true);
@@ -378,6 +404,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 			}
 			$('#return_point').val( response.data.return_point );
 			$('#date_use').val( response.data.date_use );
+			$('#price').val(response.data.price);
 			toggleSelect();
 
 			getPartners();

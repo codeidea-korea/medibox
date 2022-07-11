@@ -53,6 +53,40 @@
 		</div>
 		<div class="tbl-basic cell td-h1">
 			<div class="tbl-header">
+				<div class="caption">보유 멤버쉽</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>멤버쉽</th>
+						<td class="tright _userMembership">100,000 P</td>
+					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
+				<div class="caption">보유 패키지</div>
+			</div>
+			<table id="resident_list">
+				<colgroup>
+					<col width="80">
+					<col width="180">
+				</colgroup>
+				<thead>
+					<tr>
+						<th>패키지</th>
+						<td class="tright _userPackage">100,000 P</td>
+					</tr>
+				</thead>		
+			</table>
+		</div>
+		<div class="tbl-basic cell td-h1">
+			<div class="tbl-header">
 				<div class="caption">보유 정액권</div>
 			</div>
 			<table id="resident_list">

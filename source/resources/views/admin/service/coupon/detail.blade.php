@@ -18,7 +18,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 						<span></span>전체
 					</label>
 					<input type="hidden" id="coupon_partner_grp_seqno" name="" value="0" class="" disabled>
-					<select class="default" id="partnersPop" onchange="addPartner()">
+					<select class="default" id="partnersPop" onchange="addPartner()" disabled>
 						<option>검색가능 셀렉트</option>
 					</select>
 					<div class="mt10 _partners">
@@ -50,9 +50,9 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">지급 조건</div>
 				<div class="wr-list-con">
-					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="A" checked="checked"><span></span>전체발급</label>
-					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="J"><span></span>회원가입시</label>
-					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" value="M"><span></span>멤버쉽</label>
+					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" onclick="toggleDateInput(this.value)" value="A" checked="checked"><span></span>전체발급</label>
+					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" onclick="toggleDateInput(this.value)" value="J"><span></span>회원가입시</label>
+					<label class="radio-wrap"><input type="radio" name="issuance_condition_type" onclick="toggleDateInput(this.value)" value="M"><span></span>멤버쉽</label>
 				</div>
 			</div>
 		</div>
@@ -61,11 +61,14 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			<h3>발급 정보</h3>
 			<div class="wr-list">
 				<div class="wr-list-label">쿠폰 사용 기간</div>
-				<div class="wr-list-con">
+				<div class="wr-list-con _dateDefault">
 					<input type="text" id="_start" class="datepick _start">			
 					~
 					<input type="text" id="_end" class="datepick _end">		
 					*쿠폰 사용기간은 00:00:00 기준. *회원가입은 발급일(회원 가입)후 쿠폰 사용기간 한달.
+				</div>
+				<div class="wr-list-con _dateMembership">
+					발급일로부터 <input type="number" id="date_use" value="0">일
 				</div>
 			</div>
 			<div class="wr-list">
@@ -101,12 +104,17 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		@php
 		if($couponNo != 0) {
 		@endphp
+		<!--
 		<a href="#" onclick="setStatus('C')" class="btn blue _btnStopIssuance">발급중지</a>
 		<a href="#" onclick="setStatus('E')" class="btn blue _btnEndIssuance">발급종료</a>
 		<a href="#" onclick="setStatus('A')" class="btn blue _btnReStartIssuance">발급재개</a>
-
+-->
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
+		<!--
 		<a href="#" onclick="remove()" class="btn red">삭제</a>
 		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		-->
 		@php 
 		}
 		@endphp
@@ -322,6 +330,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		var discount_price = document.querySelector('#discount_price').value;
 		var max_discount_price = document.querySelector('#max_discount_price').value;
 		var limit_base_price = document.querySelector('#limit_base_price').value;
+		var date_use = document.querySelector('#date_use').value;
 
 		medibox.methods.point.coupon.add({
 			coupon_partner_grp_seqno: coupon_partner_grp_seqno
@@ -335,6 +344,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			, discount_price: discount_price
 			, max_discount_price: max_discount_price
 			, limit_base_price: (!limit_base_price ? 0 : limit_base_price)
+			, date_use: date_use
 			, admin_seqno: {{ $seqno }}
 		}, function(request, response){
 			console.log('output : ' + response);
@@ -379,6 +389,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 		var discount_price = document.querySelector('#discount_price').value;
 		var max_discount_price = document.querySelector('#max_discount_price').value;
 		var limit_base_price = document.querySelector('#limit_base_price').value;
+		var date_use = document.querySelector('#date_use').value;
 
 		medibox.methods.point.coupon.modify({
 			coupon_partner_grp_seqno: coupon_partner_grp_seqno
@@ -392,6 +403,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			, discount_price: discount_price
 			, max_discount_price: max_discount_price
 			, limit_base_price: (!limit_base_price ? 0 : limit_base_price)
+			, date_use: date_use
 			, admin_seqno: {{ $seqno }}
 		}, {{$couponNo}}, function(request, response){
 			console.log('output : ' + response);
@@ -420,6 +432,34 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			console.log(e);
 		});
 	}
+	function sellsStatusModify(){
+		medibox.methods.point.coupon.modify({
+			coupon_partner_grp_seqno: info.coupon_partner_grp_seqno
+			, name: info.name
+			, context: info.context
+			, issuance_type: info.issuance_type
+			, issuance_condition_type: info.issuance_condition_type
+			, start_dt: info.start_dt
+			, end_dt: info.end_dt
+			, type: info.type
+			, discount_price: info.discount_price
+			, max_discount_price: info.max_discount_price
+			, limit_base_price: (!info.limit_base_price ? 0 : info.limit_base_price)
+			, date_use: info.date_use
+			, deleted: 'N'
+		}, {{$couponNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $couponNo }}' };
 
@@ -428,6 +468,14 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 			if(!response.result){
 				alert(response.ment);
 				return false;
+			}
+			info = response.data;
+			if(response.data.deleted == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
 			}
 
 			$('#name').val( response.data.name );
@@ -446,6 +494,9 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 				voucherInfo.service_seqno = response.data.service_seqno;
 			}
 			toggleDiscountInfo(response.data.type);
+			toggleDateInput(response.data.issuance_condition_type);
+
+			$('#date_use').val( response.data.date_use );
 			$('#discount_price').val( response.data.discount_price );
 			$('#max_discount_price').val( response.data.max_discount_price );
 			$('#limit_base_price').val( response.data.limit_base_price );
@@ -503,6 +554,17 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 	@php
 	}
 	@endphp
+
+	function toggleDateInput(val){ 
+		if(val == 'M') { 
+			$('._dateDefault').hide();
+			$('._dateMembership').show(); 
+		} else {
+			$('._dateDefault').show();
+			$('._dateMembership').hide(); 
+		}
+	} 
+	toggleDateInput('A');
 	</script>
 </section>
 

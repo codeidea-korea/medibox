@@ -280,7 +280,7 @@
 		}
 		return [true];
     }
-	function setDueTime(store_seqno){
+	function setDueTime(targetDate, store_seqno){
 		var targetStore = stores.filter(store => store.seqno == store_seqno);
 		if(targetStore.length != 1) {
 			return false;
@@ -298,6 +298,9 @@
 		if(targetStore.end_dt && targetStore.end_dt != '') {
 			maxTime = targetStore.end_dt;
         }
+        var today = new Date();
+        var thisDate = today.getFullYear() + '-' + (today.getMonth() < 9 ? '0'+(today.getMonth()+1) : today.getMonth()+1) + '-' + (today.getDate() < 10 ? '0'+today.getDate() : today.getDate());
+        var thisTime = (today.getHours() < 10 ? '0'+today.getHours() : today.getHours()) + ':' + (today.getMinutes() < 10 ? '0'+today.getMinutes() : today.getMinutes());
         
 		var targetTime = minTime;
 		var minArr = [];
@@ -313,6 +316,10 @@
                     && targetStore.lunch_end_dt && targetStore.lunch_end_dt > targetTime) {
                         isDueTime = false;
                 }
+            }
+            // 이미 지난 시간의 경우
+            if(thisDate > targetDate || (thisDate == targetDate && thisTime > targetTime)) {
+                isDueTime = false;
             }
 
             times = times + '<li ' + (isDueTime ? 'class="active"' : '') + '>'
@@ -429,7 +436,7 @@
                 bodyData = bodyData 
                         + '<li class="_serviceTag">'
                         + '    <a href="#" onclick="saveServiceId('+response.data[inx].seqno+', this)">'
-                        + '        <span class="program">'+response.data[inx].name+' ('+targetTime+'분)</span>'
+                        + '        <span class="program">'+response.data[inx].name+/*' ('+targetTime+'분)'*/'</span>'
                         + '        <span class="price">'+medibox.methods.toNumber(response.data[inx].price)+'원</span>'
                         + '    </a>'
                         + '</li>';
@@ -440,7 +447,6 @@
             }
             
             stores[0] = response.data[0].storeInfo;
-            setDueTime(response.data[0].storeInfo.seqno);
             setShopInfo(stores[0]);
             
     
@@ -456,6 +462,8 @@
                 showMonthAfterYear: true,
                 yearSuffix: '년',
                 beforeShowDay: disableAllTheseDays
+            }).on('change', function(e) {
+                setDueTime($(this).val(), stores[0].seqno);
             });
             $('#datepicker').val('');
             $('.ui-state-active').removeClass('ui-state-active');

@@ -16,8 +16,9 @@
 					</div>
 					<div class="wr-list-con">			
 						<input type="text" name="searchUserId" value="" required class="span" style="width:160px;">		
-						<a href="#" onclick="getUserList()" class="btn large blue span100">조회</a>
-						<a href="/admin/members/0" class="btn large blue span100">고객등록</a>
+						<a href="#" onclick="getUserList()" class="btn large blue">조회</a>
+						<a href="/admin/members/0" class="btn large blue">고객등록</a>
+						<a href="#" id="btnProvisional" onclick="makeProvisionalUser()" class="btn large blue">가예약</a>
 					</div>
 					
 					<div style="width:100%;clear:both;height:5px;"></div>
@@ -54,6 +55,27 @@
 -->
 							</tbody>
 						</table>
+						<table id="provisional_resident_list"> 
+							<colgroup>
+								<col width="60">
+								<col>
+								<col width="180">
+							</colgroup>
+							<thead>
+								<tr>
+									<th>이름</th>
+									<th>휴대폰</th>
+									<th>메모</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td id="provisional_user_name" contenteditable="true"></td>
+									<td id="provisional_user_phone" contenteditable="true"></td>
+									<td id="provisional_user_memo" contenteditable="true"></td>
+								</tr>
+							</tbody>
+						</table>
 						
 						<nav class="pg_wrap">
 							<a href="#" class="pg_btn first"></a>
@@ -85,7 +107,8 @@
 										<td  style="border:1px solid #000;" colspan="3">
 											<label class="checkbox-wrap"><input type="checkbox" id="use_icon_important" name="use_icon_important" value="" checked  /><span></span>중요고객★</label>
 											<label class="checkbox-wrap"><input type="checkbox" id="use_icon_phone" name="use_icon_phone" value=""  /><span></span>전화☏</label>
-											<label class="checkbox-wrap"><input type="checkbox" id="use_custom_color" name="use_custom_color" value=""  /><span></span>색상선택</label>
+											<label style="display:none;" class="checkbox-wrap"><input type="checkbox" id="use_custom_color" name="use_custom_color" value=""  /><span></span>색상선택</label>
+											<label class="checkbox-wrap"><input type="checkbox" id="is_provisional_user" name="is_provisional_user" value="" disabled  /><span></span>가예약</label>
 										</td>
 									</tr>
 									<tr style="border:1px solid #000;">
@@ -190,6 +213,19 @@
 <script>
 	var upageNo = 1;
 	var upageSize = 10;
+	var isProvisional = false;
+
+	function makeProvisionalUser(){
+		$('#resident_list').hide();
+		$('#provisional_resident_list').show();
+		isProvisional = true;
+
+		user_seqno = 0;
+		$('#provisional_user_name').text('');
+		$('#provisional_user_phone').text('');
+		$('#provisional_user_memo').text('');
+		$('#is_provisional_user').prop('checked', true);
+	}
 
 	function loadUserList(no) {
 		upageNo = no;
@@ -212,6 +248,10 @@
 		if(searchField && searchField != '') {
 			data.search = searchField;
 		}
+		$('#resident_list').show();
+		$('#provisional_resident_list').hide();
+		isProvisional = false;
+		$('#is_provisional_user').prop('checked', false);
 
 		medibox.methods.user.members(data, function(request, response){
 			console.log('output : ' + response);
@@ -486,7 +526,8 @@
 				return false;
 			}
 
-			var bodyData = '<option value="0">기본 (특정 담당 직원/직위 지정 없음)</option>';
+		// 2022-07-12 매장별 기본값 삭제
+			var bodyData = ''; // '<option value="0">기본 (특정 담당 직원/직위 지정 없음)</option>';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
@@ -553,9 +594,11 @@
 		if(!checkValidation()) {
 			return;
 		}
-		if(!user_seqno || user_seqno == '') {
-			alert('예약할 고객을 선택해주세요.');
-			return false;
+		if(!isProvisional){
+			if(!user_seqno || user_seqno == '') {
+				alert('예약할 고객을 선택해주세요.');
+				return false;
+			}
 		}
 		var partner = $('#partnersPop').val(); 
 		var store = $('#storePop').val();
@@ -574,7 +617,7 @@
 		
 		var data = { admin_seqno:1, user_seqno:user_seqno, service_seqno: service_seqno,
             point_type:point_type, memo:memo, admin_name: '' };
-            
+        
 		medibox.methods.store.reservation.check({
             estimated_time: estimated_time
             , partner_seqno: partner
@@ -591,12 +634,63 @@
                 return false;
 			}
 			
-			medibox.methods.point.use(data, function(request1, response1){
-				console.log('output : ' + response1);
-				if(!response1.result){
-					alert(response1.ment.replace('\\r', '\n'));
+			if(user_seqno > 0) {
+				
+				medibox.methods.point.use(data, function(request1, response1){
+					console.log('output : ' + response1);
+					if(!response1.result){
+						alert(response1.ment.replace('\\r', '\n'));
+						return false;
+					}
+					medibox.methods.store.reservation.add({
+						status: 'R'
+						, use_icon_important: use_icon_important
+						, use_icon_phone: use_icon_phone
+						, use_custom_color: use_custom_color
+						
+						, custom_color: '#000000'
+						, estimated_time: estimated_time
+						, start_dt: start_dt
+						, memo: memo
+						, apply_on_mobile: apply_on_mobile
+
+						, partner_seqno: partner
+						, store_seqno: store
+						, manager_seqno: manager
+						, service_seqno: service_seqno
+						, user_seqno: user_seqno
+						, admin_seqno: {{ $seqno }}
+						, user_name: user_name
+						, user_phone: user_phone
+					}, function(request, response){
+						console.log('output : ' + response);
+						if(!response.result){
+							alert(response.ment);
+							return false;
+						}
+						alert('추가 되었습니다.');
+			//			cancel();
+						location.reload();
+					}, function(e){
+						console.log(e);
+					});
+				}, function(e){
+					console.log(e);
+					alert('서버 통신 에러');
+				});
+			} else {
+				user_name = $('#provisional_user_name').text();
+				user_phone = $('#provisional_user_phone').text();
+
+				if(!user_name || user_name == '') {
+					alert('예약할 고객의 이름을 입력해 주세요.');
 					return false;
 				}
+				if(!user_phone || user_phone == '' || user_phone.length < 11) {
+					alert('예약할 고객의 전화번호를 입력해 주세요.');
+					return false;
+				}
+				
 				medibox.methods.store.reservation.add({
 					status: 'R'
 					, use_icon_important: use_icon_important
@@ -617,6 +711,7 @@
 					, admin_seqno: {{ $seqno }}
 					, user_name: user_name
 					, user_phone: user_phone
+					, user_memo: $('#provisional_user_memo').text()
 				}, function(request, response){
 					console.log('output : ' + response);
 					if(!response.result){
@@ -629,10 +724,7 @@
 				}, function(e){
 					console.log(e);
 				});
-			}, function(e){
-				console.log(e);
-				alert('서버 통신 에러');
-			});
+			}
         }, function(e){
             console.log(e);
             alert('서버 통신 에러');
@@ -679,54 +771,60 @@
                 return false;
 			}
 			
-			medibox.methods.point.collect(data, function(request1, response1){
-				console.log('output : ' + response1);
-				if(!response1.result){
-					alert(response1.ment.replace('\\r', '\n'));
-					return false;
-				}
-				var point_type2 = 'P';
-				var memo2 = '관리자 예약 수정 (반환된 서비스 포인트: '+medibox.methods.toNumber(reservation_old_price)+')';
-				
-				var data2 = { admin_seqno:1, user_seqno:user_seqno, service_seqno: service_seqno,
-					point_type:point_type2, memo:memo2, admin_name: '' };
-					
-				medibox.methods.point.use(data2, function(request2, response2){
-					console.log('output : ' + response2);
-					if(!response2.result){
-						alert(response2.ment.replace('\\r', '\n'));
+			if(user_seqno > 0) {
+				//
+				medibox.methods.point.collect(data, function(request1, response1){
+					console.log('output : ' + response1);
+					if(!response1.result){
+						alert(response1.ment.replace('\\r', '\n'));
 						return false;
 					}
+					var point_type2 = 'P';
+					var memo2 = '관리자 예약 수정 (반환된 서비스 포인트: '+medibox.methods.toNumber(reservation_old_price)+')';
 					
-					medibox.methods.store.reservation.modify({
-						status: res_status
-						, use_icon_important: use_icon_important
-						, use_icon_phone: use_icon_phone
-						, use_custom_color: use_custom_color
+					var data2 = { admin_seqno:1, user_seqno:user_seqno, service_seqno: service_seqno,
+						point_type:point_type2, memo:memo2, admin_name: '' };
 						
-						, custom_color: '#000000'
-						, estimated_time: estimated_time
-						, start_dt: start_dt
-						, memo: memox
-						, apply_on_mobile: apply_on_mobile
-
-						, partner_seqno: partner
-						, store_seqno: store
-						, manager_seqno: manager
-						, service_seqno: service_seqno
-						, user_seqno: user_seqno
-						, admin_seqno: {{ $seqno }}
-						, user_name: user_name
-						, user_phone: user_phone
-					}, reservationseqno, function(request, response){
-						console.log('output : ' + response);
-						if(!response.result){
-							alert(response.ment);
+					medibox.methods.point.use(data2, function(request2, response2){
+						console.log('output : ' + response2);
+						if(!response2.result){
+							alert(response2.ment.replace('\\r', '\n'));
 							return false;
 						}
-						alert('수정 되었습니다.');
-			//			cancel();
-						location.reload();
+						
+						medibox.methods.store.reservation.modify({
+							status: res_status
+							, use_icon_important: use_icon_important
+							, use_icon_phone: use_icon_phone
+							, use_custom_color: use_custom_color
+							
+							, custom_color: '#000000'
+							, estimated_time: estimated_time
+							, start_dt: start_dt
+							, memo: memox
+							, apply_on_mobile: apply_on_mobile
+
+							, partner_seqno: partner
+							, store_seqno: store
+							, manager_seqno: manager
+							, service_seqno: service_seqno
+							, user_seqno: user_seqno
+							, admin_seqno: {{ $seqno }}
+							, user_name: user_name
+							, user_phone: user_phone
+						}, reservationseqno, function(request, response){
+							console.log('output : ' + response);
+							if(!response.result){
+								alert(response.ment);
+								return false;
+							}
+							alert('수정 되었습니다.');
+				//			cancel();
+							location.reload();
+						}, function(e){
+							console.log(e);
+							alert('서버 통신 에러');
+						});
 					}, function(e){
 						console.log(e);
 						alert('서버 통신 에러');
@@ -734,11 +832,55 @@
 				}, function(e){
 					console.log(e);
 					alert('서버 통신 에러');
+				});		
+			} else {
+				user_name = $('#provisional_user_name').text();
+				user_phone = $('#provisional_user_phone').text();
+
+				if(!user_name || user_name == '') {
+					alert('예약할 고객의 이름을 입력해 주세요.');
+					return false;
+				}
+				if(!user_phone || user_phone == '' || user_phone.length < 11) {
+					alert('예약할 고객의 전화번호를 입력해 주세요.');
+					return false;
+				}
+				//
+				medibox.methods.store.reservation.modify({
+					status: res_status
+					, use_icon_important: use_icon_important
+					, use_icon_phone: use_icon_phone
+					, use_custom_color: use_custom_color
+					
+					, custom_color: '#000000'
+					, estimated_time: estimated_time
+					, start_dt: start_dt
+					, memo: memox
+					, apply_on_mobile: apply_on_mobile
+
+					, partner_seqno: partner
+					, store_seqno: store
+					, manager_seqno: manager
+					, service_seqno: service_seqno
+					, user_seqno: user_seqno
+					, admin_seqno: {{ $seqno }}
+					, user_name: user_name
+					, user_phone: user_phone
+					, user_memo: $('#provisional_user_memo').text()
+				}, reservationseqno, function(request, response){
+					console.log('output : ' + response);
+					if(!response.result){
+						alert(response.ment);
+						return false;
+					}
+					alert('수정 되었습니다.');
+		//			cancel();
+					location.reload();
+				}, function(e){
+					console.log(e);
+					alert('서버 통신 에러');
 				});
-			}, function(e){
-				console.log(e);
-				alert('서버 통신 에러');
-			});		
+			}
         }, function(e){
             console.log(e);
             alert('서버 통신 에러');
@@ -758,9 +900,11 @@
 		var start_dt2 = $('#startTime2').val(); 
 		var memo = $('#memo').val(); 
 		
-		if(!user_seqno || user_seqno == '') {
-			alert('예약할 고객을 선택해 주세요.');
-			return false;
+		if(!isProvisional){
+			if(!user_seqno || user_seqno == '') {
+				alert('예약할 고객을 선택해 주세요.');
+				return false;
+			}
 		}
 		if(!partner || partner == '') {
 			alert('제휴사를 선택해 주세요.');
@@ -820,9 +964,10 @@
 		for(var idx = 0; idx < 3; idx++){
 			for(var jdx = 0; jdx < 6; jdx++){
 				if(idx == 0 && jdx == 0) continue;
-				_bodyContents = _bodyContents + '<option value="0'+idx+':'+(jdx*10 < 10 ? '00' : jdx*10)+'">'+(idx == 0 ? '' : idx+'시간 ')+(jdx == 0 ? '' : jdx*10+'분')+'</option>';
+				_bodyContents = _bodyContents + '<option value="0'+idx+':'+(jdx*10 < 10 ? '00' : jdx*10)+'">'+/*(idx == 0 ? '' : idx+'시간 ') +(jdx == 0 ? '' :*/ (idx*60 + jdx*10)+'분'/*)*/+'</option>';
 			}
 		}
 		$('#estimated_time').html(_bodyContents);
+		$('#provisional_resident_list').hide();
 	});
 </script>

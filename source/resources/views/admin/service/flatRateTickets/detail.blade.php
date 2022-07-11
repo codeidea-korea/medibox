@@ -40,19 +40,19 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">정액권 가격</div>
 				<div class="wr-list-con">
-					<input type="text" id="price" name="" value="" class="span200" placeholder="1000000"> 원
+					<input type="text" id="price" name="" value="" class="span200" onkeyup="autoCalculate()" placeholder="1000000"> 원
 				</div> 
 			</div>
 			<div class="wr-list">
 				<div class="wr-list-label">추가 포인트율</div>
 				<div class="wr-list-con">
-					<input type="text" id="add_rate" name="" value="" class="span200" placeholder="1"> %
+					<input type="text" id="add_rate" name="" value="" class="span200" onkeyup="percent(this)" placeholder="1"> %
 				</div>
 			</div>
 			<div class="wr-list">
 				<div class="wr-list-label">적립 포인트</div>
 				<div class="wr-list-con">
-					<input type="text" id="return_point" name="" value="" class="span200" placeholder="100000"> POINT
+					<input type="text" id="return_point" name="" value="" class="span200" placeholder="100000" disabled> POINT
 				</div>
 			</div>
 			<div class="wr-list">
@@ -97,6 +97,25 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 		var userId;
 	function cancel(){
 		window.location.href = '/admin/service/tickets';
+	}
+	function percent(target) {
+		let check = /^[0-9]*.[0-9]*$/;
+		const val = $(target).val().replace('.', '');
+		if(!check.test(val)) {
+			alert('숫자만 입력해주세요.');
+			return false;
+		}
+		if(val < 0 || val > 100) {
+			alert('수수료율은 0 ~ 100 의 실수만 가능합니다.');
+			return false;
+		}
+		autoCalculate();
+		return true;
+	}
+	function autoCalculate(){
+		const price = $('#price').val();
+		const add_rate = $('#add_rate').val();
+		$('#return_point').val(price * ((100 + Number(add_rate+'')))/100);
 	}
 	function checkValidation(){
 		var type_name = document.querySelector('#type_name').value;

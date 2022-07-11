@@ -29,13 +29,17 @@ class CouponController extends Controller
         $start_dt = $request->get('start_dt');
         $end_dt = $request->get('end_dt');
         $type = $request->get('type');
+        $include_discontinued = $request->get('include_discontinued', 'N');
+        $issuance_condition_type = $request->get('issuance_condition_type', '');
         
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['deleted', '=', 'N']);
+        }
         if(! empty($partner_seqno) && $partner_seqno != ''){
             array_push($where, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
         }
@@ -57,6 +61,9 @@ class CouponController extends Controller
         }
         if(! empty($type) && $type != ''){
             array_push($where, ['type', '=', $type]);
+        }
+        if(! empty($issuance_condition_type) && $issuance_condition_type != ''){
+            array_push($where, ['issuance_condition_type', '=', $issuance_condition_type]);
         }
         
         $contents = DB::table("coupon")->where($where)
@@ -126,6 +133,7 @@ class CouponController extends Controller
         $discount_price = $request->post('discount_price');
         $max_discount_price = $request->post('max_discount_price');
         $limit_base_price = $request->post('limit_base_price');
+        $date_use = $request->post('date_use');
         $allowed_issuance_type = 'A';
 
         $result = [];
@@ -146,6 +154,7 @@ class CouponController extends Controller
                 , 'max_discount_price' => $max_discount_price
                 , 'limit_base_price' => $limit_base_price
                 , 'allowed_issuance_type' => $allowed_issuance_type
+                , 'date_use' => $date_use
                 , 'deleted' => 'N'
                 , 'create_dt' => date('Y-m-d H:i:s')
                 , 'update_dt' => date('Y-m-d H:i:s') 
@@ -206,6 +215,8 @@ class CouponController extends Controller
         $discount_price = $request->post('discount_price');
         $max_discount_price = $request->post('max_discount_price');
         $limit_base_price = $request->post('limit_base_price');
+        $deleted = $request->post('deleted', 'N');
+        $date_use = $request->post('date_use');
         $allowed_issuance_type = 'A';
 
         $result = [];
@@ -228,44 +239,11 @@ class CouponController extends Controller
                 , 'max_discount_price' => $max_discount_price
                 , 'limit_base_price' => $limit_base_price
                 , 'allowed_issuance_type' => $allowed_issuance_type
+                , 'date_use' => $date_use
+                , 'deleted' => $deleted
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
-
-        // 전체 발급 전부 지급
-        if($issuance_condition_type == 'A' && $allowed_issuance_type == 'A') {
-
-            $users = DB::table("user_info")->where([
-                ['delete_yn', '=', 'N']
-            ])->get();
-
-            for($inx = 0; $inx < count($users); $inx++){
-                $mpg_seqno = DB::table('coupon_user')->insertGetId(
-                    [
-                        'coupon_seqno' => $id,
-                        'user_seqno' => $users[$inx]->user_seqno,
-                        'real_start_dt' => $start_dt,
-                        'real_end_dt' => $end_dt,
-                        'real_discount_price' => 0,
-                        'used' => 'N',
-                        'canceled' => 'N',
-                        'approved' => 'N',
-                        'hst_type' => 'S',
-                        'deleted' => 'N'
-                    ], 'seqno'
-                );
-                DB::table('coupon_user_history')->insertGetId(
-                    [
-                        'coupon_user_seqno' => $mpg_seqno,
-                        'hst_type' => 'S',
-                        'canceled' => 'N',
-                        'approved' => 'N',
-                        'memo' => '[쿠폰] 자동 지급',
-                        'create_dt' => date('Y-m-d H:i:s') 
-                    ]
-                );
-            }
-        }
 
         $result['ment'] = '성공';
         $result['result'] = true;

@@ -670,21 +670,20 @@ class PointController extends Controller
         $memo = $request->post('memo', '');
         $approved = $request->post('approved', 'N');
 
+        $pass_type = $request->post('point_type2'); // 정액권 구분
+        $pass_amount = $request->post('amount', 0); // 정액권 사용 금액
+
         $result = [];
         $result['ment'] = '포인트가 사용되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
         $result['code'] = 'USER-INPUT';
         $result['result'] = false;
 
-        if(empty($admin_seqno) || empty($user_seqno) || empty($point_type)) {
+        if(empty($user_seqno) || empty($point_type)) {
             return $result;
         }
 
         $user = DB::table("user_info")->where([
             ['user_seqno', '=', $user_seqno],
-            ['delete_yn', '=', 'N']
-        ])->first();
-        $admin = DB::table("admin_info")->where([
-            ['admin_seqno', '=', $admin_seqno],
             ['delete_yn', '=', 'N']
         ])->first();
         if(empty($user)) {
@@ -740,19 +739,34 @@ class PointController extends Controller
             $discount = 0;
         }
         
-        $amount = $product->price - $discount;
+        $amount = $product->price - $discount - $pass_amount;
         // 내 포인트에 차감 처리
-        $point = DB::table('user_point')->where([
-            ['user_seqno', '=', $user_seqno],
-            ['point_type', '=', $point_type]
-        ])->first();
-        // 차감 가능 여부 확인
-        if(empty($point) || $point->point < $amount) {
-            $result['ment'] = $result['ment'] . ' - 사용 포인트 부족';
-            $result['code'] = 'POINT-LESS';
-            return $result;
+        {
+            $point = DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', $point_type]
+            ])->first();
+            // 차감 가능 여부 확인
+            if(empty($point) || $point->point < $amount) {
+                $result['ment'] = $result['ment'] . ' - 사용 포인트 부족';
+                $result['code'] = 'POINT-LESS';
+                return $result;
+            }
         }
-
+        if(!empty($pass_type)) {
+            // 정액권 부분 결제건
+            $pass = DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', $pass_type]
+            ])->first();
+            // 차감 가능 여부 확인
+            if(empty($pass) || $pass->point < $pass_amount) {
+                $result['ment'] = $result['ment'] . ' - 정액권 사용 포인트 부족';
+                $result['code'] = 'POINT-LESS';
+                return $result;
+            }
+        }
+        
         // 히스토리에 포인트 이력 추가
         $id = DB::table('user_point_hst')->insertGetId(
             [
@@ -781,6 +795,36 @@ class PointController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        if(!empty($pass_type)) {
+            // 히스토리에 정액권 이력 추가
+            $id = DB::table('user_point_hst')->insertGetId(
+                [
+                    'admin_seqno' => $admin_seqno
+                    , 'user_seqno' => $user_seqno
+                    , 'admin_name' => $admin_name // empty($admin) ? '' : $admin->admin_name
+                    , 'point_type' => $pass_type
+                    , 'product_seqno' => $product_seqno
+                    , 'product_name' => $service_name
+                    , 'service_seqno' => $service_seqno
+                    , 'hst_type' => 'U'
+                    , 'point' => $pass_amount
+                    , 'memo' => $memo
+                    , 'approved' => $approved
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ], 'user_point_hst_seqno' 
+            );
+
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $user_seqno],
+                ['point_type', '=', $pass_type]
+            ])->update(
+                [
+                    'point' => $pass->point - $pass_amount
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$amount.'] point가 사용되었습니다.';
         $result['data'] = $id;

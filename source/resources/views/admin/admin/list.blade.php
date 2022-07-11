@@ -10,11 +10,13 @@ $page_title = '레벨 권한 설정';
 		<div class="data-sel">
 			<div class="wr-wrap line label160">
 				<div class="wr-list">
-					<div class="wr-list-label">제휴사명</div>
+					<div class="wr-list-label">매장명</div>
 					<div class="wr-list-con">
+						<!--
 						<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
 							<option value="">선택해주세요</option>
 						</select>
+-->
 						<select class="default" id="storePop">
 							<option value="">선택해주세요</option>
 						</select>
@@ -161,8 +163,8 @@ $page_title = '레벨 권한 설정';
 			alert('서버 통신 에러');
 		});
 	}
-	function getStoresPop(partner_seqno){
-		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+	function getStoresPop(){
+		var data = { adminSeqno:{{ $seqno }} };
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -311,7 +313,7 @@ $page_title = '레벨 권한 설정';
 	
 	$(document).ready(function(){
 		getList();
-		getPartners();
+		getStoresPop();
 	});
 	</script>
 
