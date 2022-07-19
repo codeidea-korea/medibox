@@ -17,13 +17,16 @@ class MembershipController extends Controller
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $name = $request->get('name');
+        $include_discontinued = $request->get('include_discontinued', 'N');
         
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['deleted', '=', 'N']);
+        }
         if(! empty($name) && $name != ''){
             array_push($where, ['name', 'like', '%'.$name.'%']);
         }
@@ -46,10 +49,14 @@ class MembershipController extends Controller
                 ->get();
             $vouchers = DB::table("membership_etc_voucher_grp")
                 ->join('product_voucher', 'membership_etc_voucher_grp.etc_voucher_seqno', '=', 'product_voucher.seqno')
+                ->leftJoin('store_service', 'store_service.seqno', '=', 'product_voucher.service_seqno')
+                ->leftJoin('store', 'store.seqno', '=', 'product_voucher.store_seqno')
                 ->where([
                     ['membership_etc_voucher_grp.membership_seqno', '=', $contents[$inx]->seqno],
                     ['membership_etc_voucher_grp.deleted', '=', 'N']
                 ])
+                ->select(DB::raw('product_voucher.*, membership_etc_voucher_grp.*, '
+                                .'store_service.name as service_name, store.name as store_name'))
                 ->orderBy('membership_etc_voucher_grp.create_dt', 'desc')
                 ->get();
             $coupons = DB::table("membership_coupon_grp")
@@ -99,8 +106,7 @@ class MembershipController extends Controller
         $result['result'] = false;
 
         $contents = DB::table("product_membership")->where([
-            ['seqno', '=', $id],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $id]
         ])->first();
         
         $services = DB::table("membership_service_grp")
@@ -194,6 +200,7 @@ class MembershipController extends Controller
             // 바우처 조회해서 존재하면 그룹에 추가하기
             $voucherNos = explode(',', str_replace('|', '', str_replace('||' , ',', $vouchers)));
             for($inx = 0; $inx < count($voucherNos); $inx++){
+                $serviceInfo = explode('-', $voucherNos[$inx]);
                 $contents = DB::table("product_voucher")->where([
                     ['seqno', '=', $voucherNos[$inx]],
                     ['deleted', '=', 'N']
@@ -209,7 +216,8 @@ class MembershipController extends Controller
                 DB::table('membership_etc_voucher_grp')->insertGetId(
                     [
                         'membership_seqno' => $id
-                        , 'etc_voucher_seqno' => $voucherNos[$inx]
+                        , 'etc_voucher_seqno' => $serviceInfo[0]
+                        , 'unit_count' => $serviceInfo[1] 
                         , 'deleted' => 'N'
                         , 'create_dt' => date('Y-m-d H:i:s')
                         , 'update_dt' => date('Y-m-d H:i:s') 
@@ -295,6 +303,7 @@ class MembershipController extends Controller
         $services = $request->post('services'); // |2-1||3-1|11-5|
         $vouchers = $request->post('vouchers'); // 1,2,3,4,
         $coupons = $request->post('coupons'); // 1,2,3,4,
+        $deleted = $request->post('deleted', 'N');
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -309,6 +318,7 @@ class MembershipController extends Controller
                 , 'price' => $price
                 , 'date_use' => $date_use
                 , 'point' => $point                
+                , 'deleted' => $deleted                
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );

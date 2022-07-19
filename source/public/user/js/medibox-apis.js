@@ -139,14 +139,17 @@ var bfCall = (function(){
                         list: function (params, successThenFn, errorThenFn){ ajaxCall('coupon-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     }
                 },
-                membership: {
+                vouchers: {
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('membership/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                    list: function (params, successThenFn, errorThenFn){ ajaxCall('membership', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    list: function (params, successThenFn, errorThenFn){ ajaxCall('vouchers', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     checkApprove: function (params, successThenFn, errorThenFn){ ajaxCall('voucher-check-approve', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-
+                    use: function (params, id, successThenFn, errorThenFn){ ajaxCall('vouchers/'+id+'/use', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                
                     history:{
                         list: function (params, successThenFn, errorThenFn){ ajaxCall('membership-history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
-                    }
+                    },
+                    mine: function (params, successThenFn, errorThenFn){ ajaxCall('my-voucher', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                    
                 },
             }, partner:{
                 one: function (params, id, successThenFn, errorThenFn){ ajaxCall('partners/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },  
@@ -186,6 +189,7 @@ var bfCall = (function(){
                     one: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id, 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     list: function (params, successThenFn, errorThenFn){ ajaxCall('event-coupon', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     join: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/join', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                    check: function (params, id, successThenFn, errorThenFn){ ajaxCall('event-coupon/'+id+'/check', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                     
                 }
             }, sms:{

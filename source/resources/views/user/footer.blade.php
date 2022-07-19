@@ -16,7 +16,7 @@
 
 <div class="bottom_menu _footbar">
     <ul>
-        <li><a href="/brand">
+        <li><a href="/">
             <svg xmlns="http://www.w3.org/2000/svg" width="20.617" height="19.702" viewBox="0 0 20.617 19.702">
                 <g id="icon_brand" data-name="그룹 1072" transform="translate(-32.191 -819.151)">
                   <path id="Path" d="M296.466,897.516l10.387-7.67,10.23,7.67" transform="translate(-264.275 -70.695)"/>
@@ -25,7 +25,7 @@
                 </g>
               </svg>
               
-            <span>브랜드</span>
+            <span>홈</span>
         </a></li>
         <li><a href="/reservation-history">
             <svg xmlns="http://www.w3.org/2000/svg" width="19.5" height="22.999" viewBox="0 0 19.5 22.999">

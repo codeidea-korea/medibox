@@ -35,6 +35,12 @@ class ManagerController extends Controller
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
+        for($inx = 0; $inx < count($contents); $inx++){
+            $storeInfo = DB::table("store")->where([
+                ['seqno', '=', $contents[$inx]->store_seqno]
+            ])->first();
+            $contents[$inx]->storeInfo = $storeInfo;
+        }
         $count = DB::table("store_manager")->where($where)
             ->count();
 

@@ -57,7 +57,8 @@
                     <input type="password" name="pw1" id="pw_1" placeholder="비밀번호를 입력해주세요." onkeyup="checkAllChoose()" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}" required>
 
                     <!-- 형식과 다를 때 나오는 오류메시지 -->
-                    <span id="pw_error1">영문, 숫자, 특수문자를 포함한 8~20자로 설정해주세요.</span>
+<!--                    <span id="pw_error1">영문, 숫자, 특수문자를 포함한 8~20자로 설정해주세요.</span> -->
+                    <span id="pw_error1">비밀번호는 8자 이상  숫자, 알파벳, 특수기호를 혼합하여 입력해주세요.</span>
                 </div>
                 <!-- password check -->
                 <div>

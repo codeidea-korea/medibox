@@ -91,6 +91,31 @@ class UsageController extends Controller
         return $result;
     }
 
+    public function modify(Request $request, $id)
+    {
+        $admin_seqno = $request->post('admin_seqno');
+        $title = $request->post('title');
+        $contents = $request->post('contents');
+
+        $result = [];
+        $result['ment'] = '수정 실패';
+        $result['result'] = false;
+
+        DB::table('cont_usage')->where('seqno', '=', $id)->update(
+            [
+                'admin_seqno' => $admin_seqno, 
+                'title' => $title, 
+                'contents' => $contents,
+                'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '성공';
+        $result['result'] = true;
+
+        return $result;
+    }
+
     public function remove(Request $request, $id)
     {
         $id = $request->post('id');

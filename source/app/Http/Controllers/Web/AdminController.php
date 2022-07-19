@@ -101,8 +101,28 @@ class AdminController extends Controller
             $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
             return redirect('/admin/login');
         }
+        // 포인트 사용에 권한자 추가 (관리자 권한 그룹에 따라 권한이 다름)
+        $admin_type = $request->session()->get('admin_type');
+        $point_type = '';
+        $store;
+        if($admin_type == 'S') {
+            $partner_seqno = $request->session()->get('partner_seqno');
+            $store_seqno = $request->session()->get('store_seqno');
+            $store = DB::table("store")
+            ->join('partner', 'partner.seqno', '=', 'store.partner_seqno')
+            ->where([
+                ['store.seqno', '=', $store_seqno]
+            ])
+            ->select('store.*', 'partner.type_code')
+            ->first();
 
-        return view('admin.medibox_member_view')->with('seqno', $userSeqno)->with('id', $id)->with('name', $user->admin_name);
+            $point_type = $store->type_code;
+            
+            return view('admin.medibox_member_view')->with('seqno', $userSeqno)->with('id', $id)->with('name', $user->admin_name)->with('point_type', $point_type)->with('store', $store);
+        } else {
+            
+            return view('admin.medibox_member_view')->with('seqno', $userSeqno)->with('id', $id)->with('name', $user->admin_name)->with('point_type', $point_type);
+        }
     }
     public function medibox_member_detail(Request $request, $id)
     {
@@ -453,8 +473,7 @@ class AdminController extends Controller
         $product = DB::table("product")->where([
             ['product_seqno', '=', $tiketNo],
             ['offline_type', '=', 'N'],
-            ['point_type', '!=', 'K'],
-            ['delete_yn', '=', 'N']
+            ['point_type', '!=', 'K']
         ])->first();
 
         if ($tiketNo > 0 && empty($product)) {
@@ -486,8 +505,7 @@ class AdminController extends Controller
         $product = DB::table("product")->where([
             ['product_seqno', '=', $packageNo],
             ['offline_type', '=', 'N'],
-            ['point_type', '=', 'K'],
-            ['delete_yn', '=', 'N']
+            ['point_type', '=', 'K']
         ])->first();
 
         if ($packageNo > 0 && empty($product)) {
@@ -517,8 +535,7 @@ class AdminController extends Controller
         $userSeqno = $request->session()->get('admin_seqno');
 
         $product = DB::table("product_voucher")->where([
-            ['seqno', '=', $voucherNo],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $voucherNo]
         ])->first();
 
         if ($voucherNo > 0 && empty($product)) {
@@ -713,5 +730,16 @@ class AdminController extends Controller
         $userSeqno = $request->session()->get('admin_seqno');
 
         return view('admin.admin.history.list')->with('seqno', $userSeqno);
+    }
+
+    public function calculate(Request $request)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/admin/login');
+        }
+        $userSeqno = $request->session()->get('admin_seqno');
+
+        return view('admin.calcaulate.list')->with('seqno', $userSeqno);
     }
 }

@@ -93,15 +93,6 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					</select>
 				</div>
 			</div>
-			<div class="wr-list">
-				<div class="wr-list-label">고객구분</div>
-				<div class="wr-list-con">
-					<select class="default" id="type">
-					<!-- 기획서에 추후 제공예정/내용 없음 -->
-						<option value="">선택해주세요.</option>
-					</select>
-				</div>
-			</div>	
 			--}}
 			<div class="wr-list">
 				<div class="wr-list-label">고객메모</div>
@@ -113,6 +104,29 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 				<div class="wr-list-label">추천인 아이디</div>
 				<div class="wr-list-con">
 					<input type="text" id="recommended_code" name="recommended_code" value="" class="span200" placeholder="">
+				</div>
+			</div>
+			<div class="wr-list">
+				<div class="wr-list-label">고객구분</div>
+				<div class="wr-list-con">
+					<select class="default" id="type">
+					<!-- 기획서에 추후 제공예정/내용 없음 -->
+						<option value="">선택해주세요.</option>
+						<option value="VIP">VIP</option>
+						<option value="일반">일반</option>
+					</select>
+				</div>
+			</div>
+			<div class="wr-list">
+				<div class="wr-list-label">방문유형</div>
+				<div class="wr-list-con">
+					<select class="default" id="join_path">
+						<option value="">선택해주세요.</option>
+						<option value="미니쉬직원">미니쉬직원</option>
+						<option value="강원장님소개">강원장님소개</option>
+						<option value="미니쉬중요고객">미니쉬중요고객</option>
+						<option value="주주">주주</option>
+					</select>
 				</div>
 			</div>
 			@php 
@@ -141,17 +155,6 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					</select>
 				</div>
 			</div>
-			{{--
-			<div class="wr-list">
-				<div class="wr-list-label">가입경로</div>
-				<div class="wr-list-con">
-					<select class="default" id="join_path">
-					<!-- 기획서에 추후 제공예정/내용 없음 -->
-						<option value="">선택해주세요.</option>
-					</select>
-				</div>
-			</div>			
-			--}}
 		</div>
 	</div>
 	
@@ -199,7 +202,7 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			return false;
 		}
 		if (regPw.test(pw) !== true) {
-			alert('비밀번호는 8자 이상 숫자와 알파벳을 혼합하여 입력해주세요.');
+			alert('비밀번호는 8자 이상  숫자, 알파벳, 특수기호를 혼합하여 입력해주세요. ');
 			return false;
 		}
 		if(!name || name == '') {
@@ -257,12 +260,12 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 		var address_detail = $('#address_detail').val();
 		/*
 		var grade = $('#grade').val();
-		var type = $('#type').val();
 		*/
+		var type = $('#type').val();
 		var memo = $('#memo').val();
 		var recommended_code = $('#recommended_code').val();
 		var recommended_shop = $('#recommended_shop').val();
-//		var join_path = $('#join_path').val();
+		var join_path = $('#join_path').val();
 
 		medibox.methods.user.add({
 			id: id
@@ -274,11 +277,11 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			, address: address
 			, address_detail: address_detail
 			, grade: ''
-			, type: ''
+			, type: type
 			, memo: memo
 			, recommended_code: recommended_code
 			, recommended_shop: recommended_shop
-			, join_path: ''
+			, join_path: join_path
 
 			, event_yn: 'Y'
 		}, function(request, response){
@@ -314,11 +317,11 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 		var address = $('#address').val();
 		var address_detail = $('#address_detail').val();
 //		var grade = $('#grade').val();
-//		var type = $('#type').val();
+		var type = $('#type').val();
 		var memo = $('#memo').val();
 		var recommended_code = $('#recommended_code').val();
 		var recommended_shop = $('#recommended_shop').val();
-//		var join_path = $('#join_path').val();
+		var join_path = $('#join_path').val();
 
 		medibox.methods.user.modify({
 			id: userId
@@ -331,11 +334,11 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			, address: address
 			, address_detail: address_detail
 			, grade: ''
-			, type: ''
+			, type: type
 			, memo: memo
 			, recommended_code: recommended_code
 			, recommended_shop: recommended_shop
-			, join_path: ''
+			, join_path: join_path
 		}, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){

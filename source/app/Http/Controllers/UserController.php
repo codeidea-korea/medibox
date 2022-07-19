@@ -109,7 +109,7 @@ class UserController extends Controller
             return $result;
         }
 
-        DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
+        DB::table('user_info')->where('user_seqno', '=', $seqno)->update(
             [
                 'user_pw' => $user_password, 
                 'update_dt' => date('Y-m-d H:i:s') 
@@ -219,8 +219,12 @@ class UserController extends Controller
         // 회원가입시 포인트 지급 처리
         $conf = DB::table("conf_auto_point")->first();
         if(!empty($conf) && $conf->join_bonus == 'Y') {
-            DB::table('user_point')->where([
+            $point = DB::table('user_point')->where([
                 ['user_seqno', '=', $user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->first();
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $point->point + $user->user_seqno],
                 ['point_type', '=', 'P']
             ])->update(
                 [
@@ -239,6 +243,42 @@ class UserController extends Controller
                     , 'hst_type' => 'S'
                     , 'point' => $conf->join_bonus_point
                     , 'memo' => '회원가입 포인트 자동 지급'
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+        if(!empty($conf) && $conf->recommand_bonus == 'Y' && !empty($recommended_code)) {
+            // 추천인 보너스 포인트 지급
+
+            $recommended_user = DB::table("user_info")->where([
+                ['user_phone', '=', $recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
+            $point = DB::table('user_point')->where([
+                ['user_seqno', '=', $recommended_user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->first();
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $recommended_user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->update(
+                [
+                    'point' => $point->point + $conf->recommand_bonus_point
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+            // 지급을 했으면 이력을 남기자.
+            DB::table('user_point_hst')->insertGetId(
+                [
+                    'admin_seqno' => 0
+                    , 'user_seqno' => $recommended_user->user_seqno
+                    , 'admin_name' => ''
+                    , 'point_type' => 'P'
+                    , 'product_seqno' => 0
+                    , 'hst_type' => 'S'
+                    , 'point' => $conf->recommand_bonus_point
+                    , 'memo' => '추천인 회원가입 포인트 자동 지급 [추천인 고객명/아이디: '.$user->user_name.' / '.$user->user_phone.']'
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
@@ -478,6 +518,49 @@ class UserController extends Controller
 
         return $result;
     }
+    // 멤버쉽 카드 정보 수정 
+    public function updateMembershipCardNo(Request $request)
+    {
+        $user_phone = $request->post('id');
+        $membership_card_no = $request->post('membership_card_no');
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        if (empty($user_phone) || strlen($user_phone) < 10) {
+            $result['ment'] = '올바른 핸드폰 번호를 입력해주세요.';
+            return $result;
+        }
+        if (empty($membership_card_no) || strlen($membership_card_no) < 1) {
+            $result['ment'] = '올바른 카드 번호를 입력해주세요.';
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_phone', '=', $user_phone],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $result['ment'] = '없는 계정입니다.';
+            return $result;
+        }
+
+        DB::table('user_info')->where('user_seqno', '=', $user->user_seqno)->update(
+            [
+                'membership_card_no' => $membership_card_no
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '성공';
+        $result['data'] = $user_phone;
+        $result['result'] = true;
+
+        return $result;
+    }
+
     // 관리자만
     // 회원 조회 - 단건/다건 - 전화번호/이름 검색
     public function list(Request $request)
@@ -558,6 +641,12 @@ class UserController extends Controller
         
         $upageNo = $request->get('upageNo', 1);
         $upageSize = $request->get('upageSize', 10);
+        
+        $vpageNo = $request->get('vpageNo', 1);
+        $vpageSize = $request->get('vpageSize', 10);
+        
+        $mpageNo = $request->get('mpageNo', 1);
+        $mpageSize = $request->get('mpageSize', 10);
         $delete_yn = 'Y';
 
         $result = [];
@@ -602,10 +691,25 @@ class UserController extends Controller
                     , 'product.service_sub_name'
                     , 'product.price'
                     , 'product.return_point')
-                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
+                ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '!=', 'S']])
                 ->orderBy('create_dt', 'desc')
                 ->offset(($upageSize * ($upageNo-1)))->limit($upageSize)
                 ->get();
+            // 예약 정보의 경우, 예약 정보도 같이 보내줘야함
+            for($inx = 0; $inx < count($pointUseHistory); $inx++){
+                if($pointUseHistory[$inx]->service_seqno < 1) {
+                    continue;
+                }
+                $reservation = DB::table("reservation")
+                    ->where([
+                        ['user_seqno', '=', $pointUseHistory[$inx]->user_seqno],
+                        ['service_seqno', '=', $pointUseHistory[$inx]->service_seqno],
+                        ['create_dt', '>=', $pointUseHistory[$inx]->create_dt],
+                        ['create_dt', '<', date("Y-m-d H:i:s", strtotime($pointUseHistory[$inx]->create_dt . ' +4 seconds'))]
+                    ])->first();
+                $pointUseHistory[$inx]->reservation = $reservation;
+                $pointUseHistory[$inx]->reservation_ti = date("Y-m-d H:i:s", strtotime($pointUseHistory[$inx]->create_dt . ' +4 seconds'));
+            }
             $pointUseHistoryCount = DB::table("user_point_hst")
                 ->where([['user_seqno', '=', $user->user_seqno], ['hst_type', '=', 'U']])
                 ->count();
@@ -656,20 +760,22 @@ class UserController extends Controller
 
             // 무슨 멤버쉽을 사용중인지
             $today = date("Y-m-d", time());
-            $membershipHistory = DB::table("membership_user")->where([
+            $membership = DB::table("membership_user")->where([
                 ['user_seqno', '=', $user->user_seqno],
                 ['used', '=', 'N'],
-                ['real_start_dt', '<=', $today . ' 00:00:00'],
-                ['real_end_dt', '>=', $today . ' 00:00:00'],
+                ['real_start_dt', '<=', date("Y-m-d H:i:s", time())],
+                ['real_end_dt', '>=', date("Y-m-d H:i:s", time())],
                 ['deleted', '=', 'N']
-            ])->first();
-            if(!empty($membershipHistory)) {
-                $membership = DB::table("product_membership")->where([
-                    ['seqno', '=', $membershipHistory->membership_seqno]
+            ])
+            ->orderBy('create_dt', 'desc')
+            ->first();
+            if(!empty($membership)) {
+                $pmembership = DB::table("product_membership")->where([
+                    ['seqno', '=', $membership->membership_seqno]
                 ])->first();
-                $membershipHistory->membership = $membership;
+                $membership->membershipInfo = $pmembership;
             }
-            $user->membershipHistory = $membershipHistory;
+            $user->membership = $membership;
             // 추천인 정보
             if(!empty($user->recommended_code) && $user->recommended_code != '') {
                 $recommendedUser = DB::table("user_info")->where([
@@ -677,6 +783,51 @@ class UserController extends Controller
                 ])->first();
                 $user->recommendedUser = $recommendedUser;
             }
+
+            // 사용했던 모든 멤버쉽
+            $membershipHistory = DB::table("membership_user_hst")
+                ->join('membership_user', 'membership_user.seqno', '=', 'membership_user_hst.membership_user_seqno')
+                ->leftJoin('product_membership', 'membership_user.membership_seqno', '=', 'product_membership.seqno')
+                ->select('membership_user_hst.*'
+                    , 'product_membership.name as membership_name')
+                ->where([['membership_user_hst.user_seqno', '=', $user->user_seqno]])
+                ->whereIn('membership_user_hst.hst_type', ['S', 'R'])
+                ->orderBy('membership_user_hst.create_dt', 'desc')
+                ->offset(($mpageSize * ($mpageNo-1)))->limit($mpageSize)
+                ->get();
+            $membershipHistoryCount = DB::table("membership_user_hst")
+                ->join('membership_user', 'membership_user.seqno', '=', 'membership_user_hst.membership_user_seqno')
+                ->leftJoin('product_membership', 'membership_user.membership_seqno', '=', 'product_membership.seqno')
+                ->select('membership_user_hst.*'
+                    , 'product_membership.name as membership_name')
+                ->where([['membership_user_hst.user_seqno', '=', $user->user_seqno]])
+                ->whereIn('membership_user_hst.hst_type', ['S', 'R'])
+                ->orderBy('membership_user_hst.create_dt', 'desc')
+                ->count();
+            $user->membershipHistory = $membershipHistory;
+            $user->membershipHistoryCount = $membershipHistoryCount;
+            // 사용했던 모든 바우처
+            $voucherHistory = DB::table("voucher_user_history")
+                ->join('voucher_user', 'voucher_user.seqno', '=', 'voucher_user_history.voucher_user_seqno')
+                ->leftJoin('product_voucher', 'voucher_user.voucher_seqno', '=', 'product_voucher.seqno')
+                ->select('voucher_user_history.*'
+                    , 'product_voucher.name as voucher_name')
+                ->where([['voucher_user.user_seqno', '=', $user->user_seqno]])
+                ->whereIn('voucher_user_history.hst_type', ['S', 'R'])
+                ->orderBy('voucher_user_history.create_dt', 'desc')
+                ->offset(($mpageSize * ($mpageNo-1)))->limit($mpageSize)
+                ->get();
+            $voucherHistoryCount = DB::table("voucher_user_history")
+                ->join('voucher_user', 'voucher_user.seqno', '=', 'voucher_user_history.voucher_user_seqno')
+                ->leftJoin('product_voucher', 'voucher_user.voucher_seqno', '=', 'product_voucher.seqno')
+                ->select('voucher_user_history.*'
+                    , 'product_voucher.name as voucher_name')
+                ->where([['voucher_user.user_seqno', '=', $user->user_seqno]])
+                ->whereIn('voucher_user_history.hst_type', ['S', 'R'])
+                ->orderBy('voucher_user_history.create_dt', 'desc')
+                ->count();
+            $user->voucherHistory = $voucherHistory;
+            $user->voucherHistoryCount = $voucherHistoryCount;
         }
 
         $result['ment'] = '성공';

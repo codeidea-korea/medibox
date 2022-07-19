@@ -33,6 +33,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					<label class="radio-btn"><input type="radio" name="date_use" value="0" class="" data-label="제한없음"><span>제한없음</span></label>
 				</div>
 			</div>
+			<!--
 			<div class="wr-list">
 				<div class="wr-list-label">멤버쉽 메인 바우처 (매장 서비스)</div>
 				<div class="wr-list-con">
@@ -67,6 +68,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					</div>
 				</div>
 			</div>
+			-->
 			<div class="wr-list">
 				<div class="wr-list-label">부여 포인트</div>
 				<div class="wr-list-con">
@@ -74,7 +76,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				</div>
 			</div>
 			<div class="wr-list">
-				<div class="wr-list-label">멤버쉽 서브 바우처</div>
+				<div class="wr-list-label">멤버쉽 바우처</div>
 				<div class="wr-list-con">
 					바우처 검색 
 					<input type="text" id="voucherName" name="" value="" class="span200" placeholder="바우처명을 입력해주세요.">
@@ -87,6 +89,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 							<thead>
 								<tr>
 									<th>바우처명</th>
+									<th>가격</th>
 									<th>제공 수량</th>
 									<th> </th>
 								</tr>
@@ -128,8 +131,9 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		@php
 		if($membershipNo != 0) {
 		@endphp
-		<a href="#" onclick="remove()" class="btn red">삭제</a>
-		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
+		<!-- <a href="#" onclick="modify()" class="btn blue">수정</a> -->
 		@php 
 		}
 		@endphp
@@ -146,8 +150,9 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 	var userId;
 	var voucherInfo = {};
 	function popHide(){
-		$('body, html').css('overflow', 'none');
-		$('.layer-popup').hide();
+		$('body, html').removeAttr('style');
+		$('#popVouchers').hide();
+		$('#popCoupons').hide();
 	}
 	function cancel(){
 		window.location.href = '/admin/service/membership';
@@ -214,13 +219,23 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		$('#coupons').val(servicesReplace);
 	}
 
-	function addSubVoucher(voucherName, countVoucher, id){
+	function addSubVoucher(voucherName, price, countVoucher, id){
+		/*
 		$('#vouchers').val($('#vouchers').val() + '|' + id + '|');
 		$('#voucherDetail').html(
 			$('#voucherDetail').html() 
 				+ '<tr><td>' + voucherName + '</td>'
 				+ '<td>' + countVoucher + '</td>'
 				+ '<td><a href="#" onclick="deleteSubVoucher(this, \''+('|' + id + '|')+'\')" class="btnEdit">삭제</a></td></tr>'
+		);
+		*/
+		$('#vouchers').val($('#vouchers').val() + '|' + id + '-' + countVoucher + '|');
+		$('#voucherDetail').html(
+			$('#voucherDetail').html() 
+				+ '<tr><td>' + voucherName + '</td>'
+				+ '<td>' + price + '</td>'
+				+ '<td><input type="text" id="voucher_'+id+'" class="_vouchers" data-key="'+id+'" value="1"></td>'
+				+ '<td><a href="#" onclick="deleteSubVoucher(this, \''+('|' + id + '-' + countVoucher + '|')+'\')" class="btnEdit">삭제</a></td></tr>'
 		);
 	}
 
@@ -344,6 +359,13 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		var date_use = $('input[name=date_use]:checked').val();
 		var point = document.querySelector('#point').value;
 
+		$('#vouchers').val('');
+		for(var inx= 0; inx<$('._vouchers').length; inx++){
+			var seqno = $($('._vouchers')[inx]).attr('data-key');
+			var count = $($('._vouchers')[inx]).val();
+			$('#vouchers').val($('#vouchers').val() + '' + ('|' + seqno + '-' + count + '|'));
+		}
+
 		var services = $('#services').val();
 		var vouchers = $('#vouchers').val();
 		var coupons = $('#coupons').val();
@@ -392,6 +414,13 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		var date_use = $('input[name=date_use]:checked').val();
 		var point = document.querySelector('#point').value;
 
+		$('#vouchers').val('');
+		for(var inx= 0; inx<$('._vouchers').length; inx++){
+			var seqno = $($('._vouchers')[inx]).attr('data-key');
+			var count = $($('._vouchers')[inx]).val();
+			$('#vouchers').val($('#vouchers').val() + '' + ('|' + seqno + '-' + count + '|'));
+		}
+
 		var services = $('#services').val();
 		var vouchers = $('#vouchers').val();
 		var coupons = $('#coupons').val();
@@ -417,6 +446,30 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 			console.log(e);
 		});
     }
+	function sellsStatusModify(){
+		medibox.methods.point.membership.modify({
+			name: info.name
+			, price: info.price
+			, date_use: info.date_use
+			, point: info.point
+			, services: info.services
+			, vouchers: info.vouchers
+			, coupons: info.coupons
+			, admin_seqno: {{ $seqno }}
+			, deleted: 'N'
+		}, {{$membershipNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $membershipNo }}' };
 
@@ -426,6 +479,16 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				alert(response.ment);
 				return false;
 			}
+
+			info = response.data;
+			if(response.data.deleted == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
+			}
+
 			$('#name').val( response.data.name );
 			$('#price').val( response.data.price );
 
@@ -444,7 +507,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 			}
 			if(response.data.vouchers && response.data.vouchers.length > 0) {
 				for(var idx = 0; idx < response.data.vouchers.length; idx++){
-					addSubVoucher(response.data.vouchers[idx].name, response.data.vouchers[idx].unit_count, response.data.vouchers[idx].seqno);
+					addSubVoucher(response.data.vouchers[idx].name, response.data.vouchers[idx].price, response.data.vouchers[idx].unit_count, response.data.vouchers[idx].seqno);
 				}
 			}
 			if(response.data.coupons && response.data.coupons.length > 0) {
@@ -452,6 +515,10 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 					addCoupon(response.data.coupons[idx].name, response.data.coupons[idx].seqno);
 				}
 			}
+			info.services = $('#services').val();
+			info.vouchers = $('#vouchers').val();
+			info.coupons = $('#coupons').val();
+
 			getPartners();
 		}, function(e){
 			console.log(e);
@@ -460,7 +527,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 	}
 	
 	function remove(){
-		if(!confirm('정말 삭제 하시겠습니까?')) {
+		if(!confirm('해당 멤버쉽의 사용을 중지하시겠습니까?')) {
 			return;
 		}
 		medibox.methods.point.membership.remove({
@@ -471,7 +538,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('삭제 되었습니다.');
+			alert('단종 되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);

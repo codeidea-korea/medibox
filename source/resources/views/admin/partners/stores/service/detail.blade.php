@@ -100,9 +100,9 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 
 	<script>
 	var userId;
-	var data = {};
-	data.partner_seqno = 0;
-	data.store_seqno = 0;
+	var serviceInfo = {};
+	serviceInfo.partner_seqno = 0;
+	serviceInfo.store_seqno = 0;
 	
 	function cancel(){
 		window.location.href = '/admin/services';
@@ -235,13 +235,13 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 			$('#partnersPop').val( response.data.partner_seqno );
 			$('#storePop').val( response.data.store_seqno );
 			$('#dept').val(response.data.dept);
-			data = response.data;
+			serviceInfo = response.data;
 
 			if(response.data.manager_type && response.data.manager_type != '') {
 				var types = response.data.manager_type.split(',');
 				for(var inx=0; inx<types.length; inx++){
 					$('#manager_type').html(
-						$('#manager_type').html() + '<option value="'+types[inx]+'">'+types[inx]+'</option>'
+						$('#manager_type').html() + '<option  '+((serviceInfo && serviceInfo.manager_type && serviceInfo.manager_type == types[inx]) ? 'selected' : '')+' value="'+types[inx]+'">'+types[inx]+'</option>'
 					);
 				}
 			}
@@ -294,7 +294,7 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData 
 					+'<option value="'+response.data[inx].seqno+'" onclick="getStoresPop('+response.data[inx].seqno+')" '
-						+(data.partner_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].cop_name+'</option>';
+						+(serviceInfo.partner_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].cop_name+'</option>';
 			}
 			$('#partnersPop').html(bodyData);
 			getStoresPop(partnerId);
@@ -305,7 +305,7 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 	}
 	var store;
 	function getStoresPop(partner_seqno){
-		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }}, include_discontinued:'Y' };
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -316,7 +316,7 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 			var bodyData = '<option>선택해주세요.</option>';
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData + '<option value="'+response.data[inx].seqno+'" onclick="getManagersPop('+response.data[inx].seqno+')" '
-					+(data.store_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].name+'</option>';
+					+(serviceInfo.store_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].name+'</option>';
 			}
 			store = response.data;
 			$('#storePop').html(bodyData);
@@ -337,7 +337,7 @@ $page_title = $id == 0 ? '서비스 등록' : '서비스 수정';
 			var types = temp.manager_type.split(',');
 			for(var inx=0; inx<types.length; inx++){
 				$('#manager_type').html(
-					$('#manager_type').html() + '<option value="'+types[inx]+'">'+types[inx]+'</option>'
+					$('#manager_type').html() + '<option '+((serviceInfo && serviceInfo.manager_type && serviceInfo.manager_type == types[inx]) ? 'selected' : '')+' value="'+types[inx]+'">'+types[inx]+'</option>'
 				);
 			}
 		}

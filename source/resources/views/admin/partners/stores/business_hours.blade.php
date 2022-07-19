@@ -13,9 +13,11 @@ $page_title = '예약가능시간 관리';
 			<div class="wr-list">
 				<div class="wr-list-label">선택된 매장</div>
 				<div class="wr-list-con">
+					<!--
 					<select class="default" id="partnersPop" onchange="getStoresPop(this.value)">
 						<option>검색가능 셀렉트</option>
 					</select>
+-->
 					<select class="default" id="storePop" onchange="chooseStore(this.value)">
 						<option>검색가능 셀렉트</option>
 					</select>
@@ -292,8 +294,8 @@ $page_title = '예약가능시간 관리';
 		});
 	}
 	var store;
-	function getStoresPop(partner_seqno){
-		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+	function getStoresPop(){
+		var data = { adminSeqno:{{ $seqno }} };
 // {{session()->get('admin_type')}}
 		@php
 		if(session()->get('admin_type') == 'P') {
@@ -318,6 +320,12 @@ $page_title = '예약가능시간 관리';
 			store = response.data;
 			$('#storePop').html(bodyData);
 			$('._conf').hide();
+
+			@php
+			if(session()->get('admin_type') == 'S') {
+				echo 'chooseStore(data.store_seqno); setTimeout(function(){$("._conf").show();}, 100);';
+			}
+			@endphp
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -388,7 +396,7 @@ $page_title = '예약가능시간 관리';
 	
 	$(document).ready(function(){
 		generateTime();
-		getPartners();
+		getStoresPop();
 		$('._conf').hide();
 	});
 	</script>

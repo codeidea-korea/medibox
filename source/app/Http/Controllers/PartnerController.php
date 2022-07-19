@@ -181,7 +181,7 @@ class PartnerController extends Controller
                 , 'director_name' => $director_name
                 , 'director_phone' => $director_phone
                 , 'director_email' => $director_email
-                , 'director_seqno' => $director_seqno
+                , 'director_seqno' => 0
 
                 , 'deleted' => 'N'
                 , 'create_dt' => date('Y-m-d H:i:s')

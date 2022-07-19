@@ -16,13 +16,15 @@
 								<col>
 								<col>
 								<col>
+								<col>
 							</colgroup>
 							<thead>
 								<tr>
-									<th style="width: 100px;">번호</th>
-									<th style="width: 400px;">이름</th>
-									<th style="width: 200px;">사용기간</th>
-									<th style="width: 200px;">발급수량</th>
+									<th style="width: 80px;">번호</th>
+									<th style="width: 300px;">매장명</th>
+									<th style="width: 300px;">바우처이름</th>
+									<th style="width: 200px;">금액</th>
+									<th style="width: 100px;">상태</th>
 									<th style="width: 200px;"> </th>
 								</tr>
 							</thead>
@@ -78,7 +80,7 @@
 
 	function chooseVoucher(idx){
 		// 선택 함수 호출 및 데이터 추가하고 팝업 닫기
-		addSubVoucher(voucherInfo[idx].name, voucherInfo[idx].unit_count, voucherInfo[idx].seqno);
+		addSubVoucher(voucherInfo[idx].name, voucherInfo[idx].price, voucherInfo[idx].unit_count, voucherInfo[idx].seqno);
 		popHide();
 	}
 
@@ -98,7 +100,7 @@
 	function getVouchers(){
 		var voucherName = $('#voucherName').val();
 
-		var data = { pageNo: vPageNo, pageSize: vPageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: vPageNo, pageSize: vPageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		if(voucherName && voucherName != '') {
 			data.name = voucherName;
@@ -114,7 +116,7 @@
 
 			if(response.count == 0){
 				$('#_voucherBody').html('<tr>'
-									+'    <td colspan="5" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="6" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('#_voucherPage').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -132,10 +134,13 @@
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
+							+'	<td>'+(response.data[inx].storeInfo ? response.data[inx].storeInfo.name : '-')+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
-							+'	<td>'+getDateType(response.data[inx].date_use)+'</td>'
-							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
-							+'	<td><a href="#" onclick="chooseVoucher(\''+inx+'\')" class="btnEdit">선택</a></td>'
+							+'	<td>'+response.data[inx].price+'</td>'
+//							+'	<td>'+getDateType(response.data[inx].date_use)+'</td>'
+//							+'	<td>'+medibox.methods.toNumber(response.data[inx].unit_count)+'</td>'
+							+'	<td>'+(response.data[inx].deleted == 'Y' ? '단종' : '판매')+'</td>'
+							+'	<td>'+(response.data[inx].deleted == 'Y' ? '-' : '<a href="#" onclick="chooseVoucher(\''+inx+'\')" class="btnEdit">선택</a>')+'</td>'
 							+'</tr>';
 			}
 			voucherInfo = response.data;

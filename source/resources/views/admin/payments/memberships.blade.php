@@ -270,9 +270,9 @@ $page_title = '쿠폰/바우처/멤버쉽 사용내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].user_seqno+'</td>'
-							+'	<td>'+response.data[inx].user_phone+'</td>'
-							+'	<td>'+response.data[inx].user_name+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_seqno+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_phone+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_name+'</td>'
 							+'	<td>'+(
 								response.data[inx].coupon_name ? '쿠폰'
 								: (

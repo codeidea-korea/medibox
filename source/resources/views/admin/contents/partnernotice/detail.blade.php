@@ -4,6 +4,8 @@ $page_title = $id == 0 ? '공지사항 (파트너) 등록' : '공지사항 (파�
 @endphp
 @include('admin.header')
 
+<script type="text/javascript" src="/adm/js/smartedit2.0/HuskyEZCreator.js" charset="utf-8"></script>
+
 <section id="wrtie" class="container">
 
 	<div class="section-header">공지사항 (파트너) @php echo $id == 0 ? '등록' : '상세'; @endphp</div>

@@ -153,7 +153,7 @@
         }
     }
     
-	function setDueTime(store_seqno){
+	function setDueTime(targetDate, store_seqno){
 		var targetStore = stores.filter(store => store.seqno == store_seqno);
 		if(targetStore.length != 1) {
 			return false;
@@ -171,6 +171,9 @@
 		if(targetStore.end_dt && targetStore.end_dt != '') {
 			maxTime = targetStore.end_dt;
         }
+        var today = new Date();
+        var thisDate = today.getFullYear() + '-' + (today.getMonth() < 9 ? '0'+(today.getMonth()+1) : today.getMonth()+1) + '-' + (today.getDate() < 10 ? '0'+today.getDate() : today.getDate());
+        var thisTime = (today.getHours() < 10 ? '0'+today.getHours() : today.getHours()) + ':' + (today.getMinutes() < 10 ? '0'+today.getMinutes() : today.getMinutes());
         
 		var targetTime = minTime;
 		var minArr = [];
@@ -186,6 +189,10 @@
                     && targetStore.lunch_end_dt && targetStore.lunch_end_dt > targetTime) {
                         isDueTime = false;
                 }
+            }
+            // 이미 지난 시간의 경우
+            if(thisDate > targetDate || (thisDate == targetDate && thisTime > targetTime)) {
+                isDueTime = false;
             }
 
             times = times + '<li ' + (isDueTime ? 'class="active"' : '') + '>'
@@ -226,7 +233,7 @@
                                                     +(response.data.managerInfo ? response.data.managerInfo.name : '-'));
                                                     */
             stores[0] = response.data.storeInfo;
-            setDueTime(response.data.storeInfo.seqno);
+//            setDueTime(response.data.storeInfo.seqno);
 
             $('#datepicker').datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -240,6 +247,8 @@
                 showMonthAfterYear: true,
                 yearSuffix: '년',
                 beforeShowDay: disableAllTheseDays
+            }).on('change', function(e) {
+                setDueTime($(this).val(), stores[0].seqno);
             });
 		}, function(e){
 			console.log(e);

@@ -82,11 +82,11 @@
 			alert('존재하지 않는 쿠폰 정보입니다.');
 			return false;
 		}
-		$('#event_name').text(couponInfos[idx].name);
-		$('#event_content').text(couponInfos[idx].content);
-		$('#event_time').text(couponInfos[idx].start_dt + ' ~ ' + couponInfos[idx].end_dt);
+		$('#event_name').text(couponInfos[idx].even_banner_name);
+		$('#event_content').text(couponInfos[idx].even_banner_context);
+		$('#event_time').text(couponInfos[idx].even_banner_start_dt + ' ~ ' + couponInfos[idx].even_banner_end_dt);
 		
-		$('#coupon_partners').text(response.data[idx].partners.map(p => p.name));
+		$('#coupon_partners').text(couponInfos[idx].partners.map(p => p.name));
 		$('#coupon_name').text(couponInfos[idx].coupon_name);
 		$('#coupon_content').text(couponInfos[idx].coupon_context);
 		$('#coupon_time').text(couponInfos[idx].coupon_start_dt + ' ~ ' + couponInfos[idx].coupon_end_dt);

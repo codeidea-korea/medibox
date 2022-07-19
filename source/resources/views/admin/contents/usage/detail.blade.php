@@ -4,6 +4,8 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 @endphp
 @include('admin.header')
 
+<script type="text/javascript" src="/adm/js/smartedit2.0/HuskyEZCreator.js" charset="utf-8"></script>
+
 <section id="wrtie" class="container">
 
 	<div class="section-header">이용약관 @php echo $id == 0 ? '등록' : '상세'; @endphp</div>
@@ -18,7 +20,16 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">내용</div>
 				<div class="wr-list-con">
-					<textarea id="contents" name="" value="" class="" placeholder="내용을 작성해주세요."></textarea>
+					<textarea id="contents" name="contents" value="" class="nse_content" placeholder="내용을 작성해주세요."></textarea>
+					<script type="text/javascript">
+					var oEditors = [];
+					nhn.husky.EZCreator.createInIFrame({
+						oAppRef: oEditors,
+						elPlaceHolder: "contents",
+						sSkinURI: "/adm/skin/SmartEditor2Skin.html",
+						fCreator: "createSEditor2"
+					});
+					</script>
 				</div>
 			</div>
 		</div>
@@ -29,6 +40,7 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 		@php
 		if($id != 0) {
 		@endphp
+		<a href="#" onclick="modify()" class="btn green">수정</a>
 		<a href="#" onclick="remove()" class="btn red">삭제</a>
 		@php 
 		}
@@ -49,7 +61,7 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 	}
 	function checkValidation(){
 		var title = document.querySelector('#title').value;
-        var contents = document.querySelector('#contents').value;
+        var contents = oEditors.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []);
         
 		if(!title || title == '') {
 			alert('제목을 입력해주세요.');
@@ -67,6 +79,7 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 	if($id == 0) {
 	@endphp
 	function add(){
+		oEditors.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []);
 		if(!checkValidation()) {
 			return;
 		}
@@ -97,33 +110,32 @@ $page_title = $id == 0 ? '이용약관 등록' : '이용약관 수정';
 	if($id != 0) {
 	@endphp
     userId = {{$id}}
-    /*
+    
 	function modify(){
+		oEditors.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []);
 		if(!checkValidation()) {
 			return;
 		}
-		var id = document.querySelector('#userId').value;
-		var pw = document.querySelector('#userPassword').value;
-		var name = document.querySelector('#userName').value;
+		var title = document.querySelector('#title').value;
+        var contents = document.querySelector('#contents').value;
 
-		medibox.methods.user.modify({
-			id: userId
-			, pw: pw
-			, pw2: pw
-			, name: name
-		}, function(request, response){
+		medibox.methods.contents.usage.modify({
+			title: title
+			, contents: contents
+			, admin_seqno: {{ $seqno }}
+		}, userId, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
 				alert(response.ment);
 				return false;
 			}
 			alert('수정 되었습니다.');
-			window.location.href = '/admin/members';
+			cancel();
 		}, function(e){
 			console.log(e);
 		});
     }
-    */
+    
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $id }}' };
 

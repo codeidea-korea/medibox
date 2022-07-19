@@ -1,10 +1,11 @@
 
-
+<!--
 <footer id="footer">
 	<div class="footer_container">
 		<span class="copyrights">&copy;2021 ADMIN. All Rights Reserved.</span>
 	</div>
 </footer>
+-->
 
 </div>
 <!-- //#wrapper -->

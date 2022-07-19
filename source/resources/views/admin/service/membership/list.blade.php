@@ -34,22 +34,28 @@ $page_title = '멤버쉽 관리';
 				<col width="60">
 				<col width="60">
 				<col width="60">
+				<col width="60">
 			</colgroup>
 			<thead>
 				<tr>
 					<th rowspan="2">번호</th>
-					<th rowspan="2">멤버쉽 이름</th>
+					<th>멤버쉽</th>
 					<th rowspan="2">가격</th>
 					<th rowspan="2">사용기간</th>
-					<th rowspan="2">부여 포인트</th>
-					<th colspan="4">메인 바우처</th>
-					<th rowspan="2">서브 바우처/쿠폰</th>
-					<th rowspan="2">수정/삭제</th>
+					<th>부여</th>
+					<th colspan="6">바우처</th>
+					<th rowspan="2">단종/판매</th>
 				</tr>
 				<tr>
-					<th>제휴사</th>
+					<th>이름</th>
+					<th>포인트</th>
+
+					<!-- <th>제휴사</th> -->
+					<th>바우처이름</th>
 					<th>매장</th>
 					<th>서비스</th>
+					<th>쿠폰</th>
+					<th>가격</th>
 					<th>횟수</th>
 				</tr>
 			</thead>
@@ -114,7 +120,7 @@ $page_title = '멤버쉽 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		if(searchField && searchField != '') {
 			data.name = searchField;
@@ -145,16 +151,34 @@ $page_title = '멤버쉽 관리';
 			var bodyData = '';
 			for(var inx=0; inx<response.data.length; inx++){
 				var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
-				var rowspan = response.data[inx].services && response.data[inx].services.length > 0 ? response.data[inx].services.length : 1;
+				var rowspan = response.data[inx].vouchers && response.data[inx].vouchers.length > 0 ? response.data[inx].vouchers.length : 1;
+				rowspan = rowspan + (response.data[inx].coupons && response.data[inx].coupons.length > 0 ? response.data[inx].coupons.length : 0);
 
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].seqno+'\')" style="cursor: pointer;">'
 							+'	<td rowspan="'+rowspan+'">'+no+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+response.data[inx].name+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+medibox.methods.toNumber(response.data[inx].price)+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+getDateType(response.data[inx].date_use)+'</td>'
 							+'	<td rowspan="'+rowspan+'">'+medibox.methods.toNumber(response.data[inx].point)+'</td>'
+							
+							+ (
+								(response.data[inx].vouchers && response.data[inx].vouchers.length > 0
+								? (
+									'<td>'+response.data[inx].vouchers[0].name+'</td>'
+										+ '<td>'+response.data[inx].vouchers[0].store_name+'</td>'
+										+ '<td>'+response.data[inx].vouchers[0].service_name+'</td>'
+										+ '<td>-</td>'
+										+ '<td>'+medibox.methods.toNumber(response.data[inx].vouchers[0].price)+'</td>'
+										+ '<td>'+medibox.methods.toNumber(response.data[inx].vouchers[0].unit_count)+'</td>'
+								)
+								: ('<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>'))
+							)
+//							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td rowspan="'+rowspan+'">'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
+							+'</tr>'
 
+							/*
 							// 메인
 							+ (response.data[inx].services && response.data[inx].services.length > 0
 								? ('<td>'+response.data[inx].services[0].partnerInfo.cop_name+'</td>'
@@ -182,7 +206,8 @@ $page_title = '멤버쉽 관리';
 								: ('')) + '</td>'
 							)
 
-							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td rowspan="'+rowspan+'">'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>'
 							
 							// 메인 바우처 2행부터
@@ -199,6 +224,38 @@ $page_title = '멤버쉽 관리';
 								)
 								: '')
 							;
+							*/
+							+ (
+								(response.data[inx].vouchers && response.data[inx].vouchers.length > 0
+								? (
+									response.data[inx].vouchers.map((voucher, idx) => {
+										if(idx == 0) return;
+										
+										return (
+										'<tr><td>'+voucher.name+'</td>'
+										+ '<td>'+voucher.store_name+'</td>'
+										+ '<td>'+voucher.service_name+'</td>'
+										+ '<td>-</td>'
+										+ '<td>'+medibox.methods.toNumber(voucher.price)+'</td>'
+										+ '<td>'+medibox.methods.toNumber(voucher.unit_count)+'</td></tr>'
+									)})
+								)
+								: (''))
+							)
+							+ (
+								(response.data[inx].coupons && response.data[inx].coupons.length > 0
+								? (
+									response.data[inx].coupons.map(coupon => (
+										'<tr><td>-</td>'
+										+ '<td>-</td>'
+										+ '<td>-</td>'
+										+ '<td>'+coupon.name+'</td>'
+										+ '<td>-</td>'
+										+ '<td>1</td></tr>'
+									))
+								)
+								: (''))
+							);
 			}
 			$('._tableBody').html(bodyData);
 

@@ -12,13 +12,13 @@ $page_title = '충전/결제내역';
 				<div class="wr-list">
 					<div class="wr-list-label">회원 아이디</div> 
 					<div class="wr-list-con">
-						<input type="text" name="user_phone" id="id" value="" class="span250" onkeyup="enterkey()" placeholder="회원 아이디를 입력하세요">
+						<input type="text" name="user_phone" id="user_phone" value="" class="span250" onkeyup="enterkey()" placeholder="회원 아이디를 입력하세요">
 					</div>
 				</div>
 				<div class="wr-list">
 					<div class="wr-list-label">회원 이름</div> 
 					<div class="wr-list-con">
-						<input type="text" name="user_name" id="name" value="" class="span250" onkeyup="enterkey()" placeholder="회원 이름을 입력하세요">
+						<input type="text" name="user_name" id="user_name" value="" class="span250" onkeyup="enterkey()" placeholder="회원 이름을 입력하세요">
 					</div>
 				</div>
 				<!--
@@ -277,7 +277,7 @@ $page_title = '충전/결제내역';
 		}
     }
 	function safetyNull(str) {
-		return !str ? '-' : str;
+		return !str || str == null ? '-' : str;
 	}
 	function getList(){
 		var user_phone = $('#user_phone').val();
@@ -355,17 +355,17 @@ $page_title = '충전/결제내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].user_phone+'</td>'
-							+'	<td>'+response.data[inx].user_name+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_phone+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_name+'</td>'
 							+'	<td>'+getPointNameType(response.data[inx].point_type)+'</td>'
 							+'	<td>'+getHstType(response.data[inx].hst_type)+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'
 							+'	<td>'+getCalculate2HstType(response.data[inx].hst_type)+medibox.methods.toNumber(response.data[inx].point)+'</td>'
 							
-							+'	<td>'+getPointType(response.data[inx].point_type)+'</td>'
-							+'	<td>'+safetyNull(response.data[inx].service_name)+'</td>'
-							+'	<td>'+safetyNull(response.data[inx].type_name)+'</td>'
-							+'	<td>'+safetyNull(response.data[inx].admin_name)+'</td>'
+							+'	<td>'+(response.data[inx].service_seqno > 0 ? response.data[inx].cop_name : getPointType(response.data[inx].point_type))+'</td>'
+							+'	<td>'+(response.data[inx].service_seqno > 0 ? response.data[inx].store_name : safetyNull(response.data[inx].service_name))+'</td>'
+							+'	<td>'+(response.data[inx].service_seqno > 0 ? response.data[inx].store_service_name : safetyNull(response.data[inx].type_name))+'</td>'
+							+'	<td>'+(response.data[inx].admin_name ? safetyNull(response.data[inx].admin_name) : safetyNull(response.data[inx].adm_admin_name))+'</td>' 
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);

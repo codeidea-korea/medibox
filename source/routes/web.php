@@ -30,6 +30,7 @@ Route::get('/user/login/find-password', [UserController::class, 'findPassword'])
 Route::get('/point', [UserController::class, 'pointhome']) ->name('user.pointhome');
 Route::get('/point/payment/{type}', [UserController::class, 'pointpayment']) ->name('user.pointpayment');
 Route::get('/point/history', [UserController::class, 'payhistory']) ->name('user.payhistory');
+Route::get('/point/history/{type}', [UserController::class, 'payhistoryType']) ->name('user.payhistory.type');
 Route::get('/point/approval/{result_code}', [UserController::class, 'approval']) ->name('user.approval');
 Route::get('/point/coupon/approval/{result_code}', [UserController::class, 'approvalCoupon']) ->name('user.approval.coupon');
 Route::get('/point/voucher/approval/{result_code}', [UserController::class, 'approvalVoucher']) ->name('user.approval.voucher');
@@ -49,7 +50,10 @@ Route::get('/profile/edit', [UserController::class, 'profile_edit']) ->name('use
 Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name('user.mypage.edit');
 
 Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.voucher');
+Route::get('/profile/voucher/{id}', [UserController::class, 'voucher_confirm']) ->name('user.voucher_confirm');
+
 Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
+Route::get('/profile/services', [UserController::class, 'services']) ->name('user.services');
 
 Route::get('/profile/notices', [UserController::class, 'notices']) ->name('user.notices');
 Route::get('/profile/notices/{id}', [UserController::class, 'notice']) ->name('user.notice');
@@ -82,6 +86,8 @@ Route::get('/reservation-modify/payment/{historyNo}', [UserController::class, 'r
 
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
 Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
+
+Route::get('/reservation-voucher/{voucherNo}', [UserController::class, 'reservationByVoucher']) ->name('user.reservation.voucher');
 
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
@@ -193,4 +199,7 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/main', [AdminController::class, 'partnerHome']);
     Route::get('/notice/{id}', [AdminController::class, 'partnerNoticeDetail']);
+
+    // 정산 화면
+    Route::get('/calculate', [AdminController::class, 'calculate']);
 });

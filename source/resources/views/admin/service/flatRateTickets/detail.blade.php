@@ -40,19 +40,19 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 			<div class="wr-list">
 				<div class="wr-list-label">정액권 가격</div>
 				<div class="wr-list-con">
-					<input type="text" id="price" name="" value="" class="span200" placeholder="1000000"> 원
+					<input type="text" id="price" name="" value="" class="span200" onkeyup="autoCalculate()" placeholder="1000000"> 원
 				</div> 
 			</div>
 			<div class="wr-list">
 				<div class="wr-list-label">추가 포인트율</div>
 				<div class="wr-list-con">
-					<input type="text" id="add_rate" name="" value="" class="span200" placeholder="1"> %
+					<input type="text" id="add_rate" name="" value="" class="span200" onkeyup="percent(this)" placeholder="1"> %
 				</div>
 			</div>
 			<div class="wr-list">
 				<div class="wr-list-label">적립 포인트</div>
 				<div class="wr-list-con">
-					<input type="text" id="return_point" name="" value="" class="span200" placeholder="100000"> POINT
+					<input type="text" id="return_point" name="" value="" class="span200" placeholder="100000" disabled> POINT
 				</div>
 			</div>
 			<div class="wr-list">
@@ -75,8 +75,12 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 		@php
 		if($tiketNo != 0) {
 		@endphp
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
+		<!--
 		<a href="#" onclick="remove()" class="btn red">삭제</a>
 		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		-->
 		@php 
 		}
 		@endphp
@@ -93,6 +97,25 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 		var userId;
 	function cancel(){
 		window.location.href = '/admin/service/tickets';
+	}
+	function percent(target) {
+		let check = /^[0-9]*.[0-9]*$/;
+		const val = $(target).val().replace('.', '');
+		if(!check.test(val)) {
+			alert('숫자만 입력해주세요.');
+			return false;
+		}
+		if(val < 0 || val > 100) {
+			alert('수수료율은 0 ~ 100 의 실수만 가능합니다.');
+			return false;
+		}
+		autoCalculate();
+		return true;
+	}
+	function autoCalculate(){
+		const price = $('#price').val();
+		const add_rate = $('#add_rate').val();
+		$('#return_point').val(price * ((100 + Number(add_rate+'')))/100);
 	}
 	function checkValidation(){
 		var type_name = document.querySelector('#type_name').value;
@@ -223,6 +246,34 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 			console.log(e);
 		});
     }
+	function sellsStatusModify(){
+		medibox.methods.point.products.modify({
+			type_name: info.type_name
+			, info: info.info
+			, service_name: info.service_name
+			, price: info.price
+			, add_rate: info.add_rate
+			, return_point: info.return_point
+			, date_use: info.date_use
+			, point_type: info.point_type
+			, service_sub_name: ''
+			, step_type: 0
+			, offline_type: 'N'
+			, deleted: 'N'
+			, admin_seqno: {{ $seqno }}
+		}, '{{ $tiketNo }}', function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $tiketNo }}' };
 
@@ -232,6 +283,15 @@ $page_title = $tiketNo == 0 ? '정액권 등록' : '정액권 수정';
 				alert(response.ment);
 				return false;
 			}
+			info = response.data;
+			if(response.data.delete_yn == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
+			}
+			
 			$('#type_name').val( response.data.type_name );
 			$('#info').val( response.data.info );
 			$('#service_name').val( response.data.point_type );

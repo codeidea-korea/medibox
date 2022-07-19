@@ -39,7 +39,7 @@ $page_title = '정액권 관리';
 					<th><a href="#">사용기간</a></th>
 					<th><a href="#">가격</a></th>
 					<th><a href="#">적립 포인트</a></th>
-					<th><a href="#">수정/삭제</a></th>
+					<th><a href="#">단종/판매</a></th>
 				</tr>
 			</thead>
 
@@ -139,7 +139,7 @@ $page_title = '정액권 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, offline_type:'N', point_type:'K', revers_type_condition: 'Y' };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, offline_type:'N', point_type:'K', revers_type_condition: 'Y', include_discontinued: 'Y' };
 
 		if(searchField && searchField != '') {
 			data.type_name = searchField;
@@ -171,14 +171,15 @@ $page_title = '정액권 관리';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" style="cursor: pointer;">'
 							+'	<td>'+no+'</td>'
 							+'	<td>'+response.data[inx].type_name+'</td>'
 							+'	<td>'+getPointType(response.data[inx].point_type)+'</td>'
 							+'	<td>'+getDateType(response.data[inx].date_use)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].price)+'원</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].return_point)+'p</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td>'+(response.data[inx].delete_yn == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);

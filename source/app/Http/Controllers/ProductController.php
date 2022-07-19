@@ -19,6 +19,7 @@ class ProductController extends Controller
         $offline_type = $request->get('offline_type');
         $type_name = $request->get('type_name');
         $revers_type_condition = $request->get('revers_type_condition', 'N');
+        $include_discontinued = $request->get('include_discontinued', 'N');
         $point_type = $request->get('point_type');
         
         $result = [];
@@ -26,7 +27,10 @@ class ProductController extends Controller
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['delete_yn', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['delete_yn', '=', 'N']);
+        }
+        
         if(! empty($offline_type) && $offline_type != ''){
             array_push($where, ['offline_type', '=', $offline_type]);
         }
@@ -66,8 +70,7 @@ class ProductController extends Controller
         $result['result'] = false;
 
         $contents = DB::table("product")->where([
-            ['product_seqno', '=', $id],
-            ['delete_yn', '=', 'N']
+            ['product_seqno', '=', $id]
         ])->first();
 
         $result['ment'] = '성공';
@@ -142,6 +145,7 @@ class ProductController extends Controller
         $date_use = $request->post('date_use');
 
         $ordered = $request->post('ordered', '1');
+        $delete_yn = $request->post('deleted', 'N');
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -163,6 +167,7 @@ class ProductController extends Controller
                 , 'info' => $info
                 , 'add_rate' => $add_rate
                 , 'date_use' => $date_use
+                , 'delete_yn' => $delete_yn                
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );

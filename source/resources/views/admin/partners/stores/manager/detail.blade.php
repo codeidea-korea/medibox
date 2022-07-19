@@ -126,9 +126,9 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 
 	<script>
 	var userId;
-	var data = {};
-	data.partner_seqno = 0;
-	data.store_seqno = 0;
+	var managerInfo = {};
+	managerInfo.partner_seqno = 0;
+	managerInfo.store_seqno = 0;
 
 	function cancel(){
 		window.location.href = '/admin/managers';
@@ -286,13 +286,13 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 			$('#partnersPop').val( response.data.partner_seqno );
 			$('#storePop').val( response.data.store_seqno );
 
-			data = response.data;
+			managerInfo = response.data;
 
 			if(response.data.manager_type && response.data.manager_type != '') {
 				var types = response.data.manager_type.split(',');
 				for(var inx=0; inx<types.length; inx++){
 					$('#manager_type').html(
-						$('#manager_type').html() + '<option value="'+types[inx]+'">'+types[inx]+'</option>'
+						$('#manager_type').html() + '<option '+((managerInfo && managerInfo.manager_type && managerInfo.manager_type == types[inx]) ? 'seleted' : '')+' value="'+types[inx]+'">'+types[inx]+'</option>'
 					);
 				}
 			}
@@ -347,7 +347,7 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData 
 					+'<option value="'+response.data[inx].seqno+'" onclick="getStoresPop('+response.data[inx].seqno+')" '
-						+(data.partner_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].cop_name+'</option>';
+						+(managerInfo.partner_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].cop_name+'</option>';
 			}
 			$('#partnersPop').html(bodyData);
 			getStoresPop(partnerId);
@@ -358,7 +358,7 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 	}
 	var store;
 	function getStoresPop(partner_seqno){
-		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }} };
+		var data = { partner_seqno:partner_seqno, adminSeqno:{{ $seqno }}, include_discontinued:'Y' };
 
 		medibox.methods.store.findAll(data, function(request, response){
 			console.log('output : ' + response);
@@ -369,10 +369,11 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 			var bodyData = '<option>선택해주세요.</option>';
 			for(var inx=0; inx<response.data.length; inx++){
 				bodyData = bodyData + '<option value="'+response.data[inx].seqno+'" onclick="getManagersPop('+response.data[inx].seqno+')" '
-					+(data.store_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].name+'</option>';
+					+(managerInfo.store_seqno == response.data[inx].seqno ? 'selected' : '')+'>'+response.data[inx].name+'</option>';
 			}
 			store = response.data;
 			$('#storePop').html(bodyData);
+			if(managerInfo && managerInfo.store_seqno) getManagersPop(managerInfo.store_seqno);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -390,7 +391,7 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 			var types = temp.manager_type.split(',');
 			for(var inx=0; inx<types.length; inx++){
 				$('#manager_type').html(
-					$('#manager_type').html() + '<option value="'+types[inx]+'">'+types[inx]+'</option>'
+					$('#manager_type').html() + '<option '+((managerInfo && managerInfo.manager_type && managerInfo.manager_type == types[inx]) ? 'selected' : '')+' value="'+types[inx]+'">'+types[inx]+'</option>'
 				);
 			}
 		}
@@ -423,7 +424,7 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 					prevHour = timeinfos[0];
 				}
 				times = times + '<option value="'+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+':'+(timeinfos[1] < 10 ? '00' : timeinfos[1])+'">'
-					+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+'시 '+(timeinfos[1] < 10 ? '0' : timeinfos[1])+'분</option>';
+					+(timeinfos[0] < 10 ? '0'+timeinfos[0] : timeinfos[0])+'시 '+(timeinfos[1] < 10 ? '00' : timeinfos[1])+'분</option>';
 			}
 
 			timeinfos[1] = Number(timeinfos[1]) + 10;
@@ -435,6 +436,10 @@ $page_title = $id == 0 ? '디자이너 등록' : '디자이너 수정';
 		}
 		$('#start_dt').html(times);
 		$('#end_dt').html(times);
+		if(managerInfo && managerInfo.store_seqno) {
+			$('#start_dt').val( managerInfo.start_dt );
+			$('#end_dt').val( managerInfo.end_dt );
+		}
 	}
 
 	$(document).ready(function(){

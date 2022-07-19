@@ -40,10 +40,10 @@
 
         <script>
             var pageNo = 1;
-            var pageSize = 20;
+            var pageSize = 100;
             var blocked = false;
             var firstH = $('#event > .event_wrap')[0].clientHeight * 9;
-            var eachH = $('#event > .event_wrap')[0].clientHeight * 20;
+            var eachH = $('#event > .event_wrap')[0].clientHeight * 100;
             
             function toDateFormatt(){
                 var thisDay = new Date();
@@ -51,6 +51,14 @@
             }
             function gotoDetail(seq){
                 location.href = '/profile/faqs/' + seq;
+            }
+            function toDateFormatt4(times){
+                var thisDay = new Date(times);
+                return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) 
+                    + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate()
+                    + ' ' + (thisDay.getHours() < 10 ? '0' : '') + thisDay.getHours()
+                    + ':' + (thisDay.getMinutes() < 10 ? '0' : '') + thisDay.getMinutes()
+                    + ':' + (thisDay.getSeconds() < 10 ? '0' : '') + thisDay.getSeconds();
             }
             function getList(){                
                 var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:0, lend_dt:toDateFormatt()  };
@@ -75,7 +83,11 @@
                     }
 
                     var bodyData = '';
+                    var thistime = toDateFormatt4(new Date().getTime());
                     for(var inx=0; inx<response.data.length; inx++){
+                        if(response.data[inx].start_dt > thistime || response.data[inx].end_dt < thistime) {
+                            continue;
+                        }
                         var no = (response.count - (request.pageNo - 1)*pageSize) - inx;
                         
                         bodyData = bodyData 

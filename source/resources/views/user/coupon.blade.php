@@ -136,7 +136,7 @@
 
 <script>
     var startDay = "";
-    var endDay = "{{ date('Y-m-d', strtotime('+1 day')) }}";
+//    var endDay = "{{ date('Y-m-d', strtotime('+1 day')) }}";
     var pageNo = 1;
     var pageSize = 70;
     var partner_seqno;
@@ -192,9 +192,11 @@
 		if(startDay && startDay != '') {
 			data.start_dt = startDay;
 		}
+        /*
 		if(endDay && endDay != '') {
 			data.end_dt = endDay;
 		}
+        */
 
 		medibox.methods.point.coupon.history.list(data, function(request, response){
 			console.log('output : ' + response);

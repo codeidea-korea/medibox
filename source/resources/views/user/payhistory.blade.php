@@ -64,7 +64,7 @@
 	<script>
     var startDay = "";
     var endDay = "{{ date('Y-m-d', strtotime('+1 day')) }}";
-    var pointtype = "";
+    var pointtype = "{{$type}}" == "P" ? "" : "{{$type}}";
     var pageNo = 1;
     var pageSize = 70;
 

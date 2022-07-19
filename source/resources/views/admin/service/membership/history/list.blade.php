@@ -60,6 +60,7 @@ $page_title = '멤버쉽 사용내역';
 					<div class="wr-list-label">멤버쉽</div>
 					<div class="wr-list-con">
 						<select class="default" id="seqno">
+						<option value="">선택해주세요</option>
 						@php
 						if(!empty($contents)) {
 							for($inx = 0; $inx < count($contents); $inx++) {
@@ -85,7 +86,8 @@ $page_title = '멤버쉽 사용내역';
 		<table>
 			<colgroup>
 				<col width="50">
-				<col width="90">
+				<!-- <col width="90"> -->
+				<col width="60">
 				<col width="60">
 				<col width="60">
 				<col width="60">
@@ -98,7 +100,7 @@ $page_title = '멤버쉽 사용내역';
 			<thead>
 				<tr>
 					<th>번호</th>
-					<th>고객번호</th>
+					<!-- <th>고객번호</th> -->
 					<th>아이디</th>
 					<th>이름</th>
 					<th>멤버쉽</th>
@@ -106,6 +108,7 @@ $page_title = '멤버쉽 사용내역';
 					<th>종료일</th>
 					<th>바우처</th>
 					<th>사용유형</th>
+					<th>가격</th>
 					<th>실행일자</th>
 				</tr>
 			</thead>
@@ -269,7 +272,7 @@ $page_title = '멤버쉽 사용내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td>'+response.data[inx].user_seqno+'</td>'
+//							+'	<td>'+response.data[inx].user_seqno+'</td>'
 							+'	<td>'+response.data[inx].user_phone+'</td>'
 							+'	<td>'+response.data[inx].user_name+'</td>'
 							
@@ -277,11 +280,12 @@ $page_title = '멤버쉽 사용내역';
 							+'	<td>'+response.data[inx].real_start_dt+'</td>'
 							+'	<td>'+response.data[inx].real_end_dt+'</td>'
 
-							+'	<td>'+safetyNull(response.data[inx].service_name)+'</td>'
+//							+'	<td>'+safetyNull(response.data[inx].service_name)+'</td>'
 							+'	<td>'+safetyNull(response.data[inx].voucher_name)+'</td>'
-							+'	<td>'+safetyNull(response.data[inx].coupon_name)+'</td>'
+//							+'	<td>'+safetyNull(response.data[inx].coupon_name)+'</td>'
 							
 							+'	<td>'+getHstType(response.data[inx].hst_type)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(response.data[inx].price)+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'
 							+'</tr>';
 			}
