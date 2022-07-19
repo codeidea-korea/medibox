@@ -140,7 +140,9 @@ var bfCall = (function(){
                 delete: function (params, successThenFn, errorThenFn){ ajaxCall('회원 삭제', 'user/delete', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 approve: function (params, successThenFn, errorThenFn){ ajaxCall('회원 가입 승인', 'user/approve', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                 
+                
                 memoModify: function (params, successThenFn, errorThenFn){ ajaxCall('회원 메모 수정', 'user/memo-modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
+                membershipCardNo: function (params, successThenFn, errorThenFn){ ajaxCall('회원 멤버쉽 카드정보 수정', 'user/membership-card/modify', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
                                 
             }, point:{
                 list: function (params, successThenFn, errorThenFn){ ajaxCall('', 'user/payments', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },
@@ -338,6 +340,13 @@ var bfCall = (function(){
             }
             ,toNumber: function(x){
                 return !x || isNaN(x) || x == null ? 0 : (x + '').toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            , userPage: function(no){
+                if(!no || no < 0) {
+                    alert('존재하지 않는 사용자입니다.');
+                    return false;
+                }
+                location.href = '/admin/members/'+no+'/infos';
             }
         };
         this.validation = {

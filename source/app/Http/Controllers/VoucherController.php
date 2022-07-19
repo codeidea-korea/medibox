@@ -402,8 +402,9 @@ class VoucherController extends Controller
         $result['result'] = false;
 
         $where = [];
+        array_push($where, ['voucher_user.deleted', '=', 'N']);
         if(! empty($voucher_seqno) && $voucher_seqno != ''){
-            array_push($where, ['voucher_user.voucher_seqno', '=', $voucher_seqno]);
+            array_push($where, ['voucher_user.seqno', '=', $voucher_seqno]);
         }
         if(! empty($user_seqno) && $user_seqno != ''){
             array_push($where, ['voucher_user.user_seqno', '=', $user_seqno]);
@@ -423,8 +424,9 @@ class VoucherController extends Controller
             ->orderBy('voucher_user.create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->select(DB::raw('voucher_user.*, product_membership.name as membership_name, '
-                .' product_voucher.seqno as product_seqno, product_voucher.name as voucher_name, product_voucher.price as voucher_price, product_voucher.date_use as date_use,'
+                .' product_voucher.seqno as product_seqno, product_voucher.name as voucher_name, product_voucher.unit_count as unit_count, product_voucher.price as voucher_price, product_voucher.date_use as date_use,'
                 .' user_info.user_phone as user_phone, user_info.user_name as user_name, user_info.memo as memo, user_info.memo as memo'))->get();
+                // 
         $count = DB::table("voucher_user")
             ->leftJoin('product_membership', 'product_membership.seqno', '=', 'voucher_user.membership_seqno')
             ->join('product_voucher', 'product_voucher.seqno', '=', 'voucher_user.voucher_seqno')
@@ -434,6 +436,33 @@ class VoucherController extends Controller
                 .' product_voucher.seqno as product_seqno, product_voucher.name as voucher_name, product_voucher.date_use as date_use,'
                 .' user_info.user_phone as user_phone, user_info.user_name as user_name, user_info.memo as memo, user_info.memo as memo'))
             ->count();
+        
+        
+        for($inx = 0; $inx < count($contents); $inx++){
+            $voucher = DB::table("product_voucher")->where([
+                ['seqno', '=', $contents[$inx]->voucher_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+            $remaindCount = 1;
+            if(!empty($contents[$inx]->membership_seqno) && $contents[$inx]->membership_seqno > 0) {
+                // 수량 파악            
+                $etcVoucher = DB::table('membership_etc_voucher_grp')->where([
+                    ['membership_seqno', '=', $contents[$inx]->membership_seqno],
+                    ['etc_voucher_seqno', '=', $contents[$inx]->voucher_seqno]
+                ])->first();
+                $usedCnt = DB::table('voucher_user_history')->where([
+                    ['voucher_user_seqno', '=', $contents[$inx]->seqno],
+                    ['hst_type', '=', 'U']
+                ])->count();
+                $refundCnt = DB::table('voucher_user_history')->where([
+                    ['voucher_user_seqno', '=', $contents[$inx]->seqno],
+                    ['hst_type', '=', 'R']
+                ])->count();
+    
+                $remaindCount = empty($etcVoucher->unit_count) ? 1 : $etcVoucher->unit_count - ($usedCnt - $refundCnt);
+            }
+            $contents[$inx]->remaindCount = $remaindCount;
+        }
 
         $result['ment'] = '성공';
         $result['data'] = $contents;
@@ -723,6 +752,99 @@ class VoucherController extends Controller
         }
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$voucherInfo->name.'] 바우처가 환불되었습니다.';
+        $result['data'] = $user;
+        $result['result'] = true;
+
+        return $result;
+    }
+
+    // 바우처 사용 1회
+    public function use(Request $request, $id)
+    {
+        $admin_seqno = $request->post('admin_seqno'); // 담당자 식별자
+        $admin_name = $request->post('admin_name', ''); // 담당자 식별자
+        $user_seqno = $request->post('user_seqno'); // 대상 고객
+        $voucher_seqno = $request->post('voucher_seqno'); // 대상 바우처
+        $memo = $request->post('memo', '');
+        
+        $result = [];
+        $result['ment'] = '바우처가 사용되지 않았습니다.\r정보를 다시 한번 확인해주세요.';
+        $result['result'] = false;
+
+        if(empty($user_seqno) || empty($voucher_seqno)) {
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $admin = DB::table("admin_info")->where([
+            ['admin_seqno', '=', $admin_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        if(empty($user)) {
+            $result['ment'] = '바우처가 사용되지 않았습니다.\r없는 고객 정보이거나 이미 탈퇴한 고객입니다.';
+            return $result;
+        }
+        $voucher = DB::table("voucher_user")->where([
+            ['seqno', '=', $voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        
+        if(empty($voucher)) {
+            $result['ment'] = '바우처가 사용되지 않았습니다.\r없는 바우처 정보입니다.';
+            return $result;
+        }
+        if($voucher->used == 'Y') {
+            $result['ment'] = '바우처가 사용되지 않았습니다.\r이미 모두 사용한 바우처 정보입니다.';
+            return $result;
+        }
+
+        // membership_seqno 이 있으면 멤버쉽이고, 수량이 존재한다.
+        $remaindCount = 1;
+        if(!empty($voucher->membership_seqno) && $voucher->membership_seqno > 0) {
+            // 수량 파악            
+            $etcVoucher = DB::table('membership_etc_voucher_grp')->where([
+                ['membership_seqno', '=', $voucher->membership_seqno],
+                ['etc_voucher_seqno', '=', $voucher->voucher_seqno]
+            ])->first();
+            $voucherHistory = DB::table('voucher_user_history')->where([
+                ['voucher_user_seqno', '=', $voucher->voucher_seqno]
+            ])->get();
+            $usedCnt = DB::table('voucher_user_history')->where([
+                ['voucher_user_seqno', '=', $voucher->seqno],
+                ['hst_type', '=', 'U']
+            ])->count();
+            $refundCnt = DB::table('voucher_user_history')->where([
+                ['voucher_user_seqno', '=', $voucher->seqno],
+                ['hst_type', '=', 'R']
+            ])->count();
+
+            $remaindCount = $etcVoucher->unit_count - ($usedCnt - $refundCnt);
+        }
+        // 모두 썼다면 used 를 Y 로 바꿔준다.
+        if($remaindCount == 1) {
+            DB::table('voucher_user')->where('seqno', '=', $voucher_seqno)->update(
+                [
+                    'used' => 'Y', 
+                    'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+        // 사용 히스토리를 쌓는다.
+        DB::table('voucher_user_history')->insertGetId(
+            [
+                'voucher_user_seqno' => $voucher_seqno
+                , 'hst_type' => 'U'
+                , 'canceled' => 'N'
+                , 'approved' => 'Y'
+                , 'memo' => '사용자 화면 -> 바우처 사용'
+                , 'create_dt' => date('Y-m-d H:i:s')
+            ], 'seqno'
+        );
+
+        $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의 바우처가 사용되었습니다.';
         $result['data'] = $user;
         $result['result'] = true;
 

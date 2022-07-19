@@ -33,7 +33,7 @@
     <section id="event_detail">
         <div class="container">
             <span class="img">
-                <img src="{{ $event_coupon->img }}">
+                <img src="{{ $event_coupon->img }}" style="width: 100%;">
             </span>
             <h3 id="title">{{$event_coupon->name}}</h3>
             <span id="createDt">이벤트기간 : {{$event_coupon->start_dt}} ~ {{$event_coupon->end_dt}}</span>

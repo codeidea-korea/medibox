@@ -24,8 +24,8 @@
                         <!-- 22.04.01 한글깨짐현상 수정 -->
                         <!-- <span class="user_class">Classic</span> -->
                         <span class="user_class">
-                            <strong>고객등급</strong>
-                            Classic
+                            <!-- <strong>고객등급</strong> -->
+                            {{$smembership}}
                         </span>
                         <!----------------------------->
                         

@@ -540,8 +540,8 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 							+'	<td>'+response.data[inx].create_dt+'</td>'
 							+'	<td>'+getTypeCouponTime(response.data[inx].used, response.data[inx].real_end_dt)+'</td>'
 
-							+'	<td>'+response.data[inx].name+'</td>'
-							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
+							+'	<td>'+response.data[inx].even_banner_name+'</td>'
+							+'	<td>'+response.data[inx].even_banner_start_dt + ' ~ ' + response.data[inx].even_banner_end_dt+'</td>'
 							+'	<td>'+getIssuanceType(response.data[inx].status)+'</td>'
 							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
 							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'

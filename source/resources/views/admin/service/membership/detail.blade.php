@@ -89,6 +89,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 							<thead>
 								<tr>
 									<th>바우처명</th>
+									<th>가격</th>
 									<th>제공 수량</th>
 									<th> </th>
 								</tr>
@@ -149,8 +150,9 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 	var userId;
 	var voucherInfo = {};
 	function popHide(){
-		$('body, html').css('overflow', 'none');
-		$('.layer-popup').hide();
+		$('body, html').removeAttr('style');
+		$('#popVouchers').hide();
+		$('#popCoupons').hide();
 	}
 	function cancel(){
 		window.location.href = '/admin/service/membership';
@@ -217,7 +219,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		$('#coupons').val(servicesReplace);
 	}
 
-	function addSubVoucher(voucherName, countVoucher, id){
+	function addSubVoucher(voucherName, price, countVoucher, id){
 		/*
 		$('#vouchers').val($('#vouchers').val() + '|' + id + '|');
 		$('#voucherDetail').html(
@@ -231,6 +233,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 		$('#voucherDetail').html(
 			$('#voucherDetail').html() 
 				+ '<tr><td>' + voucherName + '</td>'
+				+ '<td>' + price + '</td>'
 				+ '<td><input type="text" id="voucher_'+id+'" class="_vouchers" data-key="'+id+'" value="1"></td>'
 				+ '<td><a href="#" onclick="deleteSubVoucher(this, \''+('|' + id + '-' + countVoucher + '|')+'\')" class="btnEdit">삭제</a></td></tr>'
 		);
@@ -504,7 +507,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 			}
 			if(response.data.vouchers && response.data.vouchers.length > 0) {
 				for(var idx = 0; idx < response.data.vouchers.length; idx++){
-					addSubVoucher(response.data.vouchers[idx].name, response.data.vouchers[idx].unit_count, response.data.vouchers[idx].seqno);
+					addSubVoucher(response.data.vouchers[idx].name, response.data.vouchers[idx].price, response.data.vouchers[idx].unit_count, response.data.vouchers[idx].seqno);
 				}
 			}
 			if(response.data.coupons && response.data.coupons.length > 0) {
@@ -524,7 +527,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 	}
 	
 	function remove(){
-		if(!confirm('정말 삭제 하시겠습니까?')) {
+		if(!confirm('해당 멤버쉽의 사용을 중지하시겠습니까?')) {
 			return;
 		}
 		medibox.methods.point.membership.remove({
@@ -535,7 +538,7 @@ $page_title = $membershipNo == 0 ? '멤버쉽 등록' : '멤버쉽 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('삭제 되었습니다.');
+			alert('단종 되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);

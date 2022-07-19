@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202207120100"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202207200120"></script>
 </head>
 <body>
 

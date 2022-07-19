@@ -109,7 +109,7 @@ class UserController extends Controller
             return $result;
         }
 
-        DB::table('user_info')->where('user_seqno', '=', $user_seqno)->update(
+        DB::table('user_info')->where('user_seqno', '=', $seqno)->update(
             [
                 'user_pw' => $user_password, 
                 'update_dt' => date('Y-m-d H:i:s') 
@@ -219,8 +219,12 @@ class UserController extends Controller
         // 회원가입시 포인트 지급 처리
         $conf = DB::table("conf_auto_point")->first();
         if(!empty($conf) && $conf->join_bonus == 'Y') {
-            DB::table('user_point')->where([
+            $point = DB::table('user_point')->where([
                 ['user_seqno', '=', $user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->first();
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $point->point + $user->user_seqno],
                 ['point_type', '=', 'P']
             ])->update(
                 [
@@ -239,6 +243,42 @@ class UserController extends Controller
                     , 'hst_type' => 'S'
                     , 'point' => $conf->join_bonus_point
                     , 'memo' => '회원가입 포인트 자동 지급'
+                    , 'create_dt' => date('Y-m-d H:i:s')
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+        }
+        if(!empty($conf) && $conf->recommand_bonus == 'Y' && !empty($recommended_code)) {
+            // 추천인 보너스 포인트 지급
+
+            $recommended_user = DB::table("user_info")->where([
+                ['user_phone', '=', $recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
+            $point = DB::table('user_point')->where([
+                ['user_seqno', '=', $recommended_user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->first();
+            DB::table('user_point')->where([
+                ['user_seqno', '=', $recommended_user->user_seqno],
+                ['point_type', '=', 'P']
+            ])->update(
+                [
+                    'point' => $point->point + $conf->recommand_bonus_point
+                    , 'update_dt' => date('Y-m-d H:i:s') 
+                ]
+            );
+            // 지급을 했으면 이력을 남기자.
+            DB::table('user_point_hst')->insertGetId(
+                [
+                    'admin_seqno' => 0
+                    , 'user_seqno' => $recommended_user->user_seqno
+                    , 'admin_name' => ''
+                    , 'point_type' => 'P'
+                    , 'product_seqno' => 0
+                    , 'hst_type' => 'S'
+                    , 'point' => $conf->recommand_bonus_point
+                    , 'memo' => '추천인 회원가입 포인트 자동 지급 [추천인 고객명/아이디: '.$user->user_name.' / '.$user->user_phone.']'
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
@@ -478,6 +518,49 @@ class UserController extends Controller
 
         return $result;
     }
+    // 멤버쉽 카드 정보 수정 
+    public function updateMembershipCardNo(Request $request)
+    {
+        $user_phone = $request->post('id');
+        $membership_card_no = $request->post('membership_card_no');
+
+        $result = [];
+        $result['ment'] = '실패';
+        $result['result'] = false;
+
+        if (empty($user_phone) || strlen($user_phone) < 10) {
+            $result['ment'] = '올바른 핸드폰 번호를 입력해주세요.';
+            return $result;
+        }
+        if (empty($membership_card_no) || strlen($membership_card_no) < 1) {
+            $result['ment'] = '올바른 카드 번호를 입력해주세요.';
+            return $result;
+        }
+
+        $user = DB::table("user_info")->where([
+            ['user_phone', '=', $user_phone],
+            ['delete_yn', '=', 'N']
+        ])->first();
+
+        if (empty($user)) {
+            $result['ment'] = '없는 계정입니다.';
+            return $result;
+        }
+
+        DB::table('user_info')->where('user_seqno', '=', $user->user_seqno)->update(
+            [
+                'membership_card_no' => $membership_card_no
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+
+        $result['ment'] = '성공';
+        $result['data'] = $user_phone;
+        $result['result'] = true;
+
+        return $result;
+    }
+
     // 관리자만
     // 회원 조회 - 단건/다건 - 전화번호/이름 검색
     public function list(Request $request)
@@ -680,10 +763,12 @@ class UserController extends Controller
             $membership = DB::table("membership_user")->where([
                 ['user_seqno', '=', $user->user_seqno],
                 ['used', '=', 'N'],
-                ['real_start_dt', '<=', $today . ' 00:00:00'],
-                ['real_end_dt', '>=', $today . ' 00:00:00'],
+                ['real_start_dt', '<=', date("Y-m-d H:i:s", time())],
+                ['real_end_dt', '>=', date("Y-m-d H:i:s", time())],
                 ['deleted', '=', 'N']
-            ])->first();
+            ])
+            ->orderBy('create_dt', 'desc')
+            ->first();
             if(!empty($membership)) {
                 $pmembership = DB::table("product_membership")->where([
                     ['seqno', '=', $membership->membership_seqno]

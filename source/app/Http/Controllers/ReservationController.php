@@ -741,6 +741,7 @@ class ReservationController extends Controller
             if($manager_seqno == 0) {
                 // 
                 $managerInfo = DB::table("store_manager")->where([
+                    ['partner_seqno', '=', $partner_seqno],
                     ['store_seqno', '=', $store_seqno],
                     ['deleted', '=', 'N']
                 ])
@@ -785,6 +786,7 @@ class ReservationController extends Controller
 
                     if($isAvailableManager) {
                         $manager_seqno = $managerInfo[$count]->seqno;
+                        // 매장이 삭제되지 않았는지 확인
                         break;
                     } else {
                         $count = $count + 1;

@@ -486,6 +486,8 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 
 			startDay = response.data.start_dt;
 			endDay = response.data.end_dt;
+			$("#_start").datepicker('setDate', toDateFormatt(response.data.start_dt));
+			$("#_end").datepicker('setDate', toDateFormatt(response.data.end_dt));
 
 			if(response.data.use_partner == 'Y') {
 				$('#use_partner').prop('checked', true);

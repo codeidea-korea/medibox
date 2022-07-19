@@ -80,7 +80,7 @@
 
 	function chooseVoucher(idx){
 		// 선택 함수 호출 및 데이터 추가하고 팝업 닫기
-		addSubVoucher(voucherInfo[idx].name, voucherInfo[idx].unit_count, voucherInfo[idx].seqno);
+		addSubVoucher(voucherInfo[idx].name, voucherInfo[idx].price, voucherInfo[idx].unit_count, voucherInfo[idx].seqno);
 		popHide();
 	}
 

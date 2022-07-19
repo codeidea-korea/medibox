@@ -105,6 +105,7 @@ $cell_height = 48; //셀 세로사이즈
 
 		<section class="bodyCon">
 			<div class="leftCon">
+				<!--
 				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">일<br>3/6</a>
 				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate">월<br>3/7</a>
 				<a href="#" onclick="findTargetDate(this)" class="btn-day _reservationSearchDate active">화<br>3/8</a>
@@ -117,6 +118,7 @@ $cell_height = 48; //셀 세로사이즈
 					<button class="next" onclick="findNextDate(7)"></button>
 				</div>
 				<a href="#" class="btn-setting" onclick="gotoConfig()">설정</a>
+	-->
 			</div>
 
 			<div class="tableChart">
@@ -419,9 +421,9 @@ var layer_select6 = '<ul class="layerSelect">';
 		wait();
 	}
 	function makeManagers(){
-		if(!stores || !stores.managerInfo) {
+		if(!stores || !stores.managerInfo || stores.managerInfo.length == 0) {
 			alert('해당 매장에는 예약 가능한 직원이 없습니다. 먼저 예약 가능한 직원을 등록해주세요.');
-			return false;
+//			return false;
 		}
 //		var bodyData = ''; // '<span class="cell">미지정</span>';
 		// 2022-05-27, 기본값 매장별 추가
@@ -618,12 +620,12 @@ var layer_select6 = '<ul class="layerSelect">';
 					bodyData = bodyData + '</div>';
 				}
 			} else {
-				bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo.name+'" data-key="'+stores.managerInfo.seqno+'" data-store-key="'+stores.managerInfo[inx].store_seqno+'">';
+				bodyData = bodyData + '<div class="col _timeRow" data-alt="'+stores.managerInfo.name+'" data-key="'+stores.managerInfo.seqno+'" data-store-key="'+stores.managerInfo.store_seqno+'">';
 
 				var startTime = new Date(searchDate);
 				startTime.setHours(stores.conf.dueDay.startTime.split(':')[0]);
 				startTime.setMinutes(stores.conf.dueDay.startTime.split(':')[1]);
-				targetStoreSeqno = stores.managerInfo[inx].store_seqno;
+				targetStoreSeqno = stores.managerInfo.store_seqno;
 				var isHoliday = !disableAllTheseDays(startTime);
 				var ment = '';
 				var isFisrt = false;
@@ -723,126 +725,252 @@ var layer_select6 = '<ul class="layerSelect">';
 			addEventCeil();
 			cellHeight = $('._timeRow > .cell').height();
 
-			for(var inx=0; inx<response.data.length; inx++){
-				var manager_seqno = 0;
-				var store_seqno = 0;
-				if(stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno).length > 0) {
-					manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
-				}
-				store_seqno = response.data[inx].store_seqno;
-				// custom_color
-				var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
-				var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
-				var timeCeils = $('._timeRow[data-key='+manager_seqno+'][data-store-key='+store_seqno+'] > span');
+			var reservationCancel = response.data.filter(reservation => reservation.status == 'C');
+			var reservations = response.data.filter(reservation => reservation.status != 'C');
 
-				var targetIdx = 0;
-				for(var jnx=0; jnx<timeCeils.length; jnx++){
-					if($(timeCeils[jnx]).attr('data-start') == response.data[inx].start_dt.split(' ')[1].substring(0, 5)) {
-						targetIdx = jnx;
-						break;
+			response.data = reservationCancel;
+			{
+				for(var inx=0; inx<response.data.length; inx++){
+					var manager_seqno = 0;
+					var store_seqno = 0;
+					if(stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno).length > 0) {
+						manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
 					}
-				}
-				// 예약 상태에 따른 help툴바 세팅
-				var status = response.data[inx].status;
-				var barCaption = 'label-3';
-				if(status == 'R') {}
-				else if(status == 'E'){
-					barCaption = 'label-5';
-				}
-				else if(status == 'D'){
-					barCaption = 'label-6';
-				}
-				else if(status == 'N'){
-					barCaption = 'label-4';
-				}
-				else if(status == 'C'){
-					barCaption = 'label-7';
-					continue;
-				}
-				reservationInfos = response.data;
+					store_seqno = response.data[inx].store_seqno;
+					// custom_color
+					var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
+					var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
+					var timeCeils = $('._timeRow[data-key='+manager_seqno+'][data-store-key='+store_seqno+'] > span');
 
-				for(var jnx=0; jnx < countColor; jnx++){
-					if(jnx == 0) {
-						// 첫행에는 이모티콘 옵션 부여
-						let reservationBoxText = '';
-						if(response.data[inx].use_icon_important == 'Y') {
-							reservationBoxText = reservationBoxText + ' ★';
-						} 
-						if(response.data[inx].use_icon_phone == 'Y') {
-							reservationBoxText = reservationBoxText + ' ☏';
-						} 
-						if(response.data[inx].provisional == 'Y') {
-							reservationBoxText = reservationBoxText + ' ※';
-						} 					
-						if((!$(timeCeils[targetIdx + jnx]).html() && $(timeCeils[targetIdx + jnx]).html() != '') 
-							|| $(timeCeils[targetIdx + jnx]).html().indexOf('info cancel') > -1 && status == 'C') {
-							continue;
+					var targetIdx = 0;
+					for(var jnx=0; jnx<timeCeils.length; jnx++){
+						if($(timeCeils[jnx]).attr('data-start') == response.data[inx].start_dt.split(' ')[1].substring(0, 5)) {
+							targetIdx = jnx;
+							break;
 						}
-						var timeinfos = response.data[inx].estimated_time.split(':');
-						var isDueTime = true;
-						timeinfos[0] = Number(timeinfos[0]);
-						timeinfos[1] = Number(timeinfos[1]);
-						/*
-						$(timeCeils[targetIdx + jnx]).html(reservationBoxText + ' ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + ' 고객님 <br>'
-							+ response.data[inx].serviceInfo.dept + ' ' + response.data[inx].serviceInfo.name + ' <br>'
-							+ ((timeinfos[0]*60 + timeinfos[1])+'분')
-						);
-						*/
-						$(timeCeils[targetIdx + jnx]).attr('style', 'height:'+(cellHeight * countColor)+'px;');
+					}
+					// 예약 상태에 따른 help툴바 세팅
+					var status = response.data[inx].status;
+					var barCaption = 'label-3';
+					if(status == 'R') {}
+					else if(status == 'E'){
+						barCaption = 'label-5';
+					}
+					else if(status == 'D'){
+						barCaption = 'label-6';
+					}
+					else if(status == 'N'){
+						barCaption = 'label-4';
+					}
+					else if(status == 'C'){
+						barCaption = 'label-7';
+	//					continue;
+					}
+					reservationInfos = response.data;
 
+					for(var jnx=0; jnx < countColor; jnx++){
+						if(jnx == 0) {
+							// 첫행에는 이모티콘 옵션 부여
+							let reservationBoxText = '';
+							if(response.data[inx].use_icon_important == 'Y') {
+								reservationBoxText = reservationBoxText + ' ★';
+							} 
+							if(response.data[inx].use_icon_phone == 'Y') {
+								reservationBoxText = reservationBoxText + ' ☏';
+							} 
+							if(response.data[inx].provisional == 'Y') {
+								reservationBoxText = reservationBoxText + ' ※';
+							} 					
+							if((!$(timeCeils[targetIdx + jnx]).html() && $(timeCeils[targetIdx + jnx]).html() != '') 
+								|| $(timeCeils[targetIdx + jnx]).html().indexOf('info cancel') > -1 && status == 'C') {
+								continue;
+							}
+							var timeinfos = response.data[inx].estimated_time.split(':');
+							var isDueTime = true;
+							timeinfos[0] = Number(timeinfos[0]);
+							timeinfos[1] = Number(timeinfos[1]);
+							/*
+							$(timeCeils[targetIdx + jnx]).html(reservationBoxText + ' ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + ' 고객님 <br>'
+								+ response.data[inx].serviceInfo.dept + ' ' + response.data[inx].serviceInfo.name + ' <br>'
+								+ ((timeinfos[0]*60 + timeinfos[1])+'분')
+							);
+							*/
+							$(timeCeils[targetIdx + jnx]).attr('style', 'height:'+(cellHeight * countColor)+'px;');
+
+							$(timeCeils[targetIdx + jnx]).removeClass('label-2');
+							$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
+							$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
+							/*
+							$(timeCeils[targetIdx + jnx]).attr('title', 
+								'이름 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + '\n'
+								+ '전화번호 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)  + '\n'
+								+ '추천인 : ' + (response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
+								+ '메모 : ' + response.data[inx].memo + '');
+								*/		
+							$(timeCeils[targetIdx + jnx]).html(
+								(status == 'C'
+									? $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
+									: $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
+										+'<div class="hover-mb-info">'
+										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
+										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
+										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
+										+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
+										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
+										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
+										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
+										+'</div>')
+							);
+
+							$(timeCeils[targetIdx + jnx]).addClass(barCaption);
+							$(timeCeils[targetIdx + jnx]).on('click', function(){
+								userseqno = $(this).attr('data-user-id');
+								reservationseqno = $(this).attr('data-reservation-id');
+							});
+						} else {
+							// 나머지 행 hide()
+							$(timeCeils[targetIdx + jnx]).hide();
+						}
+						/*
 						$(timeCeils[targetIdx + jnx]).removeClass('label-2');
 						$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
 						$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
-						/*
 						$(timeCeils[targetIdx + jnx]).attr('title', 
-							'이름 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + '\n'
-							+ '전화번호 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)  + '\n'
-							+ '추천인 : ' + (response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
+							'이름 : ' + response.data[inx].userInfo.user_name + '\n'
+							+ '전화번호 : ' + response.data[inx].userInfo.user_phone + '\n'
+							+ '추천인 : ' + (response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
 							+ '메모 : ' + response.data[inx].memo + '');
-							*/		
-						$(timeCeils[targetIdx + jnx]).html(
-							(status == 'C'
-								? $(timeCeils[targetIdx + jnx]).html() 
-									+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 마사지 60분</span>'
-								: $(timeCeils[targetIdx + jnx]).html() 
-									+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 헤어컷 60분</span>'
-									+'<div class="hover-mb-info">'
-									+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
-									+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
-									+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
-									+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
-									+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
-									+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
-									+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
-									+'</div>')
-						);
-
 						$(timeCeils[targetIdx + jnx]).addClass(barCaption);
 						$(timeCeils[targetIdx + jnx]).on('click', function(){
 							userseqno = $(this).attr('data-user-id');
 							reservationseqno = $(this).attr('data-reservation-id');
 						});
-					} else {
-						// 나머지 행 hide()
-						$(timeCeils[targetIdx + jnx]).hide();
+						*/
 					}
-					/*
-					$(timeCeils[targetIdx + jnx]).removeClass('label-2');
-					$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
-					$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
-					$(timeCeils[targetIdx + jnx]).attr('title', 
-						'이름 : ' + response.data[inx].userInfo.user_name + '\n'
-						+ '전화번호 : ' + response.data[inx].userInfo.user_phone + '\n'
-						+ '추천인 : ' + (response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
-						+ '메모 : ' + response.data[inx].memo + '');
-					$(timeCeils[targetIdx + jnx]).addClass(barCaption);
-					$(timeCeils[targetIdx + jnx]).on('click', function(){
-						userseqno = $(this).attr('data-user-id');
-						reservationseqno = $(this).attr('data-reservation-id');
-					});
-					*/
 				}
 			}
+			response.data = reservations;
+			{
+				for(var inx=0; inx<response.data.length; inx++){
+					var manager_seqno = 0;
+					var store_seqno = 0;
+					if(stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno).length > 0) {
+						manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
+					}
+					store_seqno = response.data[inx].store_seqno;
+					// custom_color
+					var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
+					var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
+					var timeCeils = $('._timeRow[data-key='+manager_seqno+'][data-store-key='+store_seqno+'] > span');
+
+					var targetIdx = 0;
+					for(var jnx=0; jnx<timeCeils.length; jnx++){
+						if($(timeCeils[jnx]).attr('data-start') == response.data[inx].start_dt.split(' ')[1].substring(0, 5)) {
+							targetIdx = jnx;
+							break;
+						}
+					}
+					// 예약 상태에 따른 help툴바 세팅
+					var status = response.data[inx].status;
+					var barCaption = 'label-3';
+					if(status == 'R') {}
+					else if(status == 'E'){
+						barCaption = 'label-5';
+					}
+					else if(status == 'D'){
+						barCaption = 'label-6';
+					}
+					else if(status == 'N'){
+						barCaption = 'label-4';
+					}
+					else if(status == 'C'){
+						barCaption = 'label-7';
+	//					continue;
+					}
+					reservationInfos = response.data;
+
+					for(var jnx=0; jnx < countColor; jnx++){
+						if(jnx == 0) {
+							// 첫행에는 이모티콘 옵션 부여
+							let reservationBoxText = '';
+							if(response.data[inx].use_icon_important == 'Y') {
+								reservationBoxText = reservationBoxText + ' ★';
+							} 
+							if(response.data[inx].use_icon_phone == 'Y') {
+								reservationBoxText = reservationBoxText + ' ☏';
+							} 
+							if(response.data[inx].provisional == 'Y') {
+								reservationBoxText = reservationBoxText + ' ※';
+							} 					
+							var timeinfos = response.data[inx].estimated_time.split(':');
+							var isDueTime = true;
+							timeinfos[0] = Number(timeinfos[0]);
+							timeinfos[1] = Number(timeinfos[1]);
+							/*
+							$(timeCeils[targetIdx + jnx]).html(reservationBoxText + ' ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + ' 고객님 <br>'
+								+ response.data[inx].serviceInfo.dept + ' ' + response.data[inx].serviceInfo.name + ' <br>'
+								+ ((timeinfos[0]*60 + timeinfos[1])+'분')
+							);
+							*/
+							$(timeCeils[targetIdx + jnx]).attr('style', 'height:'+(cellHeight * countColor)+'px;');
+
+							$(timeCeils[targetIdx + jnx]).removeClass('label-2');
+							$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
+							$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
+							/*
+							$(timeCeils[targetIdx + jnx]).attr('title', 
+								'이름 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name) + '\n'
+								+ '전화번호 : ' + (response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)  + '\n'
+								+ '추천인 : ' + (response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
+								+ '메모 : ' + response.data[inx].memo + '');
+								*/		
+							$(timeCeils[targetIdx + jnx]).html(
+								(status == 'C'
+									? $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
+									: $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
+										+'<div class="hover-mb-info">'
+										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
+										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
+										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
+										+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
+										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
+										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
+										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
+										+'</div>')
+							);
+
+							$(timeCeils[targetIdx + jnx]).addClass(barCaption);
+							$(timeCeils[targetIdx + jnx]).on('click', function(){
+								userseqno = $(this).attr('data-user-id');
+								reservationseqno = $(this).attr('data-reservation-id');
+							});
+						} else {
+							// 나머지 행 hide()
+							$(timeCeils[targetIdx + jnx]).hide();
+						}
+						/*
+						$(timeCeils[targetIdx + jnx]).removeClass('label-2');
+						$(timeCeils[targetIdx + jnx]).attr('data-reservation-id', response.data[inx].seqno);
+						$(timeCeils[targetIdx + jnx]).attr('data-user-id', response.data[inx].user_seqno);
+						$(timeCeils[targetIdx + jnx]).attr('title', 
+							'이름 : ' + response.data[inx].userInfo.user_name + '\n'
+							+ '전화번호 : ' + response.data[inx].userInfo.user_phone + '\n'
+							+ '추천인 : ' + (response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
+							+ '메모 : ' + response.data[inx].memo + '');
+						$(timeCeils[targetIdx + jnx]).addClass(barCaption);
+						$(timeCeils[targetIdx + jnx]).on('click', function(){
+							userseqno = $(this).attr('data-user-id');
+							reservationseqno = $(this).attr('data-reservation-id');
+						});
+						*/
+					}
+				}
+			}
+
 			let len = 1;
 			if(stores.managerInfo && stores.managerInfo.length){
 				len = stores.managerInfo.length + 1;
@@ -894,7 +1022,11 @@ var layer_select6 = '<ul class="layerSelect">';
 			}
 			stores = response.data;
 			if(stores.length) {
-				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null).reduce((a, b) => a.concat(b));
+				stores.managerInfo = stores.map(store => store.managerInfo).filter(manageInfo => manageInfo != null);
+				if(stores.managerInfo && stores.managerInfo.length > 0)
+				stores.managerInfo = stores.managerInfo.reduce((a, b) => a.concat(b));
+
+				stores.managerInfo = stores.managerInfo.filter(manageInfo => manageInfo.deleted == 'N');
 			}
 			makeManagers();
 			dueDay();

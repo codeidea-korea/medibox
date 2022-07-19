@@ -111,14 +111,14 @@ class EvenBannerUsedController extends Controller
             })
             // 쿠폰 미사용의 경우 존재하지 않을 수 있음
             ->leftJoin('coupon', function ($join) use ($whereCoupon) {
-                $join->on('even_banner.seqno', '=', 'coupon.event_banner_seqno')
+                $join->on('even_banner.event_coupon_seqno', '=', 'coupon.seqno')
                     ->where($whereCoupon);
             })
             ->join('user_info', function ($join) use ($whereUser) {
                 $join->on('even_banner_user.user_seqno', '=', 'user_info.user_seqno')
                     ->where($whereUser);
             })
-            ->select(DB::raw('even_banner_user.*, coupon.name as coupon_name, coupon.context as coupon_context,'
+            ->select(DB::raw('even_banner_user.*, even_banner.name as even_banner_name, even_banner.start_dt as even_banner_start_dt, even_banner.end_dt as even_banner_end_dt, even_banner.context as even_banner_context, coupon.name as coupon_name, coupon.context as coupon_context,'
                             .'coupon.coupon_partner_grp_seqno as coupon_partner_grp_seqno, coupon.start_dt as coupon_start_dt,'
                             .'coupon.end_dt as coupon_end_dt, coupon.type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type,'
                             .'user_info.user_phone as user_id, user_info.user_name as user_name'))
@@ -231,7 +231,7 @@ class EvenBannerUsedController extends Controller
                 'even_banner_seqno' => $event_banner->seqno
                 , 'user_seqno' => $user_info->user_seqno
                 , 'used' => 'N'
-                , 'real_start_dt' => date('Y-m-d H:i:s')
+                , 'real_start_dt' => $event_banner->start_dt
                 , 'real_end_dt' => $event_banner->end_dt
                 , 'real_discount_price' => 0
                 , 'deleted' => 'N'
@@ -240,15 +240,15 @@ class EvenBannerUsedController extends Controller
             ], 'seqno'
         );
         
-        if(!empty($event_banner->event_coupon) && $event_banner->used_coupon == 'Y') {
-            $coupon = DB::table('coupon')->where('seqno', '=', $event_coupon->seqno)->first();
+        if(!empty($event_banner->event_coupon_seqno) && $event_banner->used_coupon == 'Y') {
+            $coupon = DB::table('coupon')->where('seqno', '=', $event_banner->event_coupon_seqno)->first();
             
             $coupon_user_seqno = DB::table('coupon_user')->insertGetId(
                 [
-                    'coupon_seqno' => $coupon->seqno
+                    'coupon_seqno' => $event_banner->event_coupon_seqno
                     , 'user_seqno' => $user_id
                     , 'used' => 'N'
-                    , 'real_start_dt' => date('Y-m-d H:i:s')
+                    , 'real_start_dt' => $event_banner->start_dt
                     , 'real_end_dt' => $event_banner->end_dt
                     , 'real_discount_price' => 0
                     , 'approved' => 'Y'

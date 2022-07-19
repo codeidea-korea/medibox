@@ -103,7 +103,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     
     Route::get('users', [UserController::class, 'list']);
     Route::get('user', [UserController::class, 'find']);
-
+    Route::post('user/membership-card/modify', [UserController::class, 'updateMembershipCardNo']);
+    
 
     // 공지사항 유저
     Route::get('contents/notice/app', [NoticeController::class, 'list']);
@@ -201,6 +202,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::post('vouchers', [VoucherController::class, 'add']);
     Route::post('vouchers/{id}/modify', [VoucherController::class, 'modify']);
     Route::post('vouchers/{id}/remove', [VoucherController::class, 'remove']);
+    Route::post('vouchers/{id}/use', [VoucherController::class, 'use']);
     
     // 쿠폰 관리
     Route::get('coupon', [CouponController::class, 'list']);

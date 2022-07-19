@@ -41,6 +41,7 @@ $page_title = '이벤트 쿠폰 관리';
 						<label class="radio-wrap"><input type="radio" name="status" value="E"><span></span>발급종료</label>
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용 유무</div>
 					<div class="wr-list-con">
@@ -49,6 +50,7 @@ $page_title = '이벤트 쿠폰 관리';
 						<label class="radio-wrap"><input type="radio" name="used_coupon" value="N"><span></span>쿠폰 미사용</label>
 					</div>
 				</div>
+				-->
 
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 제휴사</div>
@@ -383,7 +385,7 @@ $page_title = '이벤트 쿠폰 관리';
 		var search_field2 = $('#search_field2').val();
 		var type = $('#type').val();
 		var status = $('input[name=status]:checked').val();
-		var used_coupon = $('input[name=used_coupon]:checked').val();
+//		var used_coupon = $('input[name=used_coupon]:checked').val();
 
 		if(partner_seqno && partner_seqno != '') {
 			data.partner_seqno = partner_seqno;
@@ -415,9 +417,11 @@ $page_title = '이벤트 쿠폰 관리';
 		if(status && status != '') {
 			data.status = status;
 		}
+		/*
 		if(used_coupon && used_coupon != '') {
 			data.used_coupon = used_coupon;
 		}
+		*/
 		if(couponStartDay && couponStartDay != '') {
 			data.coupon_start_dt = couponStartDay;
 		}

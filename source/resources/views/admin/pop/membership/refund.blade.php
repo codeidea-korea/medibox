@@ -191,7 +191,7 @@
 				tmpData = '<option value="">구매한 멤버쉽이 없습니다.</option>';
 			} else {
 				for(var inx=0; inx<response.data.length; inx++){
-					tmpData = tmpData + '<option value="'+response.data[inx].seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].name+'</option>';
+					tmpData = tmpData + '<option value="'+response.data[inx].seqno+'" point="'+response.data[inx].point+'">'+response.data[inx].name+'</option>';
 				}
 				membership_seqno = response.data[0].seqno;
 			}
@@ -199,11 +199,11 @@
 
 			$('._myMemberships').off().on('change', function(){
 				membership_seqno = $(this).val();
-				$('#membership_refund_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('price')) +' P');
+				$('#membership_refund_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('point')) +' P');
 				var currentPoint = getPoint($(this).find('option:selected').attr('type'));
 				var type = $(this).find('option:selected').attr('type');
 				$('#membership_refund_pres_point').val(medibox.methods.toNumber(currentPoint) +' P'); 
-				$('#membership_refund_sum_point').val(medibox.methods.toNumber((currentPoint + Number($(this).find('option:selected').attr('price')))) +' P');
+				$('#membership_refund_sum_point').val(medibox.methods.toNumber((currentPoint - Number($(this).find('option:selected').attr('point')))) +' P');
 			});
 		}, function(e){
 			console.log(e);

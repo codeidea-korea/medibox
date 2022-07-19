@@ -61,6 +61,7 @@ alter table user_info add column address_detail    varchar(300);
 alter table user_info add column grade    varchar(100);
 alter table user_info add column type    varchar(100);
 alter table user_info add column join_path    varchar(100);
+alter table user_info add column membership_card_no    varchar(100);
 
 -- 포인트(종류) 마스터 테이블
 create table point_info

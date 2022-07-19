@@ -49,49 +49,16 @@
 						<td class="tright _userPoint">100,000 P</td>
 					</tr>
 					
-					@php
-					if(session()->get('admin_type') != 'S') {
-			//			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
-						@endphp
-						<tr>
-							<th rowspan="3">정액권</th>
-							<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
-						</tr>
-						<tr>
-							<td class="tright _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
-						</tr>
-						<tr>
-							<td class="tright _foresta">포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,150,000 P</td>
-						</tr>
-						@php
-					} else if(session()->get('admin_type') == 'S') {
-			//			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
-						if($point_type == 'S2') {
-							@endphp
-							<tr>
-								<th rowspan="1">정액권</th>
-								<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
-							</tr>
-							@php
-						}
-						if($point_type == 'S3') {
-							@endphp
-							<tr>
-								<th rowspan="1">정액권</th>
-								<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
-							</tr>
-							@php
-						}
-						if($point_type == 'S4') {
-							@endphp
-							<tr>
-								<th rowspan="1">정액권</th>
-								<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
-							</tr>
-							@php
-						}
-					}
-					@endphp
+					<tr>
+						<th rowspan="3">정액권</th>
+						<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
+					</tr>
+					<tr>
+						<td class="tright _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
+					</tr>
+					<tr>
+						<td class="tright _foresta">포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,150,000 P</td>
+					</tr>
 				</thead>		
 			</table>
 		</div>
@@ -289,13 +256,31 @@
 				return false;
 			}
 			var tmpShops = '';
+			var targetInx = 0;
 			for(var inx = 0; inx < response.data.length; inx++){
+				@php
+				if(session()->get('admin_type') == 'S') {
+					echo 'if("'.$store->name.'".indexOf(response.data[inx].service_name) > -1){';
+					echo 'targetInx = inx;';
+				}
+				@endphp
 				tmpShops = tmpShops + '<option data-value="false" value="'+response.data[inx].service_name+'">'+response.data[inx].service_name+'</option>';
+				@php
+				if(session()->get('admin_type') == 'S') {
+					echo '}';
+				}
+				@endphp
 			}
 			$('._shops').html(tmpShops);
 			
 			// NOTICE: 닥터 미니쉬는 직접기입으로만 가능한 형태 (상품 DB X - 서비스명, 가격이 항상 다를수 있으므로..)
-			$("._shops").append('<option data-value="true" value="닥터 미니쉬">닥터 미니쉬</option>');
+			@php
+			if(session()->get('admin_type') != 'S') {
+				@endphp
+				$("._shops").append('<option data-value="true" value="닥터 미니쉬">닥터 미니쉬</option>');
+				@php
+			}
+			@endphp
 
 			$('._shops').off().on('change', function(){
 				isNotInProduct = $(this).find('option[value=\"'+$(this).val()+'\"]').attr('data-value') == 'true';
@@ -306,7 +291,7 @@
 					checkMustChooseSelf();
 				}
 			});
-			getServices(point_type, response.data[0].service_name);
+			getServices(point_type, response.data[targetInx].service_name);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');

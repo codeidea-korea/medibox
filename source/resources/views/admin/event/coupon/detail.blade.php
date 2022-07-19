@@ -626,6 +626,8 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 
 				if(response.data.coupon) {
 					// 쿠폰 정보
+					toggleDiscountInfo(response.data.coupon.type);
+					
 					$('#coupon_name').val( response.data.coupon.name );
 					$('#coupon_context').val( response.data.coupon.context );
 					$('input[name=type][value='+response.data.coupon.type+']').prop('checked', true);
@@ -653,7 +655,7 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 					$('#coupon_partner_grp_seqno').val( response.data.coupon.coupon_partner_grp_seqno );
 
 					if(response.data.coupon.coupon_partner_grp_seqno && response.data.coupon.coupon_partner_grp_seqno != '') {
-						if(response.data.coupon_partner_grp_seqno == 0) {
+						if(response.data.coupon.coupon_partner_grp_seqno == 0) {
 							// 전체 선택
 							togglePartners();
 						} else {
@@ -666,7 +668,6 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 							}
 						}
 					}
-					toggleDiscountInfo(response.data.coupon.type);
 				}
 				toggleView();
 			} else {

@@ -136,7 +136,7 @@ $page_title = '쿠폰 관리';
 		language: 'ko-KR',
 		autoPick: false,
 		autoHide: true,
-		format: 'yyyy년 m월 d 일'
+		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
 		startDay = $(this).val();
 	});
@@ -144,7 +144,7 @@ $page_title = '쿠폰 관리';
 		language: 'ko-KR',
 		autoPick: true,
 		autoHide: true,
-		format: 'yyyy년 m월 d 일'
+		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
 		endDay = $(this).val();
 	});

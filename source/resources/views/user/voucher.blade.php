@@ -226,8 +226,8 @@
                             ('<div>'
                             +'    <a href="/profile/voucher/'+response.data[inx].seqno+'">'
                             +'        <div class="left">'
-                            +'            <p class="type gold">골드 멤버쉽</p>'
-                            +'            <p class="coupon_service">[ '+response.data[inx].name+' ]</p>'
+                            +'            <p class="type gold">'+(response.data[inx].membership_name ? response.data[inx].membership_name+' 멤버쉽' : '')+'</p>'
+                            +'            <p class="coupon_service">[ '+response.data[inx].voucher_name+' ]</p>'
 //                            +'            <strong>80,000원 <span>상당</span></strong>' // 입력란이 없음
                             +'            <div class="deadline">'
                             +'                <ul class="hr_line">'
@@ -238,7 +238,7 @@
                             +'        </div>'
                             +'        <div class="right black">'
                             +'            <p>미사용</p>'
-                            +'            <p>잔여횟수 '+(response.data[inx].voucherInfo.unit_count - response.data[inx].membershipHst.unit_count)+'</p>'
+                            +'            <p>잔여횟수 '+(response.data[inx].remaindCount)+'</p>'
                             +'        </div>'
                             +'    </a>'
                             +'</div>')
@@ -247,7 +247,7 @@
                             +'    <a href="#">'
                             +'        <div class="left">'
                             +'            <p class="type gold">골드 멤버쉽</p>'
-                            +'            <p class="coupon_service">[ '+response.data[inx].name+' ]</p>'
+                            +'            <p class="coupon_service">[ '+response.data[inx].voucher_name+' ]</p>'
 //                            +'            <strong>80,000원 <span>상당</span></strong>' // 입력란이 없음
                             +'            <div class="deadline">'
                             +'                <ul class="hr_line">'

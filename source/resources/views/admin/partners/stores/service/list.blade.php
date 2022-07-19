@@ -22,8 +22,11 @@ $page_title = '서비스 정보';
 				<option>옵션I</option>
 			</select>
 -->
+		@php
+		if(session()->get('admin_type') != 'P' && session()->get('admin_type') != 'S') {
+			@endphp
 			<select class="default" id="storePop" onchange="getManagersPop(this.value)">
-				<option value="">검색가능 셀렉트</option>
+				<option>검색가능 셀렉트</option>
 				<option>옵션A</option>
 				<option>옵션B</option> 
 				<option>옵션C</option>
@@ -34,6 +37,9 @@ $page_title = '서비스 정보';
 				<option>옵션H</option>
 				<option>옵션I</option>
 			</select>
+			@php
+		}
+		@endphp
 		</div>		
 	</div>
 
@@ -141,6 +147,15 @@ $page_title = '서비스 정보';
 		if(storePop && storePop != '') {
 			data.store_seqno = storePop;
 		}
+
+		@php
+		if(session()->get('admin_type') == 'P') {
+			//
+		} else if(session()->get('admin_type') == 'S') {
+		//			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
 
 		medibox.methods.store.manager.services.list(data, function(request, response){
 			console.log('output : ' + response);

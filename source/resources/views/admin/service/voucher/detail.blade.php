@@ -415,7 +415,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 	}
 	
 	function remove(){
-		if(!confirm('정말 삭제 하시겠습니까?')) {
+		if(!confirm('해당 바우처의 사용을 중지하시겠습니까?')) {
 			return;
 		}
 		medibox.methods.point.vouchers.remove({
@@ -426,7 +426,7 @@ $page_title = $voucherNo == 0 ? '바우처 등록' : '바우처 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('삭제 되었습니다.');
+			alert('단종 되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);

@@ -774,6 +774,14 @@
         }
         calculatePrice();
     }
+	function toDateFormatt4(times){
+		var thisDay = new Date(times);
+		return thisDay.getFullYear() + '-' + (thisDay.getMonth() + 1 < 10 ? '0' : '') + (thisDay.getMonth()+1) 
+            + '-' + (thisDay.getDate() < 10 ? '0' : '') + thisDay.getDate()
+            + ' ' + (thisDay.getHours() < 10 ? '0' : '') + thisDay.getHours()
+            + ':' + (thisDay.getMinutes() < 10 ? '0' : '') + thisDay.getMinutes()
+            + ':' + (thisDay.getSeconds() < 10 ? '0' : '') + thisDay.getSeconds();
+	}
     function getMyCoupons(){
         
         medibox.methods.point.coupon.mine({
@@ -790,9 +798,15 @@
 
             var couponTag = '<li onclick="usedCoupon(this, -1)">쿠폰을 선택해주세요.</li>';
             var price = $('._use_point').text().replaceAll(',', '');
+            var thistime = toDateFormatt4(new Date().getTime());
             for(var inx = 0; inx < response.data.length; inx++){
+                // 기간이 안된경우 
+                if(response.data[inx].real_start_dt > thistime || response.data[inx].real_end_dt < thistime) {
+                    continue;
+                }
                 if(price >= response.data[inx].limit_base_price && (response.data[inx].type == 'P' || response.data[inx].type == 'F')) {
-                    couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' + response.data[inx].name + ' (' + response.data[inx].discount_price + ')</li>';
+                    couponTag = couponTag + '<li onclick="usedCoupon(this, '+inx+')">' 
+                        + response.data[inx].name + ' (' + response.data[inx].discount_price + (response.data[inx].type == 'F' ? '원' : '%') + ')</li>';
                 }
             }
             coupons = response.data;

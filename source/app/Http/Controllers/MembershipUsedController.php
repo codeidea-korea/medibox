@@ -155,7 +155,8 @@ class MembershipUsedController extends Controller
             return $result;
         }
 
-        // 히스토리에 포인트 이력 추가
+        // 히스토리에 포인트 이력 추가 <- 현금 결제로 변경
+        /*
         $id = DB::table('user_point_hst')->insertGetId(
             [
                 'admin_seqno' => $admin_seqno
@@ -169,6 +170,7 @@ class MembershipUsedController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
+        */
         $id = DB::table('user_point_hst')->insertGetId(
             [
                 'admin_seqno' => $admin_seqno
@@ -217,12 +219,13 @@ class MembershipUsedController extends Controller
             ['point_type', '=', 'P']
         ])->update(
             [
-                'point' => $point->point - $membership->price + $membership->point
+                'point' => $point->point /* - $membership->price */ + $membership->point
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
         
         // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        /*
         $countUsed = DB::table("user_point_hst")->where([
             ['user_seqno', '=', $user_seqno],
             ['hst_type', '=', 'U']
@@ -258,7 +261,7 @@ class MembershipUsedController extends Controller
                     ['point_type', '=', 'P']
                 ])->update(
                     [
-                        'point' => $point->point + $amount + $etcPoint
+                        'point' => $point->point + $etcPoint
                         , 'update_dt' => date('Y-m-d H:i:s') 
                     ]
                 );
@@ -293,6 +296,7 @@ class MembershipUsedController extends Controller
                 );
             }
         }
+        */
         // 멤버쉽에 소속된 쿠폰/바우처가 제공됩니다.
         $vouchers = DB::table('membership_service_grp')->where([
             ['membership_seqno', '=', $membership->seqno]
@@ -330,7 +334,7 @@ class MembershipUsedController extends Controller
             $voucher_user_seqno = DB::table('voucher_user')->insertGetId(
                 [
                     'membership_seqno' => $membership->seqno
-                    , 'voucher_seqno' => $etcVouchers[$inx]->seqno
+                    , 'voucher_seqno' => $etcVouchers[$inx]->etc_voucher_seqno
                     , 'user_seqno' => $user_seqno
                     , 'used' => 'N'
                     , 'approved' => 'Y'
@@ -483,10 +487,12 @@ class MembershipUsedController extends Controller
             ['user_seqno', '=', $user_seqno],
             ['point_type', '=', 'P']
         ])->first();
+        /*
         if($point->point + $membershipInfo->price - $membershipInfo->point < 0){
             $result['ment'] = '멤버쉽이 환불되지 않았습니다.\r환불할 포인트가 부족합니다.';
             return $result;
         }
+        */
         
         // 멤버쉽을 이미 사용한 경우
         // 1. 포인트 적립금이 있고, 사용한 경우
@@ -598,7 +604,7 @@ class MembershipUsedController extends Controller
                     , 'point_type' => 'P'
                     , 'product_seqno' => 0
                     , 'hst_type' => 'R'
-                    , 'point' => $membershipInfo->price - $membershipInfo->point
+                    , 'point' => /* $membershipInfo->price - */ $membershipInfo->point
                     , 'memo' => '멤버쉽 환불로 인한 포인트 반환'
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
@@ -609,11 +615,29 @@ class MembershipUsedController extends Controller
                 ['point_type', '=', 'P']
             ])->update(
                 [
-                    'point' => $point->point - $membershipInfo->point + $membershipInfo->price
+                    'point' => $point->point - $membershipInfo->point /*+ $membershipInfo->price */
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );
         }
+        DB::table("membership_user")->where([
+            ['seqno', '=', $membership_seqno],
+            ['deleted', '=', 'N']
+        ])->update(
+            [
+                'deleted' => 'Y'
+                , 'update_dt' => date('Y-m-d H:i:s') 
+            ]
+        );
+        $id = DB::table('membership_user_hst')->insertGetId(
+            [
+                'membership_user_seqno' => $membership->seqno
+                , 'user_seqno' => $user_seqno
+                , 'hst_type' => 'R'
+                , 'memo' => $memo
+                , 'create_dt' => date('Y-m-d H:i:s')
+            ]
+        );
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원의\r['.$membershipInfo->name.'] 멤버쉽이 환불되었습니다.';
         $result['data'] = $user;

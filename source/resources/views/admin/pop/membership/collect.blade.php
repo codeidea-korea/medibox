@@ -134,12 +134,14 @@
 						<input type="text" id="membership_collect_pres_point" value="1,000,000 P" class="span" style="background:#d3d3d3;" readonly>
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label required">사용 포인트</div>
 					<div class="wr-list-con flex">					
 						<input type="text" id="membership_collect_point" value="0" class="span" placeholder="0 P" readonly>
 					</div>
 				</div>
+				-->
 				<div class="wr-list">
 					<div class="wr-list-label required">충전 포인트</div>
 					<div class="wr-list-con flex">					
@@ -202,13 +204,13 @@
 			
 			$('._membershipType').off().on('change', function(){
 				membership_seqno = $(this).val();
-				$('#membership_collect_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('price')) +' P');
+//				$('#membership_collect_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('price')) +' P');
 				var currentPoint = getPoint($(this).find('option:selected').attr('type'));
 				var type = $(this).find('option:selected').attr('type');
 				$('#membership_collect_pres_point').val(medibox.methods.toNumber(currentPoint) +' P'); 
 				$('#membership_collect_pres_point').val(medibox.methods.toNumber(currentPoint) +' P'); 
 				$('#membership_collect_return_point').val(medibox.methods.toNumber($(this).find('option:selected').attr('return')) +' P');
-				$('#membership_collect_sum_point').val(medibox.methods.toNumber((currentPoint - Number($(this).find('option:selected').attr('price')) + Number($(this).find('option:selected').attr('return')))) +' P');
+				$('#membership_collect_sum_point').val(medibox.methods.toNumber((currentPoint /* - Number($(this).find('option:selected').attr('price')) */+ Number($(this).find('option:selected').attr('return')))) +' P');
 			});
 		}, function(e){
 			console.log(e);

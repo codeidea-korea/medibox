@@ -16,13 +16,16 @@ class StoreController extends Controller
         $partner_seqno = $request->get('partner_seqno');
         $id = $request->get('id');
         $partner_ids = $request->get('partner_ids');
+        $include_discontinued = $request->get('include_discontinued', 'N');
 
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['deleted', '=', 'N']);
+        }
         if(! empty($partner_seqno) && $partner_seqno != ''){
             array_push($where, ['partner_seqno', '=', $partner_seqno]);
         }
@@ -50,9 +53,9 @@ class StoreController extends Controller
         // 매장에 소속된 디자이너 데이터
         for($inx = 0; $inx < count($contents); $inx++){
             $managerInfo = DB::table("store_manager")
-                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->get();
+                ->where([['partner_seqno', '=', $contents[$inx]->partner_seqno], ['store_seqno', '=', $contents[$inx]->seqno]])->get();
             $serviceInfo = DB::table("store_service")
-                ->where([['store_seqno', '=', $contents[$inx]->seqno]])->get();
+                ->where([['partner_seqno', '=', $contents[$inx]->partner_seqno], ['store_seqno', '=', $contents[$inx]->seqno]])->get();
                 
             $contents[$inx]->managerInfo = $managerInfo;
             $contents[$inx]->serviceInfo = $serviceInfo;

@@ -20,8 +20,12 @@ $page_title = '회원관리';
 				<div class="view-list">
 					<div class="view-list-label">아이디</div>
 					<div class="view-list-con _userId">010-0000-0000</div>
-					<div class="view-list-label">멤버쉽</div>
-					<div class="view-list-con _userMembership"></div>
+					<div class="view-list-label">멤버쉽번호</div>
+					<div class="view-list-con">
+						<input type="text" id="membership_card_no" name="membership_card_no" value="" class="span200" placeholder="멤버쉽 카드 정보가 들어갑니다.">
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" onclick="saveMembershipCardNo()" class="btn red small">저장</a>
+					</div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">비밀번호</div>
@@ -29,19 +33,23 @@ $page_title = '회원관리';
 						<span class="_userPassword">****</span>&nbsp;&nbsp;&nbsp;&nbsp;
 						<a href="#" onclick="resetPassword()" class="btn red small">비밀번호 초기화</a>
 					</div>
-					<div class="view-list-label">패키지</div>
+<!--					
+	                <div class="view-list-label">패키지</div>
 					<div class="view-list-con _userPackage"></div>
+					 -->
+					<div class="view-list-label">멤버쉽</div>
+					<div class="view-list-con _userMembership"></div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">이름</div>
 					<div class="view-list-con _userName">관리자</div>
-					<div class="view-list-label">포인트</div>
+					<div class="view-list-label">보유 포인트</div>
 					<div class="view-list-con _userPoint">100,000 P</div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">가입일시</div>
 					<div class="view-list-con _createAt">2021.01128</div>
-					<div class="view-list-label">정액권</div>
+					<div class="view-list-label">보유 정액권</div>
 					<div class="view-list-con _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
 				</div>
 				<div class="view-list">
@@ -111,11 +119,13 @@ $page_title = '회원관리';
 			$('._userName').text( response.data.user_name );
 			$('#usermemo').val( response.data.memo );
 			$('#usermemo2').val( response.data.memo2 );
+			$('#membership_card_no').val( response.data.membership_card_no );
+			
 			$('._createAt').text( response.data.create_dt );
 			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );
 			
 			if(response.data.membership && response.data.membership.membershipInfo) {
-				$('._userMembership').text( response.data.membership.membershipInfo.name + ' 멤버쉽' );
+				$('._userMembership').text( response.data.membership.membershipInfo.name + ' 멤버쉽 (' + medibox.methods.toNumber(response.data.membership.membershipInfo.price) + ')' );
 			} else {
 				$('._userMembership').text( '보유 멤버쉽이 없습니다.' );
 			}
@@ -318,7 +328,17 @@ $page_title = '회원관리';
 			}
 			var tmpPointTypes = '';
 			for(var inx = 0; inx < response.data.length; inx++){
+				@php
+				if(session()->get('admin_type') == 'S') {
+					echo 'if("'.$point_type.'" == response.data[inx].point_type || response.data[inx].point_type == "P" || response.data[inx].point_type == "K"){';
+				}
+				@endphp
 				tmpPointTypes = tmpPointTypes + '<option value="'+response.data[inx].point_type+'">'+response.data[inx].point_name+'</option>';
+				@php
+				if(session()->get('admin_type') == 'S') {
+					echo '}';
+				}
+				@endphp
 			}
 			$('._pointTypes').html(tmpPointTypes);
 
@@ -375,7 +395,29 @@ $page_title = '회원관리';
 			alert('서버 통신 에러');
 		});
 	}
-	// 사용 취소
+	// 멤버쉽 카드 정보 저장
+	function saveMembershipCardNo(){
+		var membership_card_no = $('#membership_card_no').val();
+		if(!membership_card_no || membership_card_no.length < 1) {
+			alert('카드 번호를 입력해주세요.');
+			return false;
+		}
+
+		medibox.methods.user.membershipCardNo({
+			id: userInfo.user_phone
+			, membership_card_no: membership_card_no
+		}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('멤버쉽 카드정보가 수정 되었습니다.');
+			location.reload();
+		}, function(e){
+			console.log(e);
+		});
+	}
 	</script>
 
 </div>

@@ -34,6 +34,7 @@ $page_title = '멤버쉽 관리';
 				<col width="60">
 				<col width="60">
 				<col width="60">
+				<col width="60">
 			</colgroup>
 			<thead>
 				<tr>
@@ -42,7 +43,7 @@ $page_title = '멤버쉽 관리';
 					<th rowspan="2">가격</th>
 					<th rowspan="2">사용기간</th>
 					<th>부여</th>
-					<th colspan="5">바우처</th>
+					<th colspan="6">바우처</th>
 					<th rowspan="2">단종/판매</th>
 				</tr>
 				<tr>
@@ -54,6 +55,7 @@ $page_title = '멤버쉽 관리';
 					<th>매장</th>
 					<th>서비스</th>
 					<th>쿠폰</th>
+					<th>가격</th>
 					<th>횟수</th>
 				</tr>
 			</thead>
@@ -134,7 +136,7 @@ $page_title = '멤버쉽 관리';
 
 			if(response.count == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="10" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="11" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('.pg_wrap').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -167,9 +169,10 @@ $page_title = '멤버쉽 관리';
 										+ '<td>'+response.data[inx].vouchers[0].store_name+'</td>'
 										+ '<td>'+response.data[inx].vouchers[0].service_name+'</td>'
 										+ '<td>-</td>'
+										+ '<td>'+medibox.methods.toNumber(response.data[inx].vouchers[0].price)+'</td>'
 										+ '<td>'+medibox.methods.toNumber(response.data[inx].vouchers[0].unit_count)+'</td>'
 								)
-								: ('<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>'))
+								: ('<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>'))
 							)
 //							+'	<td rowspan="'+rowspan+'"><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
 							+'	<td rowspan="'+rowspan+'">'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
@@ -233,6 +236,7 @@ $page_title = '멤버쉽 관리';
 										+ '<td>'+voucher.store_name+'</td>'
 										+ '<td>'+voucher.service_name+'</td>'
 										+ '<td>-</td>'
+										+ '<td>'+medibox.methods.toNumber(voucher.price)+'</td>'
 										+ '<td>'+medibox.methods.toNumber(voucher.unit_count)+'</td></tr>'
 									)})
 								)
@@ -246,7 +250,8 @@ $page_title = '멤버쉽 관리';
 										+ '<td>-</td>'
 										+ '<td>-</td>'
 										+ '<td>'+coupon.name+'</td>'
-										+ '<td>'+medibox.methods.toNumber(coupon.unit_count)+'</td></tr>'
+										+ '<td>-</td>'
+										+ '<td>1</td></tr>'
 									))
 								)
 								: (''))

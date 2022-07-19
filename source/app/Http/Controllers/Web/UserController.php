@@ -150,8 +150,25 @@ class UserController extends Controller
 
         $user->user_name = ($user->user_name == '홍길동' ? '' : $user->user_name);
 
+        // 멤버쉽 membership
+        $today = date("Y-m-d", time());
+        $smembership = '';
+        $membership = DB::table("membership_user")->where([
+            ['user_seqno', '=', $user->user_seqno],
+            ['used', '=', 'N'],
+            ['real_start_dt', '<=', date("Y-m-d H:i:s", time())],
+            ['real_end_dt', '>=', date("Y-m-d H:i:s", time())],
+            ['deleted', '=', 'N']
+        ])->first();
+        if(!empty($membership)) {
+            $pmembership = DB::table("product_membership")->where([
+                ['seqno', '=', $membership->membership_seqno]
+            ])->first();
+            $smembership = $pmembership->name . ' 멤버쉽';
+        }
+
         return view('user.profile')->with('id', $user->user_phone)
-            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn);
+            ->with('pw', $user->user_pw)->with('name', $user->user_name)->with('receive', $user->event_yn)->with('smembership', $smembership);
     }
     public function profile_edit(Request $request)
     {
@@ -535,6 +552,77 @@ class UserController extends Controller
 
         return view('user.voucher', ['userSeqno' => $userSeqno]);
     }
+    public function reservationByVoucher(Request $request, $voucherNo)
+    {
+        if ($this->checkInvalidSession($request)) {
+            $request->session()->put('error', '세션이 만료되었습니다. 다시 로그인하여 주세요.');
+            return redirect('/index');
+        }
+        $userSeqno = $request->session()->get('user_seqno');
+        
+        $voucher = DB::table("voucher_user")->where([
+            ['seqno', '=', $voucherNo],
+            ['deleted', '=', 'N']
+        ])->first();
+        $voucherInfo = DB::table("product_voucher")->where([
+            ['seqno', '=', $voucher->voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $userSeqno]
+        ])->first();
+        $shopInfo = DB::table("store")->where([
+            ['seqno', '=', $voucherInfo->store_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        $serviceInfo = DB::table("store_service")->where([
+            ['seqno', '=', $voucherInfo->service_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        // 포인트
+        $pointInfo = DB::table("user_point")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['point_type', '=', 'P']
+        ])->first();
+
+        // 서비스를 진행하는 파트너사의 정액권
+        $partner = DB::table("partner")->where([
+            ['seqno', '=', $serviceInfo->partner_seqno]
+        ])->first();
+        $passInfo = DB::table("user_point")->where([
+            ['user_seqno', '=', $userSeqno],
+            ['point_type', '=', $partner->type_code]
+        ])->first();
+        
+        $reservation_shop = $shopInfo->name; 
+        $reservation_service = $serviceInfo->name;
+        $reservation_price = $serviceInfo->price;
+
+        return view('user.reservation.voucher', ['seqno' => $userSeqno, 'userSeqno' => $userSeqno, 'user' => $user, 'brandNo' => $partner->seqno, 'shopNo' => $shopInfo->seqno, 
+        'serviceId' => $serviceInfo->seqno, 'reservation_shop' => $reservation_shop, 'reservation_service' => $reservation_service, 
+        'reservation_price' => $reservation_price, 'pointInfo' => $pointInfo, 'passInfo' => $passInfo, 'point_type' => $partner->type_code, 'voucherNo' => $voucherNo]);
+    }
+    public function voucher_confirm(Request $request, $id)
+    {
+        $userSeqno = $request->session()->get('user_seqno');
+
+        // 서비스의 경우 이벤트 예약으로 이동
+        $voucher = DB::table("voucher_user")->where([
+            ['seqno', '=', $id],
+            ['deleted', '=', 'N']
+        ])->first();
+        $voucherInfo = DB::table("product_voucher")->where([
+            ['seqno', '=', $voucher->voucher_seqno],
+            ['deleted', '=', 'N']
+        ])->first();
+        if(!empty($voucherInfo) && $voucherInfo->service_seqno > 0){
+            return redirect('/reservation-voucher/'.$id);
+        }
+
+        return view('user.voucher_confirm', ['userSeqno' => $userSeqno, 'id' => $id]);
+    }
+
     public function coupon(Request $request)
     {
         $userSeqno = $request->session()->get('user_seqno');

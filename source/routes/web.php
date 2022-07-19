@@ -50,6 +50,8 @@ Route::get('/profile/edit', [UserController::class, 'profile_edit']) ->name('use
 Route::get('/profile/edit-prev', [UserController::class, 'mypage_edit']) ->name('user.mypage.edit');
 
 Route::get('/profile/voucher', [UserController::class, 'voucher']) ->name('user.voucher');
+Route::get('/profile/voucher/{id}', [UserController::class, 'voucher_confirm']) ->name('user.voucher_confirm');
+
 Route::get('/profile/coupon', [UserController::class, 'coupon']) ->name('user.coupon');
 Route::get('/profile/services', [UserController::class, 'services']) ->name('user.services');
 
@@ -84,6 +86,8 @@ Route::get('/reservation-modify/payment/{historyNo}', [UserController::class, 'r
 
 Route::get('/reservation', [UserController::class, 'reservation']) ->name('user.reservation');
 Route::get('/reservation/{storeNo}', [UserController::class, 'reservationDetail']) ->name('user.reservation.detail');
+
+Route::get('/reservation-voucher/{voucherNo}', [UserController::class, 'reservationByVoucher']) ->name('user.reservation.voucher');
 
 Route::any('/terms/agreement', [UserController::class, 'agreement']) ->name('user.agreement');
 Route::get('/terms/privacy', [UserController::class, 'privacy']) ->name('user.privacy');
@@ -195,4 +199,7 @@ Route::prefix('admin')->group(function () {
 
     Route::get('/main', [AdminController::class, 'partnerHome']);
     Route::get('/notice/{id}', [AdminController::class, 'partnerNoticeDetail']);
+
+    // 정산 화면
+    Route::get('/calculate', [AdminController::class, 'calculate']);
 });

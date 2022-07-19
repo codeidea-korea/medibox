@@ -22,6 +22,10 @@ $page_title = '디자이너 정보';
 				<option>옵션I</option>
 			</select>
 -->
+
+		@php
+		if(session()->get('admin_type') != 'P' && session()->get('admin_type') != 'S') {
+			@endphp
 			<select class="default" id="storePop" onchange="getManagersPop(this.value)">
 				<option>검색가능 셀렉트</option>
 				<option>옵션A</option>
@@ -34,6 +38,9 @@ $page_title = '디자이너 정보';
 				<option>옵션H</option>
 				<option>옵션I</option>
 			</select>
+			@php
+		}
+		@endphp
 		</div>		
 	</div>
 
@@ -48,6 +55,7 @@ $page_title = '디자이너 정보';
 		<table>
 			<colgroup>
 				<col width="50">
+				<col width="60">
 				<col width="90">
 				<col width="60">
 				<col width="60">
@@ -63,6 +71,7 @@ $page_title = '디자이너 정보';
 			<thead>
 				<tr>
 					<th><a href="#">번호</a></th>
+					<th><a href="#">매장</a></th>
 					<th><a href="#">직위</a></th>
 					<th><a href="#">디자이너</a></th>
 					<th><a href="#">시작시각</a></th>
@@ -154,6 +163,15 @@ $page_title = '디자이너 정보';
 			data.store_seqno = storePop;
 		}
 
+		@php
+		if(session()->get('admin_type') == 'P') {
+			//
+		} else if(session()->get('admin_type') == 'S') {
+//			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
+			echo 'data.store_seqno = "'.session()->get('store_seqno').'";';
+		}
+		@endphp
+
 		medibox.methods.store.manager.list(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -164,7 +182,7 @@ $page_title = '디자이너 정보';
 
 			if(!response.data || response.data.length == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="12" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="13" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				$('.pg_wrap').html('<nav class="pg_wrap">'
 									+'    <a href="#" class="pg_btn first"></a>'
@@ -182,6 +200,7 @@ $page_title = '디자이너 정보';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
+							+'	<td>'+response.data[inx].storeInfo.name+'</td>'
 							+'	<td>'+response.data[inx].manager_type+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+(response.data[inx].start_dt)+'</td>'
