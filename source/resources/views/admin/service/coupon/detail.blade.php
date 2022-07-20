@@ -529,7 +529,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 	}
 	
 	function remove(){
-		if(!confirm('정말 삭제 하시겠습니까?')) {
+		if(!confirm('쿠폰을 사용 중지하시겠습니까?')) {
 			return;
 		}
 		medibox.methods.point.coupon.remove({
@@ -540,7 +540,7 @@ $page_title = $couponNo == 0 ? '쿠폰 등록' : '쿠폰 수정';
 				alert(response.ment);
 				return false;
 			}
-			alert('삭제 되었습니다.');
+			alert('단종 되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);

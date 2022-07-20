@@ -448,7 +448,8 @@ class VoucherController extends Controller
                 // 수량 파악            
                 $etcVoucher = DB::table('membership_etc_voucher_grp')->where([
                     ['membership_seqno', '=', $contents[$inx]->membership_seqno],
-                    ['etc_voucher_seqno', '=', $contents[$inx]->voucher_seqno]
+                    ['etc_voucher_seqno', '=', $contents[$inx]->voucher_seqno],
+                    ['deleted', '=', 'N']
                 ])->first();
                 $usedCnt = DB::table('voucher_user_history')->where([
                     ['voucher_user_seqno', '=', $contents[$inx]->seqno],
@@ -568,6 +569,7 @@ class VoucherController extends Controller
         $price = $voucher->price;
         
         // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        /*
         $countUsed = DB::table("user_point_hst")->where([
             ['user_seqno', '=', $user_seqno],
             ['hst_type', '=', 'U']
@@ -638,6 +640,7 @@ class VoucherController extends Controller
                 );
             }
         }
+        */
 
         $result['ment'] = '[('.$user->user_phone.') '.$user->user_name.']회원에게 ['.$voucher->name.'] 바우처가 추가되었습니다.';
         $result['data'] = $user;
@@ -807,7 +810,8 @@ class VoucherController extends Controller
             // 수량 파악            
             $etcVoucher = DB::table('membership_etc_voucher_grp')->where([
                 ['membership_seqno', '=', $voucher->membership_seqno],
-                ['etc_voucher_seqno', '=', $voucher->voucher_seqno]
+                ['etc_voucher_seqno', '=', $voucher->voucher_seqno],
+                ['deleted', '=', 'N']
             ])->first();
             $voucherHistory = DB::table('voucher_user_history')->where([
                 ['voucher_user_seqno', '=', $voucher->voucher_seqno]

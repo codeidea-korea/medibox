@@ -58,6 +58,7 @@ $page_title = '예약 내역';
 					</div>
 				</div>
 
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">제휴사</div>
 					<div class="wr-list-con">
@@ -66,6 +67,7 @@ $page_title = '예약 내역';
 						</select>
 					</div>
 				</div>
+				-->
 
 				<div class="wr-list">
 					<div class="wr-list-label">매장</div>

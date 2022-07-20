@@ -385,6 +385,7 @@ class PointController extends Controller
         }
         
         // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        /*
         $countUsed = DB::table("user_point_hst")->where([
             ['user_seqno', '=', $user_seqno],
             ['hst_type', '=', 'U']
@@ -455,6 +456,7 @@ class PointController extends Controller
                 );
             }
         }
+        */
         // 쿠폰 반환
         if(!empty($reIssueCoupon) && $reIssueCoupon > 0) {
             

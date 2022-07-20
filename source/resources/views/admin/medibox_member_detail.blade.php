@@ -201,10 +201,16 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			alert('비밀번호를 입력해주세요.');
 			return false;
 		}
+		@php
+		if($id == 0) {
+		@endphp
 		if (regPw.test(pw) !== true) {
 			alert('비밀번호는 8자 이상  숫자, 알파벳, 특수기호를 혼합하여 입력해주세요. ');
 			return false;
 		}
+		@php 
+		}
+		@endphp
 		if(!name || name == '') {
 			alert('이름을 입력해주세요.');
 			return false;

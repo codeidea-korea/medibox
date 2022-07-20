@@ -299,7 +299,8 @@ class MembershipUsedController extends Controller
         */
         // 멤버쉽에 소속된 쿠폰/바우처가 제공됩니다.
         $vouchers = DB::table('membership_service_grp')->where([
-            ['membership_seqno', '=', $membership->seqno]
+            ['membership_seqno', '=', $membership->seqno],
+            ['deleted', '=', 'N']
         ])->get();
         for($inx = 0; $inx < count($vouchers); $inx++){
             $voucher_user_seqno = DB::table('voucher_user')->insertGetId(
@@ -328,7 +329,8 @@ class MembershipUsedController extends Controller
             );
         }
         $etcVouchers = DB::table('membership_etc_voucher_grp')->where([
-            ['membership_seqno', '=', $membership->seqno]
+            ['membership_seqno', '=', $membership->seqno],
+            ['deleted', '=', 'N']
         ])->get();
         for($inx = 0; $inx < count($etcVouchers); $inx++){
             $voucher_user_seqno = DB::table('voucher_user')->insertGetId(
@@ -357,7 +359,8 @@ class MembershipUsedController extends Controller
             );
         }
         $coupons = DB::table('membership_coupon_grp')->where([
-            ['membership_seqno', '=', $membership->seqno]
+            ['membership_seqno', '=', $membership->seqno],
+            ['deleted', '=', 'N']
         ])->get();
         for($inx = 0; $inx < count($coupons); $inx++){
             $coupon_user_seqno = DB::table('coupon_user')->insertGetId(

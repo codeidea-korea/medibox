@@ -248,8 +248,8 @@ class EvenBannerUsedController extends Controller
                     'coupon_seqno' => $event_banner->event_coupon_seqno
                     , 'user_seqno' => $user_id
                     , 'used' => 'N'
-                    , 'real_start_dt' => $event_banner->start_dt
-                    , 'real_end_dt' => $event_banner->end_dt
+                    , 'real_start_dt' => $coupon->start_dt
+                    , 'real_end_dt' => $coupon->end_dt
                     , 'real_discount_price' => 0
                     , 'approved' => 'Y'
                     , 'hst_type' => 'S'

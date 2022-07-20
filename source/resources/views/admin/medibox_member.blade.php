@@ -8,12 +8,50 @@ $page_title = '회원관리';
 	
 	<div class="data-search-wrap">
 		<div class="data-sel">
-		<!--
-			<input type="text" name="startDay" id="startDay" value="2022-02-09" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">&nbsp;&nbsp;~
-			<input type="text" name="endDay" id="endDay" value="{{ date('Y-m-d', strtotime('+1 day')) }}" class="span130 datepicker" data-label="날짜" placeholder="전화번호/이름">
-			-->
-			<input type="text" name="searchField" id="searchField" value="" class="span250" onkeyup="enterkey()" placeholder="전화번호/이름">
-			<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
+			<div class="wr-wrap line label160">
+				<div class="wr-list">
+					<div class="wr-list-label">전화번호/이름</div>
+					<div class="wr-list-con">
+						<input type="text" name="searchField" id="searchField" value="" class="span250" placeholder="전화번호/이름">
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">메모1</div>
+					<div class="wr-list-con">
+						<input type="text" name="memo" id="memo" value="" class="span250" placeholder="메모">
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">메모2</div>
+					<div class="wr-list-con">
+						<input type="text" name="memo2" id="memo2" value="" class="span250" placeholder="메모2">
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">고객구분</div>
+					<div class="wr-list-con">
+						<select class="default" id="type">
+							<option value="">선택해주세요.</option>
+							<option value="VIP">VIP</option>
+							<option value="일반">일반</option>
+						</select>
+					</div>
+				</div>
+				<div class="wr-list">
+					<div class="wr-list-label">방문유형</div>
+					<div class="wr-list-con">
+						<select class="default" id="join_path">
+							<option value="">선택해주세요.</option>
+							<option value="미니쉬직원">미니쉬직원</option>
+							<option value="강원장님소개">강원장님소개</option>
+							<option value="미니쉬중요고객">미니쉬중요고객</option>
+							<option value="주주">주주</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+<a href="#" onclick="loadList(1)" class="btn gray">검색</a>
 		</div>		
 	</div>
 
@@ -129,6 +167,11 @@ $page_title = '회원관리';
 		var endDay = $('input[name=endDay]').val();
 		var searchField = $('input[name=searchField]').val();
 		
+		var memo = $('#memo').val();
+		var memo2 = $('#memo2').val();
+		var type = $('#type').val();
+		var join_path = $('#join_path').val();
+				
 		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
 
 		if(startDay && startDay != '') {
@@ -139,6 +182,18 @@ $page_title = '회원관리';
 		}
 		if(searchField && searchField != '') {
 			data.search = searchField;
+		}
+		if(memo && memo != '') {
+			data.memo = memo;
+		}
+		if(memo2 && memo2 != '') {
+			data.memo2 = memo2;
+		}
+		if(type && type != '') {
+			data.type = type;
+		}
+		if(join_path && join_path != '') {
+			data.join_path = join_path;
 		}
 
 		medibox.methods.user.members(data, function(request, response){

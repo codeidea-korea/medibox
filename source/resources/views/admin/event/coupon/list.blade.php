@@ -353,6 +353,9 @@ $page_title = '이벤트 쿠폰 관리';
 	}
 	
 	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		if(!coupon_partner_grp_seqno) {
+			return '-';
+		}
 		
 		if(coupon_partner_grp_seqno == 0) {
 			return '전체';
@@ -374,7 +377,7 @@ $page_title = '이벤트 쿠폰 관리';
 	function getList(){
 		var searchField = $('input[name=searchField]').val();
 		
-		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }} };
+		var data = { pageNo: pageNo, pageSize: pageSize, adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
 		var partner_seqno = $('#partnersPop').val();
 		var coupon_search_type = $('#coupon_search_type').val();
@@ -455,7 +458,7 @@ $page_title = '이벤트 쿠폰 관리';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<tr>'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].seqno+'\')" style="cursor: pointer;">'
 							+'	<td>'+no+'</td>'
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].start_dt + ' ~ ' + response.data[inx].end_dt+'</td>'
@@ -467,7 +470,8 @@ $page_title = '이벤트 쿠폰 관리';
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
-							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+//							+'	<td><a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정/삭제</a></td>'
+							+'	<td>'+(response.data[inx].deleted == 'N' ? '판매' : '단종')+'</td>'
 							+'</tr>';
 			}
 			$('._tableBody').html(bodyData);

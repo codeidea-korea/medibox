@@ -569,6 +569,11 @@ class UserController extends Controller
         $start_day = $request->get('start_day');
         $end_day = $request->get('end_day');
         
+        $memo = $request->get('memo');
+        $memo2 = $request->get('memo2');
+        $type = $request->get('type');
+        $join_path = $request->get('join_path');
+        
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $delete_yn = 'Y';
@@ -583,6 +588,18 @@ class UserController extends Controller
         }
         if (!empty($end_day) && $end_day != '') {
             array_push($where, ['create_dt', '<=', $end_day]);
+        }
+        if (!empty($memo) && $memo != '') {
+            array_push($where, ['memo', 'like', '%'.$memo.'%']);
+        }
+        if (!empty($memo2) && $memo2 != '') {
+            array_push($where, ['memo2', 'like', '%'.$memo2.'%']);
+        }
+        if (!empty($type) && $type != '') {
+            array_push($where, ['type', '=', $type]);
+        }
+        if (!empty($join_path) && $join_path != '') {
+            array_push($where, ['join_path', '=', $join_path]);
         }
 
         $users;

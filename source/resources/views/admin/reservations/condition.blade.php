@@ -433,7 +433,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		{
 			// <span class="cell col-3">발몽스파</span>
 //			bodyData = bodyData + '<span class="cell">'+stores[idx].name+' (미지정)</span>';
-			bodyData = bodyData + '<span class="cell col-'+stores[idx].managerInfo.length+'">'+stores[idx].name+'</span>';
+			bodyData = bodyData + '<span class="cell col-'+stores[idx].managerInfo.filter(manager => manager.deleted == 'N').length+'">'+stores[idx].name+'</span>';
 		}
 		// _stores
 		$('#_stores').html(bodyData);
