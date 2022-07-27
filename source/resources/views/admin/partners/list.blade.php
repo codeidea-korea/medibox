@@ -17,7 +17,7 @@ $page_title = '브랜드 정보';
 		<div class="tbl-header">
 			<div class="caption">총 <b id="totalCnt">123</b>개 글이 있습니다</div>
 			<div class="rightSet">
-                <a href="#" onclick="addItem()" class="btn green small icon-add">등록</a>
+                <!-- <a href="#" onclick="addItem()" class="btn green small icon-add">등록</a> -->
                 <!-- <a href="#" onclick="removeAll()" class="btn red small icon-del">삭제</a> -->
             </div>
 		</div>

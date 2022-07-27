@@ -371,8 +371,8 @@ $page_title = '예약 내역';
 							+'	<td><h3>'+ (response.data[inx].apply_on_mobile == 'Y' ? '모바일' : '현장등록') +'</td>'
 							+'	<td>'+response.data[inx].start_dt+'</td>'
 
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_name+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_phone+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_name+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_phone+'</td>'
 
 							+'	<td>'+response.data[inx].partnerInfo.cop_name+'</td>'
 

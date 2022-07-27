@@ -126,8 +126,8 @@ $page_title = '회원관리';
 			$('#usermemo2').val( response.data.memo2 );
 			$('#membership_card_no').val( response.data.membership_card_no );
 			
-			$('._userType').val( response.data.type ? response.data.type : '-' );
-			$('._userJoinPath').val( response.data.join_path ? response.data.join_path : '-' );
+			$('._userType').text( response.data.type ? response.data.type : '-' );
+			$('._userJoinPath').text( response.data.join_path ? response.data.join_path : '-' );
 			
 			$('._createAt').text( response.data.create_dt );
 			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );

@@ -355,8 +355,8 @@ $page_title = '충전/결제내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_phone+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_name+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_phone+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_name+'</td>'
 							+'	<td>'+getPointNameType(response.data[inx].point_type)+'</td>'
 							+'	<td>'+getHstType(response.data[inx].hst_type)+'</td>'
 							+'	<td>'+response.data[inx].create_dt+'</td>'

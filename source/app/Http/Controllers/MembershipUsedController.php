@@ -19,7 +19,7 @@ class MembershipUsedController extends Controller
 
         $user_phone = $request->get('user_phone');
         $user_name = $request->get('user_name');
-        $user_seqno = $request->get('user_seqno');
+        $user_seqno = $request->get('user_seqno'); // user_seqno
         
         $dt_option_type = $request->get('dt_option_type', 'use');
         $start_dt = $request->get('start_dt');
@@ -38,13 +38,13 @@ class MembershipUsedController extends Controller
         }
         $whereUser = [];
         if(! empty($user_phone) && $user_phone != ''){
-            array_push($whereUser, ['user_phone', 'like', '%'.$user_phone.'%']);
+            array_push($whereUser, ['user_info.user_phone', 'like', '%'.$user_phone.'%']);
         }
         if(! empty($user_name) && $user_name != ''){
-            array_push($whereUser, ['user_name', 'like', '%'.$user_name.'%']);
+            array_push($whereUser, ['user_info.user_name', 'like', '%'.$user_name.'%']);
         }
         if(! empty($user_seqno) && $user_seqno != ''){
-            array_push($whereUser, ['user_seqno', '=', $user_seqno]);
+            array_push($whereUser, ['user_info.user_seqno', '=', $user_seqno]);
         }
 
         if(! empty($start_dt) && $start_dt != ''){
@@ -588,7 +588,7 @@ class MembershipUsedController extends Controller
                 DB::table('voucher_user_history')->insertGetId(
                     [
                         'voucher_user_seqno' => $vouchers[$inx]->seqno
-                        , 'hst_type' => 'S'
+                        , 'hst_type' => 'R'
                         , 'canceled' => 'N'
                         , 'approved' => 'Y'
                         , 'memo' => '멤버쉽 환불로 인한 삭제'
