@@ -260,7 +260,7 @@ function checkCollectPoint(){
 				tmpCollects = tmpCollects + '<option value="0" price="0" type="P" return="0">포인트 <포인트선택시 기재></option>';
 			}
 			for(var inx = 0; inx < response.data.length; inx++){
-				var name = (response.data[inx].point_type == 'K' ? response.data[inx].type_name : response.data[inx].type_name+'-'+response.data[inx].service_sub_name);
+				var name = (response.data[inx].point_type == 'K' ? response.data[inx].type_name : response.data[inx].type_name+'-'+(response.data[inx].service_sub_name ? response.data[inx].service_sub_name : (response.data[inx].price / 10000) + '만원'));
 				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+name+'</option>';
 			}
 			$('._collectItem').html(tmpCollects);

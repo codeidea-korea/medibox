@@ -31,7 +31,7 @@ $page_title = '쿠폰/바우처/멤버쉽 사용내역';
 					<div class="wr-list-label">기간</div>
 					<div class="wr-list-con">
 						<select class="default" id="dt_option_type">
-							<option value="">선택해주세요.</option>
+							<!-- <option value="">선택해주세요.</option> -->
 							<option value="use">사용일자</option>
 							<option value="join">(멤버쉽) 가입일자</option>
 							<option value="end">(멤버쉽) 종료일자</option>
@@ -154,15 +154,15 @@ $page_title = '쿠폰/바우처/멤버쉽 사용내역';
 		language: 'ko-KR',
 		autoPick: false,
 		autoHide: true,
-		format: 'yyyy년 m월 d 일'
+		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
 		startDay = $(this).val();
 	});
 	$('._end').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
-		format: 'yyyy년 m월 d 일'
+		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
 		endDay = $(this).val();
 	});
@@ -270,9 +270,9 @@ $page_title = '쿠폰/바우처/멤버쉽 사용내역';
 				bodyData = bodyData 
 							+'<tr>'
 							+'	<td>'+no+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_seqno+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_phone+'</td>'
-							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')">'+response.data[inx].user_name+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_seqno+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_phone+'</td>'
+							+'	<td onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'+response.data[inx].user_name+'</td>'
 							+'	<td>'+(
 								response.data[inx].coupon_name ? '쿠폰'
 								: (

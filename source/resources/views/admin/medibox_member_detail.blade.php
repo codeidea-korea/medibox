@@ -112,8 +112,14 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 					<select class="default" id="type">
 					<!-- 기획서에 추후 제공예정/내용 없음 -->
 						<option value="">선택해주세요.</option>
+						<!--
 						<option value="VIP">VIP</option>
 						<option value="일반">일반</option>
+						-->
+						<option value="1. BLACK">1. BLACK</option>
+						<option value="2. PLATINUM">1. PLATINUM</option>
+						<option value="3. GOLD">1. GOLD</option>
+						<option value="4. CLASSIC">1. CLASSIC</option>
 					</select>
 				</div>
 			</div>
@@ -122,10 +128,28 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 				<div class="wr-list-con">
 					<select class="default" id="join_path">
 						<option value="">선택해주세요.</option>
+						<!--
 						<option value="미니쉬직원">미니쉬직원</option>
 						<option value="강원장님소개">강원장님소개</option>
 						<option value="미니쉬중요고객">미니쉬중요고객</option>
 						<option value="주주">주주</option>
+						-->
+						<option value="1.미니쉬_고객">1.미니쉬_고객</option>
+						<option value="1.미니쉬_중요고객">1.미니쉬_중요고객</option>
+						<option value="2.라운지고객_딥포커스">2.라운지고객_딥포커스</option>
+						<option value="2.라운지고객_바라는네일">2.라운지고객_바라는네일</option>
+						<option value="2.라운지고객_포레스타">2.라운지고객_포레스타</option>
+						<option value="3.직원_미니쉬">3.직원_미니쉬</option>
+						<option value="3.직원_MMC">3.직원_MMC</option>
+						<option value="4.소개_직원">4.소개_직원</option>
+						<option value="4.소개_고객">4.소개_고객</option>
+						<option value="4.소개_국장님">4.소개_국장님</option>
+						<option value="4.소개_강원장님">4.소개_강원장님</option>
+						<option value="5.기타_MOU">5.기타_MOU</option>
+						<option value="5.기타_체험단">5.기타_체험단</option>
+						<option value="5.기타_일반문의">5.기타_일반문의</option>
+						<option value="5.기타_테크주주">5.기타_테크주주</option>
+						<option value="5.기타_바우처구매">5.기타_바우처구매</option>
 					</select>
 				</div>
 			</div>
@@ -201,10 +225,16 @@ $page_title = $id == 0 ? '회원등록' : '회원수정';
 			alert('비밀번호를 입력해주세요.');
 			return false;
 		}
+		@php
+		if($id == 0) {
+		@endphp
 		if (regPw.test(pw) !== true) {
 			alert('비밀번호는 8자 이상  숫자, 알파벳, 특수기호를 혼합하여 입력해주세요. ');
 			return false;
 		}
+		@php 
+		}
+		@endphp
 		if(!name || name == '') {
 			alert('이름을 입력해주세요.');
 			return false;

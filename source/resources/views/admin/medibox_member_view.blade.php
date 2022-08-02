@@ -42,7 +42,11 @@ $page_title = '회원관리';
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">이름</div>
-					<div class="view-list-con _userName">관리자</div>
+					<div class="view-list-con">
+						<span class="_userName">관리자</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" onclick="gotoDetail()" class="btn green small">수정</a>
+					</div>
 					<div class="view-list-label">보유 포인트</div>
 					<div class="view-list-con _userPoint">100,000 P</div>
 				</div>
@@ -59,12 +63,17 @@ $page_title = '회원관리';
 					<div class="view-list-con _balmong">발몽정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</div>
 				</div>
 				<div class="view-list">
-					<div class="view-list-label">&nbsp;</div>
-					<div class="view-list-con">
-					&nbsp;
+					<div class="view-list-label">고객구분</div>
+					<div class="view-list-con _userType">
 					</div>
 					<div class="view-list-label"></div>
 					<div class="view-list-con _foresta">포레스타정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1,150,000 P</div>
+				</div>
+				<div class="view-list">
+					<div class="view-list-label">방문유형</div>
+					<div class="view-list-con _userJoinPath"></div>
+					<div class="view-list-label"></div>
+					<div class="view-list-con"></div>
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">메모</div>
@@ -120,6 +129,9 @@ $page_title = '회원관리';
 			$('#usermemo').val( response.data.memo );
 			$('#usermemo2').val( response.data.memo2 );
 			$('#membership_card_no').val( response.data.membership_card_no );
+			
+			$('._userType').text( response.data.type ? response.data.type : '-' );
+			$('._userJoinPath').text( response.data.join_path ? response.data.join_path : '-' );
 			
 			$('._createAt').text( response.data.create_dt );
 			$('._userPackage').text( (response.data.packageHistory ? (response.data.packageHistory.point / 10000) + '만원' : '') );
@@ -417,6 +429,9 @@ $page_title = '회원관리';
 		}, function(e){
 			console.log(e);
 		});
+	}
+	function gotoDetail(){
+		location.href = '/admin/members/'+{{ $id }};
 	}
 	</script>
 

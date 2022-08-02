@@ -181,6 +181,11 @@
 											<textarea id="memo" name="" class="mini autoSize" placeholder="메모"></textarea>
 										</td>
 									</tr>
+									<tr style="border:1px solid #000;">
+										<td  style="border:1px solid #000;">예약자 정보</td>
+										<td  style="border:1px solid #000;" colspan="3" id="_reservation_user_info">
+										</td>
+									</tr>
 									<tr style="border:1px solid #000;" id="status_select">
 										<td  style="border:1px solid #000;">예약 상태</td>
 										<td  style="border:1px solid #000;text-align:left;" colspan="3">
@@ -549,6 +554,7 @@
 		userInfo = userInfo[0];
 		user_name = userInfo.user_name;
 		user_phone = userInfo.user_phone;
+		$('#_reservation_user_info').text(user_name + ' (' + user_phone + ')');
 	}
 	function getServicesPop(manager_type){
 		

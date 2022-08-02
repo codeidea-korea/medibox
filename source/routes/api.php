@@ -99,6 +99,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     
     Route::get('point/history', [PointController::class, 'list']);
     Route::post('point/auto-conf', [PointController::class, 'conf']);
+
+    Route::get('store/calculate', [PointController::class, 'getCalculate']);
     
     
     Route::get('users', [UserController::class, 'list']);

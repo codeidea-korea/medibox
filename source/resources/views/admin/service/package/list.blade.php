@@ -165,7 +165,7 @@ $page_title = '패키지 관리';
 			for(var inx=0; inx<response.data.length; inx++){
                 var no = (response.count - (request.pageNo - 1)*pageSize) - inx;				
 				bodyData = bodyData 
-							+'<tr onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')" style="cursor: pointer;">'
+							+'<tr onclick="gotoDetail(\''+response.data[inx].product_seqno+'\')"onclick="medibox.methods.userPage('+response.data[inx].user_seqno+')" style="cursor: pointer;">'
 							+'	<td>'+no+'</td>'
 							+'	<td>'+response.data[inx].type_name+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].return_point)+'p</td>'

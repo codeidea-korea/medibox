@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="{{ asset('adm/js/form/myform.css') }}">
 <link rel="stylesheet" href="{{ asset('adm/js/form/bootstrap-select/bootstrap-select.css') }}">
 <link rel="stylesheet" href="{{ asset('adm/css/styleDefault.css') }}">
-<link rel="stylesheet" href="{{ asset('adm/css/style.css?v=202207092200') }}">
+<link rel="stylesheet" href="{{ asset('adm/css/style.css?v=202208022355') }}">
 <script type="text/javascript" src="{{ asset('adm/js/jquery-1.12.4.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/animation/easing.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/magnific-popup/jquery.magnific-popup.js') }}"></script>
@@ -25,7 +25,7 @@
 <script type="text/javascript" src="{{ asset('adm/js/form/datepicker/datepicker.ko-KR.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/form/myform.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/myScript.js') }}"></script>
-<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202207200120"></script>
+<script type="text/javascript" src="{{ asset('adm/js/medibox-adm-apis.js') }}?v=202207220120"></script>
 </head>
 <body>
 

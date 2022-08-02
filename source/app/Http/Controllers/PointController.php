@@ -385,6 +385,7 @@ class PointController extends Controller
         }
         
         // 회원가입시 추천인 포인트 지급 처리 (최초 결제건에 대해 1회 % 적립)
+        /*
         $countUsed = DB::table("user_point_hst")->where([
             ['user_seqno', '=', $user_seqno],
             ['hst_type', '=', 'U']
@@ -455,6 +456,7 @@ class PointController extends Controller
                 );
             }
         }
+        */
         // 쿠폰 반환
         if(!empty($reIssueCoupon) && $reIssueCoupon > 0) {
             
@@ -1276,45 +1278,345 @@ class PointController extends Controller
     // 정산
     public function getCalculate(Request $request)
     {
-        $store_seqno = $request->get('store_seqno'); // 매장
-        $startDt = $request->get('startDt'); // 기간
-        $endDt = $request->get('endDt');
+        $start_dt = $request->get('start_dt');
+        $end_dt = $request->get('end_dt');
+
+        $store_seqno = $request->get('store_seqno');
+        $service_type = $request->get('service_type'); // 서비스별 구분 (멤버쉽, 바우처, 쿠폰, 패키지, 정액권, 서비스, 예약)
+        $hst_type = $request->get('hst_type'); // 구매 내역별 구분 (사용/예약, 충전/예약취소, 환불)
+
+        $user_name = $request->get('user_name'); // 고객 이름
+        
+        $search_field = $request->get('searchField'); // 고객 이름/아이디
+        $search_field_recommand = $request->get('searchFieldRecommand'); // 추천 고객 이름/아이디
+        $pucharse_memo = $request->get('memo'); // 결제 메모
+        $reservation_memo = $request->get('memo2'); // 예약 메모
 
         $result = [];
         $result['ment'] = '조회에 실패하였습니다.';
         $result['result'] = false;
 
-        $where = [];
-        array_push($where, ['delete_yn', '=', 'N']);
-        array_push($where, ['offline_type', '=', 'Y']);
-        if (!empty($point_type) && $point_type != '' && $point_type != 'P') {
-            array_push($where, ['point_type', '=', $point_type]);
-        }
-        if (!empty($service_name) && $service_name != '') {
-            array_push($where, ['service_name', '=', $service_name]);
+        $latestReservation = DB::table('reservation')
+            ->select('reservation.user_seqno', DB::raw('MAX(reservation.start_dt) as last_start_dt'))
+            ->where([
+                ['reservation.status', '!=', 'C'],
+                ['reservation.deleted', '=', 'N']
+            ])
+            ->groupBy('reservation.user_seqno');
+
+        if ((empty($service_type) || $service_type == 'K' || $service_type == 'F') && empty($reservation_memo)) {
+            // 포인트 이력 조회 (패키지, 정액권, 서비스)
+            $where = [];
+            if (!empty($start_dt) && $start_dt != '') {
+                array_push($where, ['user_point_hst.create_dt', '>=', $start_dt]);
+            }
+            if (!empty($end_dt) && $end_dt != '') {
+                array_push($where, ['user_point_hst.create_dt', '<=', $end_dt]);
+            }
+            if (!empty($pucharse_memo) && $pucharse_memo != '') {
+                array_push($where, ['user_point_hst.memo', 'like', '%'.$pucharse_memo.'%']);
+            }
+            if (!empty($service_type) && $service_type != '') {
+                if ($service_type == 'K') {
+                    array_push($where, ['user_point_hst.point_type', '=', 'K']);
+                } else if ($service_type == 'F') {
+                    array_push($where, ['user_point_hst.point_type', '!=', 'K']);
+                    array_push($where, ['user_point_hst.point_type', '!=', 'P']);
+                }
+            }
+            if (!empty($hst_type) && $hst_type != '') {
+                array_push($where, ['user_point_hst.hst_type', '=', $hst_type]);
+            }
+            if (!empty($user_name) && $user_name != '') {
+                array_push($where, ['user_info.user_name', 'like', '%'.$user_name.'%']);
+            }
+            if (!empty($store_seqno) && $store_seqno != '') {
+                array_push($where, ['store.seqno', '=', $store_seqno]);
+
+                $result['pointHistory'] = DB::table("user_point_hst")
+                    ->join('user_info', 'user_point_hst.user_seqno', '=', 'user_info.user_seqno')
+                    ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno')
+                    ->join('partner', 'partner.type_code', '=', 'product.point_type')
+                    ->join('store', 'partner.seqno', '=', 'store.partner_seqno')
+                    ->leftJoin('admin_info', 'user_point_hst.admin_seqno', '=', 'admin_info.admin_seqno')
+                    ->leftJoin('user_info as recommand_user', 'recommand_user.user_phone', '=', 'user_info.recommended_code')
+                    ->join('user_point', function ($join) {
+                        $join->on('user_point.user_seqno', '=', 'user_info.user_seqno')
+                            ->where('user_point.point_type', '=', 'P');
+                    })
+                    ->joinSub($latestReservation, 'latest_reservation', function ($join) {
+                        $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno');
+                    });
+            } else {
+                $result['pointHistory'] = DB::table("user_point_hst")
+                    ->join('user_info', 'user_point_hst.user_seqno', '=', 'user_info.user_seqno')
+                    ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno')
+                    ->leftJoin('partner', 'partner.type_code', '=', 'product.point_type')
+                    ->leftJoin('admin_info', 'user_point_hst.admin_seqno', '=', 'admin_info.admin_seqno')
+                    ->leftJoin('user_info as recommand_user', 'recommand_user.user_phone', '=', 'user_info.recommended_code')
+                    ->join('user_point', function ($join) {
+                        $join->on('user_point.user_seqno', '=', 'user_info.user_seqno')
+                            ->where('user_point.point_type', '=', 'P');
+                    })
+                    ->joinSub($latestReservation, 'latest_reservation', function ($join) {
+                        $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno');
+                    });
+            }
+            
+            if (!empty($search_field) && $search_field != '') {
+                $result['pointHistory'] = $result['pointHistory']
+                    ->where(function($query) use ($search_field){
+                        $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                            ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                    });
+            }
+            if (!empty($search_field_recommand) && $search_field_recommand != '') {
+                $result['pointHistory'] = $result['pointHistory']
+                    ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                    ->where(function($query) use ($search_field_recommand){
+                        $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$search_field_recommand.'%')
+                            ->orWhere('recommand_user_info.user_name', 'like', '%'.$search_field_recommand.'%');
+                    });
+            }
+
+            $result['pointHistory'] = $result['pointHistory']
+                ->where($where)
+                ->whereNull('user_point_hst.service_seqno')
+                ->orderBy('user_point_hst.create_dt', 'desc')
+                ->select(DB::raw('user_point_hst.*, user_point_hst.point as price, '
+                    . 'user_info.user_seqno as user_seqno, user_info.user_name as user_name, user_info.user_phone as user_phone, '
+                    . 'recommand_user.user_seqno as recommand_user_seqno, recommand_user.user_name as recommand_user_name, recommand_user.user_phone as recommand_user_phone, '
+                    . 'user_point.point as user_remain_point, '
+                    . 'latest_reservation.last_start_dt as last_reservation_start_dt, '
+                    . 'product.service_name as service_name, product.type_name as type_name, product.service_sub_name as service_sub_name, '
+                    . 'admin_info.admin_name as admin_name, '
+                    . 'user_point_hst.point_type as point_type, user_point_hst.hst_type as hst_type'))
+                ->get();
         }
 
+        if ((empty($service_type) || $service_type == 'M') && empty($reservation_memo) && empty($pucharse_memo)) {
+            // 멤버쉽 이력 조회 (멤버쉽) 
+            $where = [];
+            if (!empty($start_dt) && $start_dt != '') {
+                array_push($where, ['membership_user_hst.create_dt', '>=', $start_dt]);
+            }
+            if (!empty($end_dt) && $end_dt != '') {
+                array_push($where, ['membership_user_hst.create_dt', '<=', $end_dt]);
+            }
+            if (!empty($hst_type) && $hst_type != '') {
+                array_push($where, ['membership_user_hst.hst_type', '=', $hst_type]);
+            }
+            if (!empty($store_seqno) && $store_seqno != '') {
+                array_push($where, ['membership_user_hst.service_seqno', '=', $store_seqno]);
+            }
+            if (!empty($user_name) && $user_name != '') {
+                array_push($where, ['user_info.user_name', 'like', '%'.$user_name.'%']);
+            }
+            
+            $result['membershipHistory'] = DB::table("membership_user_hst")
+                ->join('membership_user', 'membership_user_hst.membership_user_seqno', '=', 'membership_user.seqno')
+                ->join('user_info', 'membership_user.user_seqno', '=', 'user_info.user_seqno')
+                ->leftJoin('product_membership', 'membership_user.membership_seqno', '=', 'product_membership.seqno')
+    //            ->leftJoin('store_service', 'membership_user_hst.service_seqno', '=', 'store_service.seqno')
+        //            ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
+    //            ->leftJoin('store', 'store.seqno', '=', 'store_service.store_seqno')
+    //            ->leftJoin('admin_info', 'user_point_hst.admin_seqno', '=', 'admin_info.admin_seqno')
+                ->leftJoin('user_info as recommand_user', 'recommand_user.user_phone', '=', 'user_info.recommended_code')
+                ->join('user_point', function ($join) {
+                    $join->on('user_point.user_seqno', '=', 'user_info.user_seqno')
+                        ->where('user_point.point_type', '=', 'P');
+                })
+                ->joinSub($latestReservation, 'latest_reservation', function ($join) {
+                    $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno');
+                })
+            ;
+            if (!empty($search_field) && $search_field != '') {
+                $result['membershipHistory'] = $result['membershipHistory']
+                    ->where(function($query) use ($search_field){
+                        $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                            ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                    });
+            }
+            if (!empty($search_field_recommand) && $search_field_recommand != '') {
+                $result['membershipHistory'] = $result['membershipHistory']
+                    ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                    ->where(function($query) use ($search_field_recommand){
+                        $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$search_field_recommand.'%')
+                            ->orWhere('recommand_user_info.user_name', 'like', '%'.$search_field_recommand.'%');
+                    });
+            }
+            $result['membershipHistory'] = $result['membershipHistory']
+                ->where($where)
+                ->orderBy('membership_user_hst.create_dt', 'desc')
+                ->select(DB::raw('membership_user_hst.*, product_membership.price as price, '
+                    . 'recommand_user.user_seqno as recommand_user_seqno, recommand_user.user_name as recommand_user_name, recommand_user.user_phone as recommand_user_phone, '
+                    . 'user_point.point as user_remain_point, '
+                    . 'latest_reservation.last_start_dt as last_reservation_start_dt, '
+                    . 'user_info.user_seqno as user_seqno, user_info.user_name as user_name, user_info.user_phone as user_phone, \'멤버쉽\' as point_type '))
+                ->get();
+        }
+        if ((empty($service_type) || $service_type == 'V') && empty($reservation_memo) && empty($pucharse_memo)) {
+            // 바우처 이력 조회 (바우처) 
+            $where = [];
+            if (!empty($start_dt) && $start_dt != '') {
+                array_push($where, ['voucher_user_history.create_dt', '>=', $start_dt]);
+            }
+            if (!empty($end_dt) && $end_dt != '') {
+                array_push($where, ['voucher_user_history.create_dt', '<=', $end_dt]);
+            }
+            if (!empty($hst_type) && $hst_type != '') {
+                array_push($where, ['voucher_user_history.hst_type', '=', $hst_type]);
+            }
+            if (!empty($store_seqno) && $store_seqno != '') {
+                array_push($where, ['product_voucher.store_seqno', '=', $store_seqno]);
+            }
+            if (!empty($user_name) && $user_name != '') {
+                array_push($where, ['user_info.user_name', 'like', '%'.$user_name.'%']);
+            }
+            $result['voucherHistory'] = DB::table("voucher_user_history")
+                ->join('voucher_user', 'voucher_user_history.voucher_user_seqno', '=', 'voucher_user.seqno')
+                ->join('user_info', 'voucher_user.user_seqno', '=', 'user_info.user_seqno')
+                ->leftJoin('product_voucher', 'voucher_user.voucher_seqno', '=', 'product_voucher.seqno')
+                ->leftJoin('store_service', 'product_voucher.service_seqno', '=', 'store_service.seqno')
+        //            ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
+                ->leftJoin('store', 'store.seqno', '=', 'store_service.store_seqno')
+        //            ->leftJoin('admin_info', 'user_point_hst.admin_seqno', '=', 'admin_info.admin_seqno')
+                ->leftJoin('user_info as recommand_user', 'recommand_user.user_phone', '=', 'user_info.recommended_code')
+                ->join('user_point', function ($join) {
+                    $join->on('user_point.user_seqno', '=', 'user_info.user_seqno')
+                        ->where('user_point.point_type', '=', 'P');
+                })
+                ->joinSub($latestReservation, 'latest_reservation', function ($join) {
+                    $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno');
+                })
+            ;
+            if (!empty($search_field) && $search_field != '') {
+                $result['voucherHistory'] = $result['voucherHistory']
+                    ->where(function($query) use ($search_field){
+                        $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                            ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                    });
+            }
+            if (!empty($search_field_recommand) && $search_field_recommand != '') {
+                $result['voucherHistory'] = $result['voucherHistory']
+                    ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                    ->where(function($query) use ($search_field_recommand){
+                        $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$search_field_recommand.'%')
+                            ->orWhere('recommand_user_info.user_name', 'like', '%'.$search_field_recommand.'%');
+                    });
+            }
+            $result['voucherHistory'] = $result['voucherHistory']
+                ->where($where)
+                ->orderBy('voucher_user_history.create_dt', 'desc')
+                ->select(DB::raw('voucher_user_history.*, product_voucher.price as price, '
+                    . 'recommand_user.user_seqno as recommand_user_seqno, recommand_user.user_name as recommand_user_name, recommand_user.user_phone as recommand_user_phone, '
+                    . 'user_point.point as user_remain_point, '
+                    . 'latest_reservation.last_start_dt as last_reservation_start_dt, '
+                    . 'user_info.user_seqno as user_seqno, user_info.user_name as user_name, user_info.user_phone as user_phone, '
+                    . 'product_voucher.name as service_name, product_voucher.price as service_price, \'바우처\' as point_type '))
+                ->get();
+        }
+        /*
+        if (empty($service_type) || $service_type != 'C') {
+            // 쿠폰 이력 조회 (쿠폰)
+            $where = [];
+            if (!empty($start_dt) && $start_dt != '') {
+                array_push($where, ['coupon_user_history.create_dt', '>=', $start_dt]);
+            }
+            if (!empty($end_dt) && $end_dt != '') {
+                array_push($where, ['coupon_user_history.create_dt', '<=', $end_dt]);
+            }
+            if (!empty($hst_type) && $hst_type != '') {
+                array_push($where, ['coupon_user_history.hst_type', '=', $hst_type]);
+            }
+            $result['couponHistory'] = DB::table("coupon_user_history")
+                ->leftJoin('coupon_user', 'coupon_user_history.coupon_user_seqno', '=', 'coupon_user.seqno')
+                ->leftJoin('user_info', 'coupon_user.user_seqno', '=', 'user_info.user_seqno')
+                ->leftJoin('coupon', 'coupon_user.coupon_seqno', '=', 'coupon.seqno')
+                ->where($where)
+                ->orderBy('coupon_user_history.create_dt', 'desc')
+                ->select(DB::raw('coupon_user_history.*, product_voucher.price as price, '
+                    . 'user_info.user_seqno as user_seqno, user_info.user_name as user_name, user_info.user_phone as user_phone, '
+                    . 'coupon.name as service_name, coupon_user.real_discount_price as real_discount_price, \'쿠폰\' as point_type '))
+                ->get();
+        }
+        */
 
-        // 회원번호	종류	사용유형	결제매장	결제자	사용대장	서비스명	예약/취소일	결제/환불일	금액
-        $contents = DB::table("user_point_hst")
-            ->leftJoin('user_info', 'user_point_hst.user_seqno', '=', 'user_info.user_seqno')
-            ->leftJoin('product', 'user_point_hst.product_seqno', '=', 'product.product_seqno')
-            ->leftJoin('store_service', 'user_point_hst.service_seqno', '=', 'store_service.seqno')
-            ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
-            ->leftJoin('store', 'store.seqno', '=', 'store_service.store_seqno')
-            ->leftJoin('admin_info', 'user_point_hst.admin_seqno', '=', 'admin_info.admin_seqno')
-            ->where($where)
-            ->orderBy('user_point_hst.create_dt', 'desc')
-            ->select(DB::raw('user_point_hst.*, '
-                . 'user_info.user_seqno as user_seqno, '
-                . 'product.service_name as service_name, product.type_name as type_name, product.service_sub_name as service_sub_name, '
-                . 'admin_info.admin_name as admin_name, '
-                . 'user_point_hst.point_type as point_type, user_point_hst.hst_type as hst_type'
-                . 'user_point_hst.point_type as point_type, user_point_hst.hst_type as hst_type'))
-            ->get();
+        if ((empty($service_type) || $service_type == 'R') && empty($pucharse_memo)) {
+            // 예약 이력 조회
+            $where = [];
+            if (!empty($start_dt) && $start_dt != '') {
+                array_push($where, ['reservation.start_dt', '>=', $start_dt]);
+            }
+            if (!empty($end_dt) && $end_dt != '') {
+                array_push($where, ['reservation.start_dt', '<=', $end_dt]);
+            }
+            if (!empty($hst_type) && $hst_type != '') {
+                if ($hst_type == 'RD') {
+                    // 예약
+                    array_push($where, ['reservation.status', '=', 'R']);
+                } else if ($hst_type == 'RC') {
+                    // 예약 취소
+                    array_push($where, ['reservation.status', '=', 'C']);
+                } else {
+                    array_push($where, ['reservation.status', '=', 'M']);
+                }
+            }
+            if (!empty($store_seqno) && $store_seqno != '') {
+                array_push($where, ['reservation.store_seqno', '=', $store_seqno]);
+            }
+            if (!empty($user_name) && $user_name != '') {
+                array_push($where, ['user_info.user_name', 'like', '%'.$user_name.'%']);
+            }
+            if (!empty($reservation_memo) && $reservation_memo != '') {
+                array_push($where, ['reservation.memo', 'like', '%'.$reservation_memo.'%']);
+            }
+            $result['reservationHistory'] = DB::table("reservation")
+                ->join('user_info', 'reservation.user_seqno', '=', 'user_info.user_seqno')
+                ->leftJoin('store_service', 'reservation.service_seqno', '=', 'store_service.seqno')
+    //            ->leftJoin('partner', 'partner.seqno', '=', 'store_service.partner_seqno')
+                ->leftJoin('store', 'store.seqno', '=', 'store_service.store_seqno')
+                ->leftJoin('admin_info', 'reservation.admin_seqno', '=', 'admin_info.admin_seqno')
+                ->leftJoin('user_info as recommand_user', 'recommand_user.user_phone', '=', 'user_info.recommended_code')
+                ->join('user_point', function ($join) {
+                    $join->on('user_point.user_seqno', '=', 'user_info.user_seqno')
+                        ->where('user_point.point_type', '=', 'P');
+                })
+                ->joinSub($latestReservation, 'latest_reservation', function ($join) {
+                    $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno');
+                })
+            ;
+            if (!empty($search_field) && $search_field != '') {
+                $result['reservationHistory'] = $result['reservationHistory']
+                    ->where(function($query) use ($search_field){
+                        $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                            ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                    });
+            }
+            if (!empty($search_field_recommand) && $search_field_recommand != '') {
+                $result['reservationHistory'] = $result['reservationHistory']
+                    ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                    ->where(function($query) use ($search_field_recommand){
+                        $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$search_field_recommand.'%')
+                            ->orWhere('recommand_user_info.user_name', 'like', '%'.$search_field_recommand.'%');
+                    });
+            }
+            $result['reservationHistory'] = $result['reservationHistory']
+                ->where($where)
+                ->whereIn('reservation.status', ['R', 'C'])
+                ->orderBy('reservation.start_dt', 'desc')
+                ->select(DB::raw('reservation.*, '
+                    . 'recommand_user.user_seqno as recommand_user_seqno, recommand_user.user_name as recommand_user_name, recommand_user.user_phone as recommand_user_phone, '
+                    . 'user_point.point as user_remain_point, '
+                    . 'latest_reservation.last_start_dt as last_reservation_start_dt, '
+                    . 'user_info.user_seqno as user_seqno, user_info.user_name as user_name, user_info.user_phone as user_phone, '
+                    . 'store.name as store_name, store_service.name as service_name, store_service.estimated_time as estimated_time, store_service.price as price, '
+                    . 'admin_info.admin_name as admin_name, '
+                    . '\'예약\' as point_type, (if( reservation.status = \'R\', \'예약\', \'예약취소\' )) as hst_type'))
+                ->get();
+        }
 
         $result['ment'] = '정상 조회 되었습니다.';
-        $result['data'] = $services;
         $result['result'] = true;
 
         return $result;

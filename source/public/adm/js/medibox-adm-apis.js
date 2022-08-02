@@ -156,6 +156,7 @@ var bfCall = (function(){
                 types: function (params, successThenFn, errorThenFn){ ajaxCall('', 'point-types', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 shops: function (params, successThenFn, errorThenFn){ ajaxCall('', 'point-types/shops', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 collects: function (params, successThenFn, errorThenFn){ ajaxCall('', 'point-types/collects', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
+                calculate: function (params, successThenFn, errorThenFn){ ajaxCall('', 'store/calculate', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 
                 history: function (params, successThenFn, errorThenFn){ ajaxCall('', 'point/history', 'GET', 'application/x-www-form-urlencoded', params, successThenFn, errorThenFn, true); },
                 conf: function (params, successThenFn, errorThenFn){ ajaxCall('메디박스 포인트 설정 변경', 'point/auto-conf', 'POST', 'application/json', params, successThenFn, errorThenFn, true); },

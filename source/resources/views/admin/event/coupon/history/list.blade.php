@@ -32,6 +32,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 						<input type="text" id="_end" class="datepick _end">		
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">이벤트 상태</div>
 					<div class="wr-list-con">
@@ -49,6 +50,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 						<label class="radio-wrap"><input type="radio" name="used_coupon" value="N"><span></span>쿠폰 미사용</label>
 					</div>
 				</div>
+				-->
 
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 제휴사</div>
@@ -68,6 +70,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 						<input type="text" name="search_field2" id="search_field2" value="" class="span250" onkeyup="enterkey()" placeholder="검색어를 입력하세요">
 					</div>
 				</div>
+				<!--
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 사용기간</div>
 					<div class="wr-list-con">
@@ -81,6 +84,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 						<input type="text" id="_coupon_end" class="datepick _coupon_end">		
 					</div>
 				</div>
+				-->
 				<div class="wr-list">
 					<div class="wr-list-label">쿠폰 할인유형</div>
 					<div class="wr-list-con">
@@ -230,7 +234,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	});
 	$('._end').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -246,7 +250,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	});
 	$('._coupon_end').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -262,7 +266,7 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	});
 	$('._user_coupon_end').datepicker({
 		language: 'ko-KR',
-		autoPick: true,
+		autoPick: false,
 		autoHide: true,
 		format: 'yyyy-mm-dd'
 	}).on('change', function(e) {
@@ -432,6 +436,9 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 	}
 	
 	function convertGrpPartners2PartnerName(coupon_partner_grp_seqno){
+		if(!coupon_partner_grp_seqno) {
+			return '-';
+		}
 		
 		if(coupon_partner_grp_seqno == 0) {
 			return '전체';
@@ -448,6 +455,9 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 			}
 			return partnersName;
 		}
+	}
+	function safetyNull(str) {
+		return !str ? '-' : str;
 	}
 	
 	function getList(){
@@ -545,8 +555,8 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 							+'	<td>'+getIssuanceType(response.data[inx].status)+'</td>'
 							+'	<td>'+getUsedCouponType(response.data[inx].used_coupon)+'</td>'
 							+'	<td>'+convertGrpPartners2PartnerName(response.data[inx].coupon_partner_grp_seqno)+'</td>'
-							+'	<td>'+response.data[inx].coupon_name+'</td>'
-							+'	<td>'+response.data[inx].coupon_start_dt + ' ~ ' + response.data[inx].coupon_end_dt+'</td>'
+							+'	<td>'+safetyNull(response.data[inx].coupon_name)+'</td>'
+							+'	<td>'+safetyNull(response.data[inx].coupon_start_dt) + ' ~ ' + safetyNull(response.data[inx].coupon_end_dt)+'</td>'
 							+'	<td>'+getType(response.data[inx].type)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].discount_price)+'</td>'
 							+'	<td>'+medibox.methods.toNumber(response.data[inx].limit_base_price)+'</td>'
@@ -587,9 +597,9 @@ $page_title = '이벤트 쿠폰 유저별 발급내역';
 		getPartners();
 		popHide();
 
-		endDay = toDateFormatt(new Date().getTime());
-		couponEndDay = toDateFormatt(new Date().getTime());
-		userCouponEndDay = toDateFormatt(new Date().getTime());
+//		endDay = toDateFormatt(new Date().getTime());
+//		couponEndDay = toDateFormatt(new Date().getTime());
+//		userCouponEndDay = toDateFormatt(new Date().getTime());
 	});
 	</script>
 

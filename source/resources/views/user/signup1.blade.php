@@ -33,8 +33,8 @@
                     <!-- <label for="id">아이디(휴대폰 번호)</label> -->
                     <h2>아이디(휴대폰 번호)</h2>
                     <!-- 22.03.11 type 수정, pattern 추가 -->
-                    <!-- <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." required> -->
-                    <input type="text" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" maxLength=13 onkeyup="checkValidationIdDupplicated()" required>
+                    <!-- <input type="tel" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." pattern="[0-9]{3}[0-9]{4}[0-9]{4}" required> -->
+                    <input type="text" name="id" id="id" placeholder="휴대폰 번호를 입력해주세요." maxLength=13 onkeyup="checkValidationIdDupplicated()" required>
 
                     <!-- 형식과 다르거나 중복 됐을 때 나오는 오류메시지 -->
                     <span id="id_error1">올바른 휴대폰 번호를 입력해주세요.</span>
@@ -94,7 +94,7 @@
                 <!-- 추천인코드 -->
                 <div>
                     <h2>추천인코드(선택)</h2>
-                    <input type="text" name="recommended_code" placeholder="추천인 휴대폰번호를 입력해주세요.">
+                    <input type="text" name="recommended_code" id="recommended_code" placeholder="추천인 휴대폰번호를 입력해주세요.">
                 </div>                
                 <!-- 다음 버튼 -->
                 <!-- 22.03.18 수정 -->
@@ -229,6 +229,7 @@
             var pw_1 = document.querySelector('#pw_1').value;
             var pw_2 = document.querySelector('#pw_2').value;
             var name = document.querySelector('#name').value;
+            var recommended_code = document.querySelector('#recommended_code').value;
             var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
             hideValidationText();
 
@@ -268,6 +269,12 @@
             var shop = $('input[name=recommended_shop]').val();
             if(!shop || shop == '')  {
                 return false;
+            }
+            if(recommended_code && recommended_code != '')  {
+                if(recommended_code.replaceAll('-','') == id.replaceAll('-','')) {
+                    alert('본인을 추천인으로 등록하실 수는 없습니다.');
+                    return false;
+                }
             }
 
             return true;

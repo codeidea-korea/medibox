@@ -31,13 +31,16 @@ class EventBannerController extends Controller
         $coupon_start_dt = $request->get('coupon_start_dt');
         $coupon_end_dt = $request->get('coupon_end_dt');
         $type = $request->get('type');
+        $include_discontinued = $request->get('include_discontinued', 'N');
         
         $result = [];
         $result['ment'] = '조회 실패';
         $result['result'] = false;
 
         $where = [];
-        array_push($where, ['even_banner.deleted', '=', 'N']);
+        if(empty($include_discontinued) || $include_discontinued == 'N') {
+            array_push($where, ['even_banner.deleted', '=', 'N']);
+        }
         if(! empty($search_field1) && $search_field1 != ''){
             if($event_search_type == 'name') {
                 array_push($where, ['even_banner.name', 'like', '%'.$search_field1.'%']);
@@ -62,45 +65,67 @@ class EventBannerController extends Controller
         }
 
         $whereCoupon = [];
+        $useCouponCause = false;
         array_push($whereCoupon, ['coupon.deleted', '=', 'N']);
         if(! empty($partner_seqno) && $partner_seqno != ''){
             array_push($whereCoupon, ['coupon_partner_grp_seqno', 'like', '%|'.$partner_seqno.'|%']);
+            $useCouponCause = true;
         }
         if(! empty($search_field2) && $search_field2 != ''){
             if($coupon_search_type == 'name') {
                 array_push($where, ['coupon.name', 'like', '%'.$search_field2.'%']);
                 array_push($whereCoupon, ['coupon.name', 'like', '%'.$search_field2.'%']);
+                $useCouponCause = true;
             } else if($coupon_search_type == 'seqno') {
                 array_push($where, ['coupon.seqno', '=', $search_field2]);
                 array_push($whereCoupon, ['coupon.seqno', '=', $search_field2]);
+                $useCouponCause = true;
             }
         }
         if(! empty($coupon_start_dt) && $coupon_start_dt != ''){
             array_push($whereCoupon, ['coupon.start_dt', '>=', $coupon_start_dt]);
+            $useCouponCause = true;
         }
         if(! empty($coupon_end_dt) && $coupon_end_dt != ''){
             array_push($whereCoupon, ['coupon.start_dt', '<=', $coupon_end_dt]);
+            $useCouponCause = true;
         }
         if(! empty($type) && $type != ''){
             array_push($whereCoupon, ['coupon.type', '=', $type]);
+            $useCouponCause = true;
         }
         
-        $contents = DB::table("even_banner")->where($where)
-            ->join('coupon', function ($join) use ($whereCoupon) {
-                $join->on('even_banner.event_coupon_seqno', '=', 'coupon.seqno')
-                    ->where($whereCoupon);
-            })
-            ->select(DB::raw('even_banner.*, coupon.name as coupon_name, coupon.context as coupon_context,'
-                            .'coupon.coupon_partner_grp_seqno as coupon_partner_grp_seqno, coupon.start_dt as coupon_start_dt,'
-                            .'coupon.end_dt as coupon_end_dt, type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type'))
+        $contents = DB::table("even_banner")->where($where);
+        $count = DB::table("even_banner")->where($where);
+
+        if($useCouponCause) {
+            // 쿠폰 조회 조건
+            $contents = $contents
+                ->join('coupon', function ($join) use ($whereCoupon) {
+                    $join->on('even_banner.event_coupon_seqno', '=', 'coupon.seqno')
+                        ->where($whereCoupon);
+                })
+                ->select(DB::raw('even_banner.*, coupon.name as coupon_name, coupon.context as coupon_context,'
+                                .'coupon.coupon_partner_grp_seqno as coupon_partner_grp_seqno, coupon.start_dt as coupon_start_dt,'
+                                .'coupon.end_dt as coupon_end_dt, type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type'));
+            
+            $count = $count
+                ->join('coupon', function ($join) use ($whereCoupon) {
+                    $join->on('even_banner.event_coupon_seqno', '=', 'coupon.seqno')
+                        ->where($whereCoupon);
+                });
+        } else {
+            $contents = $contents
+                ->leftJoin('coupon', 'even_banner.event_coupon_seqno', '=', 'coupon.seqno')
+                ->select(DB::raw('even_banner.*, coupon.name as coupon_name, coupon.context as coupon_context,'
+                                .'coupon.coupon_partner_grp_seqno as coupon_partner_grp_seqno, coupon.start_dt as coupon_start_dt,'
+                                .'coupon.end_dt as coupon_end_dt, type, discount_price, max_discount_price, limit_base_price, allowed_issuance_type'));
+        }
+        $contents = $contents
             ->orderBy('create_dt', 'desc')
             ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
             ->get();
-        $count = DB::table("even_banner")->where($where)
-            ->join('coupon', function ($join) use ($whereCoupon) {
-                $join->on('even_banner.event_coupon_seqno', '=', 'coupon.seqno')
-                    ->where($whereCoupon);
-            })
+        $count = $count
             ->count();
 
         for($inx = 0; $inx < count($contents); $inx++){
@@ -129,13 +154,11 @@ class EventBannerController extends Controller
         $result['result'] = false;
 
         $contents = DB::table("even_banner")->where([
-            ['seqno', '=', $id],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $id]
         ])->first();
 
         $coupon = DB::table('coupon')->where([
-            ['seqno', '=', $contents->event_coupon_seqno],
-            ['deleted', '=', 'N']
+            ['seqno', '=', $contents->event_coupon_seqno]
         ])->first();
 
         $contents->coupon = $coupon;
@@ -143,7 +166,7 @@ class EventBannerController extends Controller
         if(!empty($contents->coupon)) {
             $partnerNos = explode(',', str_replace('|', '', str_replace('||' , ',', $contents->coupon->coupon_partner_grp_seqno)));
             $partners = DB::table("partner")
-                ->where([['deleted', '=', 'N']])
+//                ->where([['deleted', '=', 'N']])
                 ->whereIn('seqno', $partnerNos)
                 ->get();
             $contents->partners = $partners;
@@ -249,9 +272,10 @@ class EventBannerController extends Controller
         $coupon_start_dt = $request->post('coupon_start_dt');
         $coupon_end_dt = $request->post('coupon_end_dt');
         $coupon_type = $request->post('coupon_type', 'F');
-        $coupon_discount_price = $request->post('coupon_discount_price');
-        $coupon_max_discount_price = $request->post('coupon_max_discount_price');
-        $coupon_limit_base_price = $request->post('coupon_limit_base_price');
+        $coupon_discount_price = $request->post('coupon_discount_price', 0);
+        $coupon_max_discount_price = $request->post('coupon_max_discount_price', 0);
+        $coupon_limit_base_price = $request->post('coupon_limit_base_price', 0);
+        $deleted = $request->post('deleted', 'N');
 
         $result = [];
         $result['ment'] = '등록 실패';
@@ -281,7 +305,7 @@ class EventBannerController extends Controller
                     , 'limit_base_price' => $coupon_limit_base_price
                     , 'allowed_issuance_type' => 'A'
                     , 'date_use' => 0
-                    , 'deleted' => 'N'
+                    , 'deleted' => $deleted
                     , 'create_dt' => date('Y-m-d H:i:s')
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ], 'seqno'
@@ -299,6 +323,7 @@ class EventBannerController extends Controller
                     , 'discount_price' => $coupon_discount_price
                     , 'max_discount_price' => $coupon_max_discount_price
                     , 'limit_base_price' => $coupon_limit_base_price
+                    , 'deleted' => $deleted
                     , 'update_dt' => date('Y-m-d H:i:s') 
                 ]
             );
@@ -323,6 +348,7 @@ class EventBannerController extends Controller
                 , 'end_dt' => $end_dt
                 , 'used_coupon' => $used_coupon
                 , 'event_coupon_seqno' => $coupon_seqno
+                , 'deleted' => $deleted
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );

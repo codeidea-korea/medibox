@@ -31,6 +31,9 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 							<input name="" type="file" multiple="" id="upload_0" class="upload-hidden" onchange="uploadFile(this, 'thumbnail')">
 						</label>
 					</div>
+					<p class="help-block">
+						※ 이미지규격 : 1360 x 600 라운드 50px 
+					</p>
 					<!--
 					<p class="help-block">
 						※ 이미지 확장자는 PNG, JPG, JPEG 만 가능합니다.<br>
@@ -150,12 +153,16 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 		@php
 		if($couponNo != 0) {
 		@endphp
+		<!--
 		<a href="#" onclick="setStatus('C')" class="btn blue _btnStopIssuance">발급중지</a>
 		<a href="#" onclick="setStatus('E')" class="btn blue _btnEndIssuance">발급종료</a>
 		<a href="#" onclick="setStatus('A')" class="btn blue _btnReStartIssuance">발급재개</a>
 
 		<a href="#" onclick="remove()" class="btn red">삭제</a>
 		<a href="#" onclick="modify()" class="btn blue">수정</a>
+		-->
+		<a href="#" id="_remove" onclick="remove()" class="btn red">단종</a>
+		<a href="#" id="_rollback" onclick="sellsStatusModify()" class="btn blue">판매</a>
 		@php 
 		}
 		@endphp
@@ -603,6 +610,41 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			console.log(e);
 		});
 	}
+	function sellsStatusModify(){
+		var data = {
+			name: info.name
+			, context: info.context
+			, thumbnail: info.thumbnail
+			, img: info.img
+			, start_dt: info.start_dt
+			, end_dt: info.end_dt
+			, used_coupon: info.used_coupon
+			, coupon_partner_grp_seqno: info.coupon.coupon_partner_grp_seqno
+			, coupon_name: info.coupon.name
+			, coupon_context: info.coupon.context
+			, coupon_start_dt: info.coupon.start_dt
+			, coupon_end_dt: info.coupon.end_dt
+			, coupon_type: info.coupon.type
+			, coupon_discount_price: info.coupon.discount_price
+			, coupon_max_discount_price: info.coupon.max_discount_price
+			, coupon_limit_base_price: info.coupon.limit_base_price
+			, deleted: 'N'
+			, admin_seqno: {{ $seqno }}
+		};
+
+		medibox.methods.event.coupon.modify(data, {{$couponNo}}, function(request, response){
+			console.log('output : ' + response);
+			if(!response.result){
+				alert(response.ment);
+				return false;
+			}
+			alert('수정 되었습니다.');
+			cancel();
+		}, function(e){
+			console.log(e);
+		});
+	}
+	var info;
 	function getInfo(){
 		var data = { adminSeqno:{{ $seqno }}, id:'{{ $couponNo }}' };
 
@@ -611,6 +653,14 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 			if(!response.result){
 				alert(response.ment);
 				return false;
+			}
+			info = response.data;
+			if(response.data.deleted == 'Y') {
+				$('#_remove').hide();
+				$('#_rollback').show();
+			} else {
+				$('#_remove').show();
+				$('#_rollback').hide();
 			}
 
 			$('#name').val( response.data.name );
@@ -680,7 +730,7 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 	}
 	
 	function remove(){
-		if(!confirm('정말 삭제 하시겠습니까?')) {
+		if(!confirm('쿠폰을 사용 중지하시겠습니까?')) {
 			return;
 		}
 		medibox.methods.event.coupon.remove({
@@ -691,7 +741,7 @@ $page_title = $couponNo == 0 ? '이벤트 쿠폰 등록' : '이벤트 쿠폰 수
 				alert(response.ment);
 				return false;
 			}
-			alert('삭제 되었습니다.');
+			alert('단종 되었습니다.');
 			cancel();
 		}, function(e){
 			console.log(e);

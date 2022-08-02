@@ -433,7 +433,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		{
 			// <span class="cell col-3">발몽스파</span>
 //			bodyData = bodyData + '<span class="cell">'+stores[idx].name+' (미지정)</span>';
-			bodyData = bodyData + '<span class="cell col-'+stores[idx].managerInfo.length+'">'+stores[idx].name+'</span>';
+			bodyData = bodyData + '<span class="cell col-'+stores[idx].managerInfo.filter(manager => manager.deleted == 'N').length+'">'+stores[idx].name+'</span>';
 		}
 		// _stores
 		$('#_stores').html(bodyData);
@@ -729,6 +729,7 @@ var layer_select6 = '<ul class="layerSelect">';
 			var reservations = response.data.filter(reservation => reservation.status != 'C');
 
 			response.data = reservationCancel;
+//			reservationInfos = response.data;
 			{
 				for(var inx=0; inx<response.data.length; inx++){
 					var manager_seqno = 0;
@@ -766,7 +767,10 @@ var layer_select6 = '<ul class="layerSelect">';
 						barCaption = 'label-7';
 	//					continue;
 					}
-					reservationInfos = response.data;
+					if(!reservationInfos){
+						reservationInfos = [];
+					}
+					reservationInfos.push(response.data[inx]);
 
 					for(var jnx=0; jnx < countColor; jnx++){
 						if(jnx == 0) {
@@ -810,10 +814,8 @@ var layer_select6 = '<ul class="layerSelect">';
 							$(timeCeils[targetIdx + jnx]).html(
 								(status == 'C'
 									? $(timeCeils[targetIdx + jnx]).html() 
-										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
-									: $(timeCeils[targetIdx + jnx]).html() 
-										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
-										+'<div class="hover-mb-info">'
+										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')
+										+'<div class="hover-mb-info hover-mb-info1">'
 										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
 										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
 										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
@@ -821,7 +823,18 @@ var layer_select6 = '<ul class="layerSelect">';
 										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
 										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
 										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
-										+'</div>')
+										+'</div></span>'
+									: $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')
+										+'<div class="hover-mb-info hover-mb-info1">'
+										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
+										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
+										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
+										+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
+										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
+										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
+										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
+										+'</div></span>')
 							);
 
 							$(timeCeils[targetIdx + jnx]).addClass(barCaption);
@@ -860,6 +873,11 @@ var layer_select6 = '<ul class="layerSelect">';
 						manager_seqno = stores.managerInfo.filter(m => m.seqno == response.data[inx].manager_seqno)[0].seqno;
 					}
 					store_seqno = response.data[inx].store_seqno;
+					if(!reservationInfos){
+						reservationInfos = [];
+					}
+					reservationInfos.push(response.data[inx]);
+					
 					// custom_color
 					var startTime = response.data[inx].start_dt.split(' ')[1].substring(0, 5);
 					var countColor = Number(response.data[inx].estimated_time.split(':')[0]) * 6 + Number(response.data[inx].estimated_time.split(':')[1]) / 10;				
@@ -889,7 +907,6 @@ var layer_select6 = '<ul class="layerSelect">';
 						barCaption = 'label-7';
 	//					continue;
 					}
-					reservationInfos = response.data;
 
 					for(var jnx=0; jnx < countColor; jnx++){
 						if(jnx == 0) {
@@ -926,13 +943,17 @@ var layer_select6 = '<ul class="layerSelect">';
 								+ '추천인 : ' + (response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '') + '\n'
 								+ '메모 : ' + response.data[inx].memo + '');
 								*/		
-							$(timeCeils[targetIdx + jnx]).html(
-								(status == 'C'
-									? $(timeCeils[targetIdx + jnx]).html() 
-										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
-									: $(timeCeils[targetIdx + jnx]).html() 
-										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')+'</span>'
-										+'<div class="hover-mb-info">'
+							/*
+							var isOverlapReservation = $(timeCeils[targetIdx + jnx]).find('.hover-mb-info').length > 0;
+							if(isOverlapReservation) {
+								var hoverInfoLeft = $(timeCeils[targetIdx + jnx]).find('.hover-mb-info').html();
+								var infoLeft = $(timeCeils[targetIdx + jnx]).find('.info.cancel').html();
+								infoLeft = '<span class="info cancel">' + infoLeft 
+												+ '<div class="hover-mb-info hover-mb-info1">' + hoverInfoLeft + '</div>'
+											+ '</span>';
+								$(timeCeils[targetIdx + jnx]).html(infoLeft
+									+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')
+										+'<div class="hover-mb-info hover-mb-info2">'
 										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
 										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
 										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
@@ -940,7 +961,34 @@ var layer_select6 = '<ul class="layerSelect">';
 										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
 										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
 										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
-										+'</div>')
+										+'</div></span>');
+							} else {
+							}
+							*/
+							$(timeCeils[targetIdx + jnx]).html(
+								(status == 'C'
+									? $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info cancel">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')
+										+'<div class="hover-mb-info hover-mb-info1">'
+										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
+										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
+										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
+										+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
+										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
+										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
+										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
+										+'</div></span>'
+									: $(timeCeils[targetIdx + jnx]).html() 
+										+ '<span class="info">'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+' 고객 '+response.data[inx].serviceInfo.name+' '+((timeinfos[0]*60 + timeinfos[1])+'분')
+										+'<div class="hover-mb-info hover-mb-info1">'
+										+'	<a href="#" class="btn-edit" onclick="reservationseqno = '+response.data[inx].seqno+'; modifyItem()">예약수정</a>'
+										+'	<p>예약자 이름 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_name : response.data[inx].user_name)+'</b></p>'
+										+'	<p>예약자 전화번호 : <b>'+(response.data[inx].userInfo ? response.data[inx].userInfo.user_phone : response.data[inx].user_phone)+'</b></p>'
+										+'	<p>추천인 : <b>'+(response.data[inx].userInfo && response.data[inx].userInfo.recommendedUser ? response.data[inx].userInfo.recommendedUser.user_name : '')+'</b></p>'
+										+'	<p>메모 : <b>'+(response.data[inx].memo)+'</b></p>'
+										+'	<p>예약서비스 : <b>'+response.data[inx].serviceInfo.name+'</b></p>'
+										+'	<p>서비스 시간 : <b>'+((timeinfos[0]*60 + timeinfos[1])+'분')+'</b></p>'
+										+'</div></span>')
 							);
 
 							$(timeCeils[targetIdx + jnx]).addClass(barCaption);
@@ -1137,6 +1185,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		$('#status_select').hide();
 		$('#btnProvisional').show();
 		$('#servicePop').prop('disabled', false);
+		$('#_reservation_user_info').text('');
 
 		popOpen();
 	}		
@@ -1214,6 +1263,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		$('#_add').hide();
 		$('#_modify').show();
 		$('#servicePop').prop('disabled', true);
+		$('#_reservation_user_info').text(res.userInfo.user_name + ' (' + res.userInfo.user_phone + ')');
 
 		reservation_old_price = res.serviceInfo.price - res.discount_price;
 		reIssueCoupon = res.coupon_seqno;

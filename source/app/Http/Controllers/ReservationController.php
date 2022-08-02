@@ -374,6 +374,14 @@ class ReservationController extends Controller
         $seqno = DB::table('reservation')->max('seqno');
         $reservationKey = str_pad(($seqno+1).'', 6, "0", STR_PAD_LEFT);
 
+        if($apply_on_mobile == 'Y') {
+            $estimatedService = DB::table("store_service")->where([
+                ['seqno', '=', $service_seqno],
+                ['deleted', '=', 'N']
+            ])->first();
+    
+            $this->addPointWhenFirstReservation($user_seqno, $estimatedService->price);
+        }
         $id = DB::table('reservation')->insertGetId(
             [
                 'admin_seqno' => $admin_seqno
@@ -407,11 +415,187 @@ class ReservationController extends Controller
                 , 'update_dt' => date('Y-m-d H:i:s') 
             ]
         );
-
+        
         $result['ment'] = '성공';
         $result['result'] = true;
 
         return $result;
+    }
+
+    private function addPointWhenFirstReservation($user_seqno, $price){
+        
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        $pointHistoryCnt = DB::table('user_point_hst')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P'],
+            ['hst_type', '=', 'U']
+        ])->count();
+        // 회원가입시 추천인 포인트 지급 처리 (최초 결제->예약건에 대해 1회 % 적립)
+        $countUsed = DB::table("reservation")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['deleted', '=', 'N']
+        ])->count();
+        if($countUsed < 1 && $user->recommended_code && $user->recommended_code != '') {
+            $recommender = DB::table("user_info")->where([
+                ['user_phone', '=', $user->recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
+
+            $conf = DB::table("conf_auto_point")->first();
+            if(!empty($conf) && $conf->recommand_bonus == 'Y'
+                && !empty($recommender)) {
+                
+                $etcPoint = ($price / 100) * $conf->recommand_bonus_rate;
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => 0
+                        , 'user_seqno' => $user_seqno
+                        , 'admin_name' => ''
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 [추천한 고객: '.$recommender->user_name.' / '.$recommender->user_phone.', 예약금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $point->point + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+
+                $prevPoint = DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->first();
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => 0
+                        , 'user_seqno' => $recommender->user_seqno
+                        , 'admin_name' => ''
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'S'
+                        , 'point' => $etcPoint
+                        , 'memo' => '추천인 자동 적립 [추천받은(가입) 고객: '.$user->user_name.' / '.$user->user_phone.', 예약금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $prevPoint->point + $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
+    }
+
+    private function cancelPointWhenFirstReservation($user_seqno, $reservationId){
+        
+        $user = DB::table("user_info")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['delete_yn', '=', 'N']
+        ])->first();
+        $point = DB::table('user_point')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        $pointHistory = DB::table('user_point_hst')->where([
+            ['user_seqno', '=', $user_seqno],
+            ['point_type', '=', 'P']
+        ])->first();
+        // 회원가입시 추천인 포인트 지급 반환 처리 (최초 결제->예약건에 대해 1회 % 적립)
+        $countUsed = DB::table("reservation")->where([
+            ['user_seqno', '=', $user_seqno],
+            ['status', '!=', 'C'],
+            ['deleted', '=', 'N']
+        ])->count();
+        if($countUsed < 1 && $user->recommended_code && $user->recommended_code != '') {
+            $recommender = DB::table("user_info")->where([
+                ['user_phone', '=', $user->recommended_code],
+                ['delete_yn', '=', 'N']
+            ])->first();
+
+            $conf = DB::table("conf_auto_point")->first();
+            if(!empty($conf) && $conf->recommand_bonus == 'Y'
+                && !empty($recommender)) {
+                
+                $etcPoint = ($pointHistory-> / 100) * $conf->recommand_bonus_rate;
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => 0
+                        , 'user_seqno' => $user_seqno
+                        , 'admin_name' => ''
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'R'
+                        , 'point' => $etcPoint
+                        , 'memo' => '예약취소로 인한 추천인 자동 적립액 반환 [추천한 고객: '.$recommender->user_name.' / '.$recommender->user_phone.', 예약금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $point->point - $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+
+                $prevPoint = DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->first();
+
+                DB::table('user_point_hst')->insertGetId(
+                    [
+                        'admin_seqno' => 0
+                        , 'user_seqno' => $recommender->user_seqno
+                        , 'admin_name' => ''
+                        , 'point_type' => 'P'
+                        , 'product_seqno' => 0
+                        , 'hst_type' => 'R'
+                        , 'point' => $etcPoint
+                        , 'memo' => '예약취소로 인한 추천인 자동 적립액 반환 [추천받은(가입) 고객: '.$user->user_name.' / '.$user->user_phone.', 예약금액: '.$price.']'
+                        , 'create_dt' => date('Y-m-d H:i:s')
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ], 'user_point_hst_seqno'
+                );
+                DB::table('user_point')->where([
+                    ['user_seqno', '=', $recommender->user_seqno],
+                    ['point_type', '=', 'P']
+                ])->update(
+                    [
+                        'point' => $prevPoint->point - $etcPoint
+                        , 'update_dt' => date('Y-m-d H:i:s') 
+                    ]
+                );
+            }
+        }
     }
 
     public function modify(Request $request, $id)
@@ -616,6 +800,8 @@ class ReservationController extends Controller
             ]
         );
 
+        // 예약 취소인 경우, 최초 예약이었던 경우, 회원 포인트 차감 이력이 있는 경우
+        
         $result['ment'] = '성공';
         $result['result'] = true;
 
