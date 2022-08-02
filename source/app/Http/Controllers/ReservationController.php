@@ -800,6 +800,8 @@ class ReservationController extends Controller
             ]
         );
 
+        // 예약 취소인 경우, 최초 예약이었던 경우, 회원 포인트 차감 이력이 있는 경우
+        
         $result['ment'] = '성공';
         $result['result'] = true;
 

@@ -148,7 +148,8 @@ $page_title = '매장 정보 관리';
 							+'	<td>'+response.data[inx].name+'</td>'
 							+'	<td>'+response.data[inx].address +' '+response.data[inx].address_detail+'</td>'
 							+'	<td>'+response.data[inx].phone+'</td>'
-							+'	<td><a href="#" onclick="remove(\''+response.data[inx].name + '\',\'' + response.data[inx].seqno+'\')" class="btnDel">삭제</a>'
+							+'	<td>'
+//							+ '<a href="#" onclick="remove(\''+response.data[inx].name + '\',\'' + response.data[inx].seqno+'\')" class="btnDel">삭제</a>'
 							+'      <a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정하기</a></td>'
 							+'</tr>';
 			}

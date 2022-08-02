@@ -1185,6 +1185,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		$('#status_select').hide();
 		$('#btnProvisional').show();
 		$('#servicePop').prop('disabled', false);
+		$('#_reservation_user_info').text('');
 
 		popOpen();
 	}		
@@ -1262,6 +1263,7 @@ var layer_select6 = '<ul class="layerSelect">';
 		$('#_add').hide();
 		$('#_modify').show();
 		$('#servicePop').prop('disabled', true);
+		$('#_reservation_user_info').text(res.userInfo.user_name + ' (' + res.userInfo.user_phone + ')');
 
 		reservation_old_price = res.serviceInfo.price - res.discount_price;
 		reIssueCoupon = res.coupon_seqno;

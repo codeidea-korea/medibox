@@ -815,7 +815,7 @@ ul.option-list li:not(:first-child){margin-top:7px;}
 #bookingContainer .tabsCate a.active{top:0;z-index:3;font-size:14px;color:#000;background:#fff;background:#7F90AA;color:#fff;padding-bottom:0;border-color:rgba(0,0,0,0.3);}
 
 
-#bookingContainer{--cell-width:136px;--cell-height:48px;--table-head-height:64px;}
+#bookingContainer{--cell-width:136px;--cell-height:32px;--table-head-height:64px;}
 #bookingContainer .bodyCon{position:relative;height:calc(100% - 130px);display:flex;gap:15px}
 #bookingContainer .bodyCon .leftCon{flex-shrink:1;width:72px;height:100%;}
 #bookingContainer .bodyCon .leftCon [class*='btn-']{width:100%;font-size:14px;padding:10px 0;border-radius:3px;border:1px solid #DFDFDF;text-align:center;display:inline-flex;align-items:center;justify-content:center;}

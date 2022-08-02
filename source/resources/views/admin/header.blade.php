@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="{{ asset('adm/js/form/myform.css') }}">
 <link rel="stylesheet" href="{{ asset('adm/js/form/bootstrap-select/bootstrap-select.css') }}">
 <link rel="stylesheet" href="{{ asset('adm/css/styleDefault.css') }}">
-<link rel="stylesheet" href="{{ asset('adm/css/style.css?v=202207212100') }}">
+<link rel="stylesheet" href="{{ asset('adm/css/style.css?v=202208022355') }}">
 <script type="text/javascript" src="{{ asset('adm/js/jquery-1.12.4.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/animation/easing.js') }}"></script>
 <script type="text/javascript" src="{{ asset('adm/js/magnific-popup/jquery.magnific-popup.js') }}"></script>

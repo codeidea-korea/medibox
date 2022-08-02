@@ -574,6 +574,11 @@ class UserController extends Controller
         $type = $request->get('type');
         $join_path = $request->get('join_path');
         
+        $recommended_shop = $request->get('recommended_shop');
+        $searchFieldRecommand = $request->get('searchFieldRecommand');
+        $startReservateDay = $request->get('startReservateDay');
+        $endReservateDay = $request->get('endReservateDay');
+        
         $pageNo = $request->get('pageNo', 1);
         $pageSize = $request->get('pageSize', 10);
         $delete_yn = 'Y';
@@ -584,22 +589,32 @@ class UserController extends Controller
 
         $where = [];
         if (!empty($start_day) && $start_day != '') {
-            array_push($where, ['create_dt', '>=', $start_day]);
+            array_push($where, ['user_info.create_dt', '>=', $start_day]);
         }
         if (!empty($end_day) && $end_day != '') {
-            array_push($where, ['create_dt', '<=', $end_day]);
+            array_push($where, ['user_info.create_dt', '<=', $end_day]);
         }
         if (!empty($memo) && $memo != '') {
-            array_push($where, ['memo', 'like', '%'.$memo.'%']);
+            array_push($where, ['user_info.memo', 'like', '%'.$memo.'%']);
         }
         if (!empty($memo2) && $memo2 != '') {
-            array_push($where, ['memo2', 'like', '%'.$memo2.'%']);
+            array_push($where, ['user_info.memo2', 'like', '%'.$memo2.'%']);
         }
         if (!empty($type) && $type != '') {
-            array_push($where, ['type', '=', $type]);
+            array_push($where, ['user_info.type', '=', $type]);
         }
         if (!empty($join_path) && $join_path != '') {
-            array_push($where, ['join_path', '=', $join_path]);
+            array_push($where, ['user_info.join_path', '=', $join_path]);
+        }
+        if (!empty($recommended_shop) && $recommended_shop != '') {
+            array_push($where, ['user_info.recommended_shop', '=', $recommended_shop]);
+        }
+        $reservationWhere = [];
+        if (!empty($startReservateDay) && $startReservateDay != '') {
+            array_push($reservationWhere, ['latest_reservation.last_start_dt', '>=', $startReservateDay]);
+        }
+        if (!empty($endReservateDay) && $endReservateDay != '') {
+            array_push($reservationWhere, ['latest_reservation.last_start_dt', '<=', $endReservateDay]);
         }
 
         $users;
@@ -620,13 +635,64 @@ class UserController extends Controller
                 })
                 ->count();
         } else {
-            $users = DB::table("user_info")->where($where)
-                ->orderBy('create_dt', 'desc')
-                ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
-                ->get();
-            $userCount = DB::table("user_info")->where($where)
-                ->count();
         }
+
+        $users = DB::table("user_info")->where($where);
+        $userCount = DB::table("user_info")->where($where);
+
+        if (!empty($search_field) && $search_field != '') {
+            $users = $users
+                ->where(function($query) use ($search_field){
+                    $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                        ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                });
+            $userCount = $userCount
+                ->where(function($query) use ($search_field){
+                    $query->orWhere('user_info.user_phone', 'like', '%'.$search_field.'%')
+                        ->orWhere('user_info.user_name', 'like', '%'.$search_field.'%');
+                });
+        }
+        if (!empty($searchFieldRecommand) && $searchFieldRecommand != '') {
+            $users = $users
+                ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                ->where(function($query) use ($searchFieldRecommand){
+                    $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$searchFieldRecommand.'%')
+                        ->orWhere('recommand_user_info.user_name', 'like', '%'.$searchFieldRecommand.'%');
+                });
+            $userCount = $userCount
+                ->join('user_info as recommand_user_info', 'recommand_user_info.user_phone', '=', 'user_info.recommended_code')
+                ->where(function($query) use ($searchFieldRecommand){
+                    $query->orWhere('recommand_user_info.user_phone', 'like', '%'.$searchFieldRecommand.'%')
+                        ->orWhere('recommand_user_info.user_name', 'like', '%'.$searchFieldRecommand.'%');
+                });
+        }
+        if (count($reservationWhere) > 0) {
+            $latestReservation = DB::table('reservation')
+                ->select('user_seqno', DB::raw('MAX(start_dt) as last_start_dt'))
+                ->where([
+                    ['status', '!=', 'C'],
+                    ['deleted', '=', 'N']
+                ])
+                ->groupBy('user_seqno');
+
+            $users = $users
+                ->joinSub($latestReservation, 'latest_reservation', function ($join) use ($reservationWhere) {
+                    $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno')
+                        ->where($reservationWhere);
+                });
+            $userCount = $userCount
+                ->joinSub($latestReservation, 'latest_reservation', function ($join) use ($reservationWhere) {
+                    $join->on('user_info.user_seqno', '=', 'latest_reservation.user_seqno')
+                        ->where($reservationWhere);
+                });
+        }
+        $users = $users
+            ->select('user_info.*')
+            ->orderBy('user_info.create_dt', 'desc')
+            ->offset(($pageSize * ($pageNo-1)))->limit($pageSize)
+            ->get();
+        $userCount = $userCount
+            ->count();
 
         // 매칭되는 정액권, 포인트를 리턴
         for($inx = 0; $inx < count($users); $inx++){
@@ -639,6 +705,22 @@ class UserController extends Controller
                 ['deleted', '=', 'N']
             ])->first();
             $users[$inx]->packageHistory = $packageHistory;
+
+            // 추천인 정보
+            if(!empty($users[$inx]->recommended_code) && $users[$inx]->recommended_code != '') {
+                $recommendedUser = DB::table("user_info")->where([
+                    ['user_phone', '=', $users[$inx]->recommended_code]
+                ])->first();
+                $users[$inx]->recommendedUser = $recommendedUser;
+            }
+
+            // 마지막 예약 일시
+            $lastReservation = DB::table("reservation")->where([
+                ['user_seqno', '=', $users[$inx]->user_seqno],
+                ['status', '!=', 'C'],
+                ['deleted', '=', 'N']
+            ])->orderBy('start_dt', 'desc')->first();
+            $users[$inx]->lastReservation = $lastReservation;
         }
 
         $result['ment'] = '성공';

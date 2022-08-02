@@ -171,7 +171,7 @@ $page_title = $id == 0 ? '매장 등록' : '매장 수정';
 		@endphp
 		
 		<a href="#" onclick="modify()" class="btn blue">수정</a>
-		<a href="#" onclick="remove()" class="btn red">삭제</a>
+<!--		<a href="#" onclick="remove()" class="btn red">삭제</a> -->
 		@php 
 		}
 		@endphp

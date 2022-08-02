@@ -8,13 +8,42 @@ $page_title = '정산 내역';
 	
 	<div class="data-search-wrap">
 		<div class="data-sel" style="width:100%;">
+			<div class="wr-list">
+				<div class="wr-list-label">이름/아이디</div>
+				<div class="wr-list-con">
+					<input type="text" name="searchField" id="searchField" value="" class="span250" placeholder="이름/아이디">
+				</div>
+			</div>
+		</div>
+		<div class="data-sel" style="width:100%;">
+			<div class="wr-list">
+				<div class="wr-list-label">추천인 이름/추천인 아이디</div>
+				<div class="wr-list-con">
+					<input type="text" name="searchFieldRecommand" id="searchFieldRecommand" value="" class="span250" placeholder="추천인 이름/추천인 아이디">
+				</div>
+			</div>
+		</div>
+		<div class="data-sel" style="width:100%;">
+			<div class="wr-list-label">결제 메모</div>
+			<div class="wr-list-con">
+				<input type="text" name="memo" id="memo" value="" class="span250" placeholder="메모">
+			</div>
+		</div>
+		<div class="data-sel" style="width:100%;">
+			<div class="wr-list-label">예약 메모</div>
+			<div class="wr-list-con">
+				<input type="text" name="memo2" id="memo2" value="" class="span250" placeholder="메모2">
+			</div>
+		</div>
+
+		<div class="data-sel" style="width:100%;">
 			매장&nbsp;&nbsp;&nbsp;&nbsp;
 			<select id="store_seqno" class="default">
 				<option value="">선택해주세요.</option>
 			</select>		
 		</div>	
 		<div class="data-sel" style="width:100%;">
-			서비스 구분&nbsp;&nbsp;&nbsp;&nbsp;
+			서비스 구분 > 결제 종류&nbsp;&nbsp;&nbsp;&nbsp;
 			<select id="service_type" class="default">
 				<option value="">전체</option>
 				<option value="F">정액권</option>
@@ -24,6 +53,7 @@ $page_title = '정산 내역';
 				<option value="R">예약</option>
 			</select>
 		</div>
+		<!--
 		<div class="data-sel" style="width:100%;">
 			사용 구분&nbsp;&nbsp;&nbsp;&nbsp; 
 			<label class="radio-wrap"><input type="radio" name="hst_type" value="" checked="checked"><span></span>전체</label>
@@ -34,7 +64,12 @@ $page_title = '정산 내역';
 			<label class="radio-wrap"><input type="radio" name="hst_type" value="RC"><span></span>예약취소</label>
 		</div>
 		<div class="data-sel" style="width:100%;">
-			기간&nbsp;&nbsp;&nbsp;&nbsp;
+			고객 이름&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="text" id="user_name" class="span250">
+		</div>
+		-->
+		<div class="data-sel" style="width:100%;">
+			결제일&nbsp;&nbsp;&nbsp;&nbsp;
 
 			<a href="#" onclick="setDay(this, 0)" class="btn _dayOption gray">오늘</a>
 			<a href="#" onclick="setDay(this, -7)" class="btn _dayOption gray">1주</a>
@@ -57,45 +92,42 @@ $page_title = '정산 내역';
 		</div>
 		<table>
 			<colgroup>
-				<col width="60">
-				<col width="60">
-				<col width="60">
-				<col width="200">
+				<col>
 				<col width="100">
-				<col width="140">
-				<col width="160">
-				<col width="130">
-				<col width="130">
-				<col width="90">
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
+				<col>
 			</colgroup>
 			<thead>
 				<tr>
-					<th><a href="#">회원번호</a></th>
-					<th><a href="#">종류</a></th>
-					<th><a href="#">사용유형</a></th>
-					<th><a href="#">결제매장</a></th>
-					<th><a href="#">결제자</a></th>
-					<th><a href="#">사용매장</a></th>
-					<th><a href="#">서비스명</a></th>
-					<th><a href="#">예약/취소일</a></th>
-					<th><a href="#">결제/환불일</a></th>
-					<th><a href="#">금액</a></th>
+					<th><a href="#">최종예약일</a></th>
+					<th><a href="#">매장명</a></th>
+					<th><a href="#">회원ID</a></th>
+					<th><a href="#">고객명</a></th>
+					<th><a href="#">최초방문경로</a></th>
+					<th><a href="#">고객구분</a></th>
+					<th><a href="#">추천인아이디</a></th>
+					<th><a href="#">추천인</a></th>
+					<th><a href="#">서비스구분</a></th>
+					<th><a href="#">결제일</a></th>
+					<th><a href="#">결제종류</a></th>
+					<th><a href="#">결제금액</a></th>
+					<th><a href="#">P차감금액</a></th>
+					<th><a href="#">P잔액</a></th>
 				</tr>
 			</thead>
 
 			<tbody class="_tableBody">
-				<tr>
-					<td>1</td>
-					<td>포인트</td>
-					<td>충전</td>
-					<td>미니쉬도수</td>
-					<td>김수민</td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td class="date">2020-01-23 00:00:00</td>
-					<td>+ 100,000 P</td>
-				</tr>
+
 			</tbody>			
 		</table>
 
@@ -176,7 +208,13 @@ $page_title = '정산 내역';
 	function getList(){
 		var store_seqno = $('#store_seqno').val();
 		var service_type = $('#service_type').val();
+		var user_name = $('#user_name').val();
 		var hst_type = $('input[name=hst_type]:checked').val();
+		
+		var searchField = $('#searchField').val();
+		var searchFieldRecommand = $('#searchFieldRecommand').val();
+		var memo = $('#memo').val();
+		var memo2 = $('#memo2').val();
 		
 		var data = { adminSeqno:{{ $seqno }}, include_discontinued: 'Y' };
 
@@ -186,6 +224,9 @@ $page_title = '정산 내역';
 		if(service_type && service_type != '') {
 			data.service_type = service_type;
 		}
+		if(user_name && user_name != '') {
+			data.user_name = user_name;
+		}
 		if(hst_type && hst_type != '') {
 			data.hst_type = hst_type;
 		}
@@ -194,6 +235,18 @@ $page_title = '정산 내역';
 		}
 		if(endDay && endDay != '') {
 			data.end_dt = endDay + ' 23:59:59';
+		}
+		if(searchField && searchField != '') {
+			data.searchField = searchField;
+		}
+		if(searchFieldRecommand && searchFieldRecommand != '') {
+			data.searchFieldRecommand = searchFieldRecommand;
+		}
+		if(memo && memo != '') {
+			data.memo = memo;
+		}
+		if(memo2 && memo2 != '') {
+			data.memo2 = memo2;
 		}
 
 		@php
@@ -223,7 +276,7 @@ $page_title = '정산 내역';
 
 			if(items.length == 0){
 				$('._tableBody').html('<tr>'
-									+'    <td colspan="10" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
+									+'    <td colspan="14" class="td_empty"><div class="empty_list" data-text="내용이 없습니다."></div></td>'
 									+'</tr>');
 				return;
 			}
@@ -234,9 +287,43 @@ $page_title = '정산 내역';
 
 			var bodyData = '';
 			var totalCost = 0;
+			var salesCost = 0;
+			var purchaseCost = 0;
 			for(var inx=0; inx<items.length; inx++){
 				bodyData = bodyData 
 							+'<tr>'
+							+'	<td>'+safetyNull(items[inx].last_reservation_start_dt)+'</td>'
+							+'	<td>'+safetyNull(items[inx].store_name)+'</td>'
+							+'	<td'
+								+ (items[inx].user_seqno 
+									? ' onclick="medibox.methods.userPage('+items[inx].user_seqno+')" style="cursor: pointer;">' 
+									: '>' 
+								) + safetyNull(items[inx].user_phone)+'</td>'
+							+'	<td'
+								+ (items[inx].user_seqno 
+									? ' onclick="medibox.methods.userPage('+items[inx].user_seqno+')" style="cursor: pointer;">' 
+									: '>' 
+								) + safetyNull(items[inx].user_name)+'</td>'
+							+'	<td>'+safetyNull(items[inx].join_path)+'</td>'
+							+'	<td>'+safetyNull(items[inx].type)+'</td>'
+							+'	<td'
+								+ (items[inx].recommand_user_seqno 
+									? ' onclick="medibox.methods.userPage('+items[inx].recommand_user_seqno+')" style="cursor: pointer;">' 
+									: '>' 
+								) + safetyNull(items[inx].recommand_user_phone)+'</td>'
+							+'	<td'
+								+ (items[inx].recommand_user_seqno 
+									? ' onclick="medibox.methods.userPage('+items[inx].recommand_user_seqno+')" style="cursor: pointer;">' 
+									: '>' 
+								) + safetyNull(items[inx].recommand_user_name)+'</td>'
+							+'	<td>'+safetyNull(items[inx].service_name)+'</td>'
+							+'	<td>'+safetyNull(items[inx].create_dt)+'</td>'
+							+'	<td>'+getPointTypeFullName(items[inx].point_type)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(items[inx].price)+'</td>'
+							+'	<td>'+getCalculateCodeByHstType(items[inx].hst_type)+medibox.methods.toNumber(items[inx].price)+'</td>'
+							+'	<td>'+medibox.methods.toNumber(items[inx].user_remain_point)+'</td>'
+/*
+
 							+'	<td onclick="medibox.methods.userPage('+items[inx].user_seqno+')" style="cursor: pointer;">'+items[inx].user_seqno+'</td>'
 							+'	<td>'+getPointTypeFullName(items[inx].point_type)+'</td>'
 							+'	<td>'+getHstType(items[inx].hst_type)+'</td>'
@@ -247,10 +334,19 @@ $page_title = '정산 내역';
 							+'	<td>'+safetyNull(items[inx].start_dt)+'</td>'
 							+'	<td>'+safetyNull(items[inx].create_dt)+'</td>'
 							+'	<td>'+getCalculateCodeByHstType(items[inx].hst_type)+medibox.methods.toNumber(items[inx].price)+'</td>'
+							*/
 							+'</tr>';
-				totalCost = totalCost + calculateCodeByHstType(items[inx].hst_type, items[inx].price);
+				var price = calculateCodeByHstType(items[inx].hst_type, items[inx].price);
+				if(price > 0) {
+					salesCost = salesCost + price;
+				} else {
+					purchaseCost = purchaseCost + price;
+				}
+				totalCost = totalCost + price;
 			}
-			bodyData = bodyData +'<tr><td>총계</td><td colspan="8">&nbsp;</td><td>'+medibox.methods.toNumber(totalCost)+'</td></tr>';
+			bodyData = bodyData +'<tr><td>매입</td><td colspan="12">&nbsp;</td><td>'+medibox.methods.toNumber(purchaseCost)+'</td></tr>';
+			bodyData = bodyData +'<tr><td>매출</td><td colspan="12">&nbsp;</td><td>'+medibox.methods.toNumber(salesCost)+'</td></tr>';
+			bodyData = bodyData +'<tr><td>총계</td><td colspan="12">&nbsp;</td><td>'+medibox.methods.toNumber(totalCost)+'</td></tr>';
 
 			$('._tableBody').html(bodyData);
 		}, function(e){

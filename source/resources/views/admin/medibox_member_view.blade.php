@@ -42,7 +42,11 @@ $page_title = '회원관리';
 				</div>
 				<div class="view-list">
 					<div class="view-list-label">이름</div>
-					<div class="view-list-con _userName">관리자</div>
+					<div class="view-list-con">
+						<span class="_userName">관리자</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" onclick="gotoDetail()" class="btn green small">수정</a>
+					</div>
 					<div class="view-list-label">보유 포인트</div>
 					<div class="view-list-con _userPoint">100,000 P</div>
 				</div>
@@ -425,6 +429,9 @@ $page_title = '회원관리';
 		}, function(e){
 			console.log(e);
 		});
+	}
+	function gotoDetail(){
+		location.href = '/admin/members/'+{{ $id }};
 	}
 	</script>
 

@@ -144,7 +144,8 @@ $page_title = '브랜드 정보';
 							+'	<td><h3>'+response.data[inx].cop_name+'</td>'
 							+'	<td>'+response.data[inx].director_name+'</td>'
 							+'	<td>'+response.data[inx].cop_no+'</td>'
-							+'	<td><a href="#" onclick="remove(\''+response.data[inx].seqno+'\')" class="btn red btnDel">삭제</a>'
+							+'	<td>'
+//							+'<a href="#" onclick="remove(\''+response.data[inx].seqno+'\')" class="btn red btnDel">삭제</a>'
 							+'      <a href="#" onclick="gotoDetail(\''+response.data[inx].seqno+'\')" class="btnEdit">수정하기</a></td>'
 							+'</tr>';
 			}
