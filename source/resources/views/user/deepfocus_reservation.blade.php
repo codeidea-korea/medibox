@@ -57,9 +57,12 @@
                 <div class="intro_inner">
                     <h3>제휴업체소개</h3>
                     <p>
-                        ‘왜 유럽과 미국에서는 보편화된 전문 검안을 한국에서는 찾아보기 어려울까?’<br>
-                        이런 의문으로 시작한 딥포커스 정밀 검안센터는 ‘김광용 OPTICIAN’에 의해 15년동안 연구된 눈 중심 전문 검안 센터입니다. 우리의 눈은 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다. 때문에 눈 질환과 시기능 이상은 구별이 필요합니다.<br>
-                        체계적이고 정밀한 검안을 통해 고객님들께 선명하고 편안한 시력을 선사하여 만족도 높은 시생활이 가능토록 도와드립니다.
+                    ‘검안에 눈뜨다’ 더 선명한 세상을 마주하는 DEEP FOCUS ‘유럽과 미국엔 보편화된 전문 검안 센터, 왜 한국에선 찾기 어려울
+까?’ ‘김광용 OPTICIAN’이 15여 년간 연구한 눈 중심 전문 검안 센터는 이처럼 간단한 질문에서 출발하였습니다.
+익숙한듯 당연하지만, 하루하루 눈의 쓰임새는 정말 중요합니다. 특정 질환이 아니더라도 다양한 불편 증상이 생길 수 있습니다.
+때문에 눈 질환과 시기능 이상은 구별이 필요합니다.
+우리의 눈은 세상을 보고, 사랑하는 이의 눈을 마주하기도 합니다. 정밀하고 체계적인 검안 시스템을 갖춘 딥포커스에서 더욱 선
+명해질 당신의 시선을 약속합니다.
                     </p>
                 </div>
                 <div class="info_inner">
@@ -84,46 +87,39 @@
                     <h3>서비스(<span class="itm_num"></span>)</h3>
 
                     <div class="menu">
-                        <h4>BASIC</h4>
+                        <h4>BASIC 딥포커스 비전케어</h4>
                         <ul>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
-                                    포커스 비전케어 (40분)
-                                    <small>상담 문진 (10분)</small>
-                                    <small>국내 휴비츠 검안 장비 (20분)</small>
-                                    <small>소프트렌즈, 하드렌즈 기본 검안 (10분)</small>
+                                눈의 피로도, 시력, 굴절 이상 체크
                                 </span>
-                                <span class="price">100,000원</span>
+                                <span class="price">40분 100,000</span>
                             </a></li>
                         </ul>
                     </div>
 
                     <div class="menu">
-                        <h4>LUXURY</h4>
+                        <h4>LUXURY 딥포커스 비전케어</h4>
                         <ul>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
-                                    딥포커스 비전케어 (60분)
-                                    <small>상담 문진 (10분)</small>
-                                    <small>아이 프로파일러 (20분)</small>
-                                    <small>양안시 정밀검안 (30분)</small>
+                                아이 프로파일러를 사용한 정밀 검안 실시 
+                                양안시 조절 이상 체크
                                 </span>
-                                <span class="price">200,000원</span>
+                                <span class="price">60분 200,000</span>
                             </a></li>
                         </ul>
                     </div>
 
                     <div class="menu">
-                        <h4>SPECIAL</h4>
+                        <h4>SPECIAL 딥포커스 아이테라피</h4>
                         <ul>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
-                                    딥포커스 아이테라피 (120분)
-                                    <small>상담 문진 (10분)</small>
-                                    <small>마이크로 양안시 정밀검안 (60분)</small>
-                                    <small>사시 약시 안구피로 개선 아이테라피 (50분)</small>
+                                마이크로 양안시 정밀 검안을 통한 눈의 이상 체크
+                                아이테라피로 눈의 피로 완화
                                 </span>
-                                <span class="price">300,000원</span>
+                                <span class="price">120분 300,000</span>
                             </a></li>
                         </ul>
                     </div>
@@ -199,9 +195,7 @@
         <!--------------------------------->
 
 
-        <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
-
-        <a href="/brands/4/shops/0/reservation/cart" target="_blank" class="reservation_btn">예약하기</a>
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
 

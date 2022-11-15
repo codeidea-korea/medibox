@@ -19,7 +19,7 @@
         </button>
         <!-- page title -->
         <div class="title">
-            <span>미니쉬 도수</span>
+            <span>미니쉬도수</span>
         </div>
     </header>
 
@@ -28,10 +28,10 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_manul_therapy01"></figure>
-            <!-- <figure class="minish_manul_therapy02"></figure>
+            <figure class="minish_manul_therapy02"></figure>
             <figure class="minish_manul_therapy03"></figure>
             <figure class="minish_manul_therapy04"></figure>
-            <figure class="minish_manul_therapy05"></figure> -->
+            <!-- <figure class="minish_manul_therapy05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
@@ -39,7 +39,7 @@
 
         <div class="reservation_des">
             <div class="title">
-                <h2>미니쉬 도수</h2>
+                <h2>미니쉬도수</h2>
                 <a href="#!" class="share_btn">
                     <img src="/user/img/icon_share.svg" alt="공유하기">
                 </a>
@@ -113,16 +113,20 @@
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
                                     딥슬립 관리 (90분)
+                                    <!--
                                     <small>도수[물리 치료] (40분)</small>
                                     <small>미니쉬 X 발몽스파 (50분)</small>
+-->
                                 </span>
                                 <span class="price">350,000원</span>
                             </a></li>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
                                     직장인 관리 (90분)
+                                    <!--
                                     <small>도수[물리 치료] (40분)</small>
                                     <small>미니쉬 X 발몽스파 (50분)</small>
+-->
                                 </span>
                                 <!-- 22.03.29 수정 -->
                                 <!-- <span class="price">700,000원</span> -->
@@ -137,24 +141,25 @@
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
                                     골프 테라피 (120분)
+                                    <!--
                                     <small>도수[물리 치료] (60분)</small>
-                                    <small>미니쉬 X 발몽스파 (60분)</small>
+                                    <small>미니쉬 X 발몽스파 (60분)</small> -->
                                 </span>
                                 <span class="price">450,000원</span>
                             </a></li>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
-                                    산후 관리 (120분)
+                                    산후 관리 (120분) <!--
                                     <small>도수[물리 치료] (60분)</small>
-                                    <small>미니쉬 X 발몽스파 (60분)</small>
+                                    <small>미니쉬 X 발몽스파 (60분)</small> -->
                                 </span>
                                 <span class="price">450,000원</span>
                             </a></li>
                             <li><a href="#" onclick="wait()">
                                 <span class="program">
-                                    웨딩 관리 (120분)
+                                    웨딩 관리 (120분) <!--
                                     <small>도수[물리 치료] (60분)</small>
-                                    <small>미니쉬 X 발몽스파 (60분)</small>
+                                    <small>미니쉬 X 발몽스파 (60분)</small> -->
                                 </span>
                                 <span class="price">450,000원</span>
                             </a></li>
@@ -228,10 +233,7 @@
         <!--------------------------------->
 
 
-
-        <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
-
-        <a href="/brands/5/shops/0/reservation/cart" target="_blank" class="reservation_btn">예약하기</a>
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
 

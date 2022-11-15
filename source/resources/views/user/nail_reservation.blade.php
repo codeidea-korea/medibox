@@ -28,9 +28,9 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="nail01"></figure>
-            <!-- <figure class="nail02"></figure>
+            <figure class="nail02"></figure>
             <figure class="nail03"></figure>
-            <figure class="nail04"></figure>
+            <!-- <figure class="nail04"></figure>
             <figure class="nail05"></figure> -->
         </div>
         <div class="brand_item_num">
@@ -57,11 +57,11 @@
                 <div class="intro_inner">
                     <h3>제휴업체소개</h3>
                     <p>
-                        최고의 힐링을 위한 프라이빗하고 편안한 실내 PREMIUM PRIVATE SERVICE<br>
-                        고객님의 건강을 위한 흡진테이블 For your health<br>
-                        쾌적한 힐링휴식공간 Pediroom<br>
-                        항균, 탈취 비스포크슈드레스 케어 Clean shoes care<br>
-                        육체적,심리적안정 아로마컬러테라피 Aroamtherapy
+                    바라는네일의 네일룸과 패디룸의 모든 공간은 고객님의 편안한 휴식 시간을 온전히 즐기실 수 있도록 준비되어있습니다.
+바라는네일에 들어오시는 순간부터 나가실 때까지 고객님 한분 한분을 위한 맞춤관리로 프라이빗한 프리미엄 관리를 경험하실
+수 있습니다. 파고드는 발톱관리 문제성손발톱관리 물어뜯는 손톱 관리 문제성각질프리미엄 관리를 함께 만나실 수 있습니다.
+고객님 한분 한분을위한 맞춤관리로 네일과 패디관리뿐만 아니라 휴식과 편안함을 즐기실 수 있는 공간을 제공해드립니다.
+
                     </p>
                 </div>
                 <div class="info_inner">
@@ -87,207 +87,46 @@
                     <h3>서비스(<span class="itm_num"></span>)</h3>
     
                     <div class="menu">
-                        <h4>베이직 케어</h4>
+                        <h4>메디컬케어 BASIC</h4>
                         <ul>
                             <li><a href="#">
-                                <span class="program">손기본케어 (60분)</span>
+                                <span class="program">손상된 손발을 드릴, 니퍼 메디컬 케어로 건강하게 관리</span>
 
                                 <!-- 22.04.05 수정 -->
                                 <!-- <span class="price">여 36,300원</span> -->
-                                <span class="price">여 37,000원</span>
+                                <span class="price">60분 49,000 ~ 73,000</span>
 
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">손기본케어 (60분)</span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">남 48,400원</span> -->
-                                <span class="price">남 49,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <!-- 22.04.05 수정 -->
-                                
-                                <!-- <span class="program">손교정케어 (60분)</span> -->
-                                <!-- <span class="price">72,600원</span> -->                                
-                                <span class="program">손기본케어 (60분)</span>
-                                <span class="price">73,000원</span>
-                                
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">발기본케어 (60분)</span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">여 60,500원</span> -->
-                                <span class="price">여 61,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">발기본케어 (60분)</span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">남 72,600원</span> -->
-                                <span class="price">남 73,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="program">발교정케어 (90분)</span> -->
-                                <span class="program">발기본케어 (90분)</span>
-                                
-                                <span class="price">121,000원</span>
                             </a></li>
                         </ul>
                     </div>
     
                     <div class="menu">
-                        <h4>젤</h4>
+                        <h4>메디컬케어 SPECIAL</h4>
                         <ul>
                             <li><a href="#">
-                                <span class="program">젤네일아트[베이직] (90분)</span>
+                                <span class="program">문제성 손발톱, 문제성 각질, 파고드는 발톱드릴, 니퍼 메디컬케어로 개선</span>
 
                                 <!-- 22.04.05 수정 -->
                                 <!-- <span class="price">96,800원</span> -->
-                                <span class="price">97,000원</span>
+                                <span class="price">90분 61,000</span>
 
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">젤패디아트[베이직] (90분)</span>
-                                <span class="price">121,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">젤제거 (30분)</span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">36,300원</span> -->
-                                <span class="price">37,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">젤아트[네일&패디] (120분)</span>
-                                <span class="price">121,000원</span>
                             </a></li>
                         </ul>
                     </div>
     
                     <div class="menu">
-                        <h4>각질관리 (베이직케어 제외)</h4>
+                        <h4>럭셔리 젤 케어</h4>
                         <ul>
                             <li><a href="#">
-                                <span class="program">각질1단계 (30분)</span>
+                                <span class="program">얇고 견고한 컬러링으로 3주 이상 아름다움 유지 가능</span>
                                 
                                 <!-- 22.04.05 수정 -->
                                 <!-- <span class="price">96,800원</span> -->
-                                <span class="price">97,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">각질2단계 (40분)</span>
-                                
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">133,100원</span> -->
-                                <span class="price">134,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">각질3단계 (50분)</span>
-                                
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">169,400원</span> -->
-                                <span class="price">170,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">각질4단계 (60분)</span>
-                                
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">217,800원</span> -->
-                                <span class="price">218,000원</span>
+                                <span class="price">90분 97,000 ~ 121,000</span>
 
                             </a></li>
                         </ul>
-                    </div>
-    
-                    <div class="menu">
-                        <h4>문제성 특수관리</h4>
-                        <ul>
-                            <li><a href="#">
-                                <span class="program">
-                                    물어뜯는손톱 (120분)<br>
-                                    [베이직교정케어포함]
-                                </span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">193,600원</span> -->
-                                <span class="price">194,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">
-                                    파고드는발톱 (100분)<br>
-                                    [베이직교정패디큐어포함]
-                                </span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">1회 181,500원</span> -->
-                                <span class="price">1회 182,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">
-                                    파고드는발톱 (100분)<br>
-                                    [베이직교정패디큐어포함]
-                                </span>
-                                <span class="price">2회 242,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">
-                                    파고드는발톱 (120분)<br>
-                                    [베이직교정패디큐어포함]
-                                </span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">1회 240,900원</span> -->
-                                <span class="price">1회 241,000원</span>
-
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">
-                                    파고드는발톱 (120분)<br>
-                                    [베이직교정패디큐어포함]
-                                </span>
-
-                                <!-- 22.04.05 수정 -->
-                                <!-- <span class="price">2회 350,900원</span> -->
-                                <span class="price">2회 351,000원</span>
-
-                            </a></li>
-                        </ul>
-                    </div>
-    
-                    <div class="menu">
-                        <h4>멤버십 서비스</h4>
-                        <ul>
-                            <li><a href="#">
-                                <span class="program">
-                                    베이직케어 (90분)
-                                </span>
-                                <span class="price">100,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">
-                                    베이직케어 (120분)<br>
-                                    [네일+패디+각질]
-                                </span>
-                                <span class="price">250,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">베이직젤네일+젤패디 (180분)</span>
-                                <span class="price">250,000원</span>
-                            </a></li>
-                        </ul>
-                    </div>                    
+                    </div>            
     
                 </div>
             </div>
@@ -356,9 +195,7 @@
         <!--------------------------------->
 
 
-        <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
-
-        <a href="/brands/3/shops/0/reservation/cart" target="_blank" class="reservation_btn">예약하기</a>
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
 

@@ -48,7 +48,6 @@
 						<th>포인트</th>
 						<td class="tright _userPoint">100,000 P</td>
 					</tr>
-					
 					<tr>
 						<th rowspan="3">정액권</th>
 						<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
@@ -256,31 +255,13 @@
 				return false;
 			}
 			var tmpShops = '';
-			var targetInx = 0;
 			for(var inx = 0; inx < response.data.length; inx++){
-				@php
-				if(session()->get('admin_type') == 'S') {
-					echo 'if("'.$store->name.'".indexOf(response.data[inx].service_name) > -1){';
-					echo 'targetInx = inx;';
-				}
-				@endphp
 				tmpShops = tmpShops + '<option data-value="false" value="'+response.data[inx].service_name+'">'+response.data[inx].service_name+'</option>';
-				@php
-				if(session()->get('admin_type') == 'S') {
-					echo '}';
-				}
-				@endphp
 			}
 			$('._shops').html(tmpShops);
 			
 			// NOTICE: 닥터 미니쉬는 직접기입으로만 가능한 형태 (상품 DB X - 서비스명, 가격이 항상 다를수 있으므로..)
-			@php
-			if(session()->get('admin_type') != 'S') {
-				@endphp
-				$("._shops").append('<option data-value="true" value="닥터 미니쉬">닥터 미니쉬</option>');
-				@php
-			}
-			@endphp
+			$("._shops").append('<option data-value="true" value="닥터 미니쉬">닥터 미니쉬</option>');
 
 			$('._shops').off().on('change', function(){
 				isNotInProduct = $(this).find('option[value=\"'+$(this).val()+'\"]').attr('data-value') == 'true';
@@ -291,7 +272,7 @@
 					checkMustChooseSelf();
 				}
 			});
-			getServices(point_type, response.data[targetInx].service_name);
+			getServices(point_type, response.data[0].service_name);
 		}, function(e){
 			console.log(e);
 			alert('서버 통신 에러');
@@ -302,15 +283,6 @@
 	var backupPrice;
 	function getServices(pointType, shopName){
 		service_name = shopName;
-		@php
-		if(session()->get('admin_type') == 'P') {
-//			echo 'data.partner_ids = "'.session()->get('level_partner_grp_seqno').'";';
-		} else if(session()->get('admin_type') == 'S') {
-//			echo 'data.partner_ids = "'.session()->get('partner_seqno').'";';
-			echo 'if(pointType != "K" && pointType != "P") pointType = ' . $point_type . ';';
-		}
-		@endphp
-
 		medibox.methods.point.services({ point_type: pointType, service_name: shopName }, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
@@ -318,7 +290,7 @@
 				return false;
 			}
 			var tmpServices = '';
-			for(var inx = 0; inx < response.data.length; inx++){		
+			for(var inx = 0; inx < response.data.length; inx++){
 				tmpServices = tmpServices + '<option value="'+response.data[inx].product_seqno+'" price="'+response.data[inx].price+'">'+response.data[inx].type_name+(response.data[inx].service_sub_name ? '-'+response.data[inx].service_sub_name : '') + ' ('+ medibox.methods.toNumber(response.data[inx].price)+' 원)</option>';
 			}
 			$('._services').html(tmpServices);
@@ -340,12 +312,13 @@
 	}
 	function usePoint(){
 		var service_input_type = getServiceInputType();
+		service_name = $('._shops').val();
 
 		if(service_input_type == 'self') {
 			var point_type = $('#use_point_type').val();
 			var use_self_service = $('#use_self_service').val();
 			var amount = $('#use_point').val();
-			var memo = '[관리자구매신청] '+$('#use_memo').val().replaceAll('[관리자구매신청]', '');
+			var memo = $('#use_memo').val();
 			var admin_name = $('#calculator_name').val();
 			
 			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, shop_name: service_name, service_name: use_self_service,
@@ -354,7 +327,7 @@
 			medibox.methods.point.useSelf(data, function(request, response){
 				console.log('output : ' + response);
 				if(!response.result){
-					alert(response.ment.replace('\\r', '\n'));
+					alert(response.ment);
 					return false;
 				}
 				alert(response.ment.replace('\\r', '\n'));
@@ -365,16 +338,16 @@
 			});
 		} else {
 			var point_type = $('#use_point_type').val();
-			var memo = '[관리자구매신청] '+$('#use_memo').val().replaceAll('[관리자구매신청]', '');
+			var memo = $('#use_memo').val();
 			var admin_name = $('#calculator_name').val();
 			
 			var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
-				point_type:point_type, memo:memo, admin_name: admin_name, approved: 'Y' };
+				point_type:point_type, memo:memo, admin_name: admin_name };
 
 			medibox.methods.point.use(data, function(request, response){
 				console.log('output : ' + response);
 				if(!response.result){
-					alert(response.ment.replace('\\r', '\n'));
+					alert(response.ment);
 					return false;
 				}
 				alert(response.ment.replace('\\r', '\n'));

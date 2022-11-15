@@ -57,10 +57,9 @@
                 <div class="intro_inner">
                     <h3>제휴업체소개</h3>
                     <p>
-                        구강 문제, 정확히 진단받고 제대로 관리 되어야 합니다.
-                        미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고
-                        발생한 구강질환을 비침습적 방법으로 관리할 수 있도록
-                        개인의 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
+                    구강 문제는 유발 원인과 세균에 대한 분석을 통해 체계적인 관리가 진행되어야 합니다.
+미니쉬 스파에서는 구강질환이 발생하지 않도록 예방하고 이미 발생한 구강질환은 비침습적 방법으로 관리할 수 있도록 개인별 구강 상태에 맞는 관리 프로그램을 진행해드립니다.
+미니쉬스파, 건치백세 스파는 주치의의 소견에 따라 내원주기 및 기간이 달라질 수 있습니다.
                     </p>
 
                     <!-- 22.04.08 추가 -->
@@ -91,45 +90,47 @@
                 <div class="service_inner menu_inner">
                     <h3>서비스(<span class="itm_num"></span>)</h3>
 
-                    <div class="menu">
-                        <!-- 22.03.29 수정 -->
-                        <!-- <h4>미니쉬 SPA</h4> -->
-                        <h4>BASIC</h4>
-                        <ul>
-                            <li><a href="#">
-                                <!-- 22.03.29 수정 -->
-                                <!-- <span class="program">미니쉬 SPA (60분)</span> -->
-                                <span class="program">미니쉬 스파 (60분)</span>
+<div class="menu">
+    <!-- 22.03.29 수정 -->
+    <!-- <h4>미니쉬 SPA</h4> -->
+    <h4>BASIC</h4>
+    <ul>
+        <li><a href="#">
+            <!-- 22.03.29 수정 -->
+            <!-- <span class="program">미니쉬 SPA (60분)</span> -->
+            <span class="program">구강 예방치료 프로그램</span>
 
-                                <!-- 22.04.08 수정 -->
-                                <!-- <span class="price">100,000원</span> -->
-                                <span class="price">1회 100,000원</span>
-                            </a></li>
+            <!-- 22.04.08 수정 -->
+            <!-- <span class="price">100,000원</span> -->
+            <span class="price">1회 100,000원</span>
+        </a></li>
+    </ul>
+</div>
 
-                            <!-- 22.04.08 추가 -->
-                            <li><a href="#">
-                                <span class="program">미니쉬 스파 (60분)</span>
-                                <span class="price">4회 300,000원</span>
-                            </a></li>
-                            <!------------------>
-                        </ul>
-                    </div>
+<div class="menu">
+    <!-- 22.03.29 수정 -->
+    <!-- <h4>미니쉬 SPA</h4> -->
+    <h4>SPECIAL</h4>
+    <ul>
+        <li><a href="#">
+            <!-- 22.03.29 수정 -->
+            <!-- <span class="program">미니쉬 SPA (60분)</span> -->
+            <span class="program">생애주기 예방 프로그램 </span>
+
+            <!-- 22.04.08 수정 -->
+            <!-- <span class="price">100,000원</span> -->
+            <span class="price">4회 700,000원</span>
+        </a></li>
+    </ul>
+</div>
 
                     <!-- 22.04.08 추가 -->
                     <div class="menu">
-                        <h4>LUXURY</h4>
+                        <h4>PREMIUM</h4>
                         <ul>
                             <li><a href="#">
-                                <span class="program">건치백세 패키지 (60분)</span>
-                                <span class="price">1회 100,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">건치백세 패키지 (60분)</span>
-                                <span class="price">2회 150,000원</span>
-                            </a></li>
-                            <li><a href="#">
-                                <span class="program">건치백세 패키지 (60분)</span>
-                                <span class="price">4회 300,000원</span>
+                                <span class="program">구강 종합검진 1회 + 평생 구강 건강관리 프로그램</span>
+                                <span class="price">4회 1,080,000원</span>
                             </a></li>
                         </ul>
                     </div>
@@ -236,10 +237,7 @@
         <!--------------------------------->
 
 
-
-        <!-- <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a> -->
-
-        <a href="/brands/1/shops/2/reservation/cart" target="_blank" class="reservation_btn">예약하기</a>
+        <a href="http://s.handsos.com/User_default.asp?pkCompany=12536181&pkMobileID=15226" target="_blank" class="reservation_btn">예약하기</a>
     </section>
 
 

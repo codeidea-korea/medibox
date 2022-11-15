@@ -3,13 +3,13 @@
 	<div class="popContainer">
 		
 		<header class="pop-header">
-			포인트 충전
+			포인트 적립
 		</header>
 
 		<form name="fboardlist" action="" method="post">
 		<div class="tbl-basic cell td-h1">
 			<div class="tbl-header">
-				<div class="caption">포인트 충전 유저 정보</div>
+				<div class="caption">포인트 적립 유저 정보</div>
 			</div>
 			<table id="resident_list">
 				<colgroup>
@@ -48,53 +48,6 @@
 						<th>포인트</th>
 						<td class="tright _userPoint">100,000 P</td>
 					</tr>
-				</thead>		
-			</table>
-		</div>
-		<div class="tbl-basic cell td-h1">
-			<div class="tbl-header">
-				<div class="caption">보유 멤버쉽</div>
-			</div>
-			<table id="resident_list">
-				<colgroup>
-					<col width="80">
-					<col width="180">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>멤버쉽</th>
-						<td class="tright _userMembership">100,000 P</td>
-					</tr>
-				</thead>		
-			</table>
-		</div>
-		<div class="tbl-basic cell td-h1">
-			<div class="tbl-header">
-				<div class="caption">보유 패키지</div>
-			</div>
-			<table id="resident_list">
-				<colgroup>
-					<col width="80">
-					<col width="180">
-				</colgroup>
-				<thead>
-					<tr>
-						<th>패키지</th>
-						<td class="tright _userPackage">100,000 P</td>
-					</tr>
-				</thead>		
-			</table>
-		</div>
-		<div class="tbl-basic cell td-h1">
-			<div class="tbl-header">
-				<div class="caption">보유 정액권</div>
-			</div>
-			<table id="resident_list">
-				<colgroup>
-					<col width="80">
-					<col width="180">
-				</colgroup>
-				<thead>
 					<tr>
 						<th rowspan="3">정액권</th>
 						<td class="tright _nail">네일정액권&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2,400,000 P</td>
@@ -121,7 +74,7 @@
 		<div class="wrtieContents">
 			<div class="wr-wrap line label130">
 				<div class="wr-list">
-					<div class="wr-list-label required">포인트 충전 종류 선택</div>
+					<div class="wr-list-label required">포인트 적립 종류 선택</div>
 					<div class="wr-list-con flex">					
 						<select id="collect_point_type" class="default _pointTypes">
 							<option>포인트</option>
@@ -130,7 +83,7 @@
 							<option>포레스타정액권</option>
 						</select>
 						<select id="collect_point_detail_type" class="default _collectItem">
-							<option>포인트 충전</option>
+							<option>포인트 적립</option>
 							<option>포인트 <포인트선택시 기재></option>
 							<option>통합정액권 300</option>
 							<option>통합정액권 500</option>
@@ -260,8 +213,7 @@ function checkCollectPoint(){
 				tmpCollects = tmpCollects + '<option value="0" price="0" type="P" return="0">포인트 <포인트선택시 기재></option>';
 			}
 			for(var inx = 0; inx < response.data.length; inx++){
-				var name = (response.data[inx].point_type == 'K' ? response.data[inx].type_name : response.data[inx].type_name+'-'+(response.data[inx].service_sub_name ? response.data[inx].service_sub_name : (response.data[inx].price / 10000) + '만원'));
-				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+name+'</option>';
+				tmpCollects = tmpCollects + '<option value="'+response.data[inx].product_seqno+'" type="'+response.data[inx].point_type+'" price="'+response.data[inx].price+'" return="'+response.data[inx].return_point+'">'+response.data[inx].type_name+'-'+response.data[inx].service_sub_name+'</option>';
 			}
 			$('._collectItem').html(tmpCollects);
 			
@@ -298,10 +250,6 @@ function checkCollectPoint(){
 		var memo = $('#collect_memo').val();
 		var amount = $('#collect_point').val().trim().replace('P','').replaceAll(',',''); // 입력된 포인트 양 (포인트일때만 적용, 나머지는 무시)
 		var admin_name = ''; // $('#calculator_name').val();
-
-		if(!confirm('[('+userInfo.user_phone+') '+userInfo.user_name+' ] 회원님의 ['+$('#collect_point').val()+'] point를 충전하시겠습니까?')) {
-			return;
-		}
 		
 		var data = { admin_seqno:{{ $seqno }}, user_seqno:{{ $id }}, product_seqno: product_seqno,
 			point_type:point_type, memo:memo, amount:replacePoint(amount), admin_name: admin_name };
@@ -309,7 +257,7 @@ function checkCollectPoint(){
 		medibox.methods.point.collect(data, function(request, response){
 			console.log('output : ' + response);
 			if(!response.result){
-				alert(response.ment.replace('\\r', '\n'));
+				alert(response.ment);
 				return false;
 			}
 			alert(response.ment.replace('\\r', '\n'));

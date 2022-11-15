@@ -28,22 +28,22 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="minish_manul_therapy01"></figure>
-            <!-- <figure class="minish_manul_therapy02"></figure>
+            <figure class="minish_manul_therapy02"></figure>
             <figure class="minish_manul_therapy03"></figure>
             <figure class="minish_manul_therapy04"></figure>
-            <figure class="minish_manul_therapy05"></figure> -->
+            <!-- <figure class="minish_manul_therapy05"></figure> -->
         </div>
         <div class="brand_item_num">
             <span class="snum"></span>
         </div>
         <div class="brand_item_des">
-            <h2>미니쉬 도수</h2>
+            <h2>미니쉬도수</h2>
             
             <!-- 22.03.30 -->
             <!-- <span>Minish Manul Therapy</span> -->
             <span>MINISH Manul Therapy</span>
             <p>‘MANUAL THERAPY’, 모든 인체의 건강은 예방관리가 가장 중요합니다. 호감가는 인상을 결정하는 것은 이목구비 뿐 아니라 체형도 중요한 요인이 됩니다. 일상생활 속 잘못된 자세가 반복되면 그 사람의 체형으로 고착화됩니다.</p>
-            <p>미니쉬 도수에서는 관절 전문 병원 출신의 물리치료사의 체형교정 서비스를 제공하고 근골격의 변형예측, 근육 형상 검사가 가능한 장비를 활용한 검사 결과에 따라 개개인에 맞는 자가운동 치료 솔루션을 처방해드립니다. </p>
+            <p>미니쉬도수에서는 관절 전문 병원 출신의 물리치료사의 체형교정 서비스를 제공하고 근골격의 변형예측, 근육 형상 검사가 가능한 장비를 활용한 검사 결과에 따라 개개인에 맞는 자가운동 치료 솔루션을 처방해드립니다. </p>
             <p>멤버십 고객분들을 위한 미니쉬라운지청담만의 특별한 매뉴얼 테라피를 경험해보기시 바랍니다.</p>
         </div>
     </section>

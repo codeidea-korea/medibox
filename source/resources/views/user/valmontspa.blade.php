@@ -30,7 +30,6 @@
             <!-- 22.03.18 수정 -->
             <figure class="valmont_spa02"></figure>
             <figure class="valmont_spa01"></figure>
-            <figure class="valmont_spa03"></figure>
             <figure class="valmont_spa04"></figure>
             <!-- <figure class="valmont_spa05"></figure> -->
         </div>

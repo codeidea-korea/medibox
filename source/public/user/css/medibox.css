@@ -148,7 +148,7 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* intro 메인화면 */
-#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:100vh;color:#fff;text-align:center;}
+#intro {display:flex;justify-content:center;align-items:center;background:linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(../img/intro_img.jpg) no-repeat center center/cover;height:calc(100vh - 4.8rem);color:#fff;text-align:center;}
 
 #intro p.main_sub_title {margin-bottom:10vh;}
 
@@ -172,7 +172,7 @@ form input::placeholder {color:#b4b4b4;}
 
 /* login form (id, password) */
 #login form p {max-width:700px;margin:0 auto 2vh auto;}
-#login form p:nth-child(2) {margin-bottom:6vh;}
+#login form p:nth-of-type(2) {margin-bottom:6vh;}
 #login form label {display:block;margin-bottom:0.5rem;font-weight:500;}
 #login form input {border:none;background:rgba(255,255,255,0.2);backdrop-filter:blur(0.5rem);padding:0 0.65rem;border-radius:0.25rem;color:#fff;font-size:0.9rem;font-weight:400;}
 #login form #login_btn {text-align:center;width:100%;background:#000;color:#fff;padding:0.6rem 0;border-radius:0.25rem;font-size:1rem;}
@@ -398,20 +398,19 @@ form input::placeholder {color:#b4b4b4;}
 .coupon_tab>div {position:relative;margin-bottom:1rem;background:#FFFFFF;box-shadow:0 3px 4px rgba(0,0,0,0.16);border-radius:0.5rem;}
 .coupon_tab>div>a {display:flex;min-height:7rem;}
 
-.coupon_tab .left {flex:2;position:relative;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 5%;line-height:1.6;}
+.coupon_tab .left {flex:3;position:relative;display:flex;flex-direction:column;justify-content:center;padding:1.5rem 5%;line-height:1.6;}
 .coupon_tab .left h3 {font-weight:500;}
 .coupon_tab .left strong {display:block;font-size:1.1rem;font-weight:700;}
 .coupon_tab .left p.type {font-size:0.7rem;}
 .coupon_tab .left p.deadline {font-size:0.7rem;color:#716E6E;}
 
-.coupon_tab .right {flex:1;position:relative;border-radius:0 0.5rem 0.5rem 0;display: flex;flex-direction: column;justify-content: center;align-items: center;}
-.coupon_tab .right.black{background:#1C3750;;color:#fff;text-align: center;font-size:16px;}
-.coupon_tab .right.gray{background:#efefef;text-align: center;font-size:16px;color:#666;}
+.coupon_tab .right {flex:1;position:relative;background:#000000;border-radius:0 0.5rem 0.5rem 0;}
 .coupon_tab .right::before,
 .coupon_tab .right::after {content:"";position:absolute;left:0;display:block;width:1.1rem;height:1.1rem;background:#F7F7F7;border-radius:50%;z-index:9;}
 
 .coupon_tab .right::before {top:0;transform:translate(-50%, -50%);box-shadow:0 -2px 2px rgba(0,0,0,0.03) inset;}
 .coupon_tab .right::after {bottom:0;transform:translate(-50%, 50%);box-shadow:0 2px 2px rgba(0,0,0,0.1) inset;}
+
 
 
 /* 포인트 결제 페이지 */
@@ -430,13 +429,13 @@ form input::placeholder {color:#b4b4b4;}
 
 
 /* 결제 내역 서브헤더 메뉴 */
-#history_lnb {padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;}
+#history_lnb {position:relative;padding:1rem 1rem 0.75rem 1rem;background:#fff;border-bottom:0.5rem solid #F0F0F0;z-index:9;}
 #history_lnb .depth01 {display:flex;}
 #history_lnb .depth01>li {position:relative;}
 #history_lnb .depth01>li:first-child {margin-right:0.9rem;}
 #history_lnb .depth01>li>a {display:block;padding-right:1rem;background:url(../img/arrow_bottom_small_b.svg) no-repeat right 0.5rem;}
 
-#history_lnb .depth02 {display:none;position:absolute;top:calc(100% + 0.25rem);left:0;width:200%;background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.16);padding:0.65rem 0.9rem;border-radius:0.5rem;z-index:9;}
+#history_lnb .depth02 {display:none;position:absolute;top:calc(100% + 0.25rem);left:0;width:200%;background:#fff;box-shadow:0 3px 6px rgba(0,0,0,0.16);padding:0.65rem 0.9rem;border-radius:0.5rem;}
 #history_lnb .depth02>li~li {margin-top:0.9rem;}
 
 
@@ -445,7 +444,7 @@ form input::placeholder {color:#b4b4b4;}
 #pay_history .history_item {display:flex;justify-content:space-between;padding:1.05rem 1rem;border-bottom:1px solid #F0F0F0;}
 #pay_history .history_item span {display:block;}
 
-#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;}
+#pay_history .history_item .right {display:flex;flex-direction:column;justify-content:space-between;text-align:right;padding-left:0.5rem;white-space:nowrap;}
 
 #pay_history .history_item h3 {font-size:0.9rem;font-weight:500;margin-bottom:0.25rem;}
 #pay_history .history_item .category {font-size:0.7rem;color:#B4B4B4;margin-bottom:0.25rem;}
@@ -550,8 +549,8 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     background-repeat:no-repeat;
 }
 
-#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0px;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;}
-#brand_intro .brand_item_num span{display: inline-block;width:73px;text-align: center;}
+#brand_intro .brand_item_num {position:absolute;top:calc(40% - 2.5rem);left:50%;transform:translateX(-50%);padding:0.15rem 0.75rem;background:rgba(0,0,0,0.6);color:#fff;border-radius:10rem;white-space:nowrap;}
+
 #brand_intro .brand_item_des {position:absolute;top:40%;bottom:0;width:100%;background:#fff;box-shadow:0 -3px 6px rgba(0,0,0,0.16);border-radius:1rem 1rem 0 0;padding:1rem 1rem 7rem 1rem;overflow-y:scroll;}
 #brand_intro .brand_item_des h2 {font-size:1.25rem;font-weight:500;}
 #brand_intro .brand_item_des span {display:block;font-size:0.7rem;color:#716E6E;margin-bottom:1rem;}
@@ -617,23 +616,11 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .menu_inner h4.on::before {transform:translateY(-50%) rotate(180deg);}
 
 #brand_intro .menu_inner ul {display:none;}
-.menu_inner ul>li>a {display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem 0.8rem 1.8rem;border-bottom:1px solid #F0F0F0;flex-wrap:wrap;}
+.menu_inner ul>li>a {display:flex;justify-content:space-between;align-items:center;padding:0.8rem 1rem 0.8rem 1.8rem;border-bottom:1px solid #F0F0F0;}
 
 .menu_inner ul>li span.program>small {display:block;color:#716E6E;}
 .menu_inner ul>li span.program>small:first-child {margin-top:0.2rem;}
 .menu_inner ul>li span.price {font-size:0.9rem;}
-.program.item1{
-    width:50%;
-}
-.price.item2{
-    width:50%;
-    text-align: right;
-}
-.explanation.item3{
-    width:70%;
-    margin-top: 10px;
-    color:#535353;
-}
 
 
 /* 서비스 탭 폰트 */
@@ -895,7 +882,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 #profile .user_wrap .user_id {font-size:1rem;font-weight:500;}
 
 #profile .user_wrap .user_class {font-size:0.7rem;margin-bottom:0.5rem;color:#B4B4B4;}
-#profile .user_wrap .user_class::before {content:"고객등급";display:inline-block;margin-right:0.5rem;}
+#profile .user_wrap .user_class strong {display:inline-block;margin-right:0.2rem;}
 
 #profile .user_wrap .profile_edit_btn {display:inline-block;font-size:0.7rem;padding:0.25rem 0.7rem;border:1px solid #fff;border-radius:10rem;text-align:center;}
 
@@ -1027,16 +1014,16 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 #reservation_lnb {position:sticky;top:2.6rem;left:0;background:#FFFFFF;width:100%;box-shadow:0px 3px 6px rgba(0,0,0,0.1);overflow-x:hidden;z-index:9;}
 #reservation_lnb .lnb_inner {display:flex;flex-wrap:wrap;padding:0.5rem 1rem;}
 #reservation_lnb .lnb_inner li {position:relative;width:calc(100% / 6);}
-#reservation_lnb .lnb_inner li a {display:flex;padding:0rem 0.5rem;height:110px;}
+#reservation_lnb .lnb_inner li a {display:flex;padding:0.5rem 1rem;height:110px;}
 
 #reservation_lnb .menu_box {margin:0 auto;text-align:center;}
-#reservation_lnb .menu_box span {display:block;font-size:0.65rem;word-break:keep-all;}
+#reservation_lnb .menu_box span {display:block;font-size:0.65rem;}
 
 /* 예약내역이 없습니다. */
 #reservation .reservation_history {}
 #reservation .reservation_history h2 {font-weight:500;}
 
-.empty_reservation {position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);text-align:center;z-index:1;width:100%;}
+.empty_reservation {position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);text-align:center;z-index:1;}
 .empty_reservation img {margin-bottom:1rem;}
 .empty_reservation p {font-size:1rem;color:#716E6E;}
 /* ------------------------------ */
@@ -1080,8 +1067,6 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
 .history_wrap .cancle_btn {flex:2;}
 
 /* 링크 공유 모달창*/
-.modal_wrap.share {position:fixed;top:0;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.4);z-index:999;}
-
 .modal_wrap.share .modal_inner {position:absolute;bottom:0;width:100%;background:#fff;border-radius:1rem 1rem 0 0;}
 .modal_wrap.share .modal_inner {transform:translateY(3rem);transition:0.3s;}
 .modal_wrap.share.on .modal_inner {transform:translateY(0);}
@@ -1253,20 +1238,7 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     /* 브랜드 시안4 */
     #brand .brand_menu4 .brand_wrap li a .txt_box img {width:2.5rem;}
 }
-/* 달력추가 220613*/
-.ui-datepicker td span, .ui-datepicker td a{
-    display: block!important;
-    font-size: 0.9rem!important;
-    line-height: 2rem!important;
-    text-align: center!important;
-    background: none !important;
-    border: none !important;
-}
 
-/* 220518추가 */
-.explanation{
-
-}
 
 /* 22.03.07 추가 */
 /* 예약페이지 반응형 */
@@ -1301,18 +1273,6 @@ h2.brand_title {font-size:1.1rem;font-family: 'Copperplate';font-weight:100;text
     #footer .copyright_wrap br {display:none;}
 }
 
-/* 20220706 바우처 레이아웃 변겨경 */
-.voucher_area .type{font-size:12px!important;width:98px;padding:4px 8px;background:#1C3750;font-weight:600;color:#fff;display:inline-block;border-radius: 30px;text-align:center;margin-bottom:6px;}
-.voucher_area .right.black p:last-child{font-size:14px;margin-top:8px;width:80px;background:#fff;color:#1C3750;border-radius: 20px;font-weight: 500;}
-.voucher_area .platinum {background:#34bf7e;}
-.voucher_area .gold{background:#dfb600;}
-.voucher_area .coupon_service{font-size:12px!important;font-weight:500;}
-.voucher_area .store_title {font-size:15px;font-weight:500;}
-.voucher_area .flex_layout{display: flex;align-items: center;justify-content: space-between;}
-.voucher_area .left{padding:0.6rem 3%!important;}
-.voucher_area strong{font-size:17px!important;margin-top:6px!important;color:#007bff!important;}
-.voucher_area strong span{font-size:17px;}
-.voucher_area .hr_line {border-top:1px dashed #cecece;margin-top:3px;padding-top:3px;}
-.confirm_btn{position: fixed;bottom: 4.8rem;left: 50%;transform: translateX(-50%);width: 100%;max-width: 780px;text-align: center;background: #000;color: #fff;padding: 1.5rem 0;}
-.coupon_down_btn{display:block;width: 100%;max-width: 780px;text-align: center;background: #000;color: #fff;padding: 1rem 0;margin-bottom:16px;border-radius: 4px;}
-.coupon_down_btn svg{fill:#fff;}
+
+
+

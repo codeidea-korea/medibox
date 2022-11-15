@@ -300,14 +300,13 @@ p.help-block, div.help-block{line-height:1.5em;display:block;}
 /*____________________________ input & btn Size ____________________________*/
 input[type="text"], input[type="password"], input[type="email"], input[type="tel"], input[type="number"], input[type="url"], .btn, input[type="submit"].btn{height:32px;font-size:13px;}
 .btn, input[type="submit"].btn {padding-left:15px;padding-right:15px;font-weight:700;padding-top:0;padding-bottom:0;}
-input[type="text"].mini, input[type="password"].mini, input[type="email"].mini, input[type="tel"].mini, input[type="number"].mini, input[type="url"].mini, .btn.mini, input[type="submit"].btn.mini{height:22px !important;font-size:11px;}
-.btn.mini, input[type="submit"].btn.mini {padding-left:7px;padding-right:7px;}
-input[type="text"].small, input[type="password"].small, input[type="email"].small, input[type="tel"].small, input[type="number"].small, input[type="url"].small, .btn.small, input[type="submit"].btn.small{height:28px !important;font-size:12px;padding:0px 6px;}
+input[type="text"].mini, input[type="password"].mini, input[type="email"].mini, input[type="tel"].mini, input[type="number"].mini, input[type="url"].mini, .btn.mini, input[type="submit"].btn.mini{height:24px;font-size:11px;}
+.btn.mini, input[type="submit"].btn.mini {padding-left:5px;padding-right:5px;}
+input[type="text"].small, input[type="password"].small, input[type="email"].small, input[type="tel"].small, input[type="number"].small, input[type="url"].small, .btn.small, input[type="submit"].btn.small{height:28px;font-size:12px;padding:0px 6px;}
 .btn.small, input[type="submit"].btn.small {padding-left:10px;padding-right:10px;}
-input[type="text"].large, input[type="password"].large, input[type="email"].large, input[type="tel"].large, input[type="number"].large, input[type="url"].large, .btn.large, input[type="submit"].btn.large{height:42px !important;font-size:15px;font-weight:700;}
+input[type="text"].large, input[type="password"].large, input[type="email"].large, input[type="tel"].large, input[type="number"].large, input[type="url"].large, .btn.large, input[type="submit"].btn.large{height:42px;font-size:15px;font-weight:700;}
 .btn.large, input[type="submit"].btn.large {padding-left:19px;padding-right:19px;}
 .btn.short, input[type="submit"].btn.short {font-size:11px;padding:0 8px;}
-.btn.normal{height:32px !important;}
 /* select size */
 .bootstrap-select:not(.select-img) .dropdown-toggle{height:32px;line-height:32px;padding-left:12px;font-size:13px;}
 @media screen and (-webkit-min-device-pixel-ratio:0){.bootstrap-select:not(.select-img) .dropdown-toggle{line-height:33px;}} /* 크롬핵 */
@@ -317,7 +316,6 @@ input[type="text"].large, input[type="password"].large, input[type="email"].larg
 @media screen and (-webkit-min-device-pixel-ratio:0){.bootstrap-select.small .dropdown-toggle{line-height:28px;}} /* 크롬핵 */
 .bootstrap-select.large .dropdown-toggle{height:42px;line-height:42px;padding-left:12px;font-size:13px;}
 @media screen and (-webkit-min-device-pixel-ratio:0){.bootstrap-select.large .dropdown-toggle{line-height:43px;}} /* 크롬핵 */
-
 
 
 
@@ -382,7 +380,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="tel
 	}
 textarea{width:100%;line-height:16px;padding:13px;display:block;overflow-y:auto !important;}
 textarea.txtBox{background:#fff;}
-input[type="text"]:focus:not(:read-only), input[type="password"]:focus:not(:read-only), input[type="email"]:focus:not(:read-only), input[type="tel"]:focus:not(:read-only), input[type="number"]:focus:not(:read-only), input[type="url"]:focus:not(:read-only), textarea:focus:not(:read-only){border-color:rgba(0,0,0,0.65);box-shadow:0 4px 4px rgba(0,0,0,0.05);}
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="number"]:focus, input[type="url"]:focus, textarea:focus{border-color:rgba(0,0,0,0.65);box-shadow:0 4px 4px rgba(0,0,0,0.05);}
 input[type="url"] {color:#20366d;}
 
 input:-moz-placeholder, textarea:-moz-placeholder {color:#999;font-weight:normal;}
@@ -400,6 +398,3 @@ input.phone, input.price{font-weight:400;}
 
 textarea{min-height:120px;}
 textarea.mini{height:54px;min-height:54px;}
-
-
-input:read-only{background:rgba(71,78,103,0.03) !important;}
