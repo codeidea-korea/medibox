@@ -28,9 +28,9 @@
     <section id="brand_intro">
         <div class="brand_item_slider">
             <figure class="nail01"></figure>
-            <!-- <figure class="nail02"></figure>
+            <figure class="nail02"></figure>
             <figure class="nail03"></figure>
-            <figure class="nail04"></figure>
+            <!-- <figure class="nail04"></figure>
             <figure class="nail05"></figure> -->
         </div>
         <div class="brand_item_num">

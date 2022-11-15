@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="그룹_1069" data-name="그룹 1069" transform="translate(-192 -234)">
+    <rect id="사각형_386" data-name="사각형 386" width="30" height="30" transform="translate(192 234)" fill="none"/>
+    <g id="그룹_1068" data-name="그룹 1068" transform="translate(52.5 -6.5)">
+      <g id="그룹_1067" data-name="그룹 1067">
+        <rect id="사각형_388" data-name="사각형 388" width="23" height="15" transform="translate(141.5 246.5)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="1"/>
+        <g id="그룹_1066" data-name="그룹 1066" transform="translate(0.025 1.52)">
+          <path id="패스_364" data-name="패스 364" d="M-10748.8,756.48h15.048" transform="translate(10893.775 -507)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="1"/>
+          <path id="패스_365" data-name="패스 365" d="M-10748.8,756.48h12.206" transform="translate(10893.775 -504)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="1"/>
+          <path id="패스_366" data-name="패스 366" d="M-10748.8,756.48h7.524" transform="translate(10893.775 -501)" fill="rgba(0,0,0,0)" stroke="#fff" stroke-width="1"/>
+        </g>
+      </g>
+      <g id="그룹_1065" data-name="그룹 1065">
+        <circle id="타원_112" data-name="타원 112" cx="5" cy="5" r="5" transform="translate(157.5 254.5)" fill="#262626" stroke="#fff" stroke-width="1"/>
+        <text id="C" transform="translate(160 262)" fill="#fff" font-size="7" font-family="NotoSansCJKkr-Medium, Noto Sans CJK KR" font-weight="500"><tspan x="0" y="0">C</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>

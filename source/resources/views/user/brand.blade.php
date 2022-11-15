@@ -1,5 +1,5 @@
 
-@include('user.header2')
+@include('user.header')
 
     <!-- header -->
     <header id="header">
@@ -87,7 +87,7 @@
 
                         <!-- 22.03.18 수정 -->
                         <!-- <h2>미니쉬 도수</h2> -->
-                        <h3>미니쉬 도수</h3>
+                        <h3>미니쉬도수</h3>
                         <!------------------> 
                     </div>
                 </a>
@@ -106,7 +106,6 @@
             </li>
         </ul>
     </section>
-
 @include('user.footer')
 
 </body>
